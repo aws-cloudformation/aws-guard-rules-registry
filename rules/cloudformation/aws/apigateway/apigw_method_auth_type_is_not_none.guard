@@ -1,0 +1,16 @@
+# Rule Intent: All API GW Methods must have some auth i.e AuthorizationType must not be set to None
+
+# Expectations:
+# a) SKIP: when there are no API GW Methods present
+# b) PASS: when all API GW Methods have auth enabled
+# c) FAIL: when all API GW have auth type set to none
+
+#
+# Select all API GW Method resources from incoming template (payload)
+#
+let aws_apigw_method_resources = Resources.*[ Type == 'AWS::ApiGateway::Method'  ]
+
+rule apigw_method_auth_type_is_not_none when %aws_apigw_method_resources !empty {
+    # Ensure that valid AuthorizationType is configured
+    %aws_apigw_method_resources.Properties.AuthorizationType != 'NONE'
+}

@@ -1,4 +1,4 @@
-## My Project
+## # AWS CloudFormation Guard Rules Registry
 
 TODO: Fill this README out!
 

@@ -1,0 +1,74 @@
+###
+# apigw_method_auth_type_is_not_none test
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      apigw_method_auth_type_is_not_none: SKIP
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      apigw_method_auth_type_is_not_none: SKIP
+- name: APIGW method with IAM auth, PASS
+  input:
+    Resources:
+      myApiMethod:
+        Type: AWS::ApiGateway::Method
+        Properties:
+          HttpMethod: POST
+          ResourceId:
+            Ref: myapiv1books1D4BE6C1
+          RestApiId:
+            Ref: myapi4C7BF186
+          AuthorizationType: AWS_IAM
+  expectations:
+    rules:
+      apigw_method_auth_type_is_not_none: PASS
+- name: APIGW method with Cognito auth, PASS
+  input:
+    Resources:
+      myApiMethod:
+        Type: AWS::ApiGateway::Method
+        Properties:
+          HttpMethod: POST
+          ResourceId:
+            Ref: myapiv1books1D4BE6C1
+          RestApiId:
+            Ref: myapi4C7BF186
+          AuthorizationType: COGNITO_USER_POOLS
+  expectations:
+    rules:
+      apigw_method_auth_type_is_not_none: PASS
+- name: APIGW method with Custom auth, PASS
+  input:
+    Resources:
+      myApiMethod:
+        Type: AWS::ApiGateway::Method
+        Properties:
+          HttpMethod: POST
+          ResourceId:
+            Ref: myapiv1books1D4BE6C1
+          RestApiId:
+            Ref: myapi4C7BF186
+          AuthorizationType: CUSTOM
+  expectations:
+    rules:
+      apigw_method_auth_type_is_not_none: PASS
+- name: APIGW method with missing AuthorizationType property, FAIL
+  input:
+    Resources:
+      myApiMethod:
+        Type: AWS::ApiGateway::Method
+        Properties:
+          HttpMethod: POST
+          ResourceId:
+            Ref: myapiv1books1D4BE6C1
+          RestApiId:
+            Ref: myapi4C7BF186
+  expectations:
+    rules:
+      apigw_method_auth_type_is_not_none: FAIL

@@ -1,0 +1,21 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  testRules:
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run guard rules tests
+      shell: bash
+      run: |
+        bin/cfn-guard test -d ./rules/
