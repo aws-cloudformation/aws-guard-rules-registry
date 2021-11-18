@@ -1,0 +1,88 @@
+###
+# dynamodb-pitr-is-enabled test
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      dynamodb_pitr_is_enabled: SKIP
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      dynamodb_pitr_is_enabled: SKIP
+- name: DDB with PITR set to true, PASS
+  input:
+    Resources:
+      Exampletable:
+        Type: AWS::DynamoDB::Table
+        Properties:
+          KeySchema:
+            - AttributeName: Id
+              KeyType: HASH
+          AttributeDefinitions:
+            - AttributeName: Id
+              AttributeType: S
+            - AttributeName: dummy
+              AttributeType: S
+            - AttributeName: name
+              AttributeType: S
+            - AttributeName: owner
+              AttributeType: S
+            - AttributeName: createdAt
+              AttributeType: S
+          PointInTimeRecoverySpecification:
+            PointInTimeRecoveryEnabled: true
+  expectations:
+    rules:
+      dynamodb_pitr_is_enabled: PASS
+- name: DDB with PITR set to false, FAIL
+  input:
+    Resources:
+      Exampletable:
+        Type: AWS::DynamoDB::Table
+        Properties:
+          KeySchema:
+            - AttributeName: Id
+              KeyType: HASH
+          AttributeDefinitions:
+            - AttributeName: Id
+              AttributeType: S
+            - AttributeName: dummy
+              AttributeType: S
+            - AttributeName: name
+              AttributeType: S
+            - AttributeName: owner
+              AttributeType: S
+            - AttributeName: createdAt
+              AttributeType: S
+          PointInTimeRecoverySpecification:
+            PointInTimeRecoveryEnabled: false
+  expectations:
+    rules:
+      dynamodb_pitr_is_enabled: FAIL
+- name: DDB with missing PITR property, FAIL
+  input:
+    Resources:
+      Exampletable:
+        Type: AWS::DynamoDB::Table
+        Properties:
+          KeySchema:
+            - AttributeName: Id
+              KeyType: HASH
+          AttributeDefinitions:
+            - AttributeName: Id
+              AttributeType: S
+            - AttributeName: dummy
+              AttributeType: S
+            - AttributeName: name
+              AttributeType: S
+            - AttributeName: owner
+              AttributeType: S
+            - AttributeName: createdAt
+              AttributeType: S
+  expectations:
+    rules:
+      dynamodb_pitr_is_enabled: FAIL

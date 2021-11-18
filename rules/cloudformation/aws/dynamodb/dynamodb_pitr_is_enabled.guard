@@ -1,0 +1,20 @@
+# Rule Intent: All DynamoDB Tables must have Point-In-Time-Recovery enabled
+
+# Expectations:
+# a) SKIP: when there are no DynamoDB Tables present
+# b) PASS: when all DynamoDB Tables have PITR enabled
+# c) FAIL: when all DynamoDB Tables have PITR disabled
+
+#
+# Select all DynamoDB Table resources from incoming template (payload)
+#
+let aws_dynamodb_table_resources = Resources.*[ Type == 'AWS::DynamoDB::Table'  ]
+
+
+rule dynamodb_pitr_is_enabled when %aws_dynamodb_table_resources !empty {
+    # Ensure ALL DynamoDB Tables have Point-In-Time-Recovery enabled
+    %aws_dynamodb_table_resources.Properties.PointInTimeRecoverySpecification.PointInTimeRecoveryEnabled == true 
+        <<
+        Point In Time Recovery must be enabled for strong resiliency
+        >>
+}
