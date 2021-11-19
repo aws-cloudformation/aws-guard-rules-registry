@@ -19,8 +19,8 @@ reported the issue. Please try to include as much information as you can. Detail
 * Any modifications you've made relevant to the bug
 * Anything unusual about your environment or deployment
 
-## Adding/Modifying a Guard rule
-Please read the [Guard Rules Contributing Guide](Guard_Rules_Contributing_Guide) before creating a pull request.
+## Adding/Modifying Guard rules
+Please read the [Guard Rules Contribution Guide](GUARD_RULES_CONTRIBUTION_GUIDE) before creating a pull request.
 
 
 ## Contributing via Pull 

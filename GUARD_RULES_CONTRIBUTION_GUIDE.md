@@ -1,10 +1,10 @@
-# Guard Rules Contributing Guide
+# Guard Rules Contribution Guide
 
 ## Rules Directory Structure 
 
-1. All Guard rules in this repository are stored under `rules` directory.
+1. All Guard rules in this repository are stored under the `rules` directory.
 
-2. The `rules` directory has multiple sub-directories based on diffrent techonlogies, providers and services.
+2. The `rules` directory has multiple sub-directories based on different technologies, providers and services.
     ```
     rules
     ├── cloudformation
@@ -22,18 +22,18 @@
     ```
 ## Rule Writing  
 
-1. To undestand the contributing process, let's take an exmaple of `AWS DynamoDB Point-In-Time-Recovery` rule.
+1. To understand the contribution process, let's consider an example of the `AWS DynamoDB Point-In-Time-Recovery` rule.
 
-2. If sub-directory for technology/provider/service doesn't already exist, create a new sub-directory under appropriate path.
+2. If the sub-directory for technology/provider/service doesn't already exist, create a new sub-directory under the appropriate path.
     ```
     mkdir rules/cloudformation/aws/dynamodb
     ```
-3. Create a rule file with `.guard` extension and file name must match with the rule intention.
+3. Create a rule file with a `.guard` extension and the file name must match with the rule intention.
     ```
     touch rules/cloudformation/aws/dynamodb/dynamodb_pitr_is_enabled.guard
     ```
-4. Edit `dynamodb_pitr_is_enabled.guard` and describe some of the bookkeeping for the rule, like rule intent and expectations.
-    ```json
+4. Edit `dynamodb_pitr_is_enabled.guard` and describe bookkeeping for the rule, like rule intent and expectations.
+    ```
     # Rule Intent: All DynamoDB Tables must have Point-In-Time-Recovery enabled
 
     # Expectations:
@@ -41,7 +41,7 @@
     # b) PASS: when all DynamoDB Tables have PITR enabled
     # c) FAIL: when all DynamoDB Tables have PITR disabled
     ```
-5. Define variables required for a given rule and add comments to the rule where ever possible to make it easier for humans to understand.
+5. Define variables required for a given rule and add comments to the rule wherever possible to make it easier for humans to understand.
     ```
     # Rule Intent: All DynamoDB Tables must have Point-In-Time-Recovery enabled
 
@@ -55,7 +55,7 @@
     #
     let aws_dynamodb_table_resources = Resources.*[ Type == 'AWS::DynamoDB::Table' ]
     ```
-6. Define a named rule block. Rule name should match with the rule file name. Named rule blocks allow for re-usability, improved composition and remove verbosity and repetition.
+6. Define a named rule block. The rule name should match with the rule file name. Named rule blocks allow for re-usability, improved composition and remove verbosity and repetition.
     ```
     # Rule Intent: All DynamoDB Tables must have Point-In-Time-Recovery enabled
 
@@ -74,7 +74,7 @@
 
     }
     ```
-7. Write a rule clauses inside named rule block. Please add a `custom message` to each clause. `custom message` is expressed as `<<message>>` where message is any string which ideally provides information regarding the clause preceding it. 
+7. Write rule clauses inside the named rule block. Please add a `custom message` to each clause. The `custom message` is expressed as `<<message>>` where 'message' is any string which ideally provides information regarding the clause preceding it. 
     ```
     # Rule Intent: All DynamoDB Tables must have Point-In-Time-Recovery enabled
 
@@ -99,15 +99,15 @@
     ```
 
 ## Writing unit tests
-1. Now, let's write tests for `dynamodb_pitr_is_enabled` rule. Before we write any code, create a `tests` directory under appropriate path if it is not present.
+1. Now, let's write tests for the `dynamodb_pitr_is_enabled` rule. Before we write any code, create a `tests` directory under the appropriate path if it is not present.
     ```
     mkdir rules/cloudformation/aws/dynamodb/tests
     ```
-2. Create a test file with `.yml` or `.json` extension and file name must match with the `<rulename>_tests` format.
+2. Create a test file with `.yml` or `.json` extension and the file name must match with the `<rulename>_tests` format.
     ```
     touch rules/cloudformation/aws/dynamodb/tests/dynamodb_pitr_is_enabled.tests.yml
     ```
-3. Edit `dynamodb_pitr_is_enabled.tests.yml` and first write tests for all `SKIP` expectations.
+3. Edit `dynamodb_pitr_is_enabled.tests.yml` and start with writing tests for all `SKIP` expectations.
     ```
     ###
     # dynamodb-pitr-is-enabled test
@@ -125,7 +125,7 @@
         rules:
         dynamodb_pitr_is_enabled: SKIP
     ```
-4. Second, write tests for all `PASS` expectations.
+4. Next, write tests for all `PASS` expectations.
     ```
     ###
     # dynamodb-pitr-is-enabled test
