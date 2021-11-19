@@ -13,4 +13,7 @@ let aws_apigw_method_resources = Resources.*[ Type == 'AWS::ApiGateway::Method' 
 rule apigw_method_auth_type_is_not_none when %aws_apigw_method_resources !empty {
     # Ensure that valid AuthorizationType is configured
     %aws_apigw_method_resources.Properties.AuthorizationType != 'NONE'
+        <<<
+        API GW must have a valid auth. Open access is not allowed in secure context.
+        >>>
 }

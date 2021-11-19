@@ -8,7 +8,7 @@
 #
 # Select all DynamoDB Table resources from incoming template (payload)
 #
-let aws_dynamodb_table_resources = Resources.*[ Type == 'AWS::DynamoDB::Table'  ]
+let aws_dynamodb_table_resources = Resources.*[ Type == 'AWS::DynamoDB::Table' ]
 
 
 rule dynamodb_pitr_is_enabled when %aws_dynamodb_table_resources !empty {

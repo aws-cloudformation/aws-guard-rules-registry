@@ -19,13 +19,28 @@ reported the issue. Please try to include as much information as you can. Detail
 * Any modifications you've made relevant to the bug
 * Anything unusual about your environment or deployment
 
+## Adding/Modifying a Guard rule
+Please read the [Guard Rules Contributing Guide](Guard_Rules_Contributing_Guide) before creating a pull request.
 
-## Contributing via Pull Requests
+
+## Contributing via Pull 
 Contributions via pull requests are much appreciated. Before sending us a pull request, please ensure that:
 
 1. You are working against the latest source on the *main* branch.
 2. You check existing open, and recently merged, pull requests to make sure someone else hasn't addressed the problem already.
 3. You open an issue to discuss any significant work - we would hate for your time to be wasted.
+
+### Pull Request Checklist
+- [ ] Title and Description
+  - **Change type**: title prefixed with **fix**, **feat** and module name in parens, which will appear in changelog
+  - **Title**: use lower-case and doesn't end with a period
+  - **Breaking?**: last paragraph: "BREAKING CHANGE: <describe what changed + link for details>"
+  - **Issues**: Indicate issues fixed via: "**Fixes #xxx**" or "**Closes #xxx**"
+- [ ] Docs
+  - **README**: README updated if necessary
+  - **RULES**: RULES updated if necessary
+- [ ] Testing
+  - Unit test added (prefer not to modify an existing test, otherwise, it's probably a breaking change)
 
 To send us a pull request, please:
 
