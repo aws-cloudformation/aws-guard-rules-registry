@@ -1,0 +1,10 @@
+## Config Rule Name : s3-bucket-server-side-encryption-enabled
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/s3-bucket-server-side-encryption_enabled.html"
+
+
+let s3_buckets = Resources.*[ Type == 'AWS::S3::Bucket' ]
+
+rule S3_Bucket_Encryption when %s3_buckets !empty {
+    %s3_buckets.Properties.BucketEncryption exists <<Buckets must enable server-side encryption>>
+    %s3_buckets.Properties.BucketEncryption.ServerSideEncryptionConfiguration[*].ServerSideEncryptionByDefault.SSEAlgorithm in ["aws:kms","AES256"] <<Buckets must enable server-side encryption>>
+}

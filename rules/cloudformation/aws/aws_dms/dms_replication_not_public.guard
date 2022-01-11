@@ -1,0 +1,9 @@
+## Config Rule Name : dms-replication-not-public
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/dms-replication-not-public.html"
+
+let dms_replication_instances = Resources.*[ Type == 'AWS::DMS::ReplicationInstance' ]
+
+rule DMS_Replication_Not_Public when %dms_replication_instances !empty {
+    %dms_replication_instances.Properties.PubliclyAccessible == true <<AWS Database Migration Service replication instances should not be public>>
+
+}

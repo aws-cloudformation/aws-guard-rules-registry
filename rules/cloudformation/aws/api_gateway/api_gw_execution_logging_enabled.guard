@@ -1,0 +1,3 @@
+## Config Rule: https://docs.aws.amazon.com/config/latest/developerguide/api-gw-execution-logging-enabled.html
+## Compliance Framework: NIST-800-53 Rev5
+## NIST-800-53 Rev5 Controls: AC-4(26), AU-2b, AU-3a, AU-3b, AU-3c, AU-3d, AU-3e, AU-3f, AU-6(3), AU-6(4), AU-6(6), AU-6(9), AU-8b, AU-10, AU-12a, AU-12c, AU-12(1), AU-12(2), AU-12(3), AU-12(4), AU-14a, AU-14b, AU-14b, AU-14(3), CA-7b, CM-5(1)(b), IA-3(3)(b), MA-4(1)(a), PM-14a.1, PM-14b, PM-31, SC-7(9)(b), SI-4(17), SI-7(8)

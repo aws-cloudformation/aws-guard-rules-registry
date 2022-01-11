@@ -1,0 +1,27 @@
+
+## Compliance Framework: NIST-800-53 Rev5
+## Controls: AC-4, AC-4(22), AC-17(2), AC-24(1), AU-9(3), CA-9b, IA-5(1)(c), PM-17b, SC-7(4)(b), SC-7(4)(g), SC-8, SC-8(1), SC-8(2), SC-8(3), SC-8(4), SC-8(5), SC-13a, SC-23, SI-1a.2, SI-1a.2, SI-1c.2
+
+# Rule Intent: Checks if HTTP to HTTPS redirection is configured on all HTTP listeners of Application Load Balancers.
+
+# Expectations:
+# a) SKIP: when there are no ALB resources present
+# b) PASS: when one or more HTTP listeners have forwarding to an HTTPS listener
+# c) FAIL: when one of more HTTP listeners have forwarding to an HTTP listener instead of redirection.
+# d) FAIL: when one or more HTTP listeners of Application Load Balancer do not have HTTP to HTTPS redirection configured.
+
+
+
+#
+# Select all ALB resources from incoming template (payload)
+#
+let aws_dynamodb_table_resources = Resources.*[ Type == 'AWS::DynamoDB::Table' ]
+
+
+rule dynamodb_pitr_is_enabled when %aws_dynamodb_table_resources !empty {
+    # Ensure ALL DynamoDB Tables have Point-In-Time-Recovery enabled
+    %aws_dynamodb_table_resources.Properties.PointInTimeRecoverySpecification.PointInTimeRecoveryEnabled == true
+        <<
+        Point In Time Recovery must be enabled for strong resiliency
+        >>
+}

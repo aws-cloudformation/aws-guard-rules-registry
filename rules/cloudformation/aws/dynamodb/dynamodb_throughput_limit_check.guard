@@ -1,0 +1,2 @@
+    ## Config Rule Name : dynamodb-throughput-limit-check
+    ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/DYNAMODB_THROUGHPUT_LIMIT_CHECK.html"
