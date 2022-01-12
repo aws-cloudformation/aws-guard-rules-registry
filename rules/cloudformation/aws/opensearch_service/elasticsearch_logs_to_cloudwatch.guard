@@ -1,2 +1,2 @@
-    ## Config Rule Name : elasticsearch-logs-to-cloudwatch
-    ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/ELASTICSEARCH_LOGS_TO_CLOUDWATCH.html"
+## Config Rule Name : elasticsearch-logs-to-cloudwatch
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/elasticsearch-logs-to-cloudwatch.html"

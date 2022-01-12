@@ -1,2 +1,2 @@
-    ## Config Rule Name : elasticsearch-encrypted-at-rest
-    ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/ELASTICSEARCH_ENCRYPTED_AT_REST.html"
+## Config Rule Name : elasticsearch-encrypted-at-rest
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/elasticsearch-encrypted-at-rest.html"

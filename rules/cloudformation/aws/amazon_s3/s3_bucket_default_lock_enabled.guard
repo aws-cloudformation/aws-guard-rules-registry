@@ -1,2 +1,2 @@
-    ## Config Rule Name : s3-bucket-default-lock-enabled
-    ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/S3_BUCKET_DEFAULT_LOCK_ENABLED.html"
+## Config Rule Name : s3-bucket-default-lock-enabled
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/s3-bucket-default-lock-enabled.html"

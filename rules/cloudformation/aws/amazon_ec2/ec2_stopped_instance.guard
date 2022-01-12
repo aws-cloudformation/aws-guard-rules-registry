@@ -1,2 +1,2 @@
-    ## Config Rule Name : ec2-stopped-instance
-    ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/EC2_STOPPED_INSTANCE.html"
+## Config Rule Name : ec2-stopped-instance
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/ec2-stopped-instance.html"

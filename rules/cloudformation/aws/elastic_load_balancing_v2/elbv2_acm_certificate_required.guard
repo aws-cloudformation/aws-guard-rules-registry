@@ -1,2 +1,2 @@
-    ## Config Rule Name : elbv2-acm-certificate-required
-    ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/ELBV2_ACM_CERTIFICATE_REQUIRED.html"
+## Config Rule Name : elbv2-acm-certificate-required
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/elbv2-acm-certificate-required.html"

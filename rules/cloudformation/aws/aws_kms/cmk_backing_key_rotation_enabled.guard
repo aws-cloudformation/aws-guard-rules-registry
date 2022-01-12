@@ -1,2 +1,2 @@
-    ## Config Rule Name : cmk-backing-key-rotation-enabled
-    ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/CMK_BACKING_KEY_ROTATION_ENABLED.html"
+## Config Rule Name : cmk-backing-key-rotation-enabled
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/cmk-backing-key-rotation-enabled.html"

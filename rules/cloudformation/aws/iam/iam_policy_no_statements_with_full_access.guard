@@ -1,2 +1,2 @@
-    ## Config Rule Name : iam-policy-no-statements-with-full-access
-    ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/IAM_POLICY_NO_STATEMENTS_WITH_FULL_ACCESS.html"
+## Config Rule Name : iam-policy-no-statements-with-full-access
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/iam-policy-no-statements-with-full-access.html"

@@ -1,2 +1,2 @@
-    ## Config Rule Name : alb-http-drop-invalid-header-enabled
-    ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/ALB_HTTP_DROP_INVALID_HEADER_ENABLED.html"
+## Config Rule Name : alb-http-drop-invalid-header-enabled
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/alb-http-drop-invalid-header-enabled.html"

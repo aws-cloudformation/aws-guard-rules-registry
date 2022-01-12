@@ -1,2 +1,2 @@
-    ## Config Rule Name : emr-master-no-public-ip
-    ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/EMR_MASTER_NO_PUBLIC_IP.html"
+## Config Rule Name : emr-master-no-public-ip
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/emr-master-no-public-ip.html"

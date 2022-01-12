@@ -1,2 +1,2 @@
-    ## Config Rule Name : guardduty-non-archived-findings
-    ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/GUARDDUTY_NON_ARCHIVED_FINDINGS.html"
+## Config Rule Name : guardduty-non-archived-findings
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/guardduty-non-archived-findings.html"
