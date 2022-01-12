@@ -2,3 +2,7 @@
 ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/s3-bucket-logging-enabled.html"
 
 let s3_buckets = Resources.*[ Type == 'AWS::S3::Bucket' ]
+
+rule S3_Bucket_Logging_Enabled when %s3_buckets !empty {
+    %s3_buckets.Properties.Encrypted == true <<EFS filesystems must be encrypted>>
+}

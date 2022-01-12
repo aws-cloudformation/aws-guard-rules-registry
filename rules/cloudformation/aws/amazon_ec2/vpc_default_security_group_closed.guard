@@ -1,5 +1,5 @@
 ## Config Rule Name : vpc-default-security-group-closed
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/VPC-DEFAULT-SECURITY-GROUP-CLOSED.html"
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/vpc-default-security-group-closed.html"
 
 ## NO GUARD RULE TO APPLY
 
