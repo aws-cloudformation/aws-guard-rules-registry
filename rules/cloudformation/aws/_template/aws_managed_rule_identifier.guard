@@ -1,7 +1,9 @@
-# Rule Intent: All DynamoDB Tables must have Point-In-Time-Recovery enabled
+# Rule Intent: Checks if the active access keys are rotated within the number of days specified in maxAccessKeyAge.
+#              The rule is NON_COMPLIANT if the access keys have not been rotated for more than maxAccessKeyAge
+#              number of days. Default is 90 days
 
 # Expectations:
-# a) SKIP: when there are no DynamoDB Tables present
+# a) SKIP: when there are no IAM Access Keys present
 # b) PASS: when all DynamoDB Tables have PITR enabled
 # c) FAIL: when all DynamoDB Tables have PITR disabled
 
@@ -13,7 +15,7 @@ let aws_dynamodb_table_resources = Resources.*[ Type == 'AWS::DynamoDB::Table' ]
 
 rule dynamodb_pitr_is_enabled when %aws_dynamodb_table_resources !empty {
     # Ensure ALL DynamoDB Tables have Point-In-Time-Recovery enabled
-    %aws_dynamodb_table_resources.Properties.PointInTimeRecoverySpecification.PointInTimeRecoveryEnabled == true 
+    %aws_dynamodb_table_resources.Properties.PointInTimeRecoverySpecification.PointInTimeRecoveryEnabled == true
         <<
         Point In Time Recovery must be enabled for strong resiliency
         >>

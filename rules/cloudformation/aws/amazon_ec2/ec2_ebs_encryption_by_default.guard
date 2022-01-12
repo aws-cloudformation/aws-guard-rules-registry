@@ -1,0 +1,12 @@
+    ## Config Rule Name : ec2-ebs-encryption-by-default
+    ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/EC2_EBS_ENCRYPTION_BY_DEFAULT.html"
+
+let ec2_volumes = Resources.*[ Type == 'AWS::EC2::Volume' ]
+
+when %ec2_volumes !empty {
+    %ec2_volumes {
+        Properties {
+            Encrypted == true
+        }
+    }
+}

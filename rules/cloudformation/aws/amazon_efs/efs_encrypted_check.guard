@@ -1,0 +1,8 @@
+## Config Rule Name : efs-encrypted-check
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/EFS_ENCRYPTED_CHECK.html"
+
+let efs_file_systems = Resources.*[ Type == 'AWS::EFS::FileSystem' ]
+
+rule EFS_ENCRYPTED_CHECK when %efs_file_systems !empty {
+    %efs_file_systems.Properties.Encrypted == true <<EFS filesystems must be encrypted>>
+}

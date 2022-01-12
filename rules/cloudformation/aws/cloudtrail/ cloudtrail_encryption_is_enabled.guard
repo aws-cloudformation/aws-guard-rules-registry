@@ -1,0 +1,6 @@
+
+let cloudtrail_trails = Resources.*[ Type == 'AWS::CloudTrail::Trail' ]
+
+rule CloudTrail_Trail_Encryption when %cloudtrail_trails !empty {
+    %cloudtrail_trails.Properties.KMSKeyId is_string <<Message: Link: www.amazon.com >>
+}

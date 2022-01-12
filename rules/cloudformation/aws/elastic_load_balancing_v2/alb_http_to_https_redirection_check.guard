@@ -1,0 +1,16 @@
+## Config Rule Name : alb-http-to-https-redirection-check
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/alb-http-to-https-redirection-check.html"
+
+# Rule Intent: Checks if HTTP to HTTPS redirection is configured on all HTTP listeners of Application Load Balancers.
+
+# Expectations:
+# a) SKIP: when there are no ALB resources present
+# b) PASS: when one or more HTTP listeners have forwarding to an HTTPS listener
+# c) FAIL: when one of more HTTP listeners have forwarding to an HTTP listener instead of redirection.
+# d) FAIL: when one or more HTTP listeners of Application Load Balancer do not have HTTP to HTTPS redirection configured.
+
+
+
+#
+# Select all ALB resources from incoming template (payload)
+#
