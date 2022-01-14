@@ -1,0 +1,88 @@
+###
+# dynamodb_table_must_be_encrypted test
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      dynamodb_table_must_be_encrypted: SKIP
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      dynamodb_table_must_be_encrypted: SKIP
+- name: DDB with SSE set to true, PASS
+  input:
+    Resources:
+      Exampletable:
+        Type: AWS::DynamoDB::Table
+        Properties:
+          KeySchema:
+            - AttributeName: Id
+              KeyType: HASH
+          AttributeDefinitions:
+            - AttributeName: Id
+              AttributeType: S
+            - AttributeName: dummy
+              AttributeType: S
+            - AttributeName: name
+              AttributeType: S
+            - AttributeName: owner
+              AttributeType: S
+            - AttributeName: createdAt
+              AttributeType: S
+          SSESpecification:
+            SSEEnabled: true
+  expectations:
+    rules:
+      dynamodb_table_must_be_encrypted: PASS
+- name: DDB with SSE set to false, FAIL
+  input:
+    Resources:
+      Exampletable:
+        Type: AWS::DynamoDB::Table
+        Properties:
+          KeySchema:
+            - AttributeName: Id
+              KeyType: HASH
+          AttributeDefinitions:
+            - AttributeName: Id
+              AttributeType: S
+            - AttributeName: dummy
+              AttributeType: S
+            - AttributeName: name
+              AttributeType: S
+            - AttributeName: owner
+              AttributeType: S
+            - AttributeName: createdAt
+              AttributeType: S
+          SSESpecification:
+            SSEEnabled: false
+  expectations:
+    rules:
+      dynamodb_table_must_be_encrypted: FAIL
+- name: DDB with missing SSESpecification property, FAIL
+  input:
+    Resources:
+      Exampletable:
+        Type: AWS::DynamoDB::Table
+        Properties:
+          KeySchema:
+            - AttributeName: Id
+              KeyType: HASH
+          AttributeDefinitions:
+            - AttributeName: Id
+              AttributeType: S
+            - AttributeName: dummy
+              AttributeType: S
+            - AttributeName: name
+              AttributeType: S
+            - AttributeName: owner
+              AttributeType: S
+            - AttributeName: createdAt
+              AttributeType: S
+  expectations:
+    rules:
+      dynamodb_table_must_be_encrypted: FAIL

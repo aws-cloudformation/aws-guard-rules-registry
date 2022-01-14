@@ -1,0 +1,24 @@
+## Config Rule Name : rds-instance-public-access-check
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/rds-instance-public-access-check.html"
+
+# Rule Intent: ALL RDS instances must have PubliclyAccessible set to true
+
+# Expectations:
+# a) SKIP: when there are no RDS instances present
+# b) PASS: when all RDS instances have PubliclyAccessible set to true
+# c) FAIL: when all RDS instances have PubliclyAccessible set to false
+# d) FAIL: when there are RDS instances with PubliclyAccessible property is not present 
+
+#
+# Select all RDS instance resources from incoming template (payload)
+#
+
+let aws_rds_instances = Resources.*[ Type == 'AWS::RDS::DBInstance'  ]
+
+
+rule rds_instance_public_access_check when %aws_rds_instances !empty {
+    
+    # ALL RDS instances must have PubliclyAccessible set to true
+    %aws_rds_instances.Properties.PubliclyAccessible == true <<ALL RDS instances must have PubliclyAccessible set to true and the behavior 
+    also depends on the presence of DBSubnetGroupName property: https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_CreateDBInstance.html >>
+}

@@ -1,0 +1,198 @@
+[
+    {
+      "name": "Rule fails when cluster is publicly accesible",
+      "input": {
+        "Resources": {
+          "ClusterEB0386A7": {
+            "Type": "AWS::Redshift::Cluster",
+            "Properties": {
+              "ClusterType": "multi-node",
+              "DBName": "my_db",
+              "MasterUsername": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "{{resolve:secretsmanager:",
+                    {
+                      "Ref": "ClusterSecret6368BD0F"
+                    },
+                    ":SecretString:username::}}"
+                  ]
+                ]
+              },
+              "MasterUserPassword": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "{{resolve:secretsmanager:",
+                    {
+                      "Ref": "ClusterSecret6368BD0F"
+                    },
+                    ":SecretString:password::}}"
+                  ]
+                ]
+              },
+              "NodeType": "dc2.large",
+              "AllowVersionUpgrade": true,
+              "AutomatedSnapshotRetentionPeriod": 1,
+              "ClusterSubnetGroupName": {
+                "Ref": "ClusterSubnetsDCFA5CB7"
+              },
+              "Encrypted": true,
+              "KmsKeyId": {
+                "Ref": "customkmskey377C6F9A"
+              },
+              "NumberOfNodes": 2,
+              "PubliclyAccessible": true,
+              "VpcSecurityGroupIds": [
+                {
+                  "Fn::GetAtt": ["ClusterSecurityGroup0921994B", "GroupId"]
+                }
+              ]
+            },
+            "UpdateReplacePolicy": "Delete",
+            "DeletionPolicy": "Delete"
+          }
+        }
+      },
+      "expectations": {
+        "rules": {
+          "redshift_cluster_public_access_check": "FAIL"
+        }
+      }
+    },
+    {
+      "name": "Rule passes when cluster is not publicly accesible",
+      "input": {
+        "Resources": {
+          "ClusterEB0386A7": {
+            "Type": "AWS::Redshift::Cluster",
+            "Properties": {
+              "ClusterType": "multi-node",
+              "DBName": "my_db",
+              "MasterUsername": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "{{resolve:secretsmanager:",
+                    {
+                      "Ref": "ClusterSecret6368BD0F"
+                    },
+                    ":SecretString:username::}}"
+                  ]
+                ]
+              },
+              "MasterUserPassword": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "{{resolve:secretsmanager:",
+                    {
+                      "Ref": "ClusterSecret6368BD0F"
+                    },
+                    ":SecretString:password::}}"
+                  ]
+                ]
+              },
+              "NodeType": "dc2.large",
+              "AllowVersionUpgrade": true,
+              "AutomatedSnapshotRetentionPeriod": 1,
+              "ClusterSubnetGroupName": {
+                "Ref": "ClusterSubnetsDCFA5CB7"
+              },
+              "Encrypted": true,
+              "KmsKeyId": {
+                "Ref": "customkmskey377C6F9A"
+              },
+              "NumberOfNodes": 2,
+              "PubliclyAccessible": false,
+              "VpcSecurityGroupIds": [
+                {
+                  "Fn::GetAtt": ["ClusterSecurityGroup0921994B", "GroupId"]
+                }
+              ]
+            },
+            "UpdateReplacePolicy": "Delete",
+            "DeletionPolicy": "Delete"
+          }
+        }
+      },
+      "expectations": {
+        "rules": {
+          "redshift_cluster_public_access_check": "PASS"
+        }
+      }
+    },
+    {
+      "name": "Rule skips when no cluster present",
+      "input": {
+        "Resources": {}
+      },
+      "expectations": {
+        "rules": {
+          "redshift_cluster_public_access_check": "SKIP"
+        }
+      }
+    },
+    {
+      "name": "Rule passes when PubliclyAccessible property is not set",
+      "input": {
+        "Resources": {
+          "ClusterEB0386A7": {
+            "Type": "AWS::Redshift::Cluster",
+            "Properties": {
+              "ClusterType": "multi-node",
+              "DBName": "my_db",
+              "MasterUsername": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "{{resolve:secretsmanager:",
+                    {
+                      "Ref": "ClusterSecret6368BD0F"
+                    },
+                    ":SecretString:username::}}"
+                  ]
+                ]
+              },
+              "MasterUserPassword": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "{{resolve:secretsmanager:",
+                    {
+                      "Ref": "ClusterSecret6368BD0F"
+                    },
+                    ":SecretString:password::}}"
+                  ]
+                ]
+              },
+              "NodeType": "dc2.large",
+              "AllowVersionUpgrade": true,
+              "AutomatedSnapshotRetentionPeriod": 1,
+              "ClusterSubnetGroupName": {
+                "Ref": "ClusterSubnetsDCFA5CB7"
+              },
+              "Encrypted": true,
+              "KmsKeyId": {
+                "Ref": "customkmskey377C6F9A"
+              },
+              "NumberOfNodes": 2,
+              "VpcSecurityGroupIds": [
+                {
+                  "Fn::GetAtt": ["ClusterSecurityGroup0921994B", "GroupId"]
+                }
+              ]
+            },
+            "UpdateReplacePolicy": "Delete",
+            "DeletionPolicy": "Delete"
+          }
+        }
+      },
+      "expectations": {
+        "rules": {
+          "redshift_cluster_public_access_check": "PASS"
+        }
+      }
+    }
+  ]

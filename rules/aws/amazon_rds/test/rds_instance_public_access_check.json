@@ -1,0 +1,63 @@
+[
+    {
+      "name": "Rule is not run when RDS instance resource is not present",
+      "input": {},
+      "expectations": {
+        "rules": {
+          "rds_instance_public_access_check": "SKIP"
+        }
+      }
+    },
+    {
+      "name": "Rule passes when RDS instances has PubliclyAccessible set to true",
+      "input": {
+        "Resources": {
+          "MyDB": {
+            "Type": "AWS::RDS::DBInstance",
+            "Properties": {
+              "PubliclyAccessible": true
+            }
+          }
+        }
+      },
+      "expectations": {
+        "rules": {
+          "rds_instance_public_access_check": "PASS"
+        }
+      }
+    },
+    {
+      "name": "Rule fails when RDS instances has PubliclyAccessible set to false",
+      "input": {
+        "Resources": {
+          "MyDB": {
+            "Type": "AWS::RDS::DBInstance",
+            "Properties": {
+              "PubliclyAccessible": false
+            }
+          }
+        }
+      },
+      "expectations": {
+        "rules": {
+          "rds_instance_public_access_check": "FAIL"
+        }
+      }
+    },
+    {
+      "name": "Rule fails when RDS instances has PubliclyAccessible property missing",
+      "input": {
+        "Resources": {
+          "MyDB": {
+            "Type": "AWS::RDS::DBInstance",
+            "Properties": {}
+          }
+        }
+      },
+      "expectations": {
+        "rules": {
+          "rds_instance_public_access_check": "FAIL"
+        }
+      }
+    }
+  ]

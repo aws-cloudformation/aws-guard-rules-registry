@@ -1,0 +1,51 @@
+[
+    {
+      "name": "Rule is not run when ElasticSearch domain is not present",
+      "input": {},
+      "expectations": {
+        "rules": {
+          "elasticsearch_in_vpc_only": "SKIP"
+        }
+      }
+    },
+    {
+      "name": "Rule passes when ElasticSearch domain has VPCOptions property",
+      "input": {
+        "Resources": {
+          "ElasticsearchDomain": {
+            "Type": "AWS::Elasticsearch::Domain",
+            "Properties": {
+              "DomainName": "test",
+              "VPCOptions": {
+                "SecurityGroupIds": ["sg-12345678"],
+                "SubnetIds": ["subnet-12345678"]
+              }
+            }
+          }
+        }
+      },
+      "expectations": {
+        "rules": {
+          "elasticsearch_in_vpc_only": "PASS"
+        }
+      }
+    },
+    {
+      "name": "Rule fails when ElasticSearch domain does not have VPCOptions property",
+      "input": {
+        "Resources": {
+          "ElasticsearchDomain": {
+            "Type": "AWS::Elasticsearch::Domain",
+            "Properties": {
+              "DomainName": "test"
+            }
+          }
+        }
+      },
+      "expectations": {
+        "rules": {
+          "elasticsearch_in_vpc_only": "FAIL"
+        }
+      }
+    }
+  ]
