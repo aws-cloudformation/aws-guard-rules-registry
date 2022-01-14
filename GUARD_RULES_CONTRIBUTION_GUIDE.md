@@ -7,9 +7,8 @@
 2. The `rules` directory has multiple sub-directories based on different technologies, providers and services.
     ```
     rules
-    ├── cloudformation
-    │   └── aws
-    │       ├── apigateway
+    ├── aws
+    │   └── apigateway
     │       │   ├── apigw_method_auth_type_is_not_none.guard
     │       │   └── tests
     │       │       └── apigw_method_auth_type_is_not_none_tests.yml
@@ -28,11 +27,18 @@
     ```
     mkdir rules/cloudformation/aws/dynamodb
     ```
-3. Create a rule file with a `.guard` extension and the file name must match with the rule intention.
+3. Create a rule file with a `.guard` extension and the file name must match with the [AWS Config Managed rules](https://docs.aws.amazon.com/config/latest/developerguide/dynamodb-pitr-enabled.html) identifier in lower case.
     ```
-    touch rules/cloudformation/aws/dynamodb/dynamodb_pitr_is_enabled.guard
+    touch rules/cloudformation/aws/dynamodb/dynamodb_pitr_enabled.guard
     ```
-4. Edit `dynamodb_pitr_is_enabled.guard` and describe bookkeeping for the rule, like rule intent and expectations.
+4. Include the Config rule name and url at the top of the rule file.
+    ```
+    ## Config Rule Name : dynamodb-pitr-enabled
+    ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/dynamodb-pitr-enabled.html"
+    ```
+
+
+4. Edit `dynamodb_pitr_enabled.guard` and describe bookkeeping for the rule, like rule intent and expectations.
     ```
     # Rule Intent: All DynamoDB Tables must have Point-In-Time-Recovery enabled
 
@@ -70,12 +76,15 @@
     let aws_dynamodb_table_resources = Resources.*[ Type == 'AWS::DynamoDB::Table' ]
 
 
-    rule dynamodb_pitr_is_enabled when %aws_dynamodb_table_resources !empty {
+    rule dynamodb_pitr_enabled when %aws_dynamodb_table_resources !empty {
 
     }
     ```
 7. Write rule clauses inside the named rule block. Please add a `custom message` to each clause. The `custom message` is expressed as `<<message>>` where 'message' is any string which ideally provides information regarding the clause preceding it. 
     ```
+    ## Config Rule Name : dynamodb-pitr-enabled
+    ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/dynamodb-pitr-enabled.html"
+
     # Rule Intent: All DynamoDB Tables must have Point-In-Time-Recovery enabled
 
     # Expectations:
@@ -89,7 +98,7 @@
     let aws_dynamodb_table_resources = Resources.*[ Type == 'AWS::DynamoDB::Table' ]
 
 
-    rule dynamodb_pitr_is_enabled when %aws_dynamodb_table_resources !empty {
+    rule dynamodb_pitr_enabled when %aws_dynamodb_table_resources !empty {
         # Ensure ALL DynamoDB Tables have Point-In-Time-Recovery enabled
         %aws_dynamodb_table_resources.Properties.PointInTimeRecoverySpecification.PointInTimeRecoveryEnabled == true 
             <<

@@ -1,0 +1,47 @@
+###
+# apigw_domain_deny_non_tls_traffic
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      apigw_domain_deny_non_tls_traffic: SKIP
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      apigw_domain_deny_non_tls_traffic: SKIP
+- name: SecurityPolicy TLSv1.2, PASS
+  input:
+    Resources:
+      myDomainName:
+        Type: 'AWS::ApiGateway::DomainName'
+        Properties:
+          DomainName: api.mydomain.com
+          SecurityPolicy: TLS_1_2
+  expectations:
+    rules:
+      apigw_domain_deny_non_tls_traffic: PASS
+- name: SecurityPolicy TLSv1.0, FAIL
+  input:
+    Resources:
+      myDomainName:
+        Type: 'AWS::ApiGateway::DomainName'
+        Properties:
+          DomainName: api.mydomain.com
+          SecurityPolicy: TLS_1_0
+  expectations:
+    rules:
+      apigw_domain_deny_non_tls_traffic: FAIL
+- name: APIGW domain with missing SecurityPolicy property, FAIL
+  input:
+    Resources:
+      myDomainName:
+        Type: 'AWS::ApiGateway::DomainName'
+        Properties:
+          DomainName: api.mydomain.com
+  expectations:
+    rules:
+      apigw_domain_deny_non_tls_traffic: FAIL

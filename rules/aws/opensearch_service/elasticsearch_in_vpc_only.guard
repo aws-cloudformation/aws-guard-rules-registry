@@ -1,0 +1,21 @@
+## Config Rule Name : elasticsearch-in-vpc-only
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/elasticsearch-in-vpc-only.html"
+
+# Rule Intent: Elasticsearch domains must be in a VPC
+
+# Expectations:
+# a) SKIP: when there is no elasticsearch domain present
+# b) FAIL: when elasticsearch domain does not have VPCOptions or Endpoint properties
+# c) PASS: when elasticsearch domain has VPCOptions or Endpoint properties
+
+#
+# Select all elasticsearch domains from incoming template
+#
+
+let elasticsearch_domains = Resources.*[ Type == 'AWS::Elasticsearch::Domain' ]
+
+rule elasticsearch_in_vpc_only when %elasticsearch_domains !empty {
+    %elasticsearch_domains.Properties {
+        VPCOptions exists <<Elasticsearch domains must be in a VPC>> 
+    }
+}
