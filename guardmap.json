@@ -2,7 +2,7 @@
   "NIST800-53Rev5BestPractices": [
     {
       "AWSConfigIdentifier": "ACCESS_KEYS_ROTATED",
-      "CfnGuardFileName": "access_keys_rotated.guard",
+      "CfnGuardFile": "rules/aws/iam/access_keys_rotated.guard",
       "Controls": [
         "AC-2(1)",
         "AC-3(3)(a)",
@@ -34,7 +34,7 @@
     },
     {
       "AWSConfigIdentifier": "ACCOUNT_PART_OF_ORGANIZATIONS",
-      "CfnGuardFileName": "account_part_of_organizations.guard",
+      "CfnGuardFile": "rules/aws/aws_organizations/account_part_of_organizations.guard",
       "Controls": [
         "CM-2b",
         "CM-2b.1",
@@ -47,7 +47,7 @@
     },
     {
       "AWSConfigIdentifier": "ACM_CERTIFICATE_EXPIRATION_CHECK",
-      "CfnGuardFileName": "acm_certificate_expiration_check.guard",
+      "CfnGuardFile": "rules/aws/aws_certificate_manager/acm_certificate_expiration_check.guard",
       "Controls": [
         "SC-7(12)",
         "SC-7(16)"
@@ -55,7 +55,7 @@
     },
     {
       "AWSConfigIdentifier": "ALB_HTTP_TO_HTTPS_REDIRECTION_CHECK",
-      "CfnGuardFileName": "alb_http_to_https_redirection_check.guard",
+      "CfnGuardFile": "rules/aws/elastic_load_balancing_v2/alb_http_to_https_redirection_check.guard",
       "Controls": [
         "AC-4",
         "AC-4(22)",
@@ -82,21 +82,21 @@
     },
     {
       "AWSConfigIdentifier": "ALB_WAF_ENABLED",
-      "CfnGuardFileName": "alb_waf_enabled.guard",
+      "CfnGuardFile": "rules/aws/elastic_load_balancing_v2/alb_waf_enabled.guard",
       "Controls": [
         "AC-4(21)"
       ]
     },
     {
       "AWSConfigIdentifier": "API_GW_ASSOCIATED_WITH_WAF",
-      "CfnGuardFileName": "api_gw_associated_with_waf.guard",
+      "CfnGuardFile": "rules/aws/api_gateway_v2/api_gw_associated_with_waf.guard",
       "Controls": [
         "AC-4(21)"
       ]
     },
     {
       "AWSConfigIdentifier": "API_GW_CACHE_ENABLED_AND_ENCRYPTED",
-      "CfnGuardFileName": "api_gw_cache_enabled_and_encrypted.guard",
+      "CfnGuardFile": "rules/aws/api_gateway/rules/aws/api_gateway_v2/api_gw_cache_enabled_and_encrypted.guard",
       "Controls": [
         "AU-9(3)",
         "CP-9d",
@@ -109,7 +109,7 @@
     },
     {
       "AWSConfigIdentifier": "API_GW_EXECUTION_LOGGING_ENABLED",
-      "CfnGuardFileName": "api_gw_execution_logging_enabled.guard",
+      "CfnGuardFile": "rules/aws/api_gateway/rules/aws/api_gateway_v2/api_gw_execution_logging_enabled.guard",
       "Controls": [
         "AC-4(26)",
         "AU-2b",
@@ -149,7 +149,7 @@
     },
     {
       "AWSConfigIdentifier": "API_GW_SSL_ENABLED",
-      "CfnGuardFileName": "api_gw_ssl_enabled.guard",
+      "CfnGuardFile": "rules/aws/api_gateway_v2/api_gw_ssl_enabled.guard",
       "Controls": [
         "AC-4",
         "AC-4(22)",
@@ -176,14 +176,14 @@
     },
     {
       "AWSConfigIdentifier": "AUDIT_LOG_POLICY_EXISTS (PROCESS CHECK)",
-      "CfnGuardFileName": "audit_log_policy_exists (process check).guard",
+      "CfnGuardFile": "audit_log_policy_exists (process check).guard",
       "Controls": [
         "AU-1"
       ]
     },
     {
       "AWSConfigIdentifier": "AUTOSCALING_GROUP_ELB_HEALTHCHECK_REQUIRED",
-      "CfnGuardFileName": "autoscaling_group_elb_healthcheck_required.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2_auto_scaling/autoscaling_group_elb_healthcheck_required.guard",
       "Controls": [
         "AU-12(3)",
         "AU-14a",
@@ -203,7 +203,7 @@
     },
     {
       "AWSConfigIdentifier": "AUTOSCALING_LAUNCH_CONFIG_PUBLIC_IP_DISABLED",
-      "CfnGuardFileName": "autoscaling_launch_config_public_ip_disabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2_auto_scaling/autoscaling_launch_config_public_ip_disabled.guard",
       "Controls": [
         "AC-3",
         "AC-4(21)",
@@ -213,7 +213,7 @@
     },
     {
       "AWSConfigIdentifier": "BEANSTALK_ENHANCED_HEALTH_REPORTING_ENABLED",
-      "CfnGuardFileName": "beanstalk_enhanced_health_reporting_enabled.guard",
+      "CfnGuardFile": "rules/aws/elastic_beanstalk/beanstalk_enhanced_health_reporting_enabled.guard",
       "Controls": [
         "AU-12(3)",
         "AU-14a",
@@ -231,7 +231,7 @@
     },
     {
       "AWSConfigIdentifier": "CLOUD_TRAIL_CLOUD_WATCH_LOGS_ENABLED",
-      "CfnGuardFileName": "cloud_trail_cloud_watch_logs_enabled.guard",
+      "CfnGuardFile": "rules/aws/cloudtrail/cloud_trail_cloud_watch_logs_enabled.guard",
       "Controls": [
         "AC-2(4)",
         "AC-3(1)",
@@ -288,7 +288,7 @@
     },
     {
       "AWSConfigIdentifier": "CLOUD_TRAIL_ENCRYPTION_ENABLED",
-      "CfnGuardFileName": "cloud_trail_encryption_enabled.guard",
+      "CfnGuardFile": "rules/aws/cloudtrail/cloud_trail_encryption_enabled.guard",
       "Controls": [
         "AU-9(3)",
         "CM-6a",
@@ -303,7 +303,7 @@
     },
     {
       "AWSConfigIdentifier": "CLOUD_TRAIL_LOG_FILE_VALIDATION_ENABLED",
-      "CfnGuardFileName": "cloud_trail_log_file_validation_enabled.guard",
+      "CfnGuardFile": "rules/aws/cloudtrail/cloud_trail_log_file_validation_enabled.guard",
       "Controls": [
         "AU-9a",
         "CM-6a",
@@ -325,7 +325,7 @@
     },
     {
       "AWSConfigIdentifier": "CLOUDTRAIL_ENABLED",
-      "CfnGuardFileName": "cloudtrail_enabled.guard",
+      "CfnGuardFile": "rules/aws/cloudtrail/cloudtrail_enabled.guard",
       "Controls": [
         "AC-2(4)",
         "AC-3(1)",
@@ -375,7 +375,7 @@
     },
     {
       "AWSConfigIdentifier": "CLOUDTRAIL_S3_DATAEVENTS_ENABLED",
-      "CfnGuardFileName": "cloudtrail_s3_dataevents_enabled.guard",
+      "CfnGuardFile": "rules/aws/cloudtrail/cloudtrail_s3_dataevents_enabled.guard",
       "Controls": [
         "AC-2(4)",
         "AC-3(1)",
@@ -426,7 +426,7 @@
     },
     {
       "AWSConfigIdentifier": "CLOUDWATCH_ALARM_ACTION_CHECK",
-      "CfnGuardFileName": "cloudwatch_alarm_action_check.guard",
+      "CfnGuardFile": "rules/aws/cloudwatch/cloudwatch_alarm_action_check.guard",
       "Controls": [
         "AU-6(1)",
         "AU-6(5)",
@@ -448,7 +448,7 @@
     },
     {
       "AWSConfigIdentifier": "CLOUDWATCH_LOG_GROUP_ENCRYPTED",
-      "CfnGuardFileName": "cloudwatch_log_group_encrypted.guard",
+      "CfnGuardFile": "rules/aws/cloudwatch/cloudwatch_log_group_encrypted.guard",
       "Controls": [
         "AU-9(3)",
         "CP-9d",
@@ -461,7 +461,7 @@
     },
     {
       "AWSConfigIdentifier": "CMK_BACKING_KEY_ROTATION_ENABLED",
-      "CfnGuardFileName": "cmk_backing_key_rotation_enabled.guard",
+      "CfnGuardFile": "rules/aws/aws_kms/cmk_backing_key_rotation_enabled.guard",
       "Controls": [
         "CM-6a",
         "CM-9b",
@@ -473,7 +473,7 @@
     },
     {
       "AWSConfigIdentifier": "CW_LOGGROUP_RETENTION_PERIOD_CHECK",
-      "CfnGuardFileName": "cw_loggroup_retention_period_check.guard",
+      "CfnGuardFile": "rules/aws/cloudwatch/cw_loggroup_retention_period_check.guard",
       "Controls": [
         "AC-16b",
         "AT-4b",
@@ -501,7 +501,7 @@
     },
     {
       "AWSConfigIdentifier": "DB_INSTANCE_BACKUP_ENABLED",
-      "CfnGuardFileName": "db_instance_backup_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_rds/db_instance_backup_enabled.guard",
       "Controls": [
         "CP-1(2)",
         "CP-2(5)",
@@ -519,7 +519,7 @@
     },
     {
       "AWSConfigIdentifier": "DMS_REPLICATION_NOT_PUBLIC",
-      "CfnGuardFileName": "dms_replication_not_public.guard",
+      "CfnGuardFile": "rules/aws/aws_dms/dms_replication_not_public.guard",
       "Controls": [
         "AC-2(6)",
         "AC-3",
@@ -555,7 +555,7 @@
     },
     {
       "AWSConfigIdentifier": "DYNAMODB_AUTOSCALING_ENABLED",
-      "CfnGuardFileName": "dynamodb_autoscaling_enabled.guard",
+      "CfnGuardFile": "rules/aws/dynamodb/dynamodb_autoscaling_enabled.guard",
       "Controls": [
         "CP-1a.1(b)",
         "CP-1a.2",
@@ -577,7 +577,7 @@
     },
     {
       "AWSConfigIdentifier": "DYNAMODB_IN_BACKUP_PLAN",
-      "CfnGuardFileName": "dynamodb_in_backup_plan.guard",
+      "CfnGuardFile": "rules/aws/dynamodb/dynamodb_in_backup_plan.guard",
       "Controls": [
         "CP-1(2)",
         "CP-2(5)",
@@ -595,7 +595,7 @@
     },
     {
       "AWSConfigIdentifier": "DYNAMODB_PITR_ENABLED",
-      "CfnGuardFileName": "dynamodb_pitr_enabled.guard",
+      "CfnGuardFile": "rules/aws/dynamodb/dynamodb_pitr_enabled.guard",
       "Controls": [
         "CP-1(2)",
         "CP-2(5)",
@@ -611,7 +611,7 @@
     },
     {
       "AWSConfigIdentifier": "DYNAMODB_TABLE_ENCRYPTED_KMS",
-      "CfnGuardFileName": "dynamodb_table_encrypted_kms.guard",
+      "CfnGuardFile": "rules/aws/dynamodb/dynamodb_table_encrypted_kms.guard",
       "Controls": [
         "AU-9(3)",
         "CP-9d",
@@ -624,7 +624,7 @@
     },
     {
       "AWSConfigIdentifier": "DYNAMODB_THROUGHPUT_LIMIT_CHECK",
-      "CfnGuardFileName": "dynamodb_throughput_limit_check.guard",
+      "CfnGuardFile": "rules/aws/dynamodb/dynamodb_throughput_limit_check.guard",
       "Controls": [
         "AU-12(3)",
         "AU-14a",
@@ -642,7 +642,7 @@
     },
     {
       "AWSConfigIdentifier": "EBS_IN_BACKUP_PLAN",
-      "CfnGuardFileName": "ebs_in_backup_plan.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ebs_in_backup_plan.guard",
       "Controls": [
         "CP-1(2)",
         "CP-2(5)",
@@ -660,7 +660,7 @@
     },
     {
       "AWSConfigIdentifier": "EBS_OPTIMIZED_INSTANCE",
-      "CfnGuardFileName": "ebs_optimized_instance.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ebs_optimized_instance.guard",
       "Controls": [
         "CP-2(5)",
         "CP-9a",
@@ -672,7 +672,7 @@
     },
     {
       "AWSConfigIdentifier": "EBS_SNAPSHOT_PUBLIC_RESTORABLE_CHECK",
-      "CfnGuardFileName": "ebs_snapshot_public_restorable_check.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ebs_snapshot_public_restorable_check.guard",
       "Controls": [
         "AC-2(6)",
         "AC-3",
@@ -708,7 +708,7 @@
     },
     {
       "AWSConfigIdentifier": "EC2_EBS_ENCRYPTION_BY_DEFAULT",
-      "CfnGuardFileName": "ec2_ebs_encryption_by_default.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ec2_ebs_encryption_by_default.guard",
       "Controls": [
         "AU-9(3)",
         "CM-6a",
@@ -723,7 +723,7 @@
     },
     {
       "AWSConfigIdentifier": "EC2_IMDSV2_CHECK",
-      "CfnGuardFileName": "ec2_imdsv2_check.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ec2_imdsv2_check.guard",
       "Controls": [
         "AC-2(6)",
         "AC-3",
@@ -757,7 +757,7 @@
     },
     {
       "AWSConfigIdentifier": "EC2_INSTANCE_MANAGED_BY_SYSTEMS_MANAGER",
-      "CfnGuardFileName": "ec2_instance_managed_by_systems_manager.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ec2_instance_managed_by_systems_manager.guard",
       "Controls": [
         "CM-2a",
         "CM-2b",
@@ -782,7 +782,7 @@
     },
     {
       "AWSConfigIdentifier": "EC2_INSTANCE_NO_PUBLIC_IP",
-      "CfnGuardFileName": "ec2_instance_no_public_ip.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ec2_instance_no_public_ip.guard",
       "Controls": [
         "AC-2(6)",
         "AC-3",
@@ -818,7 +818,7 @@
     },
     {
       "AWSConfigIdentifier": "EC2_INSTANCE_PROFILE_ATTACHED",
-      "CfnGuardFileName": "ec2_instance_profile_attached.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ec2_instance_profile_attached.guard",
       "Controls": [
         "AC-3",
         "CM-5(1)(a)",
@@ -827,7 +827,7 @@
     },
     {
       "AWSConfigIdentifier": "EC2_INSTANCES_IN_VPC",
-      "CfnGuardFileName": "ec2_instances_in_vpc.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ec2_instances_in_vpc.guard",
       "Controls": [
         "AC-2(6)",
         "AC-3(7)",
@@ -857,7 +857,7 @@
     },
     {
       "AWSConfigIdentifier": "EC2_MANAGEDINSTANCE_ASSOCIATION_COMPLIANCE_STATUS_CHECK",
-      "CfnGuardFileName": "ec2_managedinstance_association_compliance_status_check.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ec2_managedinstance_association_compliance_status_check.guard",
       "Controls": [
         "CM-2a",
         "CM-2b",
@@ -881,7 +881,7 @@
     },
     {
       "AWSConfigIdentifier": "EC2_MANAGEDINSTANCE_PATCH_COMPLIANCE_STATUS_CHECK",
-      "CfnGuardFileName": "ec2_managedinstance_patch_compliance_status_check.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ec2_managedinstance_patch_compliance_status_check.guard",
       "Controls": [
         "CM-8(3)(a)",
         "RA-3a.1",
@@ -895,7 +895,7 @@
     },
     {
       "AWSConfigIdentifier": "EC2_STOPPED_INSTANCE",
-      "CfnGuardFileName": "ec2_stopped_instance.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ec2_stopped_instance.guard",
       "Controls": [
         "CM-2a",
         "CM-2b",
@@ -909,7 +909,7 @@
     },
     {
       "AWSConfigIdentifier": "EC2_VOLUME_INUSE_CHECK",
-      "CfnGuardFileName": "ec2_volume_inuse_check.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ec2_volume_inuse_check.guard",
       "Controls": [
         "CM-2a",
         "CM-2b",
@@ -923,7 +923,7 @@
     },
     {
       "AWSConfigIdentifier": "ECS_TASK_DEFINITION_USER_FOR_HOST_MODE_CHECK",
-      "CfnGuardFileName": "ecs_task_definition_user_for_host_mode_check.guard",
+      "CfnGuardFile": "rules/aws/amazon_ecs/ecs_task_definition_user_for_host_mode_check.guard",
       "Controls": [
         "AC-3",
         "AC-5b",
@@ -932,7 +932,7 @@
     },
     {
       "AWSConfigIdentifier": "EFS_ENCRYPTED_CHECK",
-      "CfnGuardFileName": "efs_encrypted_check.guard",
+      "CfnGuardFile": "rules/aws/amazon_efs/efs_encrypted_check.guard",
       "Controls": [
         "AU-9(3)",
         "CP-9d",
@@ -945,7 +945,7 @@
     },
     {
       "AWSConfigIdentifier": "EFS_IN_BACKUP_PLAN",
-      "CfnGuardFileName": "efs_in_backup_plan.guard",
+      "CfnGuardFile": "rules/aws/amazon_efs/efs_in_backup_plan.guard",
       "Controls": [
         "CP-1(2)",
         "CP-2(5)",
@@ -963,7 +963,7 @@
     },
     {
       "AWSConfigIdentifier": "ELASTIC_BEANSTALK_MANAGED_UPDATES_ENABLED",
-      "CfnGuardFileName": "elastic_beanstalk_managed_updates_enabled.guard",
+      "CfnGuardFile": "rules/aws/elastic_beanstalk/elastic_beanstalk_managed_updates_enabled.guard",
       "Controls": [
         "SI-2c",
         "SI-2d",
@@ -973,7 +973,7 @@
     },
     {
       "AWSConfigIdentifier": "ELASTICACHE_REDIS_CLUSTER_AUTOMATIC_BACKUP_CHECK",
-      "CfnGuardFileName": "elasticache_redis_cluster_automatic_backup_check.guard",
+      "CfnGuardFile": "rules/aws/elasticache/elasticache_redis_cluster_automatic_backup_check.guard",
       "Controls": [
         "CP-1(2)",
         "CP-2(5)",
@@ -991,7 +991,7 @@
     },
     {
       "AWSConfigIdentifier": "ELASTICSEARCH_ENCRYPTED_AT_REST",
-      "CfnGuardFileName": "elasticsearch_encrypted_at_rest.guard",
+      "CfnGuardFile": "rules/aws/opensearch_service/elasticsearch_encrypted_at_rest.guard",
       "Controls": [
         "AU-9(3)",
         "CP-9d",
@@ -1004,7 +1004,7 @@
     },
     {
       "AWSConfigIdentifier": "ELASTICSEARCH_IN_VPC_ONLY",
-      "CfnGuardFileName": "elasticsearch_in_vpc_only.guard",
+      "CfnGuardFile": "rules/aws/opensearch_service/elasticsearch_in_vpc_only.guard",
       "Controls": [
         "AC-2(6)",
         "AC-3",
@@ -1035,14 +1035,14 @@
     },
     {
       "AWSConfigIdentifier": "ELASTICSEARCH_LOGS_TO_CLOUDWATCH",
-      "CfnGuardFileName": "elasticsearch_logs_to_cloudwatch.guard",
+      "CfnGuardFile": "rules/aws/opensearch_service/elasticsearch_logs_to_cloudwatch.guard",
       "Controls": [
         "AU-10"
       ]
     },
     {
       "AWSConfigIdentifier": "ELASTICSEARCH_NODE_TO_NODE_ENCRYPTION_CHECK",
-      "CfnGuardFileName": "elasticsearch_node_to_node_encryption_check.guard",
+      "CfnGuardFile": "rules/aws/opensearch_service/elasticsearch_node_to_node_encryption_check.guard",
       "Controls": [
         "AC-4",
         "AC-4(22)",
@@ -1067,7 +1067,7 @@
     },
     {
       "AWSConfigIdentifier": "ELB_ACM_CERTIFICATE_REQUIRED",
-      "CfnGuardFileName": "elb_acm_certificate_required.guard",
+      "CfnGuardFile": "rules/aws/elastic_load_balancing/elb_acm_certificate_required.guard",
       "Controls": [
         "AC-4",
         "AC-4(22)",
@@ -1095,7 +1095,7 @@
     },
     {
       "AWSConfigIdentifier": "ELB_CROSS_ZONE_LOAD_BALANCING_ENABLED",
-      "CfnGuardFileName": "elb_cross_zone_load_balancing_enabled.guard",
+      "CfnGuardFile": "rules/aws/elastic_load_balancing/elb_cross_zone_load_balancing_enabled.guard",
       "Controls": [
         "CP-1a.1(b)",
         "CP-1a.2",
@@ -1117,7 +1117,7 @@
     },
     {
       "AWSConfigIdentifier": "ELB_DELETION_PROTECTION_ENABLED",
-      "CfnGuardFileName": "elb_deletion_protection_enabled.guard",
+      "CfnGuardFile": "rules/aws/elastic_load_balancing/elb_deletion_protection_enabled.guard",
       "Controls": [
         "CA-7(4)(c)",
         "CM-2a",
@@ -1139,7 +1139,7 @@
     },
     {
       "AWSConfigIdentifier": "ELB_LOGGING_ENABLED",
-      "CfnGuardFileName": "elb_logging_enabled.guard",
+      "CfnGuardFile": "rules/aws/elastic_load_balancing/elb_logging_enabled.guard",
       "Controls": [
         "AC-4(26)",
         "AU-2b",
@@ -1179,7 +1179,7 @@
     },
     {
       "AWSConfigIdentifier": "ELB_TLS_HTTPS_LISTENERS_ONLY",
-      "CfnGuardFileName": "elb_tls_https_listeners_only.guard",
+      "CfnGuardFile": "rules/aws/elastic_load_balancing/elb_tls_https_listeners_only.guard",
       "Controls": [
         "AC-4",
         "AC-4(22)",
@@ -1211,7 +1211,7 @@
     },
     {
       "AWSConfigIdentifier": "ELBV2_ACM_CERTIFICATE_REQUIRED",
-      "CfnGuardFileName": "elbv2_acm_certificate_required.guard",
+      "CfnGuardFile": "rules/aws/elastic_load_balancing_v2/elbv2_acm_certificate_required.guard",
       "Controls": [
         "SC-8(1)",
         "SC-23(5)"
@@ -1219,7 +1219,7 @@
     },
     {
       "AWSConfigIdentifier": "EMR_MASTER_NO_PUBLIC_IP",
-      "CfnGuardFileName": "emr_master_no_public_ip.guard",
+      "CfnGuardFile": "rules/aws/amazon_emr/emr_master_no_public_ip.guard",
       "Controls": [
         "AC-2(6)",
         "AC-3",
@@ -1255,7 +1255,7 @@
     },
     {
       "AWSConfigIdentifier": "ENCRYPTED_VOLUMES",
-      "CfnGuardFileName": "encrypted_volumes.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/encrypted_volumes.guard",
       "Controls": [
         "AU-9(3)",
         "CM-6a",
@@ -1270,7 +1270,7 @@
     },
     {
       "AWSConfigIdentifier": "GUARDDUTY_ENABLED_CENTRALIZED",
-      "CfnGuardFileName": "guardduty_enabled_centralized.guard",
+      "CfnGuardFile": "rules/aws/guardduty/guardduty_enabled_centralized.guard",
       "Controls": [
         "AC-2(12)(a)",
         "AC-3(12)(b)",
@@ -1333,7 +1333,7 @@
     },
     {
       "AWSConfigIdentifier": "IAM_NO_INLINE_POLICY_CHECK",
-      "CfnGuardFileName": "iam_no_inline_policy_check.guard",
+      "CfnGuardFile": "rules/aws/iam/iam_no_inline_policy_check.guard",
       "Controls": [
         "AC-2i.2",
         "AC-2(1)",
@@ -1372,7 +1372,7 @@
     },
     {
       "AWSConfigIdentifier": "IAM_PASSWORD_POLICY",
-      "CfnGuardFileName": "iam_password_policy.guard",
+      "CfnGuardFile": "rules/aws/iam/iam_password_policy.guard",
       "Controls": [
         "AC-2d.1",
         "AC-2(1)",
@@ -1427,7 +1427,7 @@
     },
     {
       "AWSConfigIdentifier": "IAM_POLICY_NO_STATEMENTS_WITH_ADMIN_ACCESS",
-      "CfnGuardFileName": "iam_policy_no_statements_with_admin_access.guard",
+      "CfnGuardFile": "rules/aws/iam/iam_policy_no_statements_with_admin_access.guard",
       "Controls": [
         "AC-2i.2",
         "AC-2(1)",
@@ -1470,7 +1470,7 @@
     },
     {
       "AWSConfigIdentifier": "IAM_POLICY_NO_STATEMENTS_WITH_FULL_ACCESS",
-      "CfnGuardFileName": "iam_policy_no_statements_with_full_access.guard",
+      "CfnGuardFile": "rules/aws/iam/iam_policy_no_statements_with_full_access.guard",
       "Controls": [
         "AC-3",
         "AC-5b",
@@ -1481,7 +1481,7 @@
     },
     {
       "AWSConfigIdentifier": "IAM_ROOT_ACCESS_KEY_CHECK",
-      "CfnGuardFileName": "iam_root_access_key_check.guard",
+      "CfnGuardFile": "rules/aws/iam/iam_root_access_key_check.guard",
       "Controls": [
         "AC-2(1)",
         "AC-2(6)",
@@ -1526,7 +1526,7 @@
     },
     {
       "AWSConfigIdentifier": "IAM_USER_GROUP_MEMBERSHIP_CHECK",
-      "CfnGuardFileName": "iam_user_group_membership_check.guard",
+      "CfnGuardFile": "rules/aws/iam/iam_user_group_membership_check.guard",
       "Controls": [
         "AC-2i.2",
         "AC-2(1)",
@@ -1565,7 +1565,7 @@
     },
     {
       "AWSConfigIdentifier": "IAM_USER_MFA_ENABLED",
-      "CfnGuardFileName": "iam_user_mfa_enabled.guard",
+      "CfnGuardFile": "rules/aws/iam/iam_user_mfa_enabled.guard",
       "Controls": [
         "AC-2(1)",
         "AC-3(2)",
@@ -1604,7 +1604,7 @@
     },
     {
       "AWSConfigIdentifier": "IAM_USER_NO_POLICIES_CHECK",
-      "CfnGuardFileName": "iam_user_no_policies_check.guard",
+      "CfnGuardFile": "rules/aws/iam/iam_user_no_policies_check.guard",
       "Controls": [
         "AC-2i.2",
         "AC-2(1)",
@@ -1644,7 +1644,7 @@
     },
     {
       "AWSConfigIdentifier": "IAM_USER_UNUSED_CREDENTIALS_CHECK",
-      "CfnGuardFileName": "iam_user_unused_credentials_check.guard",
+      "CfnGuardFile": "rules/aws/iam/iam_user_unused_credentials_check.guard",
       "Controls": [
         "AC-2g",
         "AC-2j",
@@ -1689,7 +1689,7 @@
     },
     {
       "AWSConfigIdentifier": "KMS_CMK_NOT_SCHEDULED_FOR_DELETION",
-      "CfnGuardFileName": "kms_cmk_not_scheduled_for_deletion.guard",
+      "CfnGuardFile": "rules/aws/aws_kms/kms_cmk_not_scheduled_for_deletion.guard",
       "Controls": [
         "SA-9(6)",
         "SC-12",
@@ -1699,7 +1699,7 @@
     },
     {
       "AWSConfigIdentifier": "LAMBDA_CONCURRENCY_CHECK",
-      "CfnGuardFileName": "lambda_concurrency_check.guard",
+      "CfnGuardFile": "rules/aws/lambda/lambda_concurrency_check.guard",
       "Controls": [
         "AU-12(3)",
         "AU-14a",
@@ -1714,7 +1714,7 @@
     },
     {
       "AWSConfigIdentifier": "LAMBDA_DLQ_CHECK",
-      "CfnGuardFileName": "lambda_dlq_check.guard",
+      "CfnGuardFile": "rules/aws/lambda/lambda_dlq_check.guard",
       "Controls": [
         "AU-12(3)",
         "AU-14a",
@@ -1731,7 +1731,7 @@
     },
     {
       "AWSConfigIdentifier": "LAMBDA_FUNCTION_PUBLIC_ACCESS_PROHIBITED",
-      "CfnGuardFileName": "lambda_function_public_access_prohibited.guard",
+      "CfnGuardFile": "rules/aws/lambda/lambda_function_public_access_prohibited.guard",
       "Controls": [
         "AC-2(6)",
         "AC-3",
@@ -1767,7 +1767,7 @@
     },
     {
       "AWSConfigIdentifier": "LAMBDA_INSIDE_VPC",
-      "CfnGuardFileName": "lambda_inside_vpc.guard",
+      "CfnGuardFile": "rules/aws/lambda/lambda_inside_vpc.guard",
       "Controls": [
         "AC-2(6)",
         "AC-3",
@@ -1798,7 +1798,7 @@
     },
     {
       "AWSConfigIdentifier": "MFA_ENABLED_FOR_IAM_CONSOLE_ACCESS",
-      "CfnGuardFileName": "mfa_enabled_for_iam_console_access.guard",
+      "CfnGuardFile": "rules/aws/iam/mfa_enabled_for_iam_console_access.guard",
       "Controls": [
         "AC-2(1)",
         "AC-3(2)",
@@ -1839,7 +1839,7 @@
     },
     {
       "AWSConfigIdentifier": "MULTI_REGION_CLOUDTRAIL_ENABLED",
-      "CfnGuardFileName": "multi_region_cloudtrail_enabled.guard",
+      "CfnGuardFile": "multi_region_rules/aws/cloudtrail/cloudtrail_enabled.guard",
       "Controls": [
         "AC-2(4)",
         "AC-3(1)",
@@ -1890,7 +1890,7 @@
     },
     {
       "AWSConfigIdentifier": "NO_UNRESTRICTED_ROUTE_TO_IGW",
-      "CfnGuardFileName": "no_unrestricted_route_to_igw.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/no_unrestricted_route_to_igw.guard",
       "Controls": [
         "AC-4(21)",
         "CM-7b"
@@ -1898,7 +1898,7 @@
     },
     {
       "AWSConfigIdentifier": "RDS_ENHANCED_MONITORING_ENABLED",
-      "CfnGuardFileName": "rds_enhanced_monitoring_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_rds/rds_enhanced_monitoring_enabled.guard",
       "Controls": [
         "AU-12(3)",
         "AU-14a",
@@ -1915,7 +1915,7 @@
     },
     {
       "AWSConfigIdentifier": "RDS_IN_BACKUP_PLAN",
-      "CfnGuardFileName": "rds_in_backup_plan.guard",
+      "CfnGuardFile": "rules/aws/amazon_rds/rds_in_backup_plan.guard",
       "Controls": [
         "CP-1(2)",
         "CP-2(5)",
@@ -1933,7 +1933,7 @@
     },
     {
       "AWSConfigIdentifier": "RDS_INSTANCE_DELETION_PROTECTION_ENABLED",
-      "CfnGuardFileName": "rds_instance_deletion_protection_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_rds/rds_instance_deletion_protection_enabled.guard",
       "Controls": [
         "CA-7(4)(c)",
         "CM-3a",
@@ -1953,7 +1953,7 @@
     },
     {
       "AWSConfigIdentifier": "RDS_INSTANCE_PUBLIC_ACCESS_CHECK",
-      "CfnGuardFileName": "rds_instance_public_access_check.guard",
+      "CfnGuardFile": "rules/aws/amazon_rds/rds_instance_public_access_check.guard",
       "Controls": [
         "AC-2(6)",
         "AC-3",
@@ -1989,7 +1989,7 @@
     },
     {
       "AWSConfigIdentifier": "RDS_LOGGING_ENABLED",
-      "CfnGuardFileName": "rds_logging_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_rds/rds_logging_enabled.guard",
       "Controls": [
         "AC-2(4)",
         "AC-3(1)",
@@ -2038,7 +2038,7 @@
     },
     {
       "AWSConfigIdentifier": "RDS_MULTI_AZ_SUPPORT",
-      "CfnGuardFileName": "rds_multi_az_support.guard",
+      "CfnGuardFile": "rules/aws/amazon_rds/rds_multi_az_support.guard",
       "Controls": [
         "CP-1a.1(b)",
         "CP-1a.2",
@@ -2060,7 +2060,7 @@
     },
     {
       "AWSConfigIdentifier": "RDS_SNAPSHOT_ENCRYPTED",
-      "CfnGuardFileName": "rds_snapshot_encrypted.guard",
+      "CfnGuardFile": "rules/aws/amazon_rds/rds_snapshot_encrypted.guard",
       "Controls": [
         "AU-9(3)",
         "CP-9d",
@@ -2074,7 +2074,7 @@
     },
     {
       "AWSConfigIdentifier": "RDS_SNAPSHOTS_PUBLIC_PROHIBITED",
-      "CfnGuardFileName": "rds_snapshots_public_prohibited.guard",
+      "CfnGuardFile": "rules/aws/amazon_rds/rds_snapshots_public_prohibited.guard",
       "Controls": [
         "AC-2(6)",
         "AC-3",
@@ -2110,7 +2110,7 @@
     },
     {
       "AWSConfigIdentifier": "RDS_STORAGE_ENCRYPTED",
-      "CfnGuardFileName": "rds_storage_encrypted.guard",
+      "CfnGuardFile": "rules/aws/amazon_rds/rds_storage_encrypted.guard",
       "Controls": [
         "AU-9(3)",
         "CP-9d",
@@ -2123,7 +2123,7 @@
     },
     {
       "AWSConfigIdentifier": "REDSHIFT_BACKUP_ENABLED",
-      "CfnGuardFileName": "redshift_backup_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_redshift/redshift_backup_enabled.guard",
       "Controls": [
         "CP-1(2)",
         "CP-2(5)",
@@ -2141,7 +2141,7 @@
     },
     {
       "AWSConfigIdentifier": "REDSHIFT_CLUSTER_CONFIGURATION_CHECK",
-      "CfnGuardFileName": "redshift_cluster_configuration_check.guard",
+      "CfnGuardFile": "rules/aws/amazon_redshift/redshift_cluster_configuration_check.guard",
       "Controls": [
         "AC-2(4)",
         "AC-3(1)",
@@ -2197,7 +2197,7 @@
     },
     {
       "AWSConfigIdentifier": "REDSHIFT_CLUSTER_KMS_ENABLED",
-      "CfnGuardFileName": "redshift_cluster_kms_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_redshift/redshift_cluster_kms_enabled.guard",
       "Controls": [
         "AU-9(3)",
         "CP-9d",
@@ -2210,7 +2210,7 @@
     },
     {
       "AWSConfigIdentifier": "REDSHIFT_CLUSTER_MAINTENANCESETTINGS_CHECK",
-      "CfnGuardFileName": "redshift_cluster_maintenancesettings_check.guard",
+      "CfnGuardFile": "rules/aws/amazon_redshift/redshift_cluster_maintenancesettings_check.guard",
       "Controls": [
         "CM-2b",
         "CM-2b.1",
@@ -2229,7 +2229,7 @@
     },
     {
       "AWSConfigIdentifier": "REDSHIFT_CLUSTER_PUBLIC_ACCESS_CHECK",
-      "CfnGuardFileName": "redshift_cluster_public_access_check.guard",
+      "CfnGuardFile": "rules/aws/amazon_redshift/redshift_cluster_public_access_check.guard",
       "Controls": [
         "AC-2(6)",
         "AC-3",
@@ -2265,7 +2265,7 @@
     },
     {
       "AWSConfigIdentifier": "REDSHIFT_ENHANCED_VPC_ROUTING_ENABLED",
-      "CfnGuardFileName": "redshift_enhanced_vpc_routing_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_redshift/redshift_enhanced_vpc_routing_enabled.guard",
       "Controls": [
         "AC-4(21)",
         "SC-7b"
@@ -2273,7 +2273,7 @@
     },
     {
       "AWSConfigIdentifier": "REDSHIFT_REQUIRE_TLS_SSL",
-      "CfnGuardFileName": "redshift_require_tls_ssl.guard",
+      "CfnGuardFile": "rules/aws/amazon_redshift/redshift_require_tls_ssl.guard",
       "Controls": [
         "AC-4",
         "AC-4(22)",
@@ -2298,21 +2298,21 @@
     },
     {
       "AWSConfigIdentifier": "RESPONSE_PLAN_EXISTS_MAINTAINED (PROCESS CHECK)",
-      "CfnGuardFileName": "response_plan_exists_maintained (process check).guard",
+      "CfnGuardFile": "response_plan_exists_maintained (process check).guard",
       "Controls": [
         "CP-4"
       ]
     },
     {
       "AWSConfigIdentifier": "RESPONSE_PLAN_TESTED (PROCESS CHECK)",
-      "CfnGuardFileName": "response_plan_tested (process check).guard",
+      "CfnGuardFile": "response_plan_tested (process check).guard",
       "Controls": [
         "CP-4"
       ]
     },
     {
       "AWSConfigIdentifier": "RESTRICTED_COMMON_PORTS",
-      "CfnGuardFileName": "restricted_common_ports.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/restricted_common_ports.guard",
       "Controls": [
         "AC-4(21)",
         "AC-17b",
@@ -2344,7 +2344,7 @@
     },
     {
       "AWSConfigIdentifier": "RESTRICTED_SSH",
-      "CfnGuardFileName": "restricted_ssh.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/restricted_ssh.guard",
       "Controls": [
         "AC-17b",
         "AC-17(1)",
@@ -2369,7 +2369,7 @@
     },
     {
       "AWSConfigIdentifier": "ROOT_ACCOUNT_HARDWARE_MFA_ENABLED",
-      "CfnGuardFileName": "root_account_hardware_mfa_enabled.guard",
+      "CfnGuardFile": "rules/aws/iam/root_account_hardware_mfa_enabled.guard",
       "Controls": [
         "AC-2(1)",
         "AC-3(2)",
@@ -2410,7 +2410,7 @@
     },
     {
       "AWSConfigIdentifier": "ROOT_ACCOUNT_MFA_ENABLED",
-      "CfnGuardFileName": "root_account_mfa_enabled.guard",
+      "CfnGuardFile": "rules/aws/iam/root_account_mfa_enabled.guard",
       "Controls": [
         "AC-2(1)",
         "AC-3(2)",
@@ -2451,7 +2451,7 @@
     },
     {
       "AWSConfigIdentifier": "S3_ACCOUNT_LEVEL_PUBLIC_ACCESS_BLOCKS_PERIODIC",
-      "CfnGuardFileName": "s3_account_level_public_access_blocks_periodic.guard",
+      "CfnGuardFile": "rules/aws/amazon_s3/s3_account_level_public_access_blocks_periodic.guard",
       "Controls": [
         "AC-2(6)",
         "AC-3",
@@ -2489,7 +2489,7 @@
     },
     {
       "AWSConfigIdentifier": "S3_BUCKET_LEVEL_PUBLIC_ACCESS_PROHIBITED",
-      "CfnGuardFileName": "s3_bucket_level_public_access_prohibited.guard",
+      "CfnGuardFile": "rules/aws/amazon_s3/s3_bucket_level_public_access_prohibited.guard",
       "Controls": [
         "AC-2(6)",
         "AC-3",
@@ -2523,7 +2523,7 @@
     },
     {
       "AWSConfigIdentifier": "S3_BUCKET_LOGGING_ENABLED",
-      "CfnGuardFileName": "s3_bucket_logging_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_s3/s3_bucket_logging_enabled.guard",
       "Controls": [
         "AC-2(4)",
         "AC-3(1)",
@@ -2574,7 +2574,7 @@
     },
     {
       "AWSConfigIdentifier": "S3_BUCKET_PUBLIC_READ_PROHIBITED",
-      "CfnGuardFileName": "s3_bucket_public_read_prohibited.guard",
+      "CfnGuardFile": "rules/aws/amazon_s3/s3_bucket_public_read_prohibited.guard",
       "Controls": [
         "AC-2(6)",
         "AC-3",
@@ -2612,7 +2612,7 @@
     },
     {
       "AWSConfigIdentifier": "S3_BUCKET_PUBLIC_WRITE_PROHIBITED",
-      "CfnGuardFileName": "s3_bucket_public_write_prohibited.guard",
+      "CfnGuardFile": "rules/aws/amazon_s3/s3_bucket_public_write_prohibited.guard",
       "Controls": [
         "AC-2(6)",
         "AC-3",
@@ -2650,7 +2650,7 @@
     },
     {
       "AWSConfigIdentifier": "S3_BUCKET_REPLICATION_ENABLED",
-      "CfnGuardFileName": "s3_bucket_replication_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_s3/s3_bucket_replication_enabled.guard",
       "Controls": [
         "AU-9(2)",
         "CM-6a",
@@ -2671,7 +2671,7 @@
     },
     {
       "AWSConfigIdentifier": "S3_BUCKET_SERVER_SIDE_ENCRYPTION_ENABLED",
-      "CfnGuardFileName": "s3_bucket_server_side_encryption_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_s3/s3_bucket_server_side_encryption_enabled.guard",
       "Controls": [
         "AU-9(3)",
         "CM-6a",
@@ -2689,7 +2689,7 @@
     },
     {
       "AWSConfigIdentifier": "S3_BUCKET_SSL_REQUESTS_ONLY",
-      "CfnGuardFileName": "s3_bucket_ssl_requests_only.guard",
+      "CfnGuardFile": "rules/aws/amazon_s3/s3_bucket_ssl_requests_only.guard",
       "Controls": [
         "AC-4",
         "AC-4(22)",
@@ -2720,7 +2720,7 @@
     },
     {
       "AWSConfigIdentifier": "S3_BUCKET_VERSIONING_ENABLED",
-      "CfnGuardFileName": "s3_bucket_versioning_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_s3/s3_bucket_versioning_enabled.guard",
       "Controls": [
         "AU-9(2)",
         "CP-1(2)",
@@ -2745,7 +2745,7 @@
     },
     {
       "AWSConfigIdentifier": "S3_DEFAULT_ENCRYPTION_KMS",
-      "CfnGuardFileName": "s3_default_encryption_kms.guard",
+      "CfnGuardFile": "rules/aws/amazon_s3/s3_default_encryption_kms.guard",
       "Controls": [
         "AU-9(3)",
         "CP-9d",
@@ -2759,7 +2759,7 @@
     },
     {
       "AWSConfigIdentifier": "SAGEMAKER_ENDPOINT_CONFIGURATION_KMS_KEY_CONFIGURED",
-      "CfnGuardFileName": "sagemaker_endpoint_configuration_kms_key_configured.guard",
+      "CfnGuardFile": "rules/aws/amazon_sagemaker/sagemaker_endpoint_configuration_kms_key_configured.guard",
       "Controls": [
         "AU-9(3)",
         "CP-9d",
@@ -2772,7 +2772,7 @@
     },
     {
       "AWSConfigIdentifier": "SAGEMAKER_NOTEBOOK_INSTANCE_KMS_KEY_CONFIGURED",
-      "CfnGuardFileName": "sagemaker_notebook_instance_kms_key_configured.guard",
+      "CfnGuardFile": "rules/aws/amazon_sagemaker/sagemaker_notebook_instance_kms_key_configured.guard",
       "Controls": [
         "AU-9(3)",
         "CP-9d",
@@ -2785,7 +2785,7 @@
     },
     {
       "AWSConfigIdentifier": "SAGEMAKER_NOTEBOOK_NO_DIRECT_INTERNET_ACCESS",
-      "CfnGuardFileName": "sagemaker_notebook_no_direct_internet_access.guard",
+      "CfnGuardFile": "rules/aws/amazon_sagemaker/sagemaker_notebook_no_direct_internet_access.guard",
       "Controls": [
         "AC-2(6)",
         "AC-3",
@@ -2821,7 +2821,7 @@
     },
     {
       "AWSConfigIdentifier": "SECRETSMANAGER_ROTATION_ENABLED_CHECK",
-      "CfnGuardFileName": "secretsmanager_rotation_enabled_check.guard",
+      "CfnGuardFile": "rules/aws/secrets_manager/secretsmanager_rotation_enabled_check.guard",
       "Controls": [
         "AC-2(1)",
         "AC-3(3)(a)",
@@ -2851,7 +2851,7 @@
     },
     {
       "AWSConfigIdentifier": "SECRETSMANAGER_SECRET_PERIODIC_ROTATION",
-      "CfnGuardFileName": "secretsmanager_secret_periodic_rotation.guard",
+      "CfnGuardFile": "rules/aws/secrets_manager/secretsmanager_secret_periodic_rotation.guard",
       "Controls": [
         "AC-2(1)",
         "AC-3(3)(a)",
@@ -2881,7 +2881,7 @@
     },
     {
       "AWSConfigIdentifier": "SECRETSMANAGER_SECRET_UNUSED",
-      "CfnGuardFileName": "secretsmanager_secret_unused.guard",
+      "CfnGuardFile": "rules/aws/secrets_manager/secretsmanager_secret_unused.guard",
       "Controls": [
         "AC-2(1)",
         "AC-3(3)(a)",
@@ -2911,7 +2911,7 @@
     },
     {
       "AWSConfigIdentifier": "SECRETSMANAGER_USING_CMK",
-      "CfnGuardFileName": "secretsmanager_using_cmk.guard",
+      "CfnGuardFile": "rules/aws/secrets_manager/secretsmanager_using_cmk.guard",
       "Controls": [
         "AU-9(3)",
         "CP-9d",
@@ -2924,14 +2924,14 @@
     },
     {
       "AWSConfigIdentifier": "SECURITY_AWARENESS_PROGRAM_EXISTS (PROCESS CHECK)",
-      "CfnGuardFileName": "security_awareness_program_exists (process check).guard",
+      "CfnGuardFile": "security_awareness_program_exists (process check).guard",
       "Controls": [
         "AT-1"
       ]
     },
     {
       "AWSConfigIdentifier": "SECURITYHUB_ENABLED",
-      "CfnGuardFileName": "securityhub_enabled.guard",
+      "CfnGuardFile": "rules/aws/security_hub/securityhub_enabled.guard",
       "Controls": [
         "AU-6(1)",
         "AU-6(5)",
@@ -2948,7 +2948,7 @@
     },
     {
       "AWSConfigIdentifier": "SNS_ENCRYPTED_KMS",
-      "CfnGuardFileName": "sns_encrypted_kms.guard",
+      "CfnGuardFile": "rules/aws/amazon_sns/sns_encrypted_kms.guard",
       "Controls": [
         "AU-9(3)",
         "CP-9d",
@@ -2960,7 +2960,7 @@
     },
     {
       "AWSConfigIdentifier": "SSM_DOCUMENT_NOT_PUBLIC",
-      "CfnGuardFileName": "ssm_document_not_public.guard",
+      "CfnGuardFile": "rules/aws/systems_manager/ssm_document_not_public.guard",
       "Controls": [
         "AC-3",
         "AC-4(21)",
@@ -2970,7 +2970,7 @@
     },
     {
       "AWSConfigIdentifier": "SUBNET_AUTO_ASSIGN_PUBLIC_IP_DISABLED",
-      "CfnGuardFileName": "subnet_auto_assign_public_ip_disabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/subnet_auto_assign_public_ip_disabled.guard",
       "Controls": [
         "AC-2(6)",
         "AC-3",
@@ -3006,7 +3006,7 @@
     },
     {
       "AWSConfigIdentifier": "VPC_DEFAULT_SECURITY_GROUP_CLOSED",
-      "CfnGuardFileName": "vpc_default_security_group_closed.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/vpc_default_security_group_closed.guard",
       "Controls": [
         "AC-4(21)",
         "AC-17b",
@@ -3034,7 +3034,7 @@
     },
     {
       "AWSConfigIdentifier": "VPC_FLOW_LOGS_ENABLED",
-      "CfnGuardFileName": "vpc_flow_logs_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/vpc_flow_logs_enabled.guard",
       "Controls": [
         "AC-4(26)",
         "AU-2b",
@@ -3073,7 +3073,7 @@
     },
     {
       "AWSConfigIdentifier": "VPC_SG_OPEN_ONLY_TO_AUTHORIZED_PORTS",
-      "CfnGuardFileName": "vpc_sg_open_only_to_authorized_ports.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/vpc_sg_open_only_to_authorized_ports.guard",
       "Controls": [
         "AC-4(21)",
         "AC-17b",
@@ -3094,7 +3094,7 @@
     },
     {
       "AWSConfigIdentifier": "VPC_VPN_2_TUNNELS_UP",
-      "CfnGuardFileName": "vpc_vpn_2_tunnels_up.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/vpc_vpn_2_tunnels_up.guard",
       "Controls": [
         "CP-1a.1(b)",
         "CP-1a.2",
@@ -3116,14 +3116,14 @@
     },
     {
       "AWSConfigIdentifier": "VULN_MITIGATED_ACCEPTED (PROCESS CHECK)",
-      "CfnGuardFileName": "vuln_mitigated_accepted (process check).guard",
+      "CfnGuardFile": "vuln_mitigated_accepted (process check).guard",
       "Controls": [
         "RA-5(2)"
       ]
     },
     {
       "AWSConfigIdentifier": "WAFV2_LOGGING_ENABLED",
-      "CfnGuardFileName": "wafv2_logging_enabled.guard",
+      "CfnGuardFile": "rules/aws/aws_waf_v2/wafv2_logging_enabled.guard",
       "Controls": [
         "AC-4(26)",
         "AU-2b",
@@ -3165,7 +3165,7 @@
   "NIST800-53Rev4BestPractices": [
     {
       "AWSConfigIdentifier": "SECRETSMANAGER_SCHEDULED_ROTATION_SUCCESS_CHECK",
-      "CfnGuardFileName": "secretsmanager_scheduled_rotation_success_check.guard",
+      "CfnGuardFile": "rules/aws/secrets_manager/secretsmanager_scheduled_rotation_success_check.guard",
       "Controls": [
         "AC-2(1)",
         "AC-2(j)"
@@ -3173,7 +3173,7 @@
     },
     {
       "AWSConfigIdentifier": "IAM_USER_GROUP_MEMBERSHIP_CHECK",
-      "CfnGuardFileName": "iam_user_group_membership_check.guard",
+      "CfnGuardFile": "rules/aws/iam/iam_user_group_membership_check.guard",
       "Controls": [
         "AC-2(1)",
         "AC-2(j)",
@@ -3183,7 +3183,7 @@
     },
     {
       "AWSConfigIdentifier": "IAM_PASSWORD_POLICY",
-      "CfnGuardFileName": "iam_password_policy.guard",
+      "CfnGuardFile": "rules/aws/iam/iam_password_policy.guard",
       "Controls": [
         "AC-2(1)",
         "AC-2(f)",
@@ -3195,7 +3195,7 @@
     },
     {
       "AWSConfigIdentifier": "ACCESS_KEYS_ROTATED",
-      "CfnGuardFileName": "access_keys_rotated.guard",
+      "CfnGuardFile": "rules/aws/iam/access_keys_rotated.guard",
       "Controls": [
         "AC-2(1)",
         "AC-2(j)"
@@ -3203,7 +3203,7 @@
     },
     {
       "AWSConfigIdentifier": "IAM_USER_UNUSED_CREDENTIALS_CHECK",
-      "CfnGuardFileName": "iam_user_unused_credentials_check.guard",
+      "CfnGuardFile": "rules/aws/iam/iam_user_unused_credentials_check.guard",
       "Controls": [
         "AC-2(1)",
         "AC-2(3)",
@@ -3214,7 +3214,7 @@
     },
     {
       "AWSConfigIdentifier": "SECURITYHUB_ENABLED",
-      "CfnGuardFileName": "securityhub_enabled.guard",
+      "CfnGuardFile": "rules/aws/security_hub/securityhub_enabled.guard",
       "Controls": [
         "AC-2(1)",
         "AC-2(4)",
@@ -3233,7 +3233,7 @@
     },
     {
       "AWSConfigIdentifier": "GUARDDUTY_ENABLED_CENTRALIZED",
-      "CfnGuardFileName": "guardduty_enabled_centralized.guard",
+      "CfnGuardFile": "rules/aws/guardduty/guardduty_enabled_centralized.guard",
       "Controls": [
         "AC-2(1)",
         "AC-2(4)",
@@ -3254,7 +3254,7 @@
     },
     {
       "AWSConfigIdentifier": "CLOUD_TRAIL_CLOUD_WATCH_LOGS_ENABLED",
-      "CfnGuardFileName": "cloud_trail_cloud_watch_logs_enabled.guard",
+      "CfnGuardFile": "rules/aws/cloudtrail/cloud_trail_cloud_watch_logs_enabled.guard",
       "Controls": [
         "AC-2(4)",
         "AC-2(g)",
@@ -3272,7 +3272,7 @@
     },
     {
       "AWSConfigIdentifier": "CLOUDTRAIL_ENABLED",
-      "CfnGuardFileName": "cloudtrail_enabled.guard",
+      "CfnGuardFile": "rules/aws/cloudtrail/cloudtrail_enabled.guard",
       "Controls": [
         "AC-2(4)",
         "AC-2(g)",
@@ -3283,7 +3283,7 @@
     },
     {
       "AWSConfigIdentifier": "MULTI_REGION_CLOUDTRAIL_ENABLED",
-      "CfnGuardFileName": "multi_region_cloudtrail_enabled.guard",
+      "CfnGuardFile": "multi_region_rules/aws/cloudtrail/cloudtrail_enabled.guard",
       "Controls": [
         "AC-2(4)",
         "AU-2(a)(d)",
@@ -3293,7 +3293,7 @@
     },
     {
       "AWSConfigIdentifier": "RDS_LOGGING_ENABLED",
-      "CfnGuardFileName": "rds_logging_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_rds/rds_logging_enabled.guard",
       "Controls": [
         "AC-2(4)",
         "AC-2(g)",
@@ -3304,7 +3304,7 @@
     },
     {
       "AWSConfigIdentifier": "CLOUDWATCH_ALARM_ACTION_CHECK",
-      "CfnGuardFileName": "cloudwatch_alarm_action_check.guard",
+      "CfnGuardFile": "rules/aws/cloudwatch/cloudwatch_alarm_action_check.guard",
       "Controls": [
         "AC-2(4)",
         "AU-6(1)(3)",
@@ -3319,7 +3319,7 @@
     },
     {
       "AWSConfigIdentifier": "REDSHIFT_CLUSTER_CONFIGURATION_CHECK",
-      "CfnGuardFileName": "redshift_cluster_configuration_check.guard",
+      "CfnGuardFile": "rules/aws/amazon_redshift/redshift_cluster_configuration_check.guard",
       "Controls": [
         "AC-2(4)",
         "AC-2(g)",
@@ -3332,7 +3332,7 @@
     },
     {
       "AWSConfigIdentifier": "IAM_ROOT_ACCESS_KEY_CHECK",
-      "CfnGuardFileName": "iam_root_access_key_check.guard",
+      "CfnGuardFile": "rules/aws/iam/iam_root_access_key_check.guard",
       "Controls": [
         "AC-2(f)",
         "AC-2(j)",
@@ -3343,7 +3343,7 @@
     },
     {
       "AWSConfigIdentifier": "S3_BUCKET_LOGGING_ENABLED",
-      "CfnGuardFileName": "s3_bucket_logging_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_s3/s3_bucket_logging_enabled.guard",
       "Controls": [
         "AC-2(g)",
         "AU-2(a)(d)",
@@ -3353,7 +3353,7 @@
     },
     {
       "AWSConfigIdentifier": "CLOUDTRAIL_S3_DATAEVENTS_ENABLED",
-      "CfnGuardFileName": "cloudtrail_s3_dataevents_enabled.guard",
+      "CfnGuardFile": "rules/aws/cloudtrail/cloudtrail_s3_dataevents_enabled.guard",
       "Controls": [
         "AC-2(g)",
         "AU-2(a)(d)",
@@ -3363,7 +3363,7 @@
     },
     {
       "AWSConfigIdentifier": "ROOT_ACCOUNT_MFA_ENABLED",
-      "CfnGuardFileName": "root_account_mfa_enabled.guard",
+      "CfnGuardFile": "rules/aws/iam/root_account_mfa_enabled.guard",
       "Controls": [
         "AC-2(j)",
         "IA-2(1)(11)"
@@ -3371,7 +3371,7 @@
     },
     {
       "AWSConfigIdentifier": "EMR_KERBEROS_ENABLED",
-      "CfnGuardFileName": "emr_kerberos_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_emr/emr_kerberos_enabled.guard",
       "Controls": [
         "AC-2(j)",
         "AC-3",
@@ -3381,7 +3381,7 @@
     },
     {
       "AWSConfigIdentifier": "IAM_GROUP_HAS_USERS_CHECK",
-      "CfnGuardFileName": "iam_group_has_users_check.guard",
+      "CfnGuardFile": "iam_group_has_users_check.guard",
       "Controls": [
         "AC-2(j)",
         "AC-3",
@@ -3392,7 +3392,7 @@
     },
     {
       "AWSConfigIdentifier": "IAM_POLICY_NO_STATEMENTS_WITH_ADMIN_ACCESS",
-      "CfnGuardFileName": "iam_policy_no_statements_with_admin_access.guard",
+      "CfnGuardFile": "rules/aws/iam/iam_policy_no_statements_with_admin_access.guard",
       "Controls": [
         "AC-2(j)",
         "AC-3",
@@ -3403,7 +3403,7 @@
     },
     {
       "AWSConfigIdentifier": "IAM_USER_NO_POLICIES_CHECK",
-      "CfnGuardFileName": "iam_user_no_policies_check.guard",
+      "CfnGuardFile": "rules/aws/iam/iam_user_no_policies_check.guard",
       "Controls": [
         "AC-2(j)",
         "AC-3",
@@ -3413,7 +3413,7 @@
     },
     {
       "AWSConfigIdentifier": "S3_BUCKET_PUBLIC_WRITE_PROHIBITED",
-      "CfnGuardFileName": "s3_bucket_public_write_prohibited.guard",
+      "CfnGuardFile": "rules/aws/amazon_s3/s3_bucket_public_write_prohibited.guard",
       "Controls": [
         "AC-3",
         "AC-4",
@@ -3425,7 +3425,7 @@
     },
     {
       "AWSConfigIdentifier": "LAMBDA_FUNCTION_PUBLIC_ACCESS_PROHIBITED",
-      "CfnGuardFileName": "lambda_function_public_access_prohibited.guard",
+      "CfnGuardFile": "rules/aws/lambda/lambda_function_public_access_prohibited.guard",
       "Controls": [
         "AC-3",
         "AC-4",
@@ -3437,7 +3437,7 @@
     },
     {
       "AWSConfigIdentifier": "RDS_SNAPSHOTS_PUBLIC_PROHIBITED",
-      "CfnGuardFileName": "rds_snapshots_public_prohibited.guard",
+      "CfnGuardFile": "rules/aws/amazon_rds/rds_snapshots_public_prohibited.guard",
       "Controls": [
         "AC-3",
         "AC-4",
@@ -3449,7 +3449,7 @@
     },
     {
       "AWSConfigIdentifier": "REDSHIFT_CLUSTER_PUBLIC_ACCESS_CHECK",
-      "CfnGuardFileName": "redshift_cluster_public_access_check.guard",
+      "CfnGuardFile": "rules/aws/amazon_redshift/redshift_cluster_public_access_check.guard",
       "Controls": [
         "AC-3",
         "AC-4",
@@ -3461,7 +3461,7 @@
     },
     {
       "AWSConfigIdentifier": "S3_BUCKET_POLICY_GRANTEE_CHECK",
-      "CfnGuardFileName": "s3_bucket_policy_grantee_check.guard",
+      "CfnGuardFile": "rules/aws/amazon_s3/s3_bucket_policy_grantee_check.guard",
       "Controls": [
         "AC-3",
         "AC-6",
@@ -3471,7 +3471,7 @@
     },
     {
       "AWSConfigIdentifier": "S3_BUCKET_PUBLIC_READ_PROHIBITED",
-      "CfnGuardFileName": "s3_bucket_public_read_prohibited.guard",
+      "CfnGuardFile": "rules/aws/amazon_s3/s3_bucket_public_read_prohibited.guard",
       "Controls": [
         "AC-3",
         "AC-4",
@@ -3483,7 +3483,7 @@
     },
     {
       "AWSConfigIdentifier": "S3_ACCOUNT_LEVEL_PUBLIC_ACCESS_BLOCKS",
-      "CfnGuardFileName": "s3_account_level_public_access_blocks.guard",
+      "CfnGuardFile": "rules/aws/amazon_s3/s3_account_level_public_access_blocks.guard",
       "Controls": [
         "AC-3",
         "AC-4",
@@ -3495,7 +3495,7 @@
     },
     {
       "AWSConfigIdentifier": "DMS_REPLICATION_NOT_PUBLIC",
-      "CfnGuardFileName": "dms_replication_not_public.guard",
+      "CfnGuardFile": "rules/aws/aws_dms/dms_replication_not_public.guard",
       "Controls": [
         "AC-3",
         "AC-4",
@@ -3507,7 +3507,7 @@
     },
     {
       "AWSConfigIdentifier": "EBS_SNAPSHOT_PUBLIC_RESTORABLE_CHECK",
-      "CfnGuardFileName": "ebs_snapshot_public_restorable_check.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ebs_snapshot_public_restorable_check.guard",
       "Controls": [
         "AC-3",
         "AC-4",
@@ -3519,7 +3519,7 @@
     },
     {
       "AWSConfigIdentifier": "SAGEMAKER_NOTEBOOK_NO_DIRECT_INTERNET_ACCESS",
-      "CfnGuardFileName": "sagemaker_notebook_no_direct_internet_access.guard",
+      "CfnGuardFile": "rules/aws/amazon_sagemaker/sagemaker_notebook_no_direct_internet_access.guard",
       "Controls": [
         "AC-3",
         "AC-4",
@@ -3531,7 +3531,7 @@
     },
     {
       "AWSConfigIdentifier": "RDS_INSTANCE_PUBLIC_ACCESS_CHECK",
-      "CfnGuardFileName": "rds_instance_public_access_check.guard",
+      "CfnGuardFile": "rules/aws/amazon_rds/rds_instance_public_access_check.guard",
       "Controls": [
         "AC-4",
         "AC-6",
@@ -3542,7 +3542,7 @@
     },
     {
       "AWSConfigIdentifier": "LAMBDA_INSIDE_VPC",
-      "CfnGuardFileName": "lambda_inside_vpc.guard",
+      "CfnGuardFile": "rules/aws/lambda/lambda_inside_vpc.guard",
       "Controls": [
         "AC-4",
         "SC-7",
@@ -3551,7 +3551,7 @@
     },
     {
       "AWSConfigIdentifier": "EC2_INSTANCES_IN_VPC",
-      "CfnGuardFileName": "ec2_instances_in_vpc.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ec2_instances_in_vpc.guard",
       "Controls": [
         "AC-4",
         "SC-7",
@@ -3560,7 +3560,7 @@
     },
     {
       "AWSConfigIdentifier": "RESTRICTED_COMMON_PORTS",
-      "CfnGuardFileName": "restricted_common_ports.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/restricted_common_ports.guard",
       "Controls": [
         "AC-4",
         "CM-2",
@@ -3570,7 +3570,7 @@
     },
     {
       "AWSConfigIdentifier": "RESTRICTED_SSH",
-      "CfnGuardFileName": "restricted_ssh.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/restricted_ssh.guard",
       "Controls": [
         "AC-4",
         "SC-7",
@@ -3579,7 +3579,7 @@
     },
     {
       "AWSConfigIdentifier": "VPC_DEFAULT_SECURITY_GROUP_CLOSED",
-      "CfnGuardFileName": "vpc_default_security_group_closed.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/vpc_default_security_group_closed.guard",
       "Controls": [
         "AC-4",
         "SC-7",
@@ -3588,7 +3588,7 @@
     },
     {
       "AWSConfigIdentifier": "VPC_SG_OPEN_ONLY_TO_AUTHORIZED_PORTS",
-      "CfnGuardFileName": "vpc_sg_open_only_to_authorized_ports.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/vpc_sg_open_only_to_authorized_ports.guard",
       "Controls": [
         "AC-4",
         "SC-7",
@@ -3597,7 +3597,7 @@
     },
     {
       "AWSConfigIdentifier": "ACM_CERTIFICATE_EXPIRATION_CHECK",
-      "CfnGuardFileName": "acm_certificate_expiration_check.guard",
+      "CfnGuardFile": "rules/aws/aws_certificate_manager/acm_certificate_expiration_check.guard",
       "Controls": [
         "AC-4",
         "AC-17(2)",
@@ -3606,7 +3606,7 @@
     },
     {
       "AWSConfigIdentifier": "EC2_INSTANCE_NO_PUBLIC_IP",
-      "CfnGuardFileName": "ec2_instance_no_public_ip.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ec2_instance_no_public_ip.guard",
       "Controls": [
         "AC-4",
         "AC-6",
@@ -3617,7 +3617,7 @@
     },
     {
       "AWSConfigIdentifier": "ELASTICSEARCH_IN_VPC_ONLY",
-      "CfnGuardFileName": "elasticsearch_in_vpc_only.guard",
+      "CfnGuardFile": "rules/aws/opensearch_service/elasticsearch_in_vpc_only.guard",
       "Controls": [
         "AC-4",
         "SC-7",
@@ -3626,7 +3626,7 @@
     },
     {
       "AWSConfigIdentifier": "EMR_MASTER_NO_PUBLIC_IP",
-      "CfnGuardFileName": "emr_master_no_public_ip.guard",
+      "CfnGuardFile": "rules/aws/amazon_emr/emr_master_no_public_ip.guard",
       "Controls": [
         "AC-4",
         "AC-21(b)",
@@ -3636,7 +3636,7 @@
     },
     {
       "AWSConfigIdentifier": "INTERNET_GATEWAY_AUTHORIZED_VPC_ONLY",
-      "CfnGuardFileName": "internet_gateway_authorized_vpc_only.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/internet_gateway_authorized_vpc_only.guard",
       "Controls": [
         "AC-4",
         "AC-17(3)",
@@ -3646,7 +3646,7 @@
     },
     {
       "AWSConfigIdentifier": "CODEBUILD_PROJECT_ENVVAR_AWSCRED_CHECK",
-      "CfnGuardFileName": "codebuild_project_envvar_awscred_check.guard",
+      "CfnGuardFile": "rules/aws/codebuild/codebuild_project_envvar_awscred_check.guard",
       "Controls": [
         "AC-6",
         "IA-5(7)",
@@ -3655,21 +3655,21 @@
     },
     {
       "AWSConfigIdentifier": "EC2_IMDSV2_CHECK",
-      "CfnGuardFileName": "ec2_imdsv2_check.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ec2_imdsv2_check.guard",
       "Controls": [
         "AC-6"
       ]
     },
     {
       "AWSConfigIdentifier": "IAM_NO_INLINE_POLICY_CHECK",
-      "CfnGuardFileName": "iam_no_inline_policy_check.guard",
+      "CfnGuardFile": "rules/aws/iam/iam_no_inline_policy_check.guard",
       "Controls": [
         "AC-6"
       ]
     },
     {
       "AWSConfigIdentifier": "ALB_HTTP_TO_HTTPS_REDIRECTION_CHECK",
-      "CfnGuardFileName": "alb_http_to_https_redirection_check.guard",
+      "CfnGuardFile": "rules/aws/elastic_load_balancing_v2/alb_http_to_https_redirection_check.guard",
       "Controls": [
         "AC-17(2)",
         "SC-7",
@@ -3681,7 +3681,7 @@
     },
     {
       "AWSConfigIdentifier": "REDSHIFT_REQUIRE_TLS_SSL",
-      "CfnGuardFileName": "redshift_require_tls_ssl.guard",
+      "CfnGuardFile": "rules/aws/amazon_redshift/redshift_require_tls_ssl.guard",
       "Controls": [
         "AC-17(2)",
         "SC-7",
@@ -3692,7 +3692,7 @@
     },
     {
       "AWSConfigIdentifier": "S3_BUCKET_SSL_REQUESTS_ONLY",
-      "CfnGuardFileName": "s3_bucket_ssl_requests_only.guard",
+      "CfnGuardFile": "rules/aws/amazon_s3/s3_bucket_ssl_requests_only.guard",
       "Controls": [
         "AC-17(2)",
         "SC-7",
@@ -3703,7 +3703,7 @@
     },
     {
       "AWSConfigIdentifier": "ELB_ACM_CERTIFICATE_REQUIRED",
-      "CfnGuardFileName": "elb_acm_certificate_required.guard",
+      "CfnGuardFile": "rules/aws/elastic_load_balancing/elb_acm_certificate_required.guard",
       "Controls": [
         "AC-17(2)",
         "SC-7",
@@ -3714,7 +3714,7 @@
     },
     {
       "AWSConfigIdentifier": "ALB_HTTP_DROP_INVALID_HEADER_ENABLED",
-      "CfnGuardFileName": "alb_http_drop_invalid_header_enabled.guard",
+      "CfnGuardFile": "rules/aws/elastic_load_balancing_v2/alb_http_drop_invalid_header_enabled.guard",
       "Controls": [
         "AC-17(2)",
         "SC-7",
@@ -3725,7 +3725,7 @@
     },
     {
       "AWSConfigIdentifier": "ELB_TLS_HTTPS_LISTENERS_ONLY",
-      "CfnGuardFileName": "elb_tls_https_listeners_only.guard",
+      "CfnGuardFile": "rules/aws/elastic_load_balancing/elb_tls_https_listeners_only.guard",
       "Controls": [
         "AC-17(2)",
         "SC-7",
@@ -3736,7 +3736,7 @@
     },
     {
       "AWSConfigIdentifier": "API_GW_EXECUTION_LOGGING_ENABLED",
-      "CfnGuardFileName": "api_gw_execution_logging_enabled.guard",
+      "CfnGuardFile": "rules/aws/api_gateway/rules/aws/api_gateway_v2/api_gw_execution_logging_enabled.guard",
       "Controls": [
         "AU-2(a)(d)",
         "AU-3",
@@ -3745,7 +3745,7 @@
     },
     {
       "AWSConfigIdentifier": "ELB_LOGGING_ENABLED",
-      "CfnGuardFileName": "elb_logging_enabled.guard",
+      "CfnGuardFile": "rules/aws/elastic_load_balancing/elb_logging_enabled.guard",
       "Controls": [
         "AU-2(a)(d)",
         "AU-3",
@@ -3754,7 +3754,7 @@
     },
     {
       "AWSConfigIdentifier": "VPC_FLOW_LOGS_ENABLED",
-      "CfnGuardFileName": "vpc_flow_logs_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/vpc_flow_logs_enabled.guard",
       "Controls": [
         "AU-2(a)(d)",
         "AU-3",
@@ -3763,7 +3763,7 @@
     },
     {
       "AWSConfigIdentifier": "WAFV2_LOGGING_ENABLED",
-      "CfnGuardFileName": "wafv2_logging_enabled.guard",
+      "CfnGuardFile": "rules/aws/aws_waf_v2/wafv2_logging_enabled.guard",
       "Controls": [
         "AU-2(a)(d)",
         "AU-3",
@@ -3774,7 +3774,7 @@
     },
     {
       "AWSConfigIdentifier": "CLOUD_TRAIL_ENCRYPTION_ENABLED",
-      "CfnGuardFileName": "cloud_trail_encryption_enabled.guard",
+      "CfnGuardFile": "rules/aws/cloudtrail/cloud_trail_encryption_enabled.guard",
       "Controls": [
         "AU-9",
         "SC-13",
@@ -3783,7 +3783,7 @@
     },
     {
       "AWSConfigIdentifier": "CLOUDWATCH_LOG_GROUP_ENCRYPTED",
-      "CfnGuardFileName": "cloudwatch_log_group_encrypted.guard",
+      "CfnGuardFile": "rules/aws/cloudwatch/cloudwatch_log_group_encrypted.guard",
       "Controls": [
         "AU-9",
         "SC-13",
@@ -3792,7 +3792,7 @@
     },
     {
       "AWSConfigIdentifier": "S3_BUCKET_REPLICATION_ENABLED",
-      "CfnGuardFileName": "s3_bucket_replication_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_s3/s3_bucket_replication_enabled.guard",
       "Controls": [
         "AU-9(2)",
         "CP-9(b)",
@@ -3803,7 +3803,7 @@
     },
     {
       "AWSConfigIdentifier": "CW_LOGGROUP_RETENTION_PERIOD_CHECK",
-      "CfnGuardFileName": "cw_loggroup_retention_period_check.guard",
+      "CfnGuardFile": "rules/aws/cloudwatch/cw_loggroup_retention_period_check.guard",
       "Controls": [
         "AU-11",
         "SI-12"
@@ -3811,7 +3811,7 @@
     },
     {
       "AWSConfigIdentifier": "EC2_INSTANCE_DETAILED_MONITORING_ENABLED",
-      "CfnGuardFileName": "ec2_instance_detailed_monitoring_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ec2_instance_detailed_monitoring_enabled.guard",
       "Controls": [
         "CA-7(a)(b)",
         "SI-4(2)",
@@ -3820,14 +3820,14 @@
     },
     {
       "AWSConfigIdentifier": "RDS_ENHANCED_MONITORING_ENABLED",
-      "CfnGuardFileName": "rds_enhanced_monitoring_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_rds/rds_enhanced_monitoring_enabled.guard",
       "Controls": [
         "CA-7(a)(b)"
       ]
     },
     {
       "AWSConfigIdentifier": "EC2_INSTANCE_MANAGED_BY_SYSTEMS_MANAGER",
-      "CfnGuardFileName": "ec2_instance_managed_by_systems_manager.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ec2_instance_managed_by_systems_manager.guard",
       "Controls": [
         "CM-2",
         "CM-7(a)",
@@ -3841,7 +3841,7 @@
     },
     {
       "AWSConfigIdentifier": "EC2_MANAGEDINSTANCE_ASSOCIATION_COMPLIANCE_STATUS_CHECK",
-      "CfnGuardFileName": "ec2_managedinstance_association_compliance_status_check.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ec2_managedinstance_association_compliance_status_check.guard",
       "Controls": [
         "CM-2",
         "CM-7(a)",
@@ -3851,14 +3851,14 @@
     },
     {
       "AWSConfigIdentifier": "EC2_STOPPED_INSTANCE",
-      "CfnGuardFileName": "ec2_stopped_instance.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ec2_stopped_instance.guard",
       "Controls": [
         "CM-2"
       ]
     },
     {
       "AWSConfigIdentifier": "EC2_VOLUME_INUSE_CHECK",
-      "CfnGuardFileName": "ec2_volume_inuse_check.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ec2_volume_inuse_check.guard",
       "Controls": [
         "CM-2",
         "SC-4"
@@ -3866,7 +3866,7 @@
     },
     {
       "AWSConfigIdentifier": "ELB_DELETION_PROTECTION_ENABLED",
-      "CfnGuardFileName": "elb_deletion_protection_enabled.guard",
+      "CfnGuardFile": "rules/aws/elastic_load_balancing/elb_deletion_protection_enabled.guard",
       "Controls": [
         "CM-2",
         "CP-10"
@@ -3874,14 +3874,14 @@
     },
     {
       "AWSConfigIdentifier": "CLOUDTRAIL_SECURITY_TRAIL_ENABLED",
-      "CfnGuardFileName": "cloudtrail_security_trail_enabled.guard",
+      "CfnGuardFile": "rules/aws/cloudtrail/cloudtrail_security_trail_enabled.guard",
       "Controls": [
         "CM-2"
       ]
     },
     {
       "AWSConfigIdentifier": "EC2_MANAGEDINSTANCE_PATCH_COMPLIANCE_STATUS_CHECK",
-      "CfnGuardFileName": "ec2_managedinstance_patch_compliance_status_check.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ec2_managedinstance_patch_compliance_status_check.guard",
       "Controls": [
         "CM-8(3)(a)",
         "SI-2(2)",
@@ -3890,7 +3890,7 @@
     },
     {
       "AWSConfigIdentifier": "DB_INSTANCE_BACKUP_ENABLED",
-      "CfnGuardFileName": "db_instance_backup_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_rds/db_instance_backup_enabled.guard",
       "Controls": [
         "CP-9(b)",
         "CP-10",
@@ -3899,7 +3899,7 @@
     },
     {
       "AWSConfigIdentifier": "DYNAMODB_PITR_ENABLED",
-      "CfnGuardFileName": "dynamodb_pitr_enabled.guard",
+      "CfnGuardFile": "rules/aws/dynamodb/dynamodb_pitr_enabled.guard",
       "Controls": [
         "CP-9(b)",
         "CP-10",
@@ -3908,7 +3908,7 @@
     },
     {
       "AWSConfigIdentifier": "ELASTICACHE_REDIS_CLUSTER_AUTOMATIC_BACKUP_CHECK",
-      "CfnGuardFileName": "elasticache_redis_cluster_automatic_backup_check.guard",
+      "CfnGuardFile": "rules/aws/elasticache/elasticache_redis_cluster_automatic_backup_check.guard",
       "Controls": [
         "CP-9(b)",
         "CP-10",
@@ -3917,7 +3917,7 @@
     },
     {
       "AWSConfigIdentifier": "DYNAMODB_IN_BACKUP_PLAN",
-      "CfnGuardFileName": "dynamodb_in_backup_plan.guard",
+      "CfnGuardFile": "rules/aws/dynamodb/dynamodb_in_backup_plan.guard",
       "Controls": [
         "CP-9(b)",
         "CP-10",
@@ -3926,7 +3926,7 @@
     },
     {
       "AWSConfigIdentifier": "EBS_IN_BACKUP_PLAN",
-      "CfnGuardFileName": "ebs_in_backup_plan.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ebs_in_backup_plan.guard",
       "Controls": [
         "CP-9(b)",
         "CP-10",
@@ -3935,7 +3935,7 @@
     },
     {
       "AWSConfigIdentifier": "EFS_IN_BACKUP_PLAN",
-      "CfnGuardFileName": "efs_in_backup_plan.guard",
+      "CfnGuardFile": "rules/aws/amazon_efs/efs_in_backup_plan.guard",
       "Controls": [
         "CP-9(b)",
         "CP-10",
@@ -3944,7 +3944,7 @@
     },
     {
       "AWSConfigIdentifier": "RDS_IN_BACKUP_PLAN",
-      "CfnGuardFileName": "rds_in_backup_plan.guard",
+      "CfnGuardFile": "rules/aws/amazon_rds/rds_in_backup_plan.guard",
       "Controls": [
         "CP-9(b)",
         "CP-10",
@@ -3953,7 +3953,7 @@
     },
     {
       "AWSConfigIdentifier": "DYNAMODB_AUTOSCALING_ENABLED",
-      "CfnGuardFileName": "dynamodb_autoscaling_enabled.guard",
+      "CfnGuardFile": "rules/aws/dynamodb/dynamodb_autoscaling_enabled.guard",
       "Controls": [
         "CP-10",
         "SC-5"
@@ -3961,7 +3961,7 @@
     },
     {
       "AWSConfigIdentifier": "RDS_MULTI_AZ_SUPPORT",
-      "CfnGuardFileName": "rds_multi_az_support.guard",
+      "CfnGuardFile": "rules/aws/amazon_rds/rds_multi_az_support.guard",
       "Controls": [
         "CP-10",
         "SC-5",
@@ -3970,7 +3970,7 @@
     },
     {
       "AWSConfigIdentifier": "S3_BUCKET_VERSIONING_ENABLED",
-      "CfnGuardFileName": "s3_bucket_versioning_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_s3/s3_bucket_versioning_enabled.guard",
       "Controls": [
         "CP-10",
         "SI-12"
@@ -3978,14 +3978,14 @@
     },
     {
       "AWSConfigIdentifier": "VPC_VPN_2_TUNNELS_UP",
-      "CfnGuardFileName": "vpc_vpn_2_tunnels_up.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/vpc_vpn_2_tunnels_up.guard",
       "Controls": [
         "CP-10"
       ]
     },
     {
       "AWSConfigIdentifier": "ELB_CROSS_ZONE_LOAD_BALANCING_ENABLED",
-      "CfnGuardFileName": "elb_cross_zone_load_balancing_enabled.guard",
+      "CfnGuardFile": "rules/aws/elastic_load_balancing/elb_cross_zone_load_balancing_enabled.guard",
       "Controls": [
         "CP-10",
         "SC-5"
@@ -3993,28 +3993,28 @@
     },
     {
       "AWSConfigIdentifier": "ROOT_ACCOUNT_HARDWARE_MFA_ENABLED",
-      "CfnGuardFileName": "root_account_hardware_mfa_enabled.guard",
+      "CfnGuardFile": "rules/aws/iam/root_account_hardware_mfa_enabled.guard",
       "Controls": [
         "IA-2(1)(11)"
       ]
     },
     {
       "AWSConfigIdentifier": "MFA_ENABLED_FOR_IAM_CONSOLE_ACCESS",
-      "CfnGuardFileName": "mfa_enabled_for_iam_console_access.guard",
+      "CfnGuardFile": "rules/aws/iam/mfa_enabled_for_iam_console_access.guard",
       "Controls": [
         "IA-2(1)(2)(11)"
       ]
     },
     {
       "AWSConfigIdentifier": "IAM_USER_MFA_ENABLED",
-      "CfnGuardFileName": "iam_user_mfa_enabled.guard",
+      "CfnGuardFile": "rules/aws/iam/iam_user_mfa_enabled.guard",
       "Controls": [
         "IA-2(1)(2)(11)"
       ]
     },
     {
       "AWSConfigIdentifier": "GUARDDUTY_NON_ARCHIVED_FINDINGS",
-      "CfnGuardFileName": "guardduty_non_archived_findings.guard",
+      "CfnGuardFile": "rules/aws/guardduty/guardduty_non_archived_findings.guard",
       "Controls": [
         "IR-4(1)",
         "IR-6(1)",
@@ -4026,28 +4026,28 @@
     },
     {
       "AWSConfigIdentifier": "CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK",
-      "CfnGuardFileName": "codebuild_project_source_repo_url_check.guard",
+      "CfnGuardFile": "rules/aws/codebuild/codebuild_project_source_repo_url_check.guard",
       "Controls": [
         "SA-3(a)"
       ]
     },
     {
       "AWSConfigIdentifier": "AUTOSCALING_GROUP_ELB_HEALTHCHECK_REQUIRED",
-      "CfnGuardFileName": "autoscaling_group_elb_healthcheck_required.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2_auto_scaling/autoscaling_group_elb_healthcheck_required.guard",
       "Controls": [
         "SC-5"
       ]
     },
     {
       "AWSConfigIdentifier": "RDS_INSTANCE_DELETION_PROTECTION_ENABLED",
-      "CfnGuardFileName": "rds_instance_deletion_protection_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_rds/rds_instance_deletion_protection_enabled.guard",
       "Controls": [
         "SC-5"
       ]
     },
     {
       "AWSConfigIdentifier": "ALB_WAF_ENABLED",
-      "CfnGuardFileName": "alb_waf_enabled.guard",
+      "CfnGuardFile": "rules/aws/elastic_load_balancing_v2/alb_waf_enabled.guard",
       "Controls": [
         "SC-7",
         "SI-4(a)(b)(c)"
@@ -4055,7 +4055,7 @@
     },
     {
       "AWSConfigIdentifier": "ELASTICSEARCH_NODE_TO_NODE_ENCRYPTION_CHECK",
-      "CfnGuardFileName": "elasticsearch_node_to_node_encryption_check.guard",
+      "CfnGuardFile": "rules/aws/opensearch_service/elasticsearch_node_to_node_encryption_check.guard",
       "Controls": [
         "SC-7",
         "SC-8",
@@ -4064,14 +4064,14 @@
     },
     {
       "AWSConfigIdentifier": "CMK_BACKING_KEY_ROTATION_ENABLED",
-      "CfnGuardFileName": "cmk_backing_key_rotation_enabled.guard",
+      "CfnGuardFile": "rules/aws/aws_kms/cmk_backing_key_rotation_enabled.guard",
       "Controls": [
         "SC-12"
       ]
     },
     {
       "AWSConfigIdentifier": "KMS_CMK_NOT_SCHEDULED_FOR_DELETION",
-      "CfnGuardFileName": "kms_cmk_not_scheduled_for_deletion.guard",
+      "CfnGuardFile": "rules/aws/aws_kms/kms_cmk_not_scheduled_for_deletion.guard",
       "Controls": [
         "SC-12",
         "SC-28"
@@ -4079,7 +4079,7 @@
     },
     {
       "AWSConfigIdentifier": "API_GW_CACHE_ENABLED_AND_ENCRYPTED",
-      "CfnGuardFileName": "api_gw_cache_enabled_and_encrypted.guard",
+      "CfnGuardFile": "rules/aws/api_gateway/rules/aws/api_gateway_v2/api_gw_cache_enabled_and_encrypted.guard",
       "Controls": [
         "SC-13",
         "SC-28"
@@ -4087,7 +4087,7 @@
     },
     {
       "AWSConfigIdentifier": "EFS_ENCRYPTED_CHECK",
-      "CfnGuardFileName": "efs_encrypted_check.guard",
+      "CfnGuardFile": "rules/aws/amazon_efs/efs_encrypted_check.guard",
       "Controls": [
         "SC-13",
         "SC-28"
@@ -4095,7 +4095,7 @@
     },
     {
       "AWSConfigIdentifier": "ELASTICSEARCH_ENCRYPTED_AT_REST",
-      "CfnGuardFileName": "elasticsearch_encrypted_at_rest.guard",
+      "CfnGuardFile": "rules/aws/opensearch_service/elasticsearch_encrypted_at_rest.guard",
       "Controls": [
         "SC-13",
         "SC-28"
@@ -4103,7 +4103,7 @@
     },
     {
       "AWSConfigIdentifier": "ENCRYPTED_VOLUMES",
-      "CfnGuardFileName": "encrypted_volumes.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/encrypted_volumes.guard",
       "Controls": [
         "SC-13",
         "SC-28"
@@ -4111,7 +4111,7 @@
     },
     {
       "AWSConfigIdentifier": "RDS_STORAGE_ENCRYPTED",
-      "CfnGuardFileName": "rds_storage_encrypted.guard",
+      "CfnGuardFile": "rules/aws/amazon_rds/rds_storage_encrypted.guard",
       "Controls": [
         "SC-13",
         "SC-28"
@@ -4119,7 +4119,7 @@
     },
     {
       "AWSConfigIdentifier": "S3_BUCKET_SERVER_SIDE_ENCRYPTION_ENABLED",
-      "CfnGuardFileName": "s3_bucket_server_side_encryption_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_s3/s3_bucket_server_side_encryption_enabled.guard",
       "Controls": [
         "SC-13",
         "SC-28"
@@ -4127,7 +4127,7 @@
     },
     {
       "AWSConfigIdentifier": "SAGEMAKER_ENDPOINT_CONFIGURATION_KMS_KEY_CONFIGURED",
-      "CfnGuardFileName": "sagemaker_endpoint_configuration_kms_key_configured.guard",
+      "CfnGuardFile": "rules/aws/amazon_sagemaker/sagemaker_endpoint_configuration_kms_key_configured.guard",
       "Controls": [
         "SC-13",
         "SC-28"
@@ -4135,7 +4135,7 @@
     },
     {
       "AWSConfigIdentifier": "SAGEMAKER_NOTEBOOK_INSTANCE_KMS_KEY_CONFIGURED",
-      "CfnGuardFileName": "sagemaker_notebook_instance_kms_key_configured.guard",
+      "CfnGuardFile": "rules/aws/amazon_sagemaker/sagemaker_notebook_instance_kms_key_configured.guard",
       "Controls": [
         "SC-13",
         "SC-28"
@@ -4143,7 +4143,7 @@
     },
     {
       "AWSConfigIdentifier": "SNS_ENCRYPTED_KMS",
-      "CfnGuardFileName": "sns_encrypted_kms.guard",
+      "CfnGuardFile": "rules/aws/amazon_sns/sns_encrypted_kms.guard",
       "Controls": [
         "SC-13",
         "SC-28"
@@ -4151,35 +4151,35 @@
     },
     {
       "AWSConfigIdentifier": "DYNAMODB_TABLE_ENCRYPTED_KMS",
-      "CfnGuardFileName": "dynamodb_table_encrypted_kms.guard",
+      "CfnGuardFile": "rules/aws/dynamodb/dynamodb_table_encrypted_kms.guard",
       "Controls": [
         "SC-13"
       ]
     },
     {
       "AWSConfigIdentifier": "S3_BUCKET_DEFAULT_LOCK_ENABLED",
-      "CfnGuardFileName": "s3_bucket_default_lock_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_s3/s3_bucket_default_lock_enabled.guard",
       "Controls": [
         "SC-28"
       ]
     },
     {
       "AWSConfigIdentifier": "EC2_EBS_ENCRYPTION_BY_DEFAULT",
-      "CfnGuardFileName": "ec2_ebs_encryption_by_default.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ec2_ebs_encryption_by_default.guard",
       "Controls": [
         "SC-28"
       ]
     },
     {
       "AWSConfigIdentifier": "RDS_SNAPSHOT_ENCRYPTED",
-      "CfnGuardFileName": "rds_snapshot_encrypted.guard",
+      "CfnGuardFile": "rules/aws/amazon_rds/rds_snapshot_encrypted.guard",
       "Controls": [
         "SC-28"
       ]
     },
     {
       "AWSConfigIdentifier": "CLOUD_TRAIL_LOG_FILE_VALIDATION_ENABLED",
-      "CfnGuardFileName": "cloud_trail_log_file_validation_enabled.guard",
+      "CfnGuardFile": "rules/aws/cloudtrail/cloud_trail_log_file_validation_enabled.guard",
       "Controls": [
         "SI-7",
         "SI-7(1)"
@@ -4189,7 +4189,7 @@
   "FedRAMP-Low-BestPractices": [
     {
       "AWSConfigIdentifier": "API_GW_EXECUTION_LOGGING_ENABLED",
-      "CfnGuardFileName": "api_gw_execution_logging_enabled.guard",
+      "CfnGuardFile": "rules/aws/api_gateway/rules/aws/api_gateway_v2/api_gw_execution_logging_enabled.guard",
       "Controls": [
         "AC-2",
         "AU-2"
@@ -4197,7 +4197,7 @@
     },
     {
       "AWSConfigIdentifier": "EC2_INSTANCE_PROFILE_ATTACHED",
-      "CfnGuardFileName": "ec2_instance_profile_attached.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ec2_instance_profile_attached.guard",
       "Controls": [
         "AC-2",
         "AC-3"
@@ -4205,7 +4205,7 @@
     },
     {
       "AWSConfigIdentifier": "ECS_TASK_DEFINITION_USER_FOR_HOST_MODE_CHECK",
-      "CfnGuardFileName": "ecs_task_definition_user_for_host_mode_check.guard",
+      "CfnGuardFile": "rules/aws/amazon_ecs/ecs_task_definition_user_for_host_mode_check.guard",
       "Controls": [
         "AC-2",
         "AC-3"
@@ -4213,28 +4213,28 @@
     },
     {
       "AWSConfigIdentifier": "ELASTICSEARCH_LOGS_TO_CLOUDWATCH",
-      "CfnGuardFileName": "elasticsearch_logs_to_cloudwatch.guard",
+      "CfnGuardFile": "rules/aws/opensearch_service/elasticsearch_logs_to_cloudwatch.guard",
       "Controls": [
         "AC-2"
       ]
     },
     {
       "AWSConfigIdentifier": "IAM_CUSTOMER_POLICY_BLOCKED_KMS_ACTIONS",
-      "CfnGuardFileName": "iam_customer_policy_blocked_kms_actions.guard",
+      "CfnGuardFile": "rules/aws/iam/iam_customer_policy_blocked_kms_actions.guard",
       "Controls": [
         "AC-2"
       ]
     },
     {
       "AWSConfigIdentifier": "IAM_INLINE_POLICY_BLOCKED_KMS_ACTIONS",
-      "CfnGuardFileName": "iam_inline_policy_blocked_kms_actions.guard",
+      "CfnGuardFile": "rules/aws/iam/iam_inline_policy_blocked_kms_actions.guard",
       "Controls": [
         "AC-2"
       ]
     },
     {
       "AWSConfigIdentifier": "IAM_NO_INLINE_POLICY_CHECK",
-      "CfnGuardFileName": "iam_no_inline_policy_check.guard",
+      "CfnGuardFile": "rules/aws/iam/iam_no_inline_policy_check.guard",
       "Controls": [
         "AC-2",
         "AC-3"
@@ -4242,7 +4242,7 @@
     },
     {
       "AWSConfigIdentifier": "IAM_POLICY_NO_STATEMENTS_WITH_FULL_ACCESS",
-      "CfnGuardFileName": "iam_policy_no_statements_with_full_access.guard",
+      "CfnGuardFile": "rules/aws/iam/iam_policy_no_statements_with_full_access.guard",
       "Controls": [
         "AC-2",
         "AC-3"
@@ -4250,7 +4250,7 @@
     },
     {
       "AWSConfigIdentifier": "MULTI_REGION_CLOUDTRAIL_ENABLED",
-      "CfnGuardFileName": "multi_region_cloudtrail_enabled.guard",
+      "CfnGuardFile": "multi_region_rules/aws/cloudtrail/cloudtrail_enabled.guard",
       "Controls": [
         "AC-2",
         "AU-2",
@@ -4259,7 +4259,7 @@
     },
     {
       "AWSConfigIdentifier": "RDS_LOGGING_ENABLED",
-      "CfnGuardFileName": "rds_logging_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_rds/rds_logging_enabled.guard",
       "Controls": [
         "AC-2",
         "AU-2"
@@ -4267,7 +4267,7 @@
     },
     {
       "AWSConfigIdentifier": "SECURITYHUB_ENABLED",
-      "CfnGuardFileName": "securityhub_enabled.guard",
+      "CfnGuardFile": "rules/aws/security_hub/securityhub_enabled.guard",
       "Controls": [
         "AC-2",
         "AC-17",
@@ -4277,7 +4277,7 @@
     },
     {
       "AWSConfigIdentifier": "WAFV2_LOGGING_ENABLED",
-      "CfnGuardFileName": "wafv2_logging_enabled.guard",
+      "CfnGuardFile": "rules/aws/aws_waf_v2/wafv2_logging_enabled.guard",
       "Controls": [
         "AC-2",
         "AU-2",
@@ -4286,14 +4286,14 @@
     },
     {
       "AWSConfigIdentifier": "ACCESS_KEYS_ROTATED",
-      "CfnGuardFileName": "access_keys_rotated.guard",
+      "CfnGuardFile": "rules/aws/iam/access_keys_rotated.guard",
       "Controls": [
         "AC-2"
       ]
     },
     {
       "AWSConfigIdentifier": "CLOUD_TRAIL_CLOUD_WATCH_LOGS_ENABLED",
-      "CfnGuardFileName": "cloud_trail_cloud_watch_logs_enabled.guard",
+      "CfnGuardFile": "rules/aws/cloudtrail/cloud_trail_cloud_watch_logs_enabled.guard",
       "Controls": [
         "AC-2",
         "AU-2"
@@ -4301,7 +4301,7 @@
     },
     {
       "AWSConfigIdentifier": "CLOUDTRAIL_ENABLED",
-      "CfnGuardFileName": "cloudtrail_enabled.guard",
+      "CfnGuardFile": "rules/aws/cloudtrail/cloudtrail_enabled.guard",
       "Controls": [
         "AC-2",
         "AU-2",
@@ -4310,7 +4310,7 @@
     },
     {
       "AWSConfigIdentifier": "CLOUDTRAIL_S3_DATAEVENTS_ENABLED",
-      "CfnGuardFileName": "cloudtrail_s3_dataevents_enabled.guard",
+      "CfnGuardFile": "rules/aws/cloudtrail/cloudtrail_s3_dataevents_enabled.guard",
       "Controls": [
         "AC-2",
         "AU-2",
@@ -4319,7 +4319,7 @@
     },
     {
       "AWSConfigIdentifier": "CLOUDWATCH_ALARM_ACTION_CHECK",
-      "CfnGuardFileName": "cloudwatch_alarm_action_check.guard",
+      "CfnGuardFile": "rules/aws/cloudwatch/cloudwatch_alarm_action_check.guard",
       "Controls": [
         "AC-2",
         "CA-7",
@@ -4328,7 +4328,7 @@
     },
     {
       "AWSConfigIdentifier": "GUARDDUTY_ENABLED_CENTRALIZED",
-      "CfnGuardFileName": "guardduty_enabled_centralized.guard",
+      "CfnGuardFile": "rules/aws/guardduty/guardduty_enabled_centralized.guard",
       "Controls": [
         "AC-2",
         "AC-17",
@@ -4340,7 +4340,7 @@
     },
     {
       "AWSConfigIdentifier": "IAM_GROUP_HAS_USERS_CHECK",
-      "CfnGuardFileName": "iam_group_has_users_check.guard",
+      "CfnGuardFile": "iam_group_has_users_check.guard",
       "Controls": [
         "AC-2",
         "AC-3"
@@ -4348,7 +4348,7 @@
     },
     {
       "AWSConfigIdentifier": "IAM_PASSWORD_POLICY",
-      "CfnGuardFileName": "iam_password_policy.guard",
+      "CfnGuardFile": "rules/aws/iam/iam_password_policy.guard",
       "Controls": [
         "AC-2",
         "IA-2"
@@ -4356,7 +4356,7 @@
     },
     {
       "AWSConfigIdentifier": "IAM_POLICY_NO_STATEMENTS_WITH_ADMIN_ACCESS",
-      "CfnGuardFileName": "iam_policy_no_statements_with_admin_access.guard",
+      "CfnGuardFile": "rules/aws/iam/iam_policy_no_statements_with_admin_access.guard",
       "Controls": [
         "AC-2",
         "AC-3"
@@ -4364,7 +4364,7 @@
     },
     {
       "AWSConfigIdentifier": "IAM_ROOT_ACCESS_KEY_CHECK",
-      "CfnGuardFileName": "iam_root_access_key_check.guard",
+      "CfnGuardFile": "rules/aws/iam/iam_root_access_key_check.guard",
       "Controls": [
         "AC-2",
         "AC-3",
@@ -4373,7 +4373,7 @@
     },
     {
       "AWSConfigIdentifier": "IAM_USER_GROUP_MEMBERSHIP_CHECK",
-      "CfnGuardFileName": "iam_user_group_membership_check.guard",
+      "CfnGuardFile": "rules/aws/iam/iam_user_group_membership_check.guard",
       "Controls": [
         "AC-2",
         "AC-3"
@@ -4381,7 +4381,7 @@
     },
     {
       "AWSConfigIdentifier": "IAM_USER_MFA_ENABLED",
-      "CfnGuardFileName": "iam_user_mfa_enabled.guard",
+      "CfnGuardFile": "rules/aws/iam/iam_user_mfa_enabled.guard",
       "Controls": [
         "AC-2",
         "IA-2"
@@ -4389,7 +4389,7 @@
     },
     {
       "AWSConfigIdentifier": "IAM_USER_NO_POLICIES_CHECK",
-      "CfnGuardFileName": "iam_user_no_policies_check.guard",
+      "CfnGuardFile": "rules/aws/iam/iam_user_no_policies_check.guard",
       "Controls": [
         "AC-2",
         "AC-3"
@@ -4397,7 +4397,7 @@
     },
     {
       "AWSConfigIdentifier": "IAM_USER_UNUSED_CREDENTIALS_CHECK",
-      "CfnGuardFileName": "iam_user_unused_credentials_check.guard",
+      "CfnGuardFile": "rules/aws/iam/iam_user_unused_credentials_check.guard",
       "Controls": [
         "AC-2",
         "AC-3"
@@ -4405,7 +4405,7 @@
     },
     {
       "AWSConfigIdentifier": "MFA_ENABLED_FOR_IAM_CONSOLE_ACCESS",
-      "CfnGuardFileName": "mfa_enabled_for_iam_console_access.guard",
+      "CfnGuardFile": "rules/aws/iam/mfa_enabled_for_iam_console_access.guard",
       "Controls": [
         "AC-2",
         "IA-2"
@@ -4413,7 +4413,7 @@
     },
     {
       "AWSConfigIdentifier": "REDSHIFT_CLUSTER_CONFIGURATION_CHECK",
-      "CfnGuardFileName": "redshift_cluster_configuration_check.guard",
+      "CfnGuardFile": "rules/aws/amazon_redshift/redshift_cluster_configuration_check.guard",
       "Controls": [
         "AC-2",
         "AU-2",
@@ -4422,7 +4422,7 @@
     },
     {
       "AWSConfigIdentifier": "ROOT_ACCOUNT_HARDWARE_MFA_ENABLED",
-      "CfnGuardFileName": "root_account_hardware_mfa_enabled.guard",
+      "CfnGuardFile": "rules/aws/iam/root_account_hardware_mfa_enabled.guard",
       "Controls": [
         "AC-2",
         "IA-2"
@@ -4430,7 +4430,7 @@
     },
     {
       "AWSConfigIdentifier": "ROOT_ACCOUNT_MFA_ENABLED",
-      "CfnGuardFileName": "root_account_mfa_enabled.guard",
+      "CfnGuardFile": "rules/aws/iam/root_account_mfa_enabled.guard",
       "Controls": [
         "AC-2",
         "IA-2"
@@ -4438,7 +4438,7 @@
     },
     {
       "AWSConfigIdentifier": "S3_BUCKET_LOGGING_ENABLED",
-      "CfnGuardFileName": "s3_bucket_logging_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_s3/s3_bucket_logging_enabled.guard",
       "Controls": [
         "AC-2",
         "AU-2"
@@ -4446,7 +4446,7 @@
     },
     {
       "AWSConfigIdentifier": "AUTOSCALING_LAUNCH_CONFIG_PUBLIC_IP_DISABLED",
-      "CfnGuardFileName": "autoscaling_launch_config_public_ip_disabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2_auto_scaling/autoscaling_launch_config_public_ip_disabled.guard",
       "Controls": [
         "AC-3",
         "CM-2"
@@ -4454,21 +4454,21 @@
     },
     {
       "AWSConfigIdentifier": "EC2_IMDSV2_CHECK",
-      "CfnGuardFileName": "ec2_imdsv2_check.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ec2_imdsv2_check.guard",
       "Controls": [
         "AC-3"
       ]
     },
     {
       "AWSConfigIdentifier": "SSM_DOCUMENT_NOT_PUBLIC",
-      "CfnGuardFileName": "ssm_document_not_public.guard",
+      "CfnGuardFile": "rules/aws/systems_manager/ssm_document_not_public.guard",
       "Controls": [
         "AC-3"
       ]
     },
     {
       "AWSConfigIdentifier": "DMS_REPLICATION_NOT_PUBLIC",
-      "CfnGuardFileName": "dms_replication_not_public.guard",
+      "CfnGuardFile": "rules/aws/aws_dms/dms_replication_not_public.guard",
       "Controls": [
         "AC-3",
         "AC-17",
@@ -4478,7 +4478,7 @@
     },
     {
       "AWSConfigIdentifier": "EBS_SNAPSHOT_PUBLIC_RESTORABLE_CHECK",
-      "CfnGuardFileName": "ebs_snapshot_public_restorable_check.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ebs_snapshot_public_restorable_check.guard",
       "Controls": [
         "AC-3",
         "AC-17",
@@ -4488,7 +4488,7 @@
     },
     {
       "AWSConfigIdentifier": "EC2_INSTANCE_NO_PUBLIC_IP",
-      "CfnGuardFileName": "ec2_instance_no_public_ip.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ec2_instance_no_public_ip.guard",
       "Controls": [
         "AC-3",
         "AC-17",
@@ -4498,7 +4498,7 @@
     },
     {
       "AWSConfigIdentifier": "ELASTICSEARCH_IN_VPC_ONLY",
-      "CfnGuardFileName": "elasticsearch_in_vpc_only.guard",
+      "CfnGuardFile": "rules/aws/opensearch_service/elasticsearch_in_vpc_only.guard",
       "Controls": [
         "AC-3",
         "AC-17",
@@ -4508,7 +4508,7 @@
     },
     {
       "AWSConfigIdentifier": "EMR_MASTER_NO_PUBLIC_IP",
-      "CfnGuardFileName": "emr_master_no_public_ip.guard",
+      "CfnGuardFile": "rules/aws/amazon_emr/emr_master_no_public_ip.guard",
       "Controls": [
         "AC-3",
         "AC-17",
@@ -4518,7 +4518,7 @@
     },
     {
       "AWSConfigIdentifier": "LAMBDA_FUNCTION_PUBLIC_ACCESS_PROHIBITED",
-      "CfnGuardFileName": "lambda_function_public_access_prohibited.guard",
+      "CfnGuardFile": "rules/aws/lambda/lambda_function_public_access_prohibited.guard",
       "Controls": [
         "AC-3",
         "AC-17",
@@ -4528,7 +4528,7 @@
     },
     {
       "AWSConfigIdentifier": "LAMBDA_INSIDE_VPC",
-      "CfnGuardFileName": "lambda_inside_vpc.guard",
+      "CfnGuardFile": "rules/aws/lambda/lambda_inside_vpc.guard",
       "Controls": [
         "AC-3",
         "AC-17",
@@ -4538,7 +4538,7 @@
     },
     {
       "AWSConfigIdentifier": "RDS_INSTANCE_PUBLIC_ACCESS_CHECK",
-      "CfnGuardFileName": "rds_instance_public_access_check.guard",
+      "CfnGuardFile": "rules/aws/amazon_rds/rds_instance_public_access_check.guard",
       "Controls": [
         "AC-3",
         "AC-17",
@@ -4548,7 +4548,7 @@
     },
     {
       "AWSConfigIdentifier": "RDS_SNAPSHOTS_PUBLIC_PROHIBITED",
-      "CfnGuardFileName": "rds_snapshots_public_prohibited.guard",
+      "CfnGuardFile": "rules/aws/amazon_rds/rds_snapshots_public_prohibited.guard",
       "Controls": [
         "AC-3",
         "AC-17",
@@ -4558,7 +4558,7 @@
     },
     {
       "AWSConfigIdentifier": "REDSHIFT_CLUSTER_PUBLIC_ACCESS_CHECK",
-      "CfnGuardFileName": "redshift_cluster_public_access_check.guard",
+      "CfnGuardFile": "rules/aws/amazon_redshift/redshift_cluster_public_access_check.guard",
       "Controls": [
         "AC-3",
         "AC-17",
@@ -4568,7 +4568,7 @@
     },
     {
       "AWSConfigIdentifier": "S3_ACCOUNT_LEVEL_PUBLIC_ACCESS_BLOCKS_PERIODIC",
-      "CfnGuardFileName": "s3_account_level_public_access_blocks_periodic.guard",
+      "CfnGuardFile": "rules/aws/amazon_s3/s3_account_level_public_access_blocks_periodic.guard",
       "Controls": [
         "AC-3",
         "AC-17",
@@ -4578,7 +4578,7 @@
     },
     {
       "AWSConfigIdentifier": "S3_BUCKET_LEVEL_PUBLIC_ACCESS_PROHIBITED",
-      "CfnGuardFileName": "s3_bucket_level_public_access_prohibited.guard",
+      "CfnGuardFile": "rules/aws/amazon_s3/s3_bucket_level_public_access_prohibited.guard",
       "Controls": [
         "AC-3",
         "AC-17",
@@ -4588,7 +4588,7 @@
     },
     {
       "AWSConfigIdentifier": "S3_BUCKET_PUBLIC_READ_PROHIBITED",
-      "CfnGuardFileName": "s3_bucket_public_read_prohibited.guard",
+      "CfnGuardFile": "rules/aws/amazon_s3/s3_bucket_public_read_prohibited.guard",
       "Controls": [
         "AC-3",
         "AC-17",
@@ -4598,7 +4598,7 @@
     },
     {
       "AWSConfigIdentifier": "S3_BUCKET_PUBLIC_WRITE_PROHIBITED",
-      "CfnGuardFileName": "s3_bucket_public_write_prohibited.guard",
+      "CfnGuardFile": "rules/aws/amazon_s3/s3_bucket_public_write_prohibited.guard",
       "Controls": [
         "AC-3",
         "AC-17",
@@ -4608,7 +4608,7 @@
     },
     {
       "AWSConfigIdentifier": "SAGEMAKER_NOTEBOOK_NO_DIRECT_INTERNET_ACCESS",
-      "CfnGuardFileName": "sagemaker_notebook_no_direct_internet_access.guard",
+      "CfnGuardFile": "rules/aws/amazon_sagemaker/sagemaker_notebook_no_direct_internet_access.guard",
       "Controls": [
         "AC-3",
         "AC-17",
@@ -4618,7 +4618,7 @@
     },
     {
       "AWSConfigIdentifier": "SUBNET_AUTO_ASSIGN_PUBLIC_IP_DISABLED",
-      "CfnGuardFileName": "subnet_auto_assign_public_ip_disabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/subnet_auto_assign_public_ip_disabled.guard",
       "Controls": [
         "AC-3",
         "AC-17",
@@ -4628,14 +4628,14 @@
     },
     {
       "AWSConfigIdentifier": "ALB_HTTP_DROP_INVALID_HEADER_ENABLED",
-      "CfnGuardFileName": "alb_http_drop_invalid_header_enabled.guard",
+      "CfnGuardFile": "rules/aws/elastic_load_balancing_v2/alb_http_drop_invalid_header_enabled.guard",
       "Controls": [
         "AC-17"
       ]
     },
     {
       "AWSConfigIdentifier": "ELB_TLS_HTTPS_LISTENERS_ONLY",
-      "CfnGuardFileName": "elb_tls_https_listeners_only.guard",
+      "CfnGuardFile": "rules/aws/elastic_load_balancing/elb_tls_https_listeners_only.guard",
       "Controls": [
         "AC-17",
         "SC-7"
@@ -4643,7 +4643,7 @@
     },
     {
       "AWSConfigIdentifier": "RESTRICTED_SSH",
-      "CfnGuardFileName": "restricted_ssh.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/restricted_ssh.guard",
       "Controls": [
         "AC-17",
         "CM-2",
@@ -4652,7 +4652,7 @@
     },
     {
       "AWSConfigIdentifier": "EC2_INSTANCES_IN_VPC",
-      "CfnGuardFileName": "ec2_instances_in_vpc.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ec2_instances_in_vpc.guard",
       "Controls": [
         "AC-17",
         "CM-2",
@@ -4661,7 +4661,7 @@
     },
     {
       "AWSConfigIdentifier": "ACM_CERTIFICATE_EXPIRATION_CHECK",
-      "CfnGuardFileName": "acm_certificate_expiration_check.guard",
+      "CfnGuardFile": "rules/aws/aws_certificate_manager/acm_certificate_expiration_check.guard",
       "Controls": [
         "AC-17",
         "SC-12"
@@ -4669,7 +4669,7 @@
     },
     {
       "AWSConfigIdentifier": "ALB_HTTP_TO_HTTPS_REDIRECTION_CHECK",
-      "CfnGuardFileName": "alb_http_to_https_redirection_check.guard",
+      "CfnGuardFile": "rules/aws/elastic_load_balancing_v2/alb_http_to_https_redirection_check.guard",
       "Controls": [
         "AC-17",
         "SC-7"
@@ -4677,7 +4677,7 @@
     },
     {
       "AWSConfigIdentifier": "ELB_ACM_CERTIFICATE_REQUIRED",
-      "CfnGuardFileName": "elb_acm_certificate_required.guard",
+      "CfnGuardFile": "rules/aws/elastic_load_balancing/elb_acm_certificate_required.guard",
       "Controls": [
         "AC-17",
         "SC-7"
@@ -4685,7 +4685,7 @@
     },
     {
       "AWSConfigIdentifier": "REDSHIFT_REQUIRE_TLS_SSL",
-      "CfnGuardFileName": "redshift_require_tls_ssl.guard",
+      "CfnGuardFile": "rules/aws/amazon_redshift/redshift_require_tls_ssl.guard",
       "Controls": [
         "AC-17",
         "SC-7"
@@ -4693,7 +4693,7 @@
     },
     {
       "AWSConfigIdentifier": "RESTRICTED_COMMON_PORTS",
-      "CfnGuardFileName": "restricted_common_ports.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/restricted_common_ports.guard",
       "Controls": [
         "AC-17",
         "CM-2",
@@ -4702,7 +4702,7 @@
     },
     {
       "AWSConfigIdentifier": "S3_BUCKET_SSL_REQUESTS_ONLY",
-      "CfnGuardFileName": "s3_bucket_ssl_requests_only.guard",
+      "CfnGuardFile": "rules/aws/amazon_s3/s3_bucket_ssl_requests_only.guard",
       "Controls": [
         "AC-17",
         "SC-7"
@@ -4710,7 +4710,7 @@
     },
     {
       "AWSConfigIdentifier": "VPC_DEFAULT_SECURITY_GROUP_CLOSED",
-      "CfnGuardFileName": "vpc_default_security_group_closed.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/vpc_default_security_group_closed.guard",
       "Controls": [
         "AC-17",
         "CM-2",
@@ -4719,7 +4719,7 @@
     },
     {
       "AWSConfigIdentifier": "VPC_SG_OPEN_ONLY_TO_AUTHORIZED_PORTS",
-      "CfnGuardFileName": "vpc_sg_open_only_to_authorized_ports.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/vpc_sg_open_only_to_authorized_ports.guard",
       "Controls": [
         "AC-17",
         "CM-2",
@@ -4728,28 +4728,28 @@
     },
     {
       "AWSConfigIdentifier": "SECURITY_AWARENESS_PROGRAM_EXISTS (PROCESS CHECK)",
-      "CfnGuardFileName": "security_awareness_program_exists (process check).guard",
+      "CfnGuardFile": "security_awareness_program_exists (process check).guard",
       "Controls": [
         "AT-2"
       ]
     },
     {
       "AWSConfigIdentifier": "ELB_LOGGING_ENABLED",
-      "CfnGuardFileName": "elb_logging_enabled.guard",
+      "CfnGuardFile": "rules/aws/elastic_load_balancing/elb_logging_enabled.guard",
       "Controls": [
         "AU-2"
       ]
     },
     {
       "AWSConfigIdentifier": "VPC_FLOW_LOGS_ENABLED",
-      "CfnGuardFileName": "vpc_flow_logs_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/vpc_flow_logs_enabled.guard",
       "Controls": [
         "AU-2"
       ]
     },
     {
       "AWSConfigIdentifier": "S3_BUCKET_REPLICATION_ENABLED",
-      "CfnGuardFileName": "s3_bucket_replication_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_s3/s3_bucket_replication_enabled.guard",
       "Controls": [
         "AU-9",
         "CP-9",
@@ -4759,28 +4759,28 @@
     },
     {
       "AWSConfigIdentifier": "CLOUD_TRAIL_ENCRYPTION_ENABLED",
-      "CfnGuardFileName": "cloud_trail_encryption_enabled.guard",
+      "CfnGuardFile": "rules/aws/cloudtrail/cloud_trail_encryption_enabled.guard",
       "Controls": [
         "AU-9"
       ]
     },
     {
       "AWSConfigIdentifier": "CLOUD_TRAIL_LOG_FILE_VALIDATION_ENABLED",
-      "CfnGuardFileName": "cloud_trail_log_file_validation_enabled.guard",
+      "CfnGuardFile": "rules/aws/cloudtrail/cloud_trail_log_file_validation_enabled.guard",
       "Controls": [
         "AU-9"
       ]
     },
     {
       "AWSConfigIdentifier": "CLOUDWATCH_LOG_GROUP_ENCRYPTED",
-      "CfnGuardFileName": "cloudwatch_log_group_encrypted.guard",
+      "CfnGuardFile": "rules/aws/cloudwatch/cloudwatch_log_group_encrypted.guard",
       "Controls": [
         "AU-9"
       ]
     },
     {
       "AWSConfigIdentifier": "S3_BUCKET_VERSIONING_ENABLED",
-      "CfnGuardFileName": "s3_bucket_versioning_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_s3/s3_bucket_versioning_enabled.guard",
       "Controls": [
         "AU-9",
         "CP-9",
@@ -4790,35 +4790,35 @@
     },
     {
       "AWSConfigIdentifier": "CW_LOGGROUP_RETENTION_PERIOD_CHECK",
-      "CfnGuardFileName": "cw_loggroup_retention_period_check.guard",
+      "CfnGuardFile": "rules/aws/cloudwatch/cw_loggroup_retention_period_check.guard",
       "Controls": [
         "AU-11"
       ]
     },
     {
       "AWSConfigIdentifier": "LAMBDA_CONCURRENCY_CHECK",
-      "CfnGuardFileName": "lambda_concurrency_check.guard",
+      "CfnGuardFile": "rules/aws/lambda/lambda_concurrency_check.guard",
       "Controls": [
         "CA-7"
       ]
     },
     {
       "AWSConfigIdentifier": "LAMBDA_DLQ_CHECK",
-      "CfnGuardFileName": "lambda_dlq_check.guard",
+      "CfnGuardFile": "rules/aws/lambda/lambda_dlq_check.guard",
       "Controls": [
         "CA-7"
       ]
     },
     {
       "AWSConfigIdentifier": "RDS_ENHANCED_MONITORING_ENABLED",
-      "CfnGuardFileName": "rds_enhanced_monitoring_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_rds/rds_enhanced_monitoring_enabled.guard",
       "Controls": [
         "CA-7"
       ]
     },
     {
       "AWSConfigIdentifier": "AUTOSCALING_GROUP_ELB_HEALTHCHECK_REQUIRED",
-      "CfnGuardFileName": "autoscaling_group_elb_healthcheck_required.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2_auto_scaling/autoscaling_group_elb_healthcheck_required.guard",
       "Controls": [
         "CA-7",
         "IR-4",
@@ -4827,28 +4827,28 @@
     },
     {
       "AWSConfigIdentifier": "BEANSTALK_ENHANCED_HEALTH_REPORTING_ENABLED",
-      "CfnGuardFileName": "beanstalk_enhanced_health_reporting_enabled.guard",
+      "CfnGuardFile": "rules/aws/elastic_beanstalk/beanstalk_enhanced_health_reporting_enabled.guard",
       "Controls": [
         "CA-7"
       ]
     },
     {
       "AWSConfigIdentifier": "DYNAMODB_THROUGHPUT_LIMIT_CHECK",
-      "CfnGuardFileName": "dynamodb_throughput_limit_check.guard",
+      "CfnGuardFile": "rules/aws/dynamodb/dynamodb_throughput_limit_check.guard",
       "Controls": [
         "CA-7"
       ]
     },
     {
       "AWSConfigIdentifier": "EC2_INSTANCE_DETAILED_MONITORING_ENABLED",
-      "CfnGuardFileName": "ec2_instance_detailed_monitoring_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ec2_instance_detailed_monitoring_enabled.guard",
       "Controls": [
         "CA-7"
       ]
     },
     {
       "AWSConfigIdentifier": "ALB_WAF_ENABLED",
-      "CfnGuardFileName": "alb_waf_enabled.guard",
+      "CfnGuardFile": "rules/aws/elastic_load_balancing_v2/alb_waf_enabled.guard",
       "Controls": [
         "CM-2",
         "SC-7"
@@ -4856,21 +4856,21 @@
     },
     {
       "AWSConfigIdentifier": "API_GW_ASSOCIATED_WITH_WAF",
-      "CfnGuardFileName": "api_gw_associated_with_waf.guard",
+      "CfnGuardFile": "rules/aws/api_gateway_v2/api_gw_associated_with_waf.guard",
       "Controls": [
         "CM-2"
       ]
     },
     {
       "AWSConfigIdentifier": "NO_UNRESTRICTED_ROUTE_TO_IGW",
-      "CfnGuardFileName": "no_unrestricted_route_to_igw.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/no_unrestricted_route_to_igw.guard",
       "Controls": [
         "CM-2"
       ]
     },
     {
       "AWSConfigIdentifier": "EC2_INSTANCE_MANAGED_BY_SYSTEMS_MANAGER",
-      "CfnGuardFileName": "ec2_instance_managed_by_systems_manager.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ec2_instance_managed_by_systems_manager.guard",
       "Controls": [
         "CM-2",
         "CM-8",
@@ -4879,7 +4879,7 @@
     },
     {
       "AWSConfigIdentifier": "EC2_MANAGEDINSTANCE_ASSOCIATION_COMPLIANCE_STATUS_CHECK",
-      "CfnGuardFileName": "ec2_managedinstance_association_compliance_status_check.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ec2_managedinstance_association_compliance_status_check.guard",
       "Controls": [
         "CM-2",
         "CM-8"
@@ -4887,21 +4887,21 @@
     },
     {
       "AWSConfigIdentifier": "EC2_STOPPED_INSTANCE",
-      "CfnGuardFileName": "ec2_stopped_instance.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ec2_stopped_instance.guard",
       "Controls": [
         "CM-2"
       ]
     },
     {
       "AWSConfigIdentifier": "EC2_VOLUME_INUSE_CHECK",
-      "CfnGuardFileName": "ec2_volume_inuse_check.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ec2_volume_inuse_check.guard",
       "Controls": [
         "CM-2"
       ]
     },
     {
       "AWSConfigIdentifier": "ELB_DELETION_PROTECTION_ENABLED",
-      "CfnGuardFileName": "elb_deletion_protection_enabled.guard",
+      "CfnGuardFile": "rules/aws/elastic_load_balancing/elb_deletion_protection_enabled.guard",
       "Controls": [
         "CM-2",
         "CP-10",
@@ -4910,28 +4910,28 @@
     },
     {
       "AWSConfigIdentifier": "EC2_MANAGEDINSTANCE_PATCH_COMPLIANCE_STATUS_CHECK",
-      "CfnGuardFileName": "ec2_managedinstance_patch_compliance_status_check.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ec2_managedinstance_patch_compliance_status_check.guard",
       "Controls": [
         "CM-8"
       ]
     },
     {
       "AWSConfigIdentifier": "RESPONSE_PLAN_EXISTS_MAINTAINED (PROCESS CHECK)",
-      "CfnGuardFileName": "response_plan_exists_maintained (process check).guard",
+      "CfnGuardFile": "response_plan_exists_maintained (process check).guard",
       "Controls": [
         "CP-2"
       ]
     },
     {
       "AWSConfigIdentifier": "RESPONSE_PLAN_TESTED (PROCESS CHECK)",
-      "CfnGuardFileName": "response_plan_tested (process check).guard",
+      "CfnGuardFile": "response_plan_tested (process check).guard",
       "Controls": [
         "CP-4"
       ]
     },
     {
       "AWSConfigIdentifier": "AURORA_RESOURCES_PROTECTED_BY_BACKUP_PLAN",
-      "CfnGuardFileName": "aurora_resources_protected_by_backup_plan.guard",
+      "CfnGuardFile": "rules/aws/amazon_rds/aurora_resources_protected_by_backup_plan.guard",
       "Controls": [
         "CP-9",
         "CP-10"
@@ -4939,7 +4939,7 @@
     },
     {
       "AWSConfigIdentifier": "BACKUP_PLAN_MIN_FREQUENCY_AND_MIN_RETENTION_CHECK",
-      "CfnGuardFileName": "backup_plan_min_frequency_and_min_retention_check.guard",
+      "CfnGuardFile": "rules/aws/aws_backup/backup_plan_min_frequency_and_min_retention_check.guard",
       "Controls": [
         "CP-9",
         "CP-10"
@@ -4947,7 +4947,7 @@
     },
     {
       "AWSConfigIdentifier": "DYNAMODB_RESOURCES_PROTECTED_BY_BACKUP_PLAN",
-      "CfnGuardFileName": "dynamodb_resources_protected_by_backup_plan.guard",
+      "CfnGuardFile": "rules/aws/dynamodb/dynamodb_resources_protected_by_backup_plan.guard",
       "Controls": [
         "CP-9",
         "CP-10"
@@ -4955,7 +4955,7 @@
     },
     {
       "AWSConfigIdentifier": "EBS_RESOURCES_PROTECTED_BY_BACKUP_PLAN",
-      "CfnGuardFileName": "ebs_resources_protected_by_backup_plan.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ebs_resources_protected_by_backup_plan.guard",
       "Controls": [
         "CP-9",
         "CP-10"
@@ -4963,7 +4963,7 @@
     },
     {
       "AWSConfigIdentifier": "EC2_RESOURCES_PROTECTED_BY_BACKUP_PLAN",
-      "CfnGuardFileName": "ec2_resources_protected_by_backup_plan.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ec2_resources_protected_by_backup_plan.guard",
       "Controls": [
         "CP-9",
         "CP-10"
@@ -4971,7 +4971,7 @@
     },
     {
       "AWSConfigIdentifier": "EFS_RESOURCES_PROTECTED_BY_BACKUP_PLAN",
-      "CfnGuardFileName": "efs_resources_protected_by_backup_plan.guard",
+      "CfnGuardFile": "rules/aws/amazon_efs/efs_resources_protected_by_backup_plan.guard",
       "Controls": [
         "CP-9",
         "CP-10"
@@ -4979,7 +4979,7 @@
     },
     {
       "AWSConfigIdentifier": "FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN",
-      "CfnGuardFileName": "fsx_resources_protected_by_backup_plan.guard",
+      "CfnGuardFile": "rules/aws/amazon_fsx/fsx_resources_protected_by_backup_plan.guard",
       "Controls": [
         "CP-9",
         "CP-10"
@@ -4987,7 +4987,7 @@
     },
     {
       "AWSConfigIdentifier": "RDS_RESOURCES_PROTECTED_BY_BACKUP_PLAN",
-      "CfnGuardFileName": "rds_resources_protected_by_backup_plan.guard",
+      "CfnGuardFile": "rules/aws/amazon_rds/rds_resources_protected_by_backup_plan.guard",
       "Controls": [
         "CP-9",
         "CP-10"
@@ -4995,7 +4995,7 @@
     },
     {
       "AWSConfigIdentifier": "REDSHIFT_BACKUP_ENABLED",
-      "CfnGuardFileName": "redshift_backup_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_redshift/redshift_backup_enabled.guard",
       "Controls": [
         "CP-9",
         "CP-10",
@@ -5004,7 +5004,7 @@
     },
     {
       "AWSConfigIdentifier": "DB_INSTANCE_BACKUP_ENABLED",
-      "CfnGuardFileName": "db_instance_backup_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_rds/db_instance_backup_enabled.guard",
       "Controls": [
         "CP-9",
         "CP-10",
@@ -5013,7 +5013,7 @@
     },
     {
       "AWSConfigIdentifier": "DYNAMODB_PITR_ENABLED",
-      "CfnGuardFileName": "dynamodb_pitr_enabled.guard",
+      "CfnGuardFile": "rules/aws/dynamodb/dynamodb_pitr_enabled.guard",
       "Controls": [
         "CP-9",
         "CP-10",
@@ -5022,7 +5022,7 @@
     },
     {
       "AWSConfigIdentifier": "ELASTICACHE_REDIS_CLUSTER_AUTOMATIC_BACKUP_CHECK",
-      "CfnGuardFileName": "elasticache_redis_cluster_automatic_backup_check.guard",
+      "CfnGuardFile": "rules/aws/elasticache/elasticache_redis_cluster_automatic_backup_check.guard",
       "Controls": [
         "CP-9",
         "CP-10",
@@ -5031,7 +5031,7 @@
     },
     {
       "AWSConfigIdentifier": "ELB_CROSS_ZONE_LOAD_BALANCING_ENABLED",
-      "CfnGuardFileName": "elb_cross_zone_load_balancing_enabled.guard",
+      "CfnGuardFile": "rules/aws/elastic_load_balancing/elb_cross_zone_load_balancing_enabled.guard",
       "Controls": [
         "CP-10",
         "SC-5"
@@ -5039,7 +5039,7 @@
     },
     {
       "AWSConfigIdentifier": "DYNAMODB_AUTOSCALING_ENABLED",
-      "CfnGuardFileName": "dynamodb_autoscaling_enabled.guard",
+      "CfnGuardFile": "rules/aws/dynamodb/dynamodb_autoscaling_enabled.guard",
       "Controls": [
         "CP-10",
         "SC-5"
@@ -5047,7 +5047,7 @@
     },
     {
       "AWSConfigIdentifier": "EBS_OPTIMIZED_INSTANCE",
-      "CfnGuardFileName": "ebs_optimized_instance.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ebs_optimized_instance.guard",
       "Controls": [
         "CP-10",
         "SC-5"
@@ -5055,7 +5055,7 @@
     },
     {
       "AWSConfigIdentifier": "RDS_MULTI_AZ_SUPPORT",
-      "CfnGuardFileName": "rds_multi_az_support.guard",
+      "CfnGuardFile": "rules/aws/amazon_rds/rds_multi_az_support.guard",
       "Controls": [
         "CP-10",
         "SC-5"
@@ -5063,7 +5063,7 @@
     },
     {
       "AWSConfigIdentifier": "VPC_VPN_2_TUNNELS_UP",
-      "CfnGuardFileName": "vpc_vpn_2_tunnels_up.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/vpc_vpn_2_tunnels_up.guard",
       "Controls": [
         "CP-10",
         "SC-5"
@@ -5071,56 +5071,56 @@
     },
     {
       "AWSConfigIdentifier": "GUARDDUTY_NON_ARCHIVED_FINDINGS",
-      "CfnGuardFileName": "guardduty_non_archived_findings.guard",
+      "CfnGuardFile": "rules/aws/guardduty/guardduty_non_archived_findings.guard",
       "Controls": [
         "IR-4"
       ]
     },
     {
       "AWSConfigIdentifier": "ANNUAL_RISK_ASSESSMENT_PERFORMED (PROCESS CHECK)",
-      "CfnGuardFileName": "annual_risk_assessment_performed (process check).guard",
+      "CfnGuardFile": "annual_risk_assessment_performed (process check).guard",
       "Controls": [
         "RA-3"
       ]
     },
     {
       "AWSConfigIdentifier": "CODEBUILD_PROJECT_ENVVAR_AWSCRED_CHECK",
-      "CfnGuardFileName": "codebuild_project_envvar_awscred_check.guard",
+      "CfnGuardFile": "rules/aws/codebuild/codebuild_project_envvar_awscred_check.guard",
       "Controls": [
         "SA-3"
       ]
     },
     {
       "AWSConfigIdentifier": "CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK",
-      "CfnGuardFileName": "codebuild_project_source_repo_url_check.guard",
+      "CfnGuardFile": "rules/aws/codebuild/codebuild_project_source_repo_url_check.guard",
       "Controls": [
         "SA-3"
       ]
     },
     {
       "AWSConfigIdentifier": "RDS_INSTANCE_DELETION_PROTECTION_ENABLED",
-      "CfnGuardFileName": "rds_instance_deletion_protection_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_rds/rds_instance_deletion_protection_enabled.guard",
       "Controls": [
         "SC-5"
       ]
     },
     {
       "AWSConfigIdentifier": "ELASTICSEARCH_NODE_TO_NODE_ENCRYPTION_CHECK",
-      "CfnGuardFileName": "elasticsearch_node_to_node_encryption_check.guard",
+      "CfnGuardFile": "rules/aws/opensearch_service/elasticsearch_node_to_node_encryption_check.guard",
       "Controls": [
         "SC-7"
       ]
     },
     {
       "AWSConfigIdentifier": "CMK_BACKING_KEY_ROTATION_ENABLED",
-      "CfnGuardFileName": "cmk_backing_key_rotation_enabled.guard",
+      "CfnGuardFile": "rules/aws/aws_kms/cmk_backing_key_rotation_enabled.guard",
       "Controls": [
         "SC-12"
       ]
     },
     {
       "AWSConfigIdentifier": "KMS_CMK_NOT_SCHEDULED_FOR_DELETION",
-      "CfnGuardFileName": "kms_cmk_not_scheduled_for_deletion.guard",
+      "CfnGuardFile": "rules/aws/aws_kms/kms_cmk_not_scheduled_for_deletion.guard",
       "Controls": [
         "SC-12",
         "SC-13"
@@ -5128,35 +5128,35 @@
     },
     {
       "AWSConfigIdentifier": "S3_DEFAULT_ENCRYPTION_KMS",
-      "CfnGuardFileName": "s3_default_encryption_kms.guard",
+      "CfnGuardFile": "rules/aws/amazon_s3/s3_default_encryption_kms.guard",
       "Controls": [
         "SC-13"
       ]
     },
     {
       "AWSConfigIdentifier": "SAGEMAKER_ENDPOINT_CONFIGURATION_KMS_KEY_CONFIGURED",
-      "CfnGuardFileName": "sagemaker_endpoint_configuration_kms_key_configured.guard",
+      "CfnGuardFile": "rules/aws/amazon_sagemaker/sagemaker_endpoint_configuration_kms_key_configured.guard",
       "Controls": [
         "SC-13"
       ]
     },
     {
       "AWSConfigIdentifier": "SAGEMAKER_NOTEBOOK_INSTANCE_KMS_KEY_CONFIGURED",
-      "CfnGuardFileName": "sagemaker_notebook_instance_kms_key_configured.guard",
+      "CfnGuardFile": "rules/aws/amazon_sagemaker/sagemaker_notebook_instance_kms_key_configured.guard",
       "Controls": [
         "SC-13"
       ]
     },
     {
       "AWSConfigIdentifier": "SNS_ENCRYPTED_KMS",
-      "CfnGuardFileName": "sns_encrypted_kms.guard",
+      "CfnGuardFile": "rules/aws/amazon_sns/sns_encrypted_kms.guard",
       "Controls": [
         "SC-13"
       ]
     },
     {
       "AWSConfigIdentifier": "REDSHIFT_CLUSTER_KMS_ENABLED",
-      "CfnGuardFileName": "redshift_cluster_kms_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_redshift/redshift_cluster_kms_enabled.guard",
       "Controls": [
         "SC-13"
       ]
@@ -5165,7 +5165,7 @@
   "FedRAMP-Moderate-BestPractices": [
     {
       "AWSConfigIdentifier": "IAM_INLINE_POLICY_BLOCKED_KMS_ACTIONS",
-      "CfnGuardFileName": "iam_inline_policy_blocked_kms_actions.guard",
+      "CfnGuardFile": "rules/aws/iam/iam_inline_policy_blocked_kms_actions.guard",
       "Controls": [
         "AC-2(f)",
         "AC-2(j)",
@@ -5174,7 +5174,7 @@
     },
     {
       "AWSConfigIdentifier": "IAM_NO_INLINE_POLICY_CHECK",
-      "CfnGuardFileName": "iam_no_inline_policy_check.guard",
+      "CfnGuardFile": "rules/aws/iam/iam_no_inline_policy_check.guard",
       "Controls": [
         "AC-2(f)",
         "AC-2(j)",
@@ -5187,7 +5187,7 @@
     },
     {
       "AWSConfigIdentifier": "IAM_POLICY_NO_STATEMENTS_WITH_ADMIN_ACCESS",
-      "CfnGuardFileName": "iam_policy_no_statements_with_admin_access.guard",
+      "CfnGuardFile": "rules/aws/iam/iam_policy_no_statements_with_admin_access.guard",
       "Controls": [
         "AC-2(f)",
         "AC-2(j)",
@@ -5201,7 +5201,7 @@
     },
     {
       "AWSConfigIdentifier": "IAM_POLICY_NO_STATEMENTS_WITH_FULL_ACCESS",
-      "CfnGuardFileName": "iam_policy_no_statements_with_full_access.guard",
+      "CfnGuardFile": "rules/aws/iam/iam_policy_no_statements_with_full_access.guard",
       "Controls": [
         "AC-2(f)",
         "AC-2(j)",
@@ -5212,7 +5212,7 @@
     },
     {
       "AWSConfigIdentifier": "ACCESS_KEYS_ROTATED",
-      "CfnGuardFileName": "access_keys_rotated.guard",
+      "CfnGuardFile": "rules/aws/iam/access_keys_rotated.guard",
       "Controls": [
         "AC-2(f)",
         "AC-2(j)",
@@ -5221,7 +5221,7 @@
     },
     {
       "AWSConfigIdentifier": "IAM_PASSWORD_POLICY",
-      "CfnGuardFileName": "iam_password_policy.guard",
+      "CfnGuardFile": "rules/aws/iam/iam_password_policy.guard",
       "Controls": [
         "AC-2(f)",
         "AC-2(j)",
@@ -5235,7 +5235,7 @@
     },
     {
       "AWSConfigIdentifier": "IAM_ROOT_ACCESS_KEY_CHECK",
-      "CfnGuardFileName": "iam_root_access_key_check.guard",
+      "CfnGuardFile": "rules/aws/iam/iam_root_access_key_check.guard",
       "Controls": [
         "AC-2(f)",
         "AC-2(j)",
@@ -5249,7 +5249,7 @@
     },
     {
       "AWSConfigIdentifier": "IAM_USER_GROUP_MEMBERSHIP_CHECK",
-      "CfnGuardFileName": "iam_user_group_membership_check.guard",
+      "CfnGuardFile": "rules/aws/iam/iam_user_group_membership_check.guard",
       "Controls": [
         "AC-2(f)",
         "AC-2(j)",
@@ -5262,7 +5262,7 @@
     },
     {
       "AWSConfigIdentifier": "IAM_USER_MFA_ENABLED",
-      "CfnGuardFileName": "iam_user_mfa_enabled.guard",
+      "CfnGuardFile": "rules/aws/iam/iam_user_mfa_enabled.guard",
       "Controls": [
         "AC-2(f)",
         "AC-2(j)",
@@ -5273,7 +5273,7 @@
     },
     {
       "AWSConfigIdentifier": "IAM_USER_NO_POLICIES_CHECK",
-      "CfnGuardFileName": "iam_user_no_policies_check.guard",
+      "CfnGuardFile": "rules/aws/iam/iam_user_no_policies_check.guard",
       "Controls": [
         "AC-2(f)",
         "AC-2(j)",
@@ -5286,7 +5286,7 @@
     },
     {
       "AWSConfigIdentifier": "IAM_USER_UNUSED_CREDENTIALS_CHECK",
-      "CfnGuardFileName": "iam_user_unused_credentials_check.guard",
+      "CfnGuardFile": "rules/aws/iam/iam_user_unused_credentials_check.guard",
       "Controls": [
         "AC-2(f)",
         "AC-2(j)",
@@ -5299,7 +5299,7 @@
     },
     {
       "AWSConfigIdentifier": "MFA_ENABLED_FOR_IAM_CONSOLE_ACCESS",
-      "CfnGuardFileName": "mfa_enabled_for_iam_console_access.guard",
+      "CfnGuardFile": "rules/aws/iam/mfa_enabled_for_iam_console_access.guard",
       "Controls": [
         "AC-2(f)",
         "AC-2(j)",
@@ -5310,7 +5310,7 @@
     },
     {
       "AWSConfigIdentifier": "ROOT_ACCOUNT_HARDWARE_MFA_ENABLED",
-      "CfnGuardFileName": "root_account_hardware_mfa_enabled.guard",
+      "CfnGuardFile": "rules/aws/iam/root_account_hardware_mfa_enabled.guard",
       "Controls": [
         "AC-2(f)",
         "AC-2(1)",
@@ -5320,7 +5320,7 @@
     },
     {
       "AWSConfigIdentifier": "ROOT_ACCOUNT_MFA_ENABLED",
-      "CfnGuardFileName": "root_account_mfa_enabled.guard",
+      "CfnGuardFile": "rules/aws/iam/root_account_mfa_enabled.guard",
       "Controls": [
         "AC-2(f)",
         "AC-2(j)",
@@ -5331,7 +5331,7 @@
     },
     {
       "AWSConfigIdentifier": "API_GW_EXECUTION_LOGGING_ENABLED",
-      "CfnGuardFileName": "api_gw_execution_logging_enabled.guard",
+      "CfnGuardFile": "rules/aws/api_gateway/rules/aws/api_gateway_v2/api_gw_execution_logging_enabled.guard",
       "Controls": [
         "AC-2(g)",
         "AU-2(a)(d)",
@@ -5342,14 +5342,14 @@
     },
     {
       "AWSConfigIdentifier": "ELASTICSEARCH_LOGS_TO_CLOUDWATCH",
-      "CfnGuardFileName": "elasticsearch_logs_to_cloudwatch.guard",
+      "CfnGuardFile": "rules/aws/opensearch_service/elasticsearch_logs_to_cloudwatch.guard",
       "Controls": [
         "AC-2(g)"
       ]
     },
     {
       "AWSConfigIdentifier": "MULTI_REGION_CLOUDTRAIL_ENABLED",
-      "CfnGuardFileName": "multi_region_cloudtrail_enabled.guard",
+      "CfnGuardFile": "multi_region_rules/aws/cloudtrail/cloudtrail_enabled.guard",
       "Controls": [
         "AC-2(g)",
         "AC-2(4)",
@@ -5364,7 +5364,7 @@
     },
     {
       "AWSConfigIdentifier": "RDS_LOGGING_ENABLED",
-      "CfnGuardFileName": "rds_logging_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_rds/rds_logging_enabled.guard",
       "Controls": [
         "AC-2(g)",
         "AC-2(4)",
@@ -5376,7 +5376,7 @@
     },
     {
       "AWSConfigIdentifier": "SECURITYHUB_ENABLED",
-      "CfnGuardFileName": "securityhub_enabled.guard",
+      "CfnGuardFile": "rules/aws/security_hub/securityhub_enabled.guard",
       "Controls": [
         "AC-2(g)",
         "AC-2(1)",
@@ -5398,7 +5398,7 @@
     },
     {
       "AWSConfigIdentifier": "WAFV2_LOGGING_ENABLED",
-      "CfnGuardFileName": "wafv2_logging_enabled.guard",
+      "CfnGuardFile": "rules/aws/aws_waf_v2/wafv2_logging_enabled.guard",
       "Controls": [
         "AC-2(g)",
         "AU-2(a)(d)",
@@ -5411,7 +5411,7 @@
     },
     {
       "AWSConfigIdentifier": "CLOUD_TRAIL_CLOUD_WATCH_LOGS_ENABLED",
-      "CfnGuardFileName": "cloud_trail_cloud_watch_logs_enabled.guard",
+      "CfnGuardFile": "rules/aws/cloudtrail/cloud_trail_cloud_watch_logs_enabled.guard",
       "Controls": [
         "AC-2(g)",
         "AC-2(4)",
@@ -5427,7 +5427,7 @@
     },
     {
       "AWSConfigIdentifier": "CLOUDTRAIL_ENABLED",
-      "CfnGuardFileName": "cloudtrail_enabled.guard",
+      "CfnGuardFile": "rules/aws/cloudtrail/cloudtrail_enabled.guard",
       "Controls": [
         "AC-2(g)",
         "AC-2(4)",
@@ -5442,7 +5442,7 @@
     },
     {
       "AWSConfigIdentifier": "CLOUDTRAIL_S3_DATAEVENTS_ENABLED",
-      "CfnGuardFileName": "cloudtrail_s3_dataevents_enabled.guard",
+      "CfnGuardFile": "rules/aws/cloudtrail/cloudtrail_s3_dataevents_enabled.guard",
       "Controls": [
         "AC-2(g)",
         "AC-2(4)",
@@ -5457,7 +5457,7 @@
     },
     {
       "AWSConfigIdentifier": "GUARDDUTY_ENABLED_CENTRALIZED",
-      "CfnGuardFileName": "guardduty_enabled_centralized.guard",
+      "CfnGuardFile": "rules/aws/guardduty/guardduty_enabled_centralized.guard",
       "Controls": [
         "AC-2(g)",
         "AC-2(1)",
@@ -5483,7 +5483,7 @@
     },
     {
       "AWSConfigIdentifier": "REDSHIFT_CLUSTER_CONFIGURATION_CHECK",
-      "CfnGuardFileName": "redshift_cluster_configuration_check.guard",
+      "CfnGuardFile": "rules/aws/amazon_redshift/redshift_cluster_configuration_check.guard",
       "Controls": [
         "AC-2(g)",
         "AC-2(4)",
@@ -5499,7 +5499,7 @@
     },
     {
       "AWSConfigIdentifier": "S3_BUCKET_LOGGING_ENABLED",
-      "CfnGuardFileName": "s3_bucket_logging_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_s3/s3_bucket_logging_enabled.guard",
       "Controls": [
         "AC-2(g)",
         "AC-2(4)",
@@ -5511,7 +5511,7 @@
     },
     {
       "AWSConfigIdentifier": "EC2_INSTANCE_PROFILE_ATTACHED",
-      "CfnGuardFileName": "ec2_instance_profile_attached.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ec2_instance_profile_attached.guard",
       "Controls": [
         "AC-2(j)",
         "AC-3",
@@ -5520,7 +5520,7 @@
     },
     {
       "AWSConfigIdentifier": "ECS_TASK_DEFINITION_USER_FOR_HOST_MODE_CHECK",
-      "CfnGuardFileName": "ecs_task_definition_user_for_host_mode_check.guard",
+      "CfnGuardFile": "rules/aws/amazon_ecs/ecs_task_definition_user_for_host_mode_check.guard",
       "Controls": [
         "AC-2(j)",
         "AC-3",
@@ -5529,7 +5529,7 @@
     },
     {
       "AWSConfigIdentifier": "IAM_CUSTOMER_POLICY_BLOCKED_KMS_ACTIONS",
-      "CfnGuardFileName": "iam_customer_policy_blocked_kms_actions.guard",
+      "CfnGuardFile": "rules/aws/iam/iam_customer_policy_blocked_kms_actions.guard",
       "Controls": [
         "AC-2(j)",
         "AC-5c"
@@ -5537,7 +5537,7 @@
     },
     {
       "AWSConfigIdentifier": "IAM_GROUP_HAS_USERS_CHECK",
-      "CfnGuardFileName": "iam_group_has_users_check.guard",
+      "CfnGuardFile": "iam_group_has_users_check.guard",
       "Controls": [
         "AC-2(j)",
         "AC-3",
@@ -5548,7 +5548,7 @@
     },
     {
       "AWSConfigIdentifier": "CLOUDWATCH_ALARM_ACTION_CHECK",
-      "CfnGuardFileName": "cloudwatch_alarm_action_check.guard",
+      "CfnGuardFile": "rules/aws/cloudwatch/cloudwatch_alarm_action_check.guard",
       "Controls": [
         "AC-2(4)",
         "AU-6(1)(3)",
@@ -5563,7 +5563,7 @@
     },
     {
       "AWSConfigIdentifier": "AUTOSCALING_LAUNCH_CONFIG_PUBLIC_IP_DISABLED",
-      "CfnGuardFileName": "autoscaling_launch_config_public_ip_disabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2_auto_scaling/autoscaling_launch_config_public_ip_disabled.guard",
       "Controls": [
         "AC-3",
         "AC-21(b)",
@@ -5573,7 +5573,7 @@
     },
     {
       "AWSConfigIdentifier": "EC2_IMDSV2_CHECK",
-      "CfnGuardFileName": "ec2_imdsv2_check.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ec2_imdsv2_check.guard",
       "Controls": [
         "AC-3",
         "AC-6"
@@ -5581,7 +5581,7 @@
     },
     {
       "AWSConfigIdentifier": "SSM_DOCUMENT_NOT_PUBLIC",
-      "CfnGuardFileName": "ssm_document_not_public.guard",
+      "CfnGuardFile": "rules/aws/systems_manager/ssm_document_not_public.guard",
       "Controls": [
         "AC-3",
         "SC-4",
@@ -5590,7 +5590,7 @@
     },
     {
       "AWSConfigIdentifier": "DMS_REPLICATION_NOT_PUBLIC",
-      "CfnGuardFileName": "dms_replication_not_public.guard",
+      "CfnGuardFile": "rules/aws/aws_dms/dms_replication_not_public.guard",
       "Controls": [
         "AC-3",
         "AC-4",
@@ -5605,7 +5605,7 @@
     },
     {
       "AWSConfigIdentifier": "EBS_SNAPSHOT_PUBLIC_RESTORABLE_CHECK",
-      "CfnGuardFileName": "ebs_snapshot_public_restorable_check.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ebs_snapshot_public_restorable_check.guard",
       "Controls": [
         "AC-3",
         "AC-4",
@@ -5620,7 +5620,7 @@
     },
     {
       "AWSConfigIdentifier": "EC2_INSTANCE_NO_PUBLIC_IP",
-      "CfnGuardFileName": "ec2_instance_no_public_ip.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ec2_instance_no_public_ip.guard",
       "Controls": [
         "AC-3",
         "AC-4",
@@ -5634,7 +5634,7 @@
     },
     {
       "AWSConfigIdentifier": "ELASTICSEARCH_IN_VPC_ONLY",
-      "CfnGuardFileName": "elasticsearch_in_vpc_only.guard",
+      "CfnGuardFile": "rules/aws/opensearch_service/elasticsearch_in_vpc_only.guard",
       "Controls": [
         "AC-3",
         "AC-4",
@@ -5647,7 +5647,7 @@
     },
     {
       "AWSConfigIdentifier": "EMR_MASTER_NO_PUBLIC_IP",
-      "CfnGuardFileName": "emr_master_no_public_ip.guard",
+      "CfnGuardFile": "rules/aws/amazon_emr/emr_master_no_public_ip.guard",
       "Controls": [
         "AC-3",
         "AC-4",
@@ -5661,7 +5661,7 @@
     },
     {
       "AWSConfigIdentifier": "LAMBDA_FUNCTION_PUBLIC_ACCESS_PROHIBITED",
-      "CfnGuardFileName": "lambda_function_public_access_prohibited.guard",
+      "CfnGuardFile": "rules/aws/lambda/lambda_function_public_access_prohibited.guard",
       "Controls": [
         "AC-3",
         "AC-4",
@@ -5676,7 +5676,7 @@
     },
     {
       "AWSConfigIdentifier": "LAMBDA_INSIDE_VPC",
-      "CfnGuardFileName": "lambda_inside_vpc.guard",
+      "CfnGuardFile": "rules/aws/lambda/lambda_inside_vpc.guard",
       "Controls": [
         "AC-3",
         "AC-4",
@@ -5689,7 +5689,7 @@
     },
     {
       "AWSConfigIdentifier": "RDS_INSTANCE_PUBLIC_ACCESS_CHECK",
-      "CfnGuardFileName": "rds_instance_public_access_check.guard",
+      "CfnGuardFile": "rules/aws/amazon_rds/rds_instance_public_access_check.guard",
       "Controls": [
         "AC-3",
         "AC-4",
@@ -5704,7 +5704,7 @@
     },
     {
       "AWSConfigIdentifier": "RDS_SNAPSHOTS_PUBLIC_PROHIBITED",
-      "CfnGuardFileName": "rds_snapshots_public_prohibited.guard",
+      "CfnGuardFile": "rules/aws/amazon_rds/rds_snapshots_public_prohibited.guard",
       "Controls": [
         "AC-3",
         "AC-4",
@@ -5719,7 +5719,7 @@
     },
     {
       "AWSConfigIdentifier": "REDSHIFT_CLUSTER_PUBLIC_ACCESS_CHECK",
-      "CfnGuardFileName": "redshift_cluster_public_access_check.guard",
+      "CfnGuardFile": "rules/aws/amazon_redshift/redshift_cluster_public_access_check.guard",
       "Controls": [
         "AC-3",
         "AC-4",
@@ -5734,7 +5734,7 @@
     },
     {
       "AWSConfigIdentifier": "S3_ACCOUNT_LEVEL_PUBLIC_ACCESS_BLOCKS_PERIODIC",
-      "CfnGuardFileName": "s3_account_level_public_access_blocks_periodic.guard",
+      "CfnGuardFile": "rules/aws/amazon_s3/s3_account_level_public_access_blocks_periodic.guard",
       "Controls": [
         "AC-3",
         "AC-6",
@@ -5748,7 +5748,7 @@
     },
     {
       "AWSConfigIdentifier": "S3_BUCKET_LEVEL_PUBLIC_ACCESS_PROHIBITED",
-      "CfnGuardFileName": "s3_bucket_level_public_access_prohibited.guard",
+      "CfnGuardFile": "rules/aws/amazon_s3/s3_bucket_level_public_access_prohibited.guard",
       "Controls": [
         "AC-3",
         "AC-6",
@@ -5762,7 +5762,7 @@
     },
     {
       "AWSConfigIdentifier": "S3_BUCKET_PUBLIC_READ_PROHIBITED",
-      "CfnGuardFileName": "s3_bucket_public_read_prohibited.guard",
+      "CfnGuardFile": "rules/aws/amazon_s3/s3_bucket_public_read_prohibited.guard",
       "Controls": [
         "AC-3",
         "AC-4",
@@ -5777,7 +5777,7 @@
     },
     {
       "AWSConfigIdentifier": "S3_BUCKET_PUBLIC_WRITE_PROHIBITED",
-      "CfnGuardFileName": "s3_bucket_public_write_prohibited.guard",
+      "CfnGuardFile": "rules/aws/amazon_s3/s3_bucket_public_write_prohibited.guard",
       "Controls": [
         "AC-3",
         "AC-4",
@@ -5792,7 +5792,7 @@
     },
     {
       "AWSConfigIdentifier": "SAGEMAKER_NOTEBOOK_NO_DIRECT_INTERNET_ACCESS",
-      "CfnGuardFileName": "sagemaker_notebook_no_direct_internet_access.guard",
+      "CfnGuardFile": "rules/aws/amazon_sagemaker/sagemaker_notebook_no_direct_internet_access.guard",
       "Controls": [
         "AC-3",
         "AC-4",
@@ -5807,7 +5807,7 @@
     },
     {
       "AWSConfigIdentifier": "SUBNET_AUTO_ASSIGN_PUBLIC_IP_DISABLED",
-      "CfnGuardFileName": "subnet_auto_assign_public_ip_disabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/subnet_auto_assign_public_ip_disabled.guard",
       "Controls": [
         "AC-3",
         "AC-6",
@@ -5820,7 +5820,7 @@
     },
     {
       "AWSConfigIdentifier": "EC2_INSTANCES_IN_VPC",
-      "CfnGuardFileName": "ec2_instances_in_vpc.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ec2_instances_in_vpc.guard",
       "Controls": [
         "AC-4",
         "AC-6",
@@ -5832,7 +5832,7 @@
     },
     {
       "AWSConfigIdentifier": "ACM_CERTIFICATE_EXPIRATION_CHECK",
-      "CfnGuardFileName": "acm_certificate_expiration_check.guard",
+      "CfnGuardFile": "rules/aws/aws_certificate_manager/acm_certificate_expiration_check.guard",
       "Controls": [
         "AC-4",
         "AC-17(2)",
@@ -5841,7 +5841,7 @@
     },
     {
       "AWSConfigIdentifier": "RESTRICTED_SSH",
-      "CfnGuardFileName": "restricted_ssh.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/restricted_ssh.guard",
       "Controls": [
         "AC-4",
         "AC-17(1)",
@@ -5853,7 +5853,7 @@
     },
     {
       "AWSConfigIdentifier": "RESTRICTED_COMMON_PORTS",
-      "CfnGuardFileName": "restricted_common_ports.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/restricted_common_ports.guard",
       "Controls": [
         "AC-4",
         "AC-17(1)",
@@ -5866,7 +5866,7 @@
     },
     {
       "AWSConfigIdentifier": "VPC_DEFAULT_SECURITY_GROUP_CLOSED",
-      "CfnGuardFileName": "vpc_default_security_group_closed.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/vpc_default_security_group_closed.guard",
       "Controls": [
         "AC-4",
         "AC-17(1)",
@@ -5879,7 +5879,7 @@
     },
     {
       "AWSConfigIdentifier": "VPC_SG_OPEN_ONLY_TO_AUTHORIZED_PORTS",
-      "CfnGuardFileName": "vpc_sg_open_only_to_authorized_ports.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/vpc_sg_open_only_to_authorized_ports.guard",
       "Controls": [
         "AC-4",
         "AC-17(1)",
@@ -5892,7 +5892,7 @@
     },
     {
       "AWSConfigIdentifier": "CODEBUILD_PROJECT_ENVVAR_AWSCRED_CHECK",
-      "CfnGuardFileName": "codebuild_project_envvar_awscred_check.guard",
+      "CfnGuardFile": "rules/aws/codebuild/codebuild_project_envvar_awscred_check.guard",
       "Controls": [
         "AC-6",
         "IA-5(7)",
@@ -5901,7 +5901,7 @@
     },
     {
       "AWSConfigIdentifier": "ELB_TLS_HTTPS_LISTENERS_ONLY",
-      "CfnGuardFileName": "elb_tls_https_listeners_only.guard",
+      "CfnGuardFile": "rules/aws/elastic_load_balancing/elb_tls_https_listeners_only.guard",
       "Controls": [
         "AC-17(2)",
         "SC-7",
@@ -5912,7 +5912,7 @@
     },
     {
       "AWSConfigIdentifier": "ALB_HTTP_TO_HTTPS_REDIRECTION_CHECK",
-      "CfnGuardFileName": "alb_http_to_https_redirection_check.guard",
+      "CfnGuardFile": "rules/aws/elastic_load_balancing_v2/alb_http_to_https_redirection_check.guard",
       "Controls": [
         "AC-17(2)",
         "SC-7",
@@ -5923,7 +5923,7 @@
     },
     {
       "AWSConfigIdentifier": "ELB_ACM_CERTIFICATE_REQUIRED",
-      "CfnGuardFileName": "elb_acm_certificate_required.guard",
+      "CfnGuardFile": "rules/aws/elastic_load_balancing/elb_acm_certificate_required.guard",
       "Controls": [
         "AC-17(2)",
         "SC-7",
@@ -5934,7 +5934,7 @@
     },
     {
       "AWSConfigIdentifier": "REDSHIFT_REQUIRE_TLS_SSL",
-      "CfnGuardFileName": "redshift_require_tls_ssl.guard",
+      "CfnGuardFile": "rules/aws/amazon_redshift/redshift_require_tls_ssl.guard",
       "Controls": [
         "AC-17(2)",
         "SC-7",
@@ -5945,7 +5945,7 @@
     },
     {
       "AWSConfigIdentifier": "S3_BUCKET_SSL_REQUESTS_ONLY",
-      "CfnGuardFileName": "s3_bucket_ssl_requests_only.guard",
+      "CfnGuardFile": "rules/aws/amazon_s3/s3_bucket_ssl_requests_only.guard",
       "Controls": [
         "AC-17(2)",
         "SC-7",
@@ -5956,7 +5956,7 @@
     },
     {
       "AWSConfigIdentifier": "NO_UNRESTRICTED_ROUTE_TO_IGW",
-      "CfnGuardFileName": "no_unrestricted_route_to_igw.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/no_unrestricted_route_to_igw.guard",
       "Controls": [
         "AC-21(b)",
         "CM-2",
@@ -5965,14 +5965,14 @@
     },
     {
       "AWSConfigIdentifier": "SECURITY_AWARENESS_PROGRAM_EXISTS (PROCESS CHECK)",
-      "CfnGuardFileName": "security_awareness_program_exists (process check).guard",
+      "CfnGuardFile": "security_awareness_program_exists (process check).guard",
       "Controls": [
         "AT-2"
       ]
     },
     {
       "AWSConfigIdentifier": "ELB_LOGGING_ENABLED",
-      "CfnGuardFileName": "elb_logging_enabled.guard",
+      "CfnGuardFile": "rules/aws/elastic_load_balancing/elb_logging_enabled.guard",
       "Controls": [
         "AU-2(a)(d)",
         "AU-3",
@@ -5982,7 +5982,7 @@
     },
     {
       "AWSConfigIdentifier": "VPC_FLOW_LOGS_ENABLED",
-      "CfnGuardFileName": "vpc_flow_logs_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/vpc_flow_logs_enabled.guard",
       "Controls": [
         "AU-2(a)(d)",
         "AU-3",
@@ -5992,7 +5992,7 @@
     },
     {
       "AWSConfigIdentifier": "CW_LOGGROUP_RETENTION_PERIOD_CHECK",
-      "CfnGuardFileName": "cw_loggroup_retention_period_check.guard",
+      "CfnGuardFile": "rules/aws/cloudwatch/cw_loggroup_retention_period_check.guard",
       "Controls": [
         "AU-6(1)(3)",
         "AU-11",
@@ -6001,7 +6001,7 @@
     },
     {
       "AWSConfigIdentifier": "CLOUD_TRAIL_ENCRYPTION_ENABLED",
-      "CfnGuardFileName": "cloud_trail_encryption_enabled.guard",
+      "CfnGuardFile": "rules/aws/cloudtrail/cloud_trail_encryption_enabled.guard",
       "Controls": [
         "AU-9",
         "SC-28"
@@ -6009,7 +6009,7 @@
     },
     {
       "AWSConfigIdentifier": "CLOUD_TRAIL_LOG_FILE_VALIDATION_ENABLED",
-      "CfnGuardFileName": "cloud_trail_log_file_validation_enabled.guard",
+      "CfnGuardFile": "rules/aws/cloudtrail/cloud_trail_log_file_validation_enabled.guard",
       "Controls": [
         "AU-9",
         "SI-7",
@@ -6018,7 +6018,7 @@
     },
     {
       "AWSConfigIdentifier": "CLOUDWATCH_LOG_GROUP_ENCRYPTED",
-      "CfnGuardFileName": "cloudwatch_log_group_encrypted.guard",
+      "CfnGuardFile": "rules/aws/cloudwatch/cloudwatch_log_group_encrypted.guard",
       "Controls": [
         "AU-9",
         "SC-28"
@@ -6026,7 +6026,7 @@
     },
     {
       "AWSConfigIdentifier": "S3_BUCKET_REPLICATION_ENABLED",
-      "CfnGuardFileName": "s3_bucket_replication_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_s3/s3_bucket_replication_enabled.guard",
       "Controls": [
         "AU-9(2)",
         "CP-9(b)",
@@ -6036,7 +6036,7 @@
     },
     {
       "AWSConfigIdentifier": "S3_BUCKET_VERSIONING_ENABLED",
-      "CfnGuardFileName": "s3_bucket_versioning_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_s3/s3_bucket_versioning_enabled.guard",
       "Controls": [
         "AU-9(2)",
         "CP-9(b)",
@@ -6047,28 +6047,28 @@
     },
     {
       "AWSConfigIdentifier": "LAMBDA_CONCURRENCY_CHECK",
-      "CfnGuardFileName": "lambda_concurrency_check.guard",
+      "CfnGuardFile": "rules/aws/lambda/lambda_concurrency_check.guard",
       "Controls": [
         "CA-7(a)(b)"
       ]
     },
     {
       "AWSConfigIdentifier": "LAMBDA_DLQ_CHECK",
-      "CfnGuardFileName": "lambda_dlq_check.guard",
+      "CfnGuardFile": "rules/aws/lambda/lambda_dlq_check.guard",
       "Controls": [
         "CA-7(a)(b)"
       ]
     },
     {
       "AWSConfigIdentifier": "RDS_ENHANCED_MONITORING_ENABLED",
-      "CfnGuardFileName": "rds_enhanced_monitoring_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_rds/rds_enhanced_monitoring_enabled.guard",
       "Controls": [
         "CA-7(a)(b)"
       ]
     },
     {
       "AWSConfigIdentifier": "AUTOSCALING_GROUP_ELB_HEALTHCHECK_REQUIRED",
-      "CfnGuardFileName": "autoscaling_group_elb_healthcheck_required.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2_auto_scaling/autoscaling_group_elb_healthcheck_required.guard",
       "Controls": [
         "CA-7(a)(b)",
         "IR-4(1)",
@@ -6077,21 +6077,21 @@
     },
     {
       "AWSConfigIdentifier": "BEANSTALK_ENHANCED_HEALTH_REPORTING_ENABLED",
-      "CfnGuardFileName": "beanstalk_enhanced_health_reporting_enabled.guard",
+      "CfnGuardFile": "rules/aws/elastic_beanstalk/beanstalk_enhanced_health_reporting_enabled.guard",
       "Controls": [
         "CA-7(a)(b)"
       ]
     },
     {
       "AWSConfigIdentifier": "DYNAMODB_THROUGHPUT_LIMIT_CHECK",
-      "CfnGuardFileName": "dynamodb_throughput_limit_check.guard",
+      "CfnGuardFile": "rules/aws/dynamodb/dynamodb_throughput_limit_check.guard",
       "Controls": [
         "CA-7(a)(b)"
       ]
     },
     {
       "AWSConfigIdentifier": "EC2_INSTANCE_DETAILED_MONITORING_ENABLED",
-      "CfnGuardFileName": "ec2_instance_detailed_monitoring_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ec2_instance_detailed_monitoring_enabled.guard",
       "Controls": [
         "CA-7(a)(b)",
         "SI-4(a)(b)(c)",
@@ -6100,7 +6100,7 @@
     },
     {
       "AWSConfigIdentifier": "ALB_WAF_ENABLED",
-      "CfnGuardFileName": "alb_waf_enabled.guard",
+      "CfnGuardFile": "rules/aws/elastic_load_balancing_v2/alb_waf_enabled.guard",
       "Controls": [
         "CM-2",
         "SC-7",
@@ -6109,7 +6109,7 @@
     },
     {
       "AWSConfigIdentifier": "API_GW_ASSOCIATED_WITH_WAF",
-      "CfnGuardFileName": "api_gw_associated_with_waf.guard",
+      "CfnGuardFile": "rules/aws/api_gateway_v2/api_gw_associated_with_waf.guard",
       "Controls": [
         "CM-2",
         "SI-4(a)(b)(c)"
@@ -6117,7 +6117,7 @@
     },
     {
       "AWSConfigIdentifier": "EC2_INSTANCE_MANAGED_BY_SYSTEMS_MANAGER",
-      "CfnGuardFileName": "ec2_instance_managed_by_systems_manager.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ec2_instance_managed_by_systems_manager.guard",
       "Controls": [
         "CM-2",
         "CM-7(a)",
@@ -6131,7 +6131,7 @@
     },
     {
       "AWSConfigIdentifier": "EC2_MANAGEDINSTANCE_ASSOCIATION_COMPLIANCE_STATUS_CHECK",
-      "CfnGuardFileName": "ec2_managedinstance_association_compliance_status_check.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ec2_managedinstance_association_compliance_status_check.guard",
       "Controls": [
         "CM-2",
         "CM-7(a)",
@@ -6142,14 +6142,14 @@
     },
     {
       "AWSConfigIdentifier": "EC2_STOPPED_INSTANCE",
-      "CfnGuardFileName": "ec2_stopped_instance.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ec2_stopped_instance.guard",
       "Controls": [
         "CM-2"
       ]
     },
     {
       "AWSConfigIdentifier": "EC2_VOLUME_INUSE_CHECK",
-      "CfnGuardFileName": "ec2_volume_inuse_check.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ec2_volume_inuse_check.guard",
       "Controls": [
         "CM-2",
         "SC-4"
@@ -6157,7 +6157,7 @@
     },
     {
       "AWSConfigIdentifier": "ELB_DELETION_PROTECTION_ENABLED",
-      "CfnGuardFileName": "elb_deletion_protection_enabled.guard",
+      "CfnGuardFile": "rules/aws/elastic_load_balancing/elb_deletion_protection_enabled.guard",
       "Controls": [
         "CM-2",
         "CP-10",
@@ -6166,7 +6166,7 @@
     },
     {
       "AWSConfigIdentifier": "EC2_MANAGEDINSTANCE_PATCH_COMPLIANCE_STATUS_CHECK",
-      "CfnGuardFileName": "ec2_managedinstance_patch_compliance_status_check.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ec2_managedinstance_patch_compliance_status_check.guard",
       "Controls": [
         "CM-8(3)(a)",
         "SI-2(2)",
@@ -6175,21 +6175,21 @@
     },
     {
       "AWSConfigIdentifier": "RESPONSE_PLAN_EXISTS_MAINTAINED (PROCESS CHECK)",
-      "CfnGuardFileName": "response_plan_exists_maintained (process check).guard",
+      "CfnGuardFile": "response_plan_exists_maintained (process check).guard",
       "Controls": [
         "CP-2"
       ]
     },
     {
       "AWSConfigIdentifier": "RESPONSE_PLAN_TESTED (PROCESS CHECK)",
-      "CfnGuardFileName": "response_plan_tested (process check).guard",
+      "CfnGuardFile": "response_plan_tested (process check).guard",
       "Controls": [
         "CP-4"
       ]
     },
     {
       "AWSConfigIdentifier": "AURORA_RESOURCES_PROTECTED_BY_BACKUP_PLAN",
-      "CfnGuardFileName": "aurora_resources_protected_by_backup_plan.guard",
+      "CfnGuardFile": "rules/aws/amazon_rds/aurora_resources_protected_by_backup_plan.guard",
       "Controls": [
         "CP-9(b)",
         "CP-10",
@@ -6198,7 +6198,7 @@
     },
     {
       "AWSConfigIdentifier": "BACKUP_PLAN_MIN_FREQUENCY_AND_MIN_RETENTION_CHECK",
-      "CfnGuardFileName": "backup_plan_min_frequency_and_min_retention_check.guard",
+      "CfnGuardFile": "rules/aws/aws_backup/backup_plan_min_frequency_and_min_retention_check.guard",
       "Controls": [
         "CP-9(b)",
         "CP-10",
@@ -6207,7 +6207,7 @@
     },
     {
       "AWSConfigIdentifier": "DYNAMODB_RESOURCES_PROTECTED_BY_BACKUP_PLAN",
-      "CfnGuardFileName": "dynamodb_resources_protected_by_backup_plan.guard",
+      "CfnGuardFile": "rules/aws/dynamodb/dynamodb_resources_protected_by_backup_plan.guard",
       "Controls": [
         "CP-9(b)",
         "CP-10",
@@ -6216,7 +6216,7 @@
     },
     {
       "AWSConfigIdentifier": "EBS_RESOURCES_PROTECTED_BY_BACKUP_PLAN",
-      "CfnGuardFileName": "ebs_resources_protected_by_backup_plan.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ebs_resources_protected_by_backup_plan.guard",
       "Controls": [
         "CP-9(b)",
         "CP-10",
@@ -6225,7 +6225,7 @@
     },
     {
       "AWSConfigIdentifier": "EC2_RESOURCES_PROTECTED_BY_BACKUP_PLAN",
-      "CfnGuardFileName": "ec2_resources_protected_by_backup_plan.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ec2_resources_protected_by_backup_plan.guard",
       "Controls": [
         "CP-9(b)",
         "CP-10",
@@ -6234,7 +6234,7 @@
     },
     {
       "AWSConfigIdentifier": "EFS_RESOURCES_PROTECTED_BY_BACKUP_PLAN",
-      "CfnGuardFileName": "efs_resources_protected_by_backup_plan.guard",
+      "CfnGuardFile": "rules/aws/amazon_efs/efs_resources_protected_by_backup_plan.guard",
       "Controls": [
         "CP-9(b)",
         "CP-10",
@@ -6243,7 +6243,7 @@
     },
     {
       "AWSConfigIdentifier": "FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN",
-      "CfnGuardFileName": "fsx_resources_protected_by_backup_plan.guard",
+      "CfnGuardFile": "rules/aws/amazon_fsx/fsx_resources_protected_by_backup_plan.guard",
       "Controls": [
         "CP-9(b)",
         "CP-10",
@@ -6252,7 +6252,7 @@
     },
     {
       "AWSConfigIdentifier": "RDS_RESOURCES_PROTECTED_BY_BACKUP_PLAN",
-      "CfnGuardFileName": "rds_resources_protected_by_backup_plan.guard",
+      "CfnGuardFile": "rules/aws/amazon_rds/rds_resources_protected_by_backup_plan.guard",
       "Controls": [
         "CP-9(b)",
         "CP-10",
@@ -6261,7 +6261,7 @@
     },
     {
       "AWSConfigIdentifier": "REDSHIFT_BACKUP_ENABLED",
-      "CfnGuardFileName": "redshift_backup_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_redshift/redshift_backup_enabled.guard",
       "Controls": [
         "CP-9(b)",
         "CP-10",
@@ -6270,7 +6270,7 @@
     },
     {
       "AWSConfigIdentifier": "DB_INSTANCE_BACKUP_ENABLED",
-      "CfnGuardFileName": "db_instance_backup_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_rds/db_instance_backup_enabled.guard",
       "Controls": [
         "CP-9(b)",
         "CP-10",
@@ -6279,7 +6279,7 @@
     },
     {
       "AWSConfigIdentifier": "DYNAMODB_PITR_ENABLED",
-      "CfnGuardFileName": "dynamodb_pitr_enabled.guard",
+      "CfnGuardFile": "rules/aws/dynamodb/dynamodb_pitr_enabled.guard",
       "Controls": [
         "CP-9(b)",
         "CP-10",
@@ -6289,7 +6289,7 @@
     },
     {
       "AWSConfigIdentifier": "ELASTICACHE_REDIS_CLUSTER_AUTOMATIC_BACKUP_CHECK",
-      "CfnGuardFileName": "elasticache_redis_cluster_automatic_backup_check.guard",
+      "CfnGuardFile": "rules/aws/elasticache/elasticache_redis_cluster_automatic_backup_check.guard",
       "Controls": [
         "CP-9(b)",
         "CP-10",
@@ -6299,7 +6299,7 @@
     },
     {
       "AWSConfigIdentifier": "ELB_CROSS_ZONE_LOAD_BALANCING_ENABLED",
-      "CfnGuardFileName": "elb_cross_zone_load_balancing_enabled.guard",
+      "CfnGuardFile": "rules/aws/elastic_load_balancing/elb_cross_zone_load_balancing_enabled.guard",
       "Controls": [
         "CP-10",
         "SC-5"
@@ -6307,7 +6307,7 @@
     },
     {
       "AWSConfigIdentifier": "DYNAMODB_AUTOSCALING_ENABLED",
-      "CfnGuardFileName": "dynamodb_autoscaling_enabled.guard",
+      "CfnGuardFile": "rules/aws/dynamodb/dynamodb_autoscaling_enabled.guard",
       "Controls": [
         "CP-10",
         "SC-5"
@@ -6315,7 +6315,7 @@
     },
     {
       "AWSConfigIdentifier": "EBS_OPTIMIZED_INSTANCE",
-      "CfnGuardFileName": "ebs_optimized_instance.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ebs_optimized_instance.guard",
       "Controls": [
         "CP-10",
         "SC-5"
@@ -6323,7 +6323,7 @@
     },
     {
       "AWSConfigIdentifier": "RDS_MULTI_AZ_SUPPORT",
-      "CfnGuardFileName": "rds_multi_az_support.guard",
+      "CfnGuardFile": "rules/aws/amazon_rds/rds_multi_az_support.guard",
       "Controls": [
         "CP-10",
         "SC-5"
@@ -6331,7 +6331,7 @@
     },
     {
       "AWSConfigIdentifier": "VPC_VPN_2_TUNNELS_UP",
-      "CfnGuardFileName": "vpc_vpn_2_tunnels_up.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/vpc_vpn_2_tunnels_up.guard",
       "Controls": [
         "CP-10",
         "SC-5"
@@ -6339,7 +6339,7 @@
     },
     {
       "AWSConfigIdentifier": "GUARDDUTY_NON_ARCHIVED_FINDINGS",
-      "CfnGuardFileName": "guardduty_non_archived_findings.guard",
+      "CfnGuardFile": "rules/aws/guardduty/guardduty_non_archived_findings.guard",
       "Controls": [
         "IR-4(1)",
         "IR-6(1)",
@@ -6351,28 +6351,28 @@
     },
     {
       "AWSConfigIdentifier": "ANNUAL_RISK_ASSESSMENT_PERFORMED (PROCESS CHECK)",
-      "CfnGuardFileName": "annual_risk_assessment_performed (process check).guard",
+      "CfnGuardFile": "annual_risk_assessment_performed (process check).guard",
       "Controls": [
         "RA-3"
       ]
     },
     {
       "AWSConfigIdentifier": "CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK",
-      "CfnGuardFileName": "codebuild_project_source_repo_url_check.guard",
+      "CfnGuardFile": "rules/aws/codebuild/codebuild_project_source_repo_url_check.guard",
       "Controls": [
         "SA-3(a)"
       ]
     },
     {
       "AWSConfigIdentifier": "RDS_INSTANCE_DELETION_PROTECTION_ENABLED",
-      "CfnGuardFileName": "rds_instance_deletion_protection_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_rds/rds_instance_deletion_protection_enabled.guard",
       "Controls": [
         "SC-5"
       ]
     },
     {
       "AWSConfigIdentifier": "ELASTICSEARCH_NODE_TO_NODE_ENCRYPTION_CHECK",
-      "CfnGuardFileName": "elasticsearch_node_to_node_encryption_check.guard",
+      "CfnGuardFile": "rules/aws/opensearch_service/elasticsearch_node_to_node_encryption_check.guard",
       "Controls": [
         "SC-7",
         "SC-8",
@@ -6382,7 +6382,7 @@
     },
     {
       "AWSConfigIdentifier": "ELBV2_ACM_CERTIFICATE_REQUIRED",
-      "CfnGuardFileName": "elbv2_acm_certificate_required.guard",
+      "CfnGuardFile": "rules/aws/elastic_load_balancing_v2/elbv2_acm_certificate_required.guard",
       "Controls": [
         "SC-8",
         "SC-8(1)"
@@ -6390,7 +6390,7 @@
     },
     {
       "AWSConfigIdentifier": "API_GW_SSL_ENABLED",
-      "CfnGuardFileName": "api_gw_ssl_enabled.guard",
+      "CfnGuardFile": "rules/aws/api_gateway_v2/api_gw_ssl_enabled.guard",
       "Controls": [
         "SC-8",
         "SC-8(1)",
@@ -6399,14 +6399,14 @@
     },
     {
       "AWSConfigIdentifier": "CMK_BACKING_KEY_ROTATION_ENABLED",
-      "CfnGuardFileName": "cmk_backing_key_rotation_enabled.guard",
+      "CfnGuardFile": "rules/aws/aws_kms/cmk_backing_key_rotation_enabled.guard",
       "Controls": [
         "SC-12"
       ]
     },
     {
       "AWSConfigIdentifier": "KMS_CMK_NOT_SCHEDULED_FOR_DELETION",
-      "CfnGuardFileName": "kms_cmk_not_scheduled_for_deletion.guard",
+      "CfnGuardFile": "rules/aws/aws_kms/kms_cmk_not_scheduled_for_deletion.guard",
       "Controls": [
         "SC-12",
         "SC-13",
@@ -6415,7 +6415,7 @@
     },
     {
       "AWSConfigIdentifier": "S3_DEFAULT_ENCRYPTION_KMS",
-      "CfnGuardFileName": "s3_default_encryption_kms.guard",
+      "CfnGuardFile": "rules/aws/amazon_s3/s3_default_encryption_kms.guard",
       "Controls": [
         "SC-13",
         "SC-28"
@@ -6423,7 +6423,7 @@
     },
     {
       "AWSConfigIdentifier": "SAGEMAKER_ENDPOINT_CONFIGURATION_KMS_KEY_CONFIGURED",
-      "CfnGuardFileName": "sagemaker_endpoint_configuration_kms_key_configured.guard",
+      "CfnGuardFile": "rules/aws/amazon_sagemaker/sagemaker_endpoint_configuration_kms_key_configured.guard",
       "Controls": [
         "SC-13",
         "SC-28"
@@ -6431,7 +6431,7 @@
     },
     {
       "AWSConfigIdentifier": "SAGEMAKER_NOTEBOOK_INSTANCE_KMS_KEY_CONFIGURED",
-      "CfnGuardFileName": "sagemaker_notebook_instance_kms_key_configured.guard",
+      "CfnGuardFile": "rules/aws/amazon_sagemaker/sagemaker_notebook_instance_kms_key_configured.guard",
       "Controls": [
         "SC-13",
         "SC-28"
@@ -6439,7 +6439,7 @@
     },
     {
       "AWSConfigIdentifier": "SNS_ENCRYPTED_KMS",
-      "CfnGuardFileName": "sns_encrypted_kms.guard",
+      "CfnGuardFile": "rules/aws/amazon_sns/sns_encrypted_kms.guard",
       "Controls": [
         "SC-13",
         "SC-28"
@@ -6447,7 +6447,7 @@
     },
     {
       "AWSConfigIdentifier": "REDSHIFT_CLUSTER_KMS_ENABLED",
-      "CfnGuardFileName": "redshift_cluster_kms_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_redshift/redshift_cluster_kms_enabled.guard",
       "Controls": [
         "SC-13",
         "SC-28"
@@ -6455,70 +6455,70 @@
     },
     {
       "AWSConfigIdentifier": "S3_BUCKET_DEFAULT_LOCK_ENABLED",
-      "CfnGuardFileName": "s3_bucket_default_lock_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_s3/s3_bucket_default_lock_enabled.guard",
       "Controls": [
         "SC-28"
       ]
     },
     {
       "AWSConfigIdentifier": "API_GW_CACHE_ENABLED_AND_ENCRYPTED",
-      "CfnGuardFileName": "api_gw_cache_enabled_and_encrypted.guard",
+      "CfnGuardFile": "rules/aws/api_gateway/rules/aws/api_gateway_v2/api_gw_cache_enabled_and_encrypted.guard",
       "Controls": [
         "SC-28"
       ]
     },
     {
       "AWSConfigIdentifier": "EC2_EBS_ENCRYPTION_BY_DEFAULT",
-      "CfnGuardFileName": "ec2_ebs_encryption_by_default.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ec2_ebs_encryption_by_default.guard",
       "Controls": [
         "SC-28"
       ]
     },
     {
       "AWSConfigIdentifier": "EFS_ENCRYPTED_CHECK",
-      "CfnGuardFileName": "efs_encrypted_check.guard",
+      "CfnGuardFile": "rules/aws/amazon_efs/efs_encrypted_check.guard",
       "Controls": [
         "SC-28"
       ]
     },
     {
       "AWSConfigIdentifier": "ELASTICSEARCH_ENCRYPTED_AT_REST",
-      "CfnGuardFileName": "elasticsearch_encrypted_at_rest.guard",
+      "CfnGuardFile": "rules/aws/opensearch_service/elasticsearch_encrypted_at_rest.guard",
       "Controls": [
         "SC-28"
       ]
     },
     {
       "AWSConfigIdentifier": "ENCRYPTED_VOLUMES",
-      "CfnGuardFileName": "encrypted_volumes.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/encrypted_volumes.guard",
       "Controls": [
         "SC-28"
       ]
     },
     {
       "AWSConfigIdentifier": "RDS_SNAPSHOT_ENCRYPTED",
-      "CfnGuardFileName": "rds_snapshot_encrypted.guard",
+      "CfnGuardFile": "rules/aws/amazon_rds/rds_snapshot_encrypted.guard",
       "Controls": [
         "SC-28"
       ]
     },
     {
       "AWSConfigIdentifier": "RDS_STORAGE_ENCRYPTED",
-      "CfnGuardFileName": "rds_storage_encrypted.guard",
+      "CfnGuardFile": "rules/aws/amazon_rds/rds_storage_encrypted.guard",
       "Controls": [
         "SC-28"
       ]
     },
     {
       "AWSConfigIdentifier": "S3_BUCKET_SERVER_SIDE_ENCRYPTION_ENABLED",
-      "CfnGuardFileName": "s3_bucket_server_side_encryption_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_s3/s3_bucket_server_side_encryption_enabled.guard",
       "Controls": [
         "SC-28"
       ]
     },
     {
       "AWSConfigIdentifier": "ELASTIC_BEANSTALK_MANAGED_UPDATES_ENABLED",
-      "CfnGuardFileName": "elastic_beanstalk_managed_updates_enabled.guard",
+      "CfnGuardFile": "rules/aws/elastic_beanstalk/elastic_beanstalk_managed_updates_enabled.guard",
       "Controls": [
         "SI-2(2)"
       ]
@@ -6527,7 +6527,7 @@
   "PCI-DSS-3-2-1-BestPractices": [
     {
       "AWSConfigIdentifier": "DMS_REPLICATION_NOT_PUBLIC",
-      "CfnGuardFileName": "dms_replication_not_public.guard",
+      "CfnGuardFile": "rules/aws/aws_dms/dms_replication_not_public.guard",
       "Controls": [
         "1.2",
         "1.2.1",
@@ -6541,7 +6541,7 @@
     },
     {
       "AWSConfigIdentifier": "EBS_SNAPSHOT_PUBLIC_RESTORABLE_CHECK",
-      "CfnGuardFileName": "ebs_snapshot_public_restorable_check.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ebs_snapshot_public_restorable_check.guard",
       "Controls": [
         "1.2",
         "1.2.1",
@@ -6555,7 +6555,7 @@
     },
     {
       "AWSConfigIdentifier": "EC2_INSTANCE_NO_PUBLIC_IP",
-      "CfnGuardFileName": "ec2_instance_no_public_ip.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ec2_instance_no_public_ip.guard",
       "Controls": [
         "1.2",
         "1.2.1",
@@ -6569,7 +6569,7 @@
     },
     {
       "AWSConfigIdentifier": "ELASTICSEARCH_IN_VPC_ONLY",
-      "CfnGuardFileName": "elasticsearch_in_vpc_only.guard",
+      "CfnGuardFile": "rules/aws/opensearch_service/elasticsearch_in_vpc_only.guard",
       "Controls": [
         "1.2",
         "1.2.1",
@@ -6583,7 +6583,7 @@
     },
     {
       "AWSConfigIdentifier": "EMR_MASTER_NO_PUBLIC_IP",
-      "CfnGuardFileName": "emr_master_no_public_ip.guard",
+      "CfnGuardFile": "rules/aws/amazon_emr/emr_master_no_public_ip.guard",
       "Controls": [
         "1.2",
         "1.2.1",
@@ -6597,7 +6597,7 @@
     },
     {
       "AWSConfigIdentifier": "RESTRICTED_SSH",
-      "CfnGuardFileName": "restricted_ssh.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/restricted_ssh.guard",
       "Controls": [
         "1.2",
         "1.2.1",
@@ -6610,7 +6610,7 @@
     },
     {
       "AWSConfigIdentifier": "EC2_INSTANCES_IN_VPC",
-      "CfnGuardFileName": "ec2_instances_in_vpc.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ec2_instances_in_vpc.guard",
       "Controls": [
         "1.2",
         "1.2.1",
@@ -6624,7 +6624,7 @@
     },
     {
       "AWSConfigIdentifier": "LAMBDA_FUNCTION_PUBLIC_ACCESS_PROHIBITED",
-      "CfnGuardFileName": "lambda_function_public_access_prohibited.guard",
+      "CfnGuardFile": "rules/aws/lambda/lambda_function_public_access_prohibited.guard",
       "Controls": [
         "1.2",
         "1.2.1",
@@ -6637,7 +6637,7 @@
     },
     {
       "AWSConfigIdentifier": "LAMBDA_INSIDE_VPC",
-      "CfnGuardFileName": "lambda_inside_vpc.guard",
+      "CfnGuardFile": "rules/aws/lambda/lambda_inside_vpc.guard",
       "Controls": [
         "1.2",
         "1.2.1",
@@ -6650,7 +6650,7 @@
     },
     {
       "AWSConfigIdentifier": "RDS_INSTANCE_PUBLIC_ACCESS_CHECK",
-      "CfnGuardFileName": "rds_instance_public_access_check.guard",
+      "CfnGuardFile": "rules/aws/amazon_rds/rds_instance_public_access_check.guard",
       "Controls": [
         "1.2",
         "1.2.1",
@@ -6664,7 +6664,7 @@
     },
     {
       "AWSConfigIdentifier": "RDS_SNAPSHOTS_PUBLIC_PROHIBITED",
-      "CfnGuardFileName": "rds_snapshots_public_prohibited.guard",
+      "CfnGuardFile": "rules/aws/amazon_rds/rds_snapshots_public_prohibited.guard",
       "Controls": [
         "1.2",
         "1.2.1",
@@ -6678,7 +6678,7 @@
     },
     {
       "AWSConfigIdentifier": "REDSHIFT_CLUSTER_PUBLIC_ACCESS_CHECK",
-      "CfnGuardFileName": "redshift_cluster_public_access_check.guard",
+      "CfnGuardFile": "rules/aws/amazon_redshift/redshift_cluster_public_access_check.guard",
       "Controls": [
         "1.2",
         "1.2.1",
@@ -6692,7 +6692,7 @@
     },
     {
       "AWSConfigIdentifier": "RESTRICTED_COMMON_PORTS",
-      "CfnGuardFileName": "restricted_common_ports.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/restricted_common_ports.guard",
       "Controls": [
         "1.2",
         "1.2.1",
@@ -6705,7 +6705,7 @@
     },
     {
       "AWSConfigIdentifier": "S3_ACCOUNT_LEVEL_PUBLIC_ACCESS_BLOCKS_PERIODIC",
-      "CfnGuardFileName": "s3_account_level_public_access_blocks_periodic.guard",
+      "CfnGuardFile": "rules/aws/amazon_s3/s3_account_level_public_access_blocks_periodic.guard",
       "Controls": [
         "1.2",
         "1.2.1",
@@ -6720,7 +6720,7 @@
     },
     {
       "AWSConfigIdentifier": "S3_BUCKET_PUBLIC_READ_PROHIBITED",
-      "CfnGuardFileName": "s3_bucket_public_read_prohibited.guard",
+      "CfnGuardFile": "rules/aws/amazon_s3/s3_bucket_public_read_prohibited.guard",
       "Controls": [
         "1.2",
         "1.2.1",
@@ -6735,7 +6735,7 @@
     },
     {
       "AWSConfigIdentifier": "S3_BUCKET_PUBLIC_WRITE_PROHIBITED",
-      "CfnGuardFileName": "s3_bucket_public_write_prohibited.guard",
+      "CfnGuardFile": "rules/aws/amazon_s3/s3_bucket_public_write_prohibited.guard",
       "Controls": [
         "1.2",
         "1.2.1",
@@ -6750,7 +6750,7 @@
     },
     {
       "AWSConfigIdentifier": "SAGEMAKER_NOTEBOOK_NO_DIRECT_INTERNET_ACCESS",
-      "CfnGuardFileName": "sagemaker_notebook_no_direct_internet_access.guard",
+      "CfnGuardFile": "rules/aws/amazon_sagemaker/sagemaker_notebook_no_direct_internet_access.guard",
       "Controls": [
         "1.2",
         "1.2.1",
@@ -6764,7 +6764,7 @@
     },
     {
       "AWSConfigIdentifier": "SUBNET_AUTO_ASSIGN_PUBLIC_IP_DISABLED",
-      "CfnGuardFileName": "subnet_auto_assign_public_ip_disabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/subnet_auto_assign_public_ip_disabled.guard",
       "Controls": [
         "1.2",
         "1.2.1",
@@ -6778,7 +6778,7 @@
     },
     {
       "AWSConfigIdentifier": "VPC_DEFAULT_SECURITY_GROUP_CLOSED",
-      "CfnGuardFileName": "vpc_default_security_group_closed.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/vpc_default_security_group_closed.guard",
       "Controls": [
         "1.2",
         "1.2.1",
@@ -6792,7 +6792,7 @@
     },
     {
       "AWSConfigIdentifier": "VPC_SG_OPEN_ONLY_TO_AUTHORIZED_PORTS",
-      "CfnGuardFileName": "vpc_sg_open_only_to_authorized_ports.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/vpc_sg_open_only_to_authorized_ports.guard",
       "Controls": [
         "1.2",
         "1.2.1",
@@ -6804,7 +6804,7 @@
     },
     {
       "AWSConfigIdentifier": "S3_BUCKET_LEVEL_PUBLIC_ACCESS_PROHIBITED",
-      "CfnGuardFileName": "s3_bucket_level_public_access_prohibited.guard",
+      "CfnGuardFile": "rules/aws/amazon_s3/s3_bucket_level_public_access_prohibited.guard",
       "Controls": [
         "1.2",
         "1.2.1",
@@ -6818,7 +6818,7 @@
     },
     {
       "AWSConfigIdentifier": "NO_UNRESTRICTED_ROUTE_TO_IGW",
-      "CfnGuardFileName": "no_unrestricted_route_to_igw.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/no_unrestricted_route_to_igw.guard",
       "Controls": [
         "1.2",
         "1.2.1",
@@ -6830,7 +6830,7 @@
     },
     {
       "AWSConfigIdentifier": "SSM_DOCUMENT_NOT_PUBLIC",
-      "CfnGuardFileName": "ssm_document_not_public.guard",
+      "CfnGuardFile": "rules/aws/systems_manager/ssm_document_not_public.guard",
       "Controls": [
         "1.2",
         "1.2.1",
@@ -6844,7 +6844,7 @@
     },
     {
       "AWSConfigIdentifier": "AUTOSCALING_LAUNCH_CONFIG_PUBLIC_IP_DISABLED",
-      "CfnGuardFileName": "autoscaling_launch_config_public_ip_disabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2_auto_scaling/autoscaling_launch_config_public_ip_disabled.guard",
       "Controls": [
         "1.2",
         "1.2.1",
@@ -6858,7 +6858,7 @@
     },
     {
       "AWSConfigIdentifier": "REDSHIFT_ENHANCED_VPC_ROUTING_ENABLED",
-      "CfnGuardFileName": "redshift_enhanced_vpc_routing_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_redshift/redshift_enhanced_vpc_routing_enabled.guard",
       "Controls": [
         "1.2",
         "1.3",
@@ -6868,28 +6868,28 @@
     },
     {
       "AWSConfigIdentifier": "ACCESS_KEYS_ROTATED",
-      "CfnGuardFileName": "access_keys_rotated.guard",
+      "CfnGuardFile": "rules/aws/iam/access_keys_rotated.guard",
       "Controls": [
         "2.2"
       ]
     },
     {
       "AWSConfigIdentifier": "ACCOUNT_PART_OF_ORGANIZATIONS",
-      "CfnGuardFileName": "account_part_of_organizations.guard",
+      "CfnGuardFile": "rules/aws/aws_organizations/account_part_of_organizations.guard",
       "Controls": [
         "2.2"
       ]
     },
     {
       "AWSConfigIdentifier": "AUTOSCALING_GROUP_ELB_HEALTHCHECK_REQUIRED",
-      "CfnGuardFileName": "autoscaling_group_elb_healthcheck_required.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2_auto_scaling/autoscaling_group_elb_healthcheck_required.guard",
       "Controls": [
         "2.2"
       ]
     },
     {
       "AWSConfigIdentifier": "CLOUD_TRAIL_CLOUD_WATCH_LOGS_ENABLED",
-      "CfnGuardFileName": "cloud_trail_cloud_watch_logs_enabled.guard",
+      "CfnGuardFile": "rules/aws/cloudtrail/cloud_trail_cloud_watch_logs_enabled.guard",
       "Controls": [
         "2.2",
         "10.1",
@@ -6909,7 +6909,7 @@
     },
     {
       "AWSConfigIdentifier": "CLOUD_TRAIL_ENCRYPTION_ENABLED",
-      "CfnGuardFileName": "cloud_trail_encryption_enabled.guard",
+      "CfnGuardFile": "rules/aws/cloudtrail/cloud_trail_encryption_enabled.guard",
       "Controls": [
         "2.2",
         "3.4",
@@ -6918,7 +6918,7 @@
     },
     {
       "AWSConfigIdentifier": "CLOUD_TRAIL_LOG_FILE_VALIDATION_ENABLED",
-      "CfnGuardFileName": "cloud_trail_log_file_validation_enabled.guard",
+      "CfnGuardFile": "rules/aws/cloudtrail/cloud_trail_log_file_validation_enabled.guard",
       "Controls": [
         "2.2",
         "10.5.2",
@@ -6929,7 +6929,7 @@
     },
     {
       "AWSConfigIdentifier": "CLOUDTRAIL_S3_DATAEVENTS_ENABLED",
-      "CfnGuardFileName": "cloudtrail_s3_dataevents_enabled.guard",
+      "CfnGuardFile": "rules/aws/cloudtrail/cloudtrail_s3_dataevents_enabled.guard",
       "Controls": [
         "2.2",
         "10.1",
@@ -6947,7 +6947,7 @@
     },
     {
       "AWSConfigIdentifier": "CMK_BACKING_KEY_ROTATION_ENABLED",
-      "CfnGuardFileName": "cmk_backing_key_rotation_enabled.guard",
+      "CfnGuardFile": "rules/aws/aws_kms/cmk_backing_key_rotation_enabled.guard",
       "Controls": [
         "2.2",
         "3.5",
@@ -6957,7 +6957,7 @@
     },
     {
       "AWSConfigIdentifier": "EC2_EBS_ENCRYPTION_BY_DEFAULT",
-      "CfnGuardFileName": "ec2_ebs_encryption_by_default.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ec2_ebs_encryption_by_default.guard",
       "Controls": [
         "2.2",
         "3.4",
@@ -6966,7 +6966,7 @@
     },
     {
       "AWSConfigIdentifier": "ENCRYPTED_VOLUMES",
-      "CfnGuardFileName": "encrypted_volumes.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/encrypted_volumes.guard",
       "Controls": [
         "2.2",
         "3.4",
@@ -6975,7 +6975,7 @@
     },
     {
       "AWSConfigIdentifier": "IAM_NO_INLINE_POLICY_CHECK",
-      "CfnGuardFileName": "iam_no_inline_policy_check.guard",
+      "CfnGuardFile": "rules/aws/iam/iam_no_inline_policy_check.guard",
       "Controls": [
         "2.2",
         "7.1.2",
@@ -6986,7 +6986,7 @@
     },
     {
       "AWSConfigIdentifier": "IAM_POLICY_NO_STATEMENTS_WITH_ADMIN_ACCESS",
-      "CfnGuardFileName": "iam_policy_no_statements_with_admin_access.guard",
+      "CfnGuardFile": "rules/aws/iam/iam_policy_no_statements_with_admin_access.guard",
       "Controls": [
         "2.2",
         "7.1.2",
@@ -6997,7 +6997,7 @@
     },
     {
       "AWSConfigIdentifier": "IAM_ROOT_ACCESS_KEY_CHECK",
-      "CfnGuardFileName": "iam_root_access_key_check.guard",
+      "CfnGuardFile": "rules/aws/iam/iam_root_access_key_check.guard",
       "Controls": [
         "2.2",
         "7.1.2",
@@ -7007,7 +7007,7 @@
     },
     {
       "AWSConfigIdentifier": "IAM_USER_GROUP_MEMBERSHIP_CHECK",
-      "CfnGuardFileName": "iam_user_group_membership_check.guard",
+      "CfnGuardFile": "rules/aws/iam/iam_user_group_membership_check.guard",
       "Controls": [
         "2.2",
         "7.1.2",
@@ -7018,7 +7018,7 @@
     },
     {
       "AWSConfigIdentifier": "IAM_USER_NO_POLICIES_CHECK",
-      "CfnGuardFileName": "iam_user_no_policies_check.guard",
+      "CfnGuardFile": "rules/aws/iam/iam_user_no_policies_check.guard",
       "Controls": [
         "2.2",
         "7.1.2",
@@ -7029,7 +7029,7 @@
     },
     {
       "AWSConfigIdentifier": "IAM_USER_UNUSED_CREDENTIALS_CHECK",
-      "CfnGuardFileName": "iam_user_unused_credentials_check.guard",
+      "CfnGuardFile": "rules/aws/iam/iam_user_unused_credentials_check.guard",
       "Controls": [
         "2.2",
         "7.2.1",
@@ -7038,7 +7038,7 @@
     },
     {
       "AWSConfigIdentifier": "MFA_ENABLED_FOR_IAM_CONSOLE_ACCESS",
-      "CfnGuardFileName": "mfa_enabled_for_iam_console_access.guard",
+      "CfnGuardFile": "rules/aws/iam/mfa_enabled_for_iam_console_access.guard",
       "Controls": [
         "2.2",
         "8.3"
@@ -7046,7 +7046,7 @@
     },
     {
       "AWSConfigIdentifier": "MULTI_REGION_CLOUDTRAIL_ENABLED",
-      "CfnGuardFileName": "multi_region_cloudtrail_enabled.guard",
+      "CfnGuardFile": "multi_region_rules/aws/cloudtrail/cloudtrail_enabled.guard",
       "Controls": [
         "2.2",
         "10.1",
@@ -7067,7 +7067,7 @@
     },
     {
       "AWSConfigIdentifier": "ROOT_ACCOUNT_HARDWARE_MFA_ENABLED",
-      "CfnGuardFileName": "root_account_hardware_mfa_enabled.guard",
+      "CfnGuardFile": "rules/aws/iam/root_account_hardware_mfa_enabled.guard",
       "Controls": [
         "2.2",
         "8.3"
@@ -7075,7 +7075,7 @@
     },
     {
       "AWSConfigIdentifier": "ROOT_ACCOUNT_MFA_ENABLED",
-      "CfnGuardFileName": "root_account_mfa_enabled.guard",
+      "CfnGuardFile": "rules/aws/iam/root_account_mfa_enabled.guard",
       "Controls": [
         "2.2",
         "8.3"
@@ -7083,7 +7083,7 @@
     },
     {
       "AWSConfigIdentifier": "S3_BUCKET_LOGGING_ENABLED",
-      "CfnGuardFileName": "s3_bucket_logging_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_s3/s3_bucket_logging_enabled.guard",
       "Controls": [
         "2.2",
         "10.1",
@@ -7103,7 +7103,7 @@
     },
     {
       "AWSConfigIdentifier": "S3_BUCKET_REPLICATION_ENABLED",
-      "CfnGuardFileName": "s3_bucket_replication_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_s3/s3_bucket_replication_enabled.guard",
       "Controls": [
         "2.2",
         "10.5.3"
@@ -7111,7 +7111,7 @@
     },
     {
       "AWSConfigIdentifier": "S3_BUCKET_SERVER_SIDE_ENCRYPTION_ENABLED",
-      "CfnGuardFileName": "s3_bucket_server_side_encryption_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_s3/s3_bucket_server_side_encryption_enabled.guard",
       "Controls": [
         "2.2",
         "3.4",
@@ -7121,7 +7121,7 @@
     },
     {
       "AWSConfigIdentifier": "S3_BUCKET_SSL_REQUESTS_ONLY",
-      "CfnGuardFileName": "s3_bucket_ssl_requests_only.guard",
+      "CfnGuardFile": "rules/aws/amazon_s3/s3_bucket_ssl_requests_only.guard",
       "Controls": [
         "2.2",
         "4.1",
@@ -7130,7 +7130,7 @@
     },
     {
       "AWSConfigIdentifier": "VPC_FLOW_LOGS_ENABLED",
-      "CfnGuardFileName": "vpc_flow_logs_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/vpc_flow_logs_enabled.guard",
       "Controls": [
         "2.2",
         "10.1",
@@ -7143,7 +7143,7 @@
     },
     {
       "AWSConfigIdentifier": "EC2_INSTANCE_PROFILE_ATTACHED",
-      "CfnGuardFileName": "ec2_instance_profile_attached.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ec2_instance_profile_attached.guard",
       "Controls": [
         "2.2",
         "7.1.1",
@@ -7152,7 +7152,7 @@
     },
     {
       "AWSConfigIdentifier": "ALB_HTTP_TO_HTTPS_REDIRECTION_CHECK",
-      "CfnGuardFileName": "alb_http_to_https_redirection_check.guard",
+      "CfnGuardFile": "rules/aws/elastic_load_balancing_v2/alb_http_to_https_redirection_check.guard",
       "Controls": [
         "2.3",
         "4.1",
@@ -7161,7 +7161,7 @@
     },
     {
       "AWSConfigIdentifier": "API_GW_SSL_ENABLED",
-      "CfnGuardFileName": "api_gw_ssl_enabled.guard",
+      "CfnGuardFile": "rules/aws/api_gateway_v2/api_gw_ssl_enabled.guard",
       "Controls": [
         "2.3",
         "4.1",
@@ -7170,7 +7170,7 @@
     },
     {
       "AWSConfigIdentifier": "ELB_PREDEFINED_SECURITY_POLICY_SSL_CHECK",
-      "CfnGuardFileName": "elb_predefined_security_policy_ssl_check.guard",
+      "CfnGuardFile": "rules/aws/elastic_load_balancing/elb_predefined_security_policy_ssl_check.guard",
       "Controls": [
         "2.3",
         "4.1",
@@ -7179,7 +7179,7 @@
     },
     {
       "AWSConfigIdentifier": "ELB_TLS_HTTPS_LISTENERS_ONLY",
-      "CfnGuardFileName": "elb_tls_https_listeners_only.guard",
+      "CfnGuardFile": "rules/aws/elastic_load_balancing/elb_tls_https_listeners_only.guard",
       "Controls": [
         "2.3",
         "4.1",
@@ -7188,7 +7188,7 @@
     },
     {
       "AWSConfigIdentifier": "REDSHIFT_REQUIRE_TLS_SSL",
-      "CfnGuardFileName": "redshift_require_tls_ssl.guard",
+      "CfnGuardFile": "rules/aws/amazon_redshift/redshift_require_tls_ssl.guard",
       "Controls": [
         "2.3",
         "4.1"
@@ -7196,14 +7196,14 @@
     },
     {
       "AWSConfigIdentifier": "EC2_INSTANCE_MANAGED_BY_SYSTEMS_MANAGER",
-      "CfnGuardFileName": "ec2_instance_managed_by_systems_manager.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ec2_instance_managed_by_systems_manager.guard",
       "Controls": [
         "2.4"
       ]
     },
     {
       "AWSConfigIdentifier": "CW_LOGGROUP_RETENTION_PERIOD_CHECK",
-      "CfnGuardFileName": "cw_loggroup_retention_period_check.guard",
+      "CfnGuardFile": "rules/aws/cloudwatch/cw_loggroup_retention_period_check.guard",
       "Controls": [
         "3.1",
         "10.7"
@@ -7211,21 +7211,21 @@
     },
     {
       "AWSConfigIdentifier": "API_GW_CACHE_ENABLED_AND_ENCRYPTED",
-      "CfnGuardFileName": "api_gw_cache_enabled_and_encrypted.guard",
+      "CfnGuardFile": "rules/aws/api_gateway/rules/aws/api_gateway_v2/api_gw_cache_enabled_and_encrypted.guard",
       "Controls": [
         "3.4"
       ]
     },
     {
       "AWSConfigIdentifier": "CLOUDWATCH_LOG_GROUP_ENCRYPTED",
-      "CfnGuardFileName": "cloudwatch_log_group_encrypted.guard",
+      "CfnGuardFile": "rules/aws/cloudwatch/cloudwatch_log_group_encrypted.guard",
       "Controls": [
         "3.4"
       ]
     },
     {
       "AWSConfigIdentifier": "DYNAMODB_TABLE_ENCRYPTED_KMS",
-      "CfnGuardFileName": "dynamodb_table_encrypted_kms.guard",
+      "CfnGuardFile": "rules/aws/dynamodb/dynamodb_table_encrypted_kms.guard",
       "Controls": [
         "3.4",
         "8.2.1"
@@ -7233,7 +7233,7 @@
     },
     {
       "AWSConfigIdentifier": "EFS_ENCRYPTED_CHECK",
-      "CfnGuardFileName": "efs_encrypted_check.guard",
+      "CfnGuardFile": "rules/aws/amazon_efs/efs_encrypted_check.guard",
       "Controls": [
         "3.4",
         "8.2.1"
@@ -7241,7 +7241,7 @@
     },
     {
       "AWSConfigIdentifier": "ELASTICSEARCH_ENCRYPTED_AT_REST",
-      "CfnGuardFileName": "elasticsearch_encrypted_at_rest.guard",
+      "CfnGuardFile": "rules/aws/opensearch_service/elasticsearch_encrypted_at_rest.guard",
       "Controls": [
         "3.4",
         "8.2.1"
@@ -7249,7 +7249,7 @@
     },
     {
       "AWSConfigIdentifier": "RDS_SNAPSHOT_ENCRYPTED",
-      "CfnGuardFileName": "rds_snapshot_encrypted.guard",
+      "CfnGuardFile": "rules/aws/amazon_rds/rds_snapshot_encrypted.guard",
       "Controls": [
         "3.4",
         "8.2.1"
@@ -7257,7 +7257,7 @@
     },
     {
       "AWSConfigIdentifier": "RDS_STORAGE_ENCRYPTED",
-      "CfnGuardFileName": "rds_storage_encrypted.guard",
+      "CfnGuardFile": "rules/aws/amazon_rds/rds_storage_encrypted.guard",
       "Controls": [
         "3.4",
         "8.2.1"
@@ -7265,7 +7265,7 @@
     },
     {
       "AWSConfigIdentifier": "REDSHIFT_CLUSTER_CONFIGURATION_CHECK",
-      "CfnGuardFileName": "redshift_cluster_configuration_check.guard",
+      "CfnGuardFile": "rules/aws/amazon_redshift/redshift_cluster_configuration_check.guard",
       "Controls": [
         "3.4",
         "8.2.1",
@@ -7285,7 +7285,7 @@
     },
     {
       "AWSConfigIdentifier": "REDSHIFT_CLUSTER_KMS_ENABLED",
-      "CfnGuardFileName": "redshift_cluster_kms_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_redshift/redshift_cluster_kms_enabled.guard",
       "Controls": [
         "3.4",
         "8.2.1"
@@ -7293,7 +7293,7 @@
     },
     {
       "AWSConfigIdentifier": "S3_DEFAULT_ENCRYPTION_KMS",
-      "CfnGuardFileName": "s3_default_encryption_kms.guard",
+      "CfnGuardFile": "rules/aws/amazon_s3/s3_default_encryption_kms.guard",
       "Controls": [
         "3.4",
         "8.2.1",
@@ -7302,7 +7302,7 @@
     },
     {
       "AWSConfigIdentifier": "SAGEMAKER_ENDPOINT_CONFIGURATION_KMS_KEY_CONFIGURED",
-      "CfnGuardFileName": "sagemaker_endpoint_configuration_kms_key_configured.guard",
+      "CfnGuardFile": "rules/aws/amazon_sagemaker/sagemaker_endpoint_configuration_kms_key_configured.guard",
       "Controls": [
         "3.4",
         "8.2.1"
@@ -7310,7 +7310,7 @@
     },
     {
       "AWSConfigIdentifier": "SAGEMAKER_NOTEBOOK_INSTANCE_KMS_KEY_CONFIGURED",
-      "CfnGuardFileName": "sagemaker_notebook_instance_kms_key_configured.guard",
+      "CfnGuardFile": "rules/aws/amazon_sagemaker/sagemaker_notebook_instance_kms_key_configured.guard",
       "Controls": [
         "3.4",
         "8.2.1"
@@ -7318,7 +7318,7 @@
     },
     {
       "AWSConfigIdentifier": "SECRETSMANAGER_USING_CMK",
-      "CfnGuardFileName": "secretsmanager_using_cmk.guard",
+      "CfnGuardFile": "rules/aws/secrets_manager/secretsmanager_using_cmk.guard",
       "Controls": [
         "3.4",
         "8.2.1"
@@ -7326,7 +7326,7 @@
     },
     {
       "AWSConfigIdentifier": "KMS_CMK_NOT_SCHEDULED_FOR_DELETION",
-      "CfnGuardFileName": "kms_cmk_not_scheduled_for_deletion.guard",
+      "CfnGuardFile": "rules/aws/aws_kms/kms_cmk_not_scheduled_for_deletion.guard",
       "Controls": [
         "3.5",
         "3.6"
@@ -7334,7 +7334,7 @@
     },
     {
       "AWSConfigIdentifier": "IAM_CUSTOMER_POLICY_BLOCKED_KMS_ACTIONS",
-      "CfnGuardFileName": "iam_customer_policy_blocked_kms_actions.guard",
+      "CfnGuardFile": "rules/aws/iam/iam_customer_policy_blocked_kms_actions.guard",
       "Controls": [
         "3.5.2",
         "7.1.2",
@@ -7345,7 +7345,7 @@
     },
     {
       "AWSConfigIdentifier": "IAM_INLINE_POLICY_BLOCKED_KMS_ACTIONS",
-      "CfnGuardFileName": "iam_inline_policy_blocked_kms_actions.guard",
+      "CfnGuardFile": "rules/aws/iam/iam_inline_policy_blocked_kms_actions.guard",
       "Controls": [
         "3.5.2",
         "7.1.2",
@@ -7356,14 +7356,14 @@
     },
     {
       "AWSConfigIdentifier": "ACM_CERTIFICATE_EXPIRATION_CHECK",
-      "CfnGuardFileName": "acm_certificate_expiration_check.guard",
+      "CfnGuardFile": "rules/aws/aws_certificate_manager/acm_certificate_expiration_check.guard",
       "Controls": [
         "4.1"
       ]
     },
     {
       "AWSConfigIdentifier": "ALB_HTTP_DROP_INVALID_HEADER_ENABLED",
-      "CfnGuardFileName": "alb_http_drop_invalid_header_enabled.guard",
+      "CfnGuardFile": "rules/aws/elastic_load_balancing_v2/alb_http_drop_invalid_header_enabled.guard",
       "Controls": [
         "4.1",
         "8.2.1"
@@ -7371,14 +7371,14 @@
     },
     {
       "AWSConfigIdentifier": "ELASTICSEARCH_NODE_TO_NODE_ENCRYPTION_CHECK",
-      "CfnGuardFileName": "elasticsearch_node_to_node_encryption_check.guard",
+      "CfnGuardFile": "rules/aws/opensearch_service/elasticsearch_node_to_node_encryption_check.guard",
       "Controls": [
         "4.1"
       ]
     },
     {
       "AWSConfigIdentifier": "ELB_ACM_CERTIFICATE_REQUIRED",
-      "CfnGuardFileName": "elb_acm_certificate_required.guard",
+      "CfnGuardFile": "rules/aws/elastic_load_balancing/elb_acm_certificate_required.guard",
       "Controls": [
         "4.1",
         "8.2.1"
@@ -7386,14 +7386,14 @@
     },
     {
       "AWSConfigIdentifier": "ELBV2_ACM_CERTIFICATE_REQUIRED",
-      "CfnGuardFileName": "elbv2_acm_certificate_required.guard",
+      "CfnGuardFile": "rules/aws/elastic_load_balancing_v2/elbv2_acm_certificate_required.guard",
       "Controls": [
         "4.1"
       ]
     },
     {
       "AWSConfigIdentifier": "GUARDDUTY_ENABLED_CENTRALIZED",
-      "CfnGuardFileName": "guardduty_enabled_centralized.guard",
+      "CfnGuardFile": "rules/aws/guardduty/guardduty_enabled_centralized.guard",
       "Controls": [
         "5.1.2",
         "6.1",
@@ -7402,49 +7402,49 @@
     },
     {
       "AWSConfigIdentifier": "EC2_MANAGEDINSTANCE_ASSOCIATION_COMPLIANCE_STATUS_CHECK",
-      "CfnGuardFileName": "ec2_managedinstance_association_compliance_status_check.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ec2_managedinstance_association_compliance_status_check.guard",
       "Controls": [
         "6.2"
       ]
     },
     {
       "AWSConfigIdentifier": "EC2_MANAGEDINSTANCE_PATCH_COMPLIANCE_STATUS_CHECK",
-      "CfnGuardFileName": "ec2_managedinstance_patch_compliance_status_check.guard",
+      "CfnGuardFile": "rules/aws/amazon_ec2/ec2_managedinstance_patch_compliance_status_check.guard",
       "Controls": [
         "6.2"
       ]
     },
     {
       "AWSConfigIdentifier": "RDS_AUTOMATIC_MINOR_VERSION_UPGRADE_ENABLED",
-      "CfnGuardFileName": "rds_automatic_minor_version_upgrade_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_rds/rds_automatic_minor_version_upgrade_enabled.guard",
       "Controls": [
         "6.2"
       ]
     },
     {
       "AWSConfigIdentifier": "REDSHIFT_CLUSTER_MAINTENANCESETTINGS_CHECK",
-      "CfnGuardFileName": "redshift_cluster_maintenancesettings_check.guard",
+      "CfnGuardFile": "rules/aws/amazon_redshift/redshift_cluster_maintenancesettings_check.guard",
       "Controls": [
         "6.2"
       ]
     },
     {
       "AWSConfigIdentifier": "ALB_WAF_ENABLED",
-      "CfnGuardFileName": "alb_waf_enabled.guard",
+      "CfnGuardFile": "rules/aws/elastic_load_balancing_v2/alb_waf_enabled.guard",
       "Controls": [
         "6.6"
       ]
     },
     {
       "AWSConfigIdentifier": "API_GW_ASSOCIATED_WITH_WAF",
-      "CfnGuardFileName": "api_gw_associated_with_waf.guard",
+      "CfnGuardFile": "rules/aws/api_gateway_v2/api_gw_associated_with_waf.guard",
       "Controls": [
         "6.6"
       ]
     },
     {
       "AWSConfigIdentifier": "IAM_GROUP_HAS_USERS_CHECK",
-      "CfnGuardFileName": "iam_group_has_users_check.guard",
+      "CfnGuardFile": "iam_group_has_users_check.guard",
       "Controls": [
         "7.1.2",
         "7.1.3",
@@ -7454,7 +7454,7 @@
     },
     {
       "AWSConfigIdentifier": "IAM_POLICY_NO_STATEMENTS_WITH_FULL_ACCESS",
-      "CfnGuardFileName": "iam_policy_no_statements_with_full_access.guard",
+      "CfnGuardFile": "rules/aws/iam/iam_policy_no_statements_with_full_access.guard",
       "Controls": [
         "7.1.2",
         "7.1.3",
@@ -7464,49 +7464,49 @@
     },
     {
       "AWSConfigIdentifier": "EMR_KERBEROS_ENABLED",
-      "CfnGuardFileName": "emr_kerberos_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_emr/emr_kerberos_enabled.guard",
       "Controls": [
         "7.2.1"
       ]
     },
     {
       "AWSConfigIdentifier": "S3_BUCKET_POLICY_GRANTEE_CHECK",
-      "CfnGuardFileName": "s3_bucket_policy_grantee_check.guard",
+      "CfnGuardFile": "rules/aws/amazon_s3/s3_bucket_policy_grantee_check.guard",
       "Controls": [
         "7.2.1"
       ]
     },
     {
       "AWSConfigIdentifier": "ECS_TASK_DEFINITION_USER_FOR_HOST_MODE_CHECK",
-      "CfnGuardFileName": "ecs_task_definition_user_for_host_mode_check.guard",
+      "CfnGuardFile": "rules/aws/amazon_ecs/ecs_task_definition_user_for_host_mode_check.guard",
       "Controls": [
         "7.2.1"
       ]
     },
     {
       "AWSConfigIdentifier": "CODEBUILD_PROJECT_ENVVAR_AWSCRED_CHECK",
-      "CfnGuardFileName": "codebuild_project_envvar_awscred_check.guard",
+      "CfnGuardFile": "rules/aws/codebuild/codebuild_project_envvar_awscred_check.guard",
       "Controls": [
         "8.2.1"
       ]
     },
     {
       "AWSConfigIdentifier": "CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK",
-      "CfnGuardFileName": "codebuild_project_source_repo_url_check.guard",
+      "CfnGuardFile": "rules/aws/codebuild/codebuild_project_source_repo_url_check.guard",
       "Controls": [
         "8.2.1"
       ]
     },
     {
       "AWSConfigIdentifier": "SNS_ENCRYPTED_KMS",
-      "CfnGuardFileName": "sns_encrypted_kms.guard",
+      "CfnGuardFile": "rules/aws/amazon_sns/sns_encrypted_kms.guard",
       "Controls": [
         "8.2.1"
       ]
     },
     {
       "AWSConfigIdentifier": "IAM_PASSWORD_POLICY",
-      "CfnGuardFileName": "iam_password_policy.guard",
+      "CfnGuardFile": "rules/aws/iam/iam_password_policy.guard",
       "Controls": [
         "8.2.3",
         "8.2.4",
@@ -7515,14 +7515,14 @@
     },
     {
       "AWSConfigIdentifier": "IAM_USER_MFA_ENABLED",
-      "CfnGuardFileName": "iam_user_mfa_enabled.guard",
+      "CfnGuardFile": "rules/aws/iam/iam_user_mfa_enabled.guard",
       "Controls": [
         "8.3"
       ]
     },
     {
       "AWSConfigIdentifier": "API_GW_EXECUTION_LOGGING_ENABLED",
-      "CfnGuardFileName": "api_gw_execution_logging_enabled.guard",
+      "CfnGuardFile": "rules/aws/api_gateway/rules/aws/api_gateway_v2/api_gw_execution_logging_enabled.guard",
       "Controls": [
         "10.1",
         "10.3.1",
@@ -7536,7 +7536,7 @@
     },
     {
       "AWSConfigIdentifier": "CLOUDTRAIL_ENABLED",
-      "CfnGuardFileName": "cloudtrail_enabled.guard",
+      "CfnGuardFile": "rules/aws/cloudtrail/cloudtrail_enabled.guard",
       "Controls": [
         "10.1",
         "10.2.1",
@@ -7556,7 +7556,7 @@
     },
     {
       "AWSConfigIdentifier": "ELB_LOGGING_ENABLED",
-      "CfnGuardFileName": "elb_logging_enabled.guard",
+      "CfnGuardFile": "rules/aws/elastic_load_balancing/elb_logging_enabled.guard",
       "Controls": [
         "10.1",
         "10.3.1",
@@ -7570,7 +7570,7 @@
     },
     {
       "AWSConfigIdentifier": "RDS_LOGGING_ENABLED",
-      "CfnGuardFileName": "rds_logging_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_rds/rds_logging_enabled.guard",
       "Controls": [
         "10.1",
         "10.2.1",
@@ -7588,7 +7588,7 @@
     },
     {
       "AWSConfigIdentifier": "WAFV2_LOGGING_ENABLED",
-      "CfnGuardFileName": "wafv2_logging_enabled.guard",
+      "CfnGuardFile": "rules/aws/aws_waf_v2/wafv2_logging_enabled.guard",
       "Controls": [
         "10.1",
         "10.3.1",
@@ -7602,7 +7602,7 @@
     },
     {
       "AWSConfigIdentifier": "ELASTICSEARCH_LOGS_TO_CLOUDWATCH",
-      "CfnGuardFileName": "elasticsearch_logs_to_cloudwatch.guard",
+      "CfnGuardFile": "rules/aws/opensearch_service/elasticsearch_logs_to_cloudwatch.guard",
       "Controls": [
         "10.1",
         "10.2.1",
@@ -7620,35 +7620,35 @@
     },
     {
       "AWSConfigIdentifier": "S3_BUCKET_VERSIONING_ENABLED",
-      "CfnGuardFileName": "s3_bucket_versioning_enabled.guard",
+      "CfnGuardFile": "rules/aws/amazon_s3/s3_bucket_versioning_enabled.guard",
       "Controls": [
         "10.5.3"
       ]
     },
     {
       "AWSConfigIdentifier": "AUDIT_LOG_POLICY_EXISTS (PROCESS CHECK)",
-      "CfnGuardFileName": "audit_log_policy_exists (process check).guard",
+      "CfnGuardFile": "audit_log_policy_exists (process check).guard",
       "Controls": [
         "10.9"
       ]
     },
     {
       "AWSConfigIdentifier": "ANNUAL_RISK_ASSESSMENT_PERFORMED (PROCESS CHECK)",
-      "CfnGuardFileName": "annual_risk_assessment_performed (process check).guard",
+      "CfnGuardFile": "annual_risk_assessment_performed (process check).guard",
       "Controls": [
         "12.2"
       ]
     },
     {
       "AWSConfigIdentifier": "SECURITY_AWARENESS_PROGRAM_EXISTS (PROCESS CHECK)",
-      "CfnGuardFileName": "security_awareness_program_exists (process check).guard",
+      "CfnGuardFile": "security_awareness_program_exists (process check).guard",
       "Controls": [
         "12.6"
       ]
     },
     {
       "AWSConfigIdentifier": "RESPONSE_PLAN_EXISTS_MAINTAINED (PROCESS CHECK)",
-      "CfnGuardFileName": "response_plan_exists_maintained (process check).guard",
+      "CfnGuardFile": "response_plan_exists_maintained (process check).guard",
       "Controls": [
         "12.1"
       ]
