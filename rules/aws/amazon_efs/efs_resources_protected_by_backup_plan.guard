@@ -1,2 +1,13 @@
-    ## Config Rule Name : efs-resources-protected-by-backup-plan
-    ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/EFS_RESOURCES_PROTECTED_BY_BACKUP_PLAN.html"
+## SKIP
+## SKIP RATIONALE: Initial version of Rules Registry pertains to static code analysis. The check for
+##                 a backup plan can be leveraged outside of the EFS resource property BackupPolicy.
+##                 This can be done with AWS Backup Manager which is a better practice to implement
+##                 over individual resource backup strategies. AWS Backup Manager can be defined
+##                 outside of the stack which EFS is deployed in.
+
+## Config Rule Name : efs-resources-protected-by-backup-plan
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/efs-resources-protected-by-backup-plan.html
+
+# Rule Intent: Checks if Amazon Elastic File System (Amazon EFS) File Systems are protected by a backup plan.
+#              The rule is NON_COMPLIANT if the EFS File System is not covered by a backup plan.
+
