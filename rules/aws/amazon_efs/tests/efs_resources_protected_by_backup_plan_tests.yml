@@ -1,45 +1,47 @@
 ###
-# efs_encrypted_check tests
+# efs_resources_protected_by_backup_plan tests
 ###
 ---
 - name: Empty, SKIP
   input: {}
   expectations:
     rules:
-      efs_encrypted_check: SKIP
+      efs_resources_protected_by_backup_plan: SKIP
 
 - name: No resources, SKIP
   input:
     Resources: {}
   expectations:
     rules:
-      efs_encrypted_check: SKIP
+      efs_resources_protected_by_backup_plan: SKIP
 
-- name: EFS with encryption property set to true, PASS
+- name: EFS Backup Policy status set to ENABLED, PASS
   input:
     Resources:
       ExampleEfs:
         Type: AWS::EFS::FileSystem
         Properties:
           PerformanceMode: generalPurpose
-          Encrypted: true
+          BackupPolicy:
+            Status: 'ENABLED'
   expectations:
     rules:
-      efs_encrypted_check: PASS
+      efs_resources_protected_by_backup_plan: PASS
 
-- name: EFS with encryption property set to false, FAIL
+- name: EFS Backup Policy status set to false, FAIL
   input:
     Resources:
       ExampleEfs:
         Type: AWS::EFS::FileSystem
         Properties:
           PerformanceMode: generalPurpose
-          Encrypted: false
+          BackupPolicy:
+            Status: 'DISABLED'
   expectations:
     rules:
-      efs_encrypted_check: FAIL
+      efs_resources_protected_by_backup_plan: FAIL
 
-- name: EFS with missing Encryption property, FAIL
+- name: EFS Backup Policy missing property status, FAIL
   input:
     Resources:
       ExampleEfs:
@@ -48,4 +50,4 @@
           PerformanceMode: generalPurpose
   expectations:
     rules:
-      efs_encrypted_check: FAIL
+      efs_resources_protected_by_backup_plan: FAIL

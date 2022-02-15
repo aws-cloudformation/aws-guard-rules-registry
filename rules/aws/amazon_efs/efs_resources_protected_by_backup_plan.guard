@@ -11,3 +11,11 @@
 # Rule Intent: Checks if Amazon Elastic File System (Amazon EFS) File Systems are protected by a backup plan.
 #              The rule is NON_COMPLIANT if the EFS File System is not covered by a backup plan.
 
+#
+# Select all EFS resources from incoming template (payload)
+#
+let efs_file_systems = Resources.*[ Type == 'AWS::EFS::FileSystem' ]
+
+rule EFS_ENCRYPTED_CHECK when %efs_file_systems !empty {
+    %efs_file_systems.Properties.BackupPolicy.Status == 'ENABLED' <<EFS filesystems must have backup policy set>>
+}
