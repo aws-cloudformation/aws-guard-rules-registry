@@ -1,4 +1,3 @@
-## SKIP
 ## SKIP RATIONALE: Initial version of Rules Registry pertains to static code analysis. The check for
 ##                 a backup plan can be leveraged outside of the EFS resource property BackupPolicy.
 ##                 This can be done with AWS Backup Manager which is a better practice to implement
@@ -17,5 +16,5 @@
 let efs_file_systems = Resources.*[ Type == 'AWS::EFS::FileSystem' ]
 
 rule EFS_ENCRYPTED_CHECK when %efs_file_systems !empty {
-    %efs_file_systems.Properties.BackupPolicy.Status == 'ENABLED' <<EFS filesystems must have backup policy set>>
+    %efs_file_systems.Properties.BackupPolicy.Status == 'ENABLED' <<EFS filesystem must have backup policy set to enabled>>
 }
