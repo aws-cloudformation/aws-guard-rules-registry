@@ -1,6 +1,19 @@
 ## Config Rule Name : efs-encrypted-check
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/EFS_ENCRYPTED_CHECK.html"
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/efs-encrypted-check.html
 
+# Rule Intent: Checks if Amazon Elastic File System (Amazon EFS) is configured to encrypt the file data
+#              using AWS Key Management Service (AWS KMS). The rule is NON_COMPLIANT if the encrypted
+#              key is set to false on DescribeFileSystems or if the KmsKeyId key on DescribeFileSystems
+#              does not match the KmsKeyId parameter.
+
+# Expectations:
+# a) SKIP: when there are no EFS resource present
+# b) PASS: when all EFS resources have encrypted key property set to true
+# c) FAIL: when all EFS resources have encrypted key property not set or set to false
+
+#
+# Select all EFS resources from incoming template (payload)
+#
 let efs_file_systems = Resources.*[ Type == 'AWS::EFS::FileSystem' ]
 
 rule EFS_ENCRYPTED_CHECK when %efs_file_systems !empty {

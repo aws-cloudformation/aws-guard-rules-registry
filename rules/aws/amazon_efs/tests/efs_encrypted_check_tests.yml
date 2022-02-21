@@ -1,0 +1,51 @@
+###
+# efs_encrypted_check tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      efs_encrypted_check: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      efs_encrypted_check: SKIP
+
+- name: EFS with encryption property set to true, PASS
+  input:
+    Resources:
+      ExampleEfs:
+        Type: AWS::EFS::FileSystem
+        Properties:
+          PerformanceMode: generalPurpose
+          Encrypted: true
+  expectations:
+    rules:
+      efs_encrypted_check: PASS
+
+- name: EFS with encryption property set to false, FAIL
+  input:
+    Resources:
+      ExampleEfs:
+        Type: AWS::EFS::FileSystem
+        Properties:
+          PerformanceMode: generalPurpose
+          Encrypted: false
+  expectations:
+    rules:
+      efs_encrypted_check: FAIL
+
+- name: EFS with missing Encryption property, FAIL
+  input:
+    Resources:
+      ExampleEfs:
+        Type: AWS::EFS::FileSystem
+        Properties:
+          PerformanceMode: generalPurpose
+  expectations:
+    rules:
+      efs_encrypted_check: FAIL

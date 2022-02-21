@@ -1,0 +1,53 @@
+###
+# efs_resources_protected_by_backup_plan tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      efs_resources_protected_by_backup_plan: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      efs_resources_protected_by_backup_plan: SKIP
+
+- name: EFS Backup Policy status set to ENABLED, PASS
+  input:
+    Resources:
+      ExampleEfs:
+        Type: AWS::EFS::FileSystem
+        Properties:
+          PerformanceMode: generalPurpose
+          BackupPolicy:
+            Status: 'ENABLED'
+  expectations:
+    rules:
+      efs_resources_protected_by_backup_plan: PASS
+
+- name: EFS Backup Policy status set to false, FAIL
+  input:
+    Resources:
+      ExampleEfs:
+        Type: AWS::EFS::FileSystem
+        Properties:
+          PerformanceMode: generalPurpose
+          BackupPolicy:
+            Status: 'DISABLED'
+  expectations:
+    rules:
+      efs_resources_protected_by_backup_plan: FAIL
+
+- name: EFS Backup Policy missing property status, FAIL
+  input:
+    Resources:
+      ExampleEfs:
+        Type: AWS::EFS::FileSystem
+        Properties:
+          PerformanceMode: generalPurpose
+  expectations:
+    rules:
+      efs_resources_protected_by_backup_plan: FAIL
