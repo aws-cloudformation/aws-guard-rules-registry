@@ -1,10 +1,20 @@
 ## Config Rule Name : s3-bucket-server-side-encryption-enabled
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/s3-bucket-server-side-encryption_enabled.html"
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/s3-bucket-server-side-encryption_enabled.html
 
 
-let s3_buckets = Resources.*[ Type == 'AWS::S3::Bucket' ]
+# Rule Intent: Checks whether the Amazon S3 buckets are encrypted with AWS Key Management Service(AWS KMS).
+#              The rule is NON_COMPLIANT if the Amazon S3 bucket is not encrypted with AWS KMS key.
 
-rule S3_Bucket_Encryption when %s3_buckets !empty {
+# Expectations:
+# a) SKIP: when there are no S3 resource present
+# b) PASS: when all S3 resources Bucket Encryption ServerSideEncryptionByDefault is set to either "aws:kms" or "AES256"
+# c) FAIL: when all S3 resources have Bucket Encryption ServerSideEncryptionByDefault is not set or does not have "aws:kms" or "AES256" configurations
+
+#
+# Select all S3 resources from incoming template (payload)
+#
+
+rule S3_BUCKET_SERVER_SIDE_ENCRYPTION_ENABLED when %s3_buckets !empty {
     %s3_buckets.Properties.BucketEncryption exists <<Buckets must enable server-side encryption>>
     %s3_buckets.Properties.BucketEncryption.ServerSideEncryptionConfiguration[*].ServerSideEncryptionByDefault.SSEAlgorithm in ["aws:kms","AES256"] <<Buckets must enable server-side encryption>>
 }

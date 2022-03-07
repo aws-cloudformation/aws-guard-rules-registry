@@ -1,4 +1,19 @@
 ## Config Rule Name : s3-bucket-versioning-enabled
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/s3-bucket-versioning-enabled.html"
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/s3-bucket-versioning-enabled.html
 
+# Rule Intent: Checks if versioning is enabled for your S3 buckets.
+
+# Expectations:
+# a) SKIP: when there are no S3 resource present
+# b) PASS: when all S3 resources Versioning Configuration status is set to Enabled
+# c) FAIL: when all S3 resources have Versioning Configuration status property not set or set to Suspended
+
+#
+# Select all S3 resources from incoming template (payload)
+#
 let s3_buckets = Resources.*[ Type == 'AWS::S3::Bucket' ]
+
+rule S3_BUCKET_VERSIONING_ENABLED when %s3_buckets !empty {
+    %s3_buckets.Properties.VersioningConfiguration exists <<S3 Bucket Versioning must be enabled>>
+    %s3_buckets.Properties.VersioningConfiguration.Status == 'Enabled' <<S3 Bucket Versioning must be enabled>>
+}

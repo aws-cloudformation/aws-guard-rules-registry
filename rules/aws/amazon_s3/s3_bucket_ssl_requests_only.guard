@@ -1,8 +1,18 @@
 ## Config Rule Name : s3-bucket-ssl-requests-only
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/s3-bucket-ssl-requests-only.html"
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/s3-bucket-ssl-requests-only.html
 
+# Rule Intent: Checks if Amazon S3 buckets have policies that require requests to use Secure Socket Layer (SSL).
+
+# Expectations:
+# a) SKIP: when there are no S3 Bucket Policy Document resource present
+# b) PASS: when all S3 Bucket Policy Document set to deny if condition SecureTransport not true
+# c) FAIL: when all S3 Bucket Policy Document does not have deny on insecure transport actions
+
+#
+# Select all S3 resources from incoming template (payload)
+#
 let s3_bucket_policies = Resources.*[ Type == 'AWS::S3::BucketPolicy' ]
 
-rule S3_BucketPolicy_NonTLS when %s3_bucket_policies !empty {
+rule S3_BUCKET_SSL_REQUESTS_ONLY when %s3_bucket_policies !empty {
     %s3_bucket_policies.Properties.PolicyDocument.Statement.* == {"Action":"s3:*","Condition":{"Bool":{"aws:SecureTransport":false}},"Effect":"Deny","Principal":"*","Resource":"*"} <<Bucket policies must feature a statement to enforce TLS usage>>
 }

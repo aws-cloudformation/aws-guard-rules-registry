@@ -1,0 +1,57 @@
+###
+# s3_bucket_server_side_encryption_enabled tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      s3_bucket_server_side_encryption_enabled: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      s3_bucket_server_side_encryption_enabled: SKIP
+
+- name: S3 Bucket Encryption set to SSE AES 256, PASS
+  input:
+    Resources:
+      ExampleS3:
+        Type: AWS::S3::Bucket
+        Properties:
+          BucketName: my-bucket
+          BucketEncryption:
+            ServerSideEncryptionConfiguration:
+              - ServerSideEncryptionByDefault:
+                  SSEAlgorithm: AES256
+  expectations:
+    rules:
+      s3_bucket_server_side_encryption_enabled: PASS
+
+- name: S3 Bucket Encryption set to SSE AWS KMS key, PASS
+  input:
+    Resources:
+      ExampleS3:
+        Type: AWS::S3::Bucket
+        Properties:
+          BucketName: my-bucket
+          BucketEncryption:
+            ServerSideEncryptionConfiguration:
+              - SSEAlgorithm: aws:kms
+                KMSMasterKeyID: "ARN:AWS:12345678912"
+  expectations:
+    rules:
+      s3_bucket_server_side_encryption_enabled: PASS
+
+- name: S3 Bucket Encryption not set, FAIL
+  input:
+    Resources:
+      ExampleS3:
+        Type: AWS::S3::Bucket
+        Properties:
+          BucketName: my-bucket
+  expectations:
+    rules:
+      s3_bucket_server_side_encryption_enabled: FAIL
