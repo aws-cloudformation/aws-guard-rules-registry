@@ -1,19 +1,19 @@
 ###
-# efs_encrypted_check tests
+# EFS_ENCRYPTED_CHECK tests
 ###
 ---
 - name: Empty, SKIP
   input: {}
   expectations:
     rules:
-      efs_encrypted_check: SKIP
+      EFS_ENCRYPTED_CHECK: SKIP
 
 - name: No resources, SKIP
   input:
     Resources: {}
   expectations:
     rules:
-      efs_encrypted_check: SKIP
+      EFS_ENCRYPTED_CHECK: SKIP
 
 - name: EFS with encryption property set to true, PASS
   input:
@@ -25,7 +25,7 @@
           Encrypted: true
   expectations:
     rules:
-      efs_encrypted_check: PASS
+      EFS_ENCRYPTED_CHECK: PASS
 
 - name: EFS with encryption property set to false, FAIL
   input:
@@ -37,7 +37,7 @@
           Encrypted: false
   expectations:
     rules:
-      efs_encrypted_check: FAIL
+      EFS_ENCRYPTED_CHECK: FAIL
 
 - name: EFS with missing Encryption property, FAIL
   input:
@@ -48,4 +48,4 @@
           PerformanceMode: generalPurpose
   expectations:
     rules:
-      efs_encrypted_check: FAIL
+      EFS_ENCRYPTED_CHECK: FAIL
