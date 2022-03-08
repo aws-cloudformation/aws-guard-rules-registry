@@ -6,8 +6,8 @@
 
 # Expectations:
 # a) SKIP: when there are no S3 resource present
-# b) PASS: when all S3 resources Versioning Configuration status is set to Enabled
-# c) FAIL: when all S3 resources have Versioning Configuration status property not set or set to Suspended
+# b) PASS: when all S3 resources have ServerSideEncryptionConfiguration property set with values of "aws:kms" or "AES256"
+# c) FAIL: when all S3 resources have ServerSideEncryptionConfiguration property not set or values are not "aws:kms" or "AES256"
 
 #
 # Select all S3 resources from incoming template (payload)

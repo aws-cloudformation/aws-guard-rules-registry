@@ -19,6 +19,5 @@ let s3_bucket_policies = Resources.*[ Type == 'AWS::S3::BucketPolicy' ]
 rule S3_BUCKET_SERVER_SIDE_ENCRYPTION_ENABLED when %s3_buckets !empty {
     %s3_buckets.Properties.BucketEncryption exists <<Buckets must enable server-side encryption>>
     %s3_buckets.Properties.BucketEncryption.ServerSideEncryptionConfiguration[*].ServerSideEncryptionByDefault.SSEAlgorithm in ["aws:kms","AES256"] <<Buckets must enable server-side encryption>>
-    # %s3_bucket_policies.Properties.PolicyDocument.Statement.* == {"Action":"s3:*","Condition":{"Bool":{"aws:SecureTransport":false}},"Effect":"Deny","Principal":"*","Resource":"*"} <<Bucket policies must feature a statement to enforce TLS usage>>
 }
 

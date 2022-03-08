@@ -1,21 +1,21 @@
 ###
-# S3_BUCKET_SERVER_SIDE_ENCRYPTION_ENABLED tests
+# S3_BUCKET_LEVEL_PUBLIC_ACCESS_PROHIBITED tests
 ###
 ---
 - name: Empty, SKIP
   input: {}
   expectations:
     rules:
-      S3_BUCKET_SERVER_SIDE_ENCRYPTION_ENABLED: SKIP
+      S3_BUCKET_LEVEL_PUBLIC_ACCESS_PROHIBITED: SKIP
 
 - name: No resources, SKIP
   input:
     Resources: {}
   expectations:
     rules:
-      S3_BUCKET_SERVER_SIDE_ENCRYPTION_ENABLED: SKIP
+      S3_BUCKET_LEVEL_PUBLIC_ACCESS_PROHIBITED: SKIP
 
-- name: S3 Bucket Encryption set to SSE AES 256, PASS
+- name: S3 Bucket PublicAccessBlockConfiguration properties set to true, PASS
   input:
     Resources:
       ExampleS3:
@@ -26,11 +26,16 @@
             ServerSideEncryptionConfiguration:
               - ServerSideEncryptionByDefault:
                   SSEAlgorithm: AES256
+          PublicAccessBlockConfiguration:
+            BlockPublicAcls: true
+            BlockPublicPolicy: true
+            IgnorePublicAcls: true
+            RestrictPublicBuckets: true
   expectations:
     rules:
-      S3_BUCKET_SERVER_SIDE_ENCRYPTION_ENABLED: PASS
+      S3_BUCKET_LEVEL_PUBLIC_ACCESS_PROHIBITED: PASS
 
-- name: S3 Bucket Encryption set to SSE AWS KMS key, PASS
+- name: S3 Bucket PublicAccessBlockConfiguration properties set to false, FAIL
   input:
     Resources:
       ExampleS3:
@@ -41,11 +46,16 @@
             ServerSideEncryptionConfiguration:
               - SSEAlgorithm: aws:kms
                 KMSMasterKeyID: "ARN:AWS:12345678912"
+          PublicAccessBlockConfiguration:
+            BlockPublicAcls: false
+            BlockPublicPolicy: false
+            IgnorePublicAcls: false
+            RestrictPublicBuckets: false
   expectations:
     rules:
-      S3_BUCKET_SERVER_SIDE_ENCRYPTION_ENABLED: PASS
+      S3_BUCKET_LEVEL_PUBLIC_ACCESS_PROHIBITED: FAIL
 
-- name: S3 Bucket Encryption not set, FAIL
+- name: S3 Bucket PublicAccessBlockConfiguration missing, FAIL
   input:
     Resources:
       ExampleS3:
@@ -54,4 +64,4 @@
           BucketName: my-bucket
   expectations:
     rules:
-      S3_BUCKET_SERVER_SIDE_ENCRYPTION_ENABLED: FAIL
+      S3_BUCKET_LEVEL_PUBLIC_ACCESS_PROHIBITED: FAIL

@@ -1,0 +1,51 @@
+###
+# S3_BUCKET_DEFAULT_LOCK_ENABLE tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      S3_BUCKET_DEFAULT_LOCK_ENABLE: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      S3_BUCKET_DEFAULT_LOCK_ENABLE: SKIP
+
+- name: S3 Bucket with ObjectLockEnabled property set to true, PASS
+  input:
+    Resources:
+      ExampleS3:
+        Type: AWS::S3::Bucket
+        Properties:
+          BucketName: my-bucket
+          ObjectLockEnabled: true
+  expectations:
+    rules:
+      S3_BUCKET_DEFAULT_LOCK_ENABLE: PASS
+
+- name: S3 Bucket with ObjectLockEnabled property set to false, FAIL
+  input:
+    Resources:
+      ExampleS3:
+        Type: AWS::S3::Bucket
+        Properties:
+          BucketName: my-bucket
+          ObjectLockEnabled: false
+  expectations:
+    rules:
+      S3_BUCKET_DEFAULT_LOCK_ENABLE: FAIL
+
+- name: S3 Bucket with ObjectLockEnabled property missing, FAIL
+  input:
+    Resources:
+      ExampleS3:
+        Type: AWS::S3::Bucket
+        Properties:
+          BucketName: my-bucket
+  expectations:
+    rules:
+      S3_BUCKET_DEFAULT_LOCK_ENABLE: FAIL

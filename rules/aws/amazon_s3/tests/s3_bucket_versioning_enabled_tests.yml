@@ -1,19 +1,19 @@
 ###
-# s3_bucket_versioning_enabled tests
+# S3_BUCKET_VERSIONING_ENABLED tests
 ###
 ---
 - name: Empty, SKIP
   input: {}
   expectations:
     rules:
-      s3_bucket_versioning_enabled: SKIP
+      S3_BUCKET_VERSIONING_ENABLED: SKIP
 
 - name: No resources, SKIP
   input:
     Resources: {}
   expectations:
     rules:
-      s3_bucket_versioning_enabled: SKIP
+      S3_BUCKET_VERSIONING_ENABLED: SKIP
 
 - name: S3 Bucket with Versioning Configuration Status property set to Enabled, PASS
   input:
@@ -26,7 +26,7 @@
             Status: Enabled
   expectations:
     rules:
-      s3_bucket_versioning_enabled: PASS
+      S3_BUCKET_VERSIONING_ENABLED: PASS
 
 - name: S3 Bucket with Versioning Configuration Status property set to Suspended, FAIL
   input:
@@ -39,7 +39,7 @@
             Status: Suspended
   expectations:
     rules:
-      s3_bucket_versioning_enabled: FAIL
+      S3_BUCKET_VERSIONING_ENABLED: FAIL
 
 - name: S3 Bucket with Versioning Configuration Status property missing, FAIL
   input:
@@ -50,4 +50,4 @@
           BucketName: my-bucket
   expectations:
     rules:
-      s3_bucket_versioning_enabled: FAIL
+      S3_BUCKET_VERSIONING_ENABLED: FAIL

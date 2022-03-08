@@ -1,19 +1,19 @@
 ###
-# efs_resources_protected_by_backup_plan tests
+# EFS_RESOURCES_PROTECTED_BY_BACKUP_PLAN tests
 ###
 ---
 - name: Empty, SKIP
   input: {}
   expectations:
     rules:
-      efs_resources_protected_by_backup_plan: SKIP
+      EFS_RESOURCES_PROTECTED_BY_BACKUP_PLAN: SKIP
 
 - name: No resources, SKIP
   input:
     Resources: {}
   expectations:
     rules:
-      efs_resources_protected_by_backup_plan: SKIP
+      EFS_RESOURCES_PROTECTED_BY_BACKUP_PLAN: SKIP
 
 - name: EFS Backup Policy status set to ENABLED, PASS
   input:
@@ -26,7 +26,7 @@
             Status: 'ENABLED'
   expectations:
     rules:
-      efs_resources_protected_by_backup_plan: PASS
+      EFS_RESOURCES_PROTECTED_BY_BACKUP_PLAN: PASS
 
 - name: EFS Backup Policy status set to false, FAIL
   input:
@@ -39,7 +39,7 @@
             Status: 'DISABLED'
   expectations:
     rules:
-      efs_resources_protected_by_backup_plan: FAIL
+      EFS_RESOURCES_PROTECTED_BY_BACKUP_PLAN: FAIL
 
 - name: EFS Backup Policy missing property status, FAIL
   input:
@@ -50,4 +50,4 @@
           PerformanceMode: generalPurpose
   expectations:
     rules:
-      efs_resources_protected_by_backup_plan: FAIL
+      EFS_RESOURCES_PROTECTED_BY_BACKUP_PLAN: FAIL

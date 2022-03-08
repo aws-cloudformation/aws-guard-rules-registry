@@ -1,19 +1,19 @@
 ###
-# s3_bucket_logging_enabled tests
+# S3_BUCKET_LOGGING_ENABLED tests
 ###
 ---
 - name: Empty, SKIP
   input: {}
   expectations:
     rules:
-      s3_bucket_logging_enabled: SKIP
+      S3_BUCKET_LOGGING_ENABLED: SKIP
 
 - name: No resources, SKIP
   input:
     Resources: {}
   expectations:
     rules:
-      s3_bucket_logging_enabled: SKIP
+      S3_BUCKET_LOGGING_ENABLED: SKIP
 
 - name: S3 Bucket with Logging Configuration present in resource, PASS
   input:
@@ -29,7 +29,7 @@
             LogFilePrefix: testing-logs
   expectations:
     rules:
-      s3_bucket_logging_enabled: PASS
+      S3_BUCKET_LOGGING_ENABLED: PASS
 
 - name: S3 Bucket with Logging Configuration missing, FAIL
   input:
@@ -40,4 +40,4 @@
           BucketName: my-bucket
   expectations:
     rules:
-      s3_bucket_logging_enabled: FAIL
+      S3_BUCKET_LOGGING_ENABLED: FAIL

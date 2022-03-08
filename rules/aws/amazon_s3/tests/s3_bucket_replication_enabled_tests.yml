@@ -1,0 +1,53 @@
+###
+# S3_BUCKET_REPLICATION_ENABLED tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      S3_BUCKET_REPLICATION_ENABLED: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      S3_BUCKET_REPLICATION_ENABLED: SKIP
+
+- name: S3 Bucket with replication configuration set, PASS
+  input:
+    Resources:
+      ExampleS3:
+        Type: AWS::S3::Bucket
+        Properties:
+          BucketName: my-bucket
+          ReplicationConfiguration:
+            Role: !GetAtt
+              - WorkItemBucketBackupRole
+              - Arn
+            Rules:
+              - Destination:
+                  Bucket: !Join
+                    - ''
+                    - - 'arn:aws:s3:::'
+                      - !Join
+                        - '-'
+                        - - !Ref 'AWS::Region'
+                          - !Ref 'AWS::StackName'
+                          - replicationbucket
+  expectations:
+    rules:
+      S3_BUCKET_REPLICATION_ENABLED: PASS
+
+
+- name: S3 Bucket missing replication configuration, FAIL
+  input:
+    Resources:
+      ExampleS3:
+        Type: AWS::S3::Bucket
+        Properties:
+          BucketName: my-bucket
+  expectations:
+    rules:
+      S3_BUCKET_REPLICATION_ENABLED: FAIL

@@ -5,10 +5,15 @@
 
 # Expectations:
 # a) SKIP: when there are no S3 resource present
-# b) PASS: when all S3 resources Versioning Configuration status is set to Enabled
+# b) PASS: when all S3 resources replication configuration set status is set to Enabled
 # c) FAIL: when all S3 resources have Versioning Configuration status property not set or set to Suspended
 
 #
 # Select all S3 resources from incoming template (payload)
 #
 let s3_buckets = Resources.*[ Type == 'AWS::S3::Bucket' ]
+
+rule S3_BUCKET_REPLICATION_ENABLED when %s3_buckets !empty {
+    %s3_buckets.Properties.ReplicationConfiguration exists <<Buckets must enable replication>>
+    ## TODO regex to identify cross-region
+}

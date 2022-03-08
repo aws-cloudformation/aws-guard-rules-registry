@@ -1,2 +1,4 @@
 ## Config Rule Name : s3-bucket-policy-grantee-check
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/s3-bucket-policy-grantee-check.html"
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/s3-bucket-policy-grantee-check.html
+
+# Rule Intent: Checks that the access granted by the Amazon S3 bucket is restricted by any of the AWS principals, federated users, service principals, IP addresses, or VPCs that you provide.
