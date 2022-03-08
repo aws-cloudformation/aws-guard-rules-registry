@@ -1,0 +1,43 @@
+###
+# s3_bucket_logging_enabled tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      s3_bucket_logging_enabled: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      s3_bucket_logging_enabled: SKIP
+
+- name: S3 Bucket with Logging Configuration present in resource, PASS
+  input:
+    Resources:
+      ExampleS3:
+        Type: AWS::S3::Bucket
+        Properties:
+          BucketName: my-bucket
+          VersioningConfiguration:
+            Status: Enabled
+          LoggingConfiguration:
+            DestinationBucketName: !Ref LoggingBucket
+            LogFilePrefix: testing-logs
+  expectations:
+    rules:
+      s3_bucket_logging_enabled: PASS
+
+- name: S3 Bucket with Logging Configuration missing, FAIL
+  input:
+    Resources:
+      ExampleS3:
+        Type: AWS::S3::Bucket
+        Properties:
+          BucketName: my-bucket
+  expectations:
+    rules:
+      s3_bucket_logging_enabled: FAIL

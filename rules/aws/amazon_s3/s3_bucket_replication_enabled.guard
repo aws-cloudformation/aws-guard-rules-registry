@@ -1,2 +1,14 @@
 ## Config Rule Name : s3-bucket-replication-enabled
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/s3-bucket-replication-enabled.html"
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/s3-bucket-replication-enabled.html
+
+# Rule Intent: Checks whether the Amazon S3 buckets have cross-region replication enabled.
+
+# Expectations:
+# a) SKIP: when there are no S3 resource present
+# b) PASS: when all S3 resources Versioning Configuration status is set to Enabled
+# c) FAIL: when all S3 resources have Versioning Configuration status property not set or set to Suspended
+
+#
+# Select all S3 resources from incoming template (payload)
+#
+let s3_buckets = Resources.*[ Type == 'AWS::S3::Bucket' ]
