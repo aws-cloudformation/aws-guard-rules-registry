@@ -14,7 +14,7 @@
 let aws_dynamodb_table_resources = Resources.*[ Type == 'AWS::DynamoDB::Table' ]
 
 
-rule dynamodb_pitr_is_enabled when %aws_dynamodb_table_resources !empty {
+rule DYNAMODB_PITR_ENABLED when %aws_dynamodb_table_resources !empty {
     # Ensure ALL DynamoDB Tables have Point-In-Time-Recovery enabled
     %aws_dynamodb_table_resources.Properties.PointInTimeRecoverySpecification.PointInTimeRecoveryEnabled == true
         <<
