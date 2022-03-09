@@ -1,18 +1,20 @@
 ###
-# dynamodb_table_must_be_encrypted test
+# DYNAMODB_TABLE_MUST_BE_ENCRYPTED test
 ###
 ---
 - name: Empty, SKIP
   input: {}
   expectations:
     rules:
-      dynamodb_table_must_be_encrypted: SKIP
+      DYNAMODB_TABLE_MUST_BE_ENCRYPTED: SKIP
+
 - name: No resources, SKIP
   input:
     Resources: {}
   expectations:
     rules:
-      dynamodb_table_must_be_encrypted: SKIP
+      DYNAMODB_TABLE_MUST_BE_ENCRYPTED: SKIP
+
 - name: DDB with SSE set to true, PASS
   input:
     Resources:
@@ -37,7 +39,8 @@
             SSEEnabled: true
   expectations:
     rules:
-      dynamodb_table_must_be_encrypted: PASS
+      DYNAMODB_TABLE_MUST_BE_ENCRYPTED: PASS
+
 - name: DDB with SSE set to false, FAIL
   input:
     Resources:
@@ -62,7 +65,8 @@
             SSEEnabled: false
   expectations:
     rules:
-      dynamodb_table_must_be_encrypted: FAIL
+      DYNAMODB_TABLE_MUST_BE_ENCRYPTED: FAIL
+
 - name: DDB with missing SSESpecification property, FAIL
   input:
     Resources:
@@ -85,4 +89,4 @@
               AttributeType: S
   expectations:
     rules:
-      dynamodb_table_must_be_encrypted: FAIL
+      DYNAMODB_TABLE_MUST_BE_ENCRYPTED: FAIL
