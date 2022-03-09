@@ -1,5 +1,5 @@
 ## SKIP
-## SKIP RATIONALE: Initial version of Rules Registry pertains to static code analysis. The check for
+## SKIP RATIONALE: Initial version of Rules Registry pertains to static code analysis. The check
 ##                 for S3 account-level configurations is not supported in infrastructure as code
 
 ## Config Rule Name : s3-account-level-public-access-blocks
