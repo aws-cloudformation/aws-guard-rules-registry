@@ -8,12 +8,21 @@ on:
 
 jobs:
 
+  # testRules:
+  #   name: "Test"
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: "Setup - Checkout"
+  #       uses: actions/checkout@v2.1.0
+  #     - name: "Validate Guard Registry Rules"
+  #       shell: bash
+  #       run: chmod +x bin/cfn-guard && bin/cfn-guard test -d ./rules/aws/  | grep "FAIL Rules:" -B 2 -A 1
+
   testRules:
-    name: "Test"
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
-      - name: "Setup - Checkout"
-        uses: actions/checkout@v2.1.0
-      - name: "Validate Guard Registry Rules"
-        shell: bash
-        run: chmod +x bin/cfn-guard && bin/cfn-guard test -d ./rules/aws/  | grep "FAIL Rules:" -B 2 -A 1
+    - uses: actions/checkout@v2
+    - name: Run guard rules tests
+      shell: bash
+      run: |
+        bin/cfn-guard test -d ./rules/
