@@ -25,4 +25,4 @@ jobs:
     - name: Run guard rules tests
       shell: bash
       run: |
-        bin/cfn-guard test -d ./rules/
+        bin/cfn-guard test -d ./rules/ | grep "FAIL Rules:" -B 2 -A 1
