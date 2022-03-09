@@ -39,8 +39,9 @@
           BucketName: my-bucket
           BucketEncryption:
             ServerSideEncryptionConfiguration:
-              - SSEAlgorithm: aws:kms
-                KMSMasterKeyID: "ARN:AWS:12345678912"
+              - ServerSideEncryptionByDefault:
+                  SSEAlgorithm: "aws:kms"
+                  KMSMasterKeyID: "ARN:AWS:12345678912"
   expectations:
     rules:
       S3_DEFAULT_ENCRYPTION_KMS: PASS

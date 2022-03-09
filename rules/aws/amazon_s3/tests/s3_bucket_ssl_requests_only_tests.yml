@@ -25,10 +25,9 @@
           PolicyDocument:
             Version: "2012-10-17"
             Statement:
-              - Sid: "DenyNoSSL"
+              - Action: "s3:*"
                 Effect: "Deny"
                 Principal: "*"
-                Action: "s3:*"
                 Resource: "*"
                 Condition:
                   Bool:
@@ -69,10 +68,9 @@
           PolicyDocument:
             Version: "2012-10-17"
             Statement:
-              - Sid: "DenyNoSSL"
+              - Action: "s3:*"
                 Effect: "Deny"
                 Principal: "*"
-                Action: "s3:*"
                 Resource: "*"
                 Condition:
                   Bool:

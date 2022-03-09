@@ -14,5 +14,5 @@
 let s3_bucket_policies = Resources.*[ Type == 'AWS::S3::BucketPolicy' ]
 
 rule S3_BUCKET_SSL_REQUESTS_ONLY when %s3_bucket_policies !empty {
-    %s3_bucket_policies.Properties.PolicyDocument.Statement.* == {"Action":"s3:*","Condition":{"Bool":{"aws:SecureTransport":false}},"Effect":"Deny","Principal":"*","Resource":"*"} <<Bucket policies must feature a statement to enforce TLS usage>>
+    %s3_bucket_policies.Properties.PolicyDocument.Statement.* == {"Action":"s3:*","Effect":"Deny","Principal":"*","Resource":"*","Condition":{"Bool":{"aws:SecureTransport":false}}} <<Bucket policies must feature a statement to enforce TLS usage>>
 }
