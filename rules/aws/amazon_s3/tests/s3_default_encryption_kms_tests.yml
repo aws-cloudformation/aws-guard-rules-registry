@@ -1,0 +1,57 @@
+###
+# S3_DEFAULT_ENCRYPTION_KMS tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      S3_DEFAULT_ENCRYPTION_KMS: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      S3_DEFAULT_ENCRYPTION_KMS: SKIP
+
+- name: S3 Bucket Encryption set to SSE AES 256, PASS
+  input:
+    Resources:
+      ExampleS3:
+        Type: AWS::S3::Bucket
+        Properties:
+          BucketName: my-bucket
+          BucketEncryption:
+            ServerSideEncryptionConfiguration:
+              - ServerSideEncryptionByDefault:
+                  SSEAlgorithm: AES256
+  expectations:
+    rules:
+      S3_DEFAULT_ENCRYPTION_KMS: PASS
+
+- name: S3 Bucket Encryption set to SSE AWS KMS key, PASS
+  input:
+    Resources:
+      ExampleS3:
+        Type: AWS::S3::Bucket
+        Properties:
+          BucketName: my-bucket
+          BucketEncryption:
+            ServerSideEncryptionConfiguration:
+              - SSEAlgorithm: aws:kms
+                KMSMasterKeyID: "ARN:AWS:12345678912"
+  expectations:
+    rules:
+      S3_DEFAULT_ENCRYPTION_KMS: PASS
+
+- name: S3 Bucket Encryption not set, FAIL
+  input:
+    Resources:
+      ExampleS3:
+        Type: AWS::S3::Bucket
+        Properties:
+          BucketName: my-bucket
+  expectations:
+    rules:
+      S3_DEFAULT_ENCRYPTION_KMS: FAIL
