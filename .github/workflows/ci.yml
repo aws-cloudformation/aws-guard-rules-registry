@@ -9,7 +9,6 @@ on:
 jobs:
 
   testRules:
-    if: github.ref == 'refs/heads/master'
     name: "Test"
     runs-on: ubuntu-latest
     steps:
