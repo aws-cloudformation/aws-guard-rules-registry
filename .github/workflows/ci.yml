@@ -7,15 +7,14 @@ on:
     branches: [ main ]
 
 jobs:
+
   testRules:
-    strategy:
-      matrix:
-        os:
-          - macos-latest
-    runs-on: ${{ matrix.os }}
+    if: github.ref == 'refs/heads/master'
+    name: "Test"
+    runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Run guard rules tests
-      shell: bash
-      run: |
-        bin/cfn-guard test -d ./rules/
+      - name: "Setup - Checkout"
+        uses: actions/checkout@v2.1.0
+      - name: "Validate Guard Registry Rules"
+        shell: bash
+        run: bin/cfn-guard test -d ./rules/aws/  | grep "FAIL Rules:" -B 2 -A 1
