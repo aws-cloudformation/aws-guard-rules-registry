@@ -32,7 +32,7 @@
                 Resource: "*"
                 Condition:
                   Bool:
-                    "aws:SecureTransport": "false"
+                    "aws:SecureTransport": false
   expectations:
     rules:
       S3_BUCKET_SSL_REQUESTS_ONLY: PASS
@@ -54,7 +54,7 @@
                 Resource: "*"
                 Condition:
                   Bool:
-                    "aws:SecureTransport": "false"
+                    "aws:SecureTransport": false
   expectations:
     rules:
       S3_BUCKET_SSL_REQUESTS_ONLY: FAIL
@@ -76,7 +76,7 @@
                 Resource: "*"
                 Condition:
                   Bool:
-                    "aws:SecureTransport": "true"
+                    "aws:SecureTransport": true
   expectations:
     rules:
       S3_BUCKET_SSL_REQUESTS_ONLY: FAIL
