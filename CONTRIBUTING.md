@@ -23,7 +23,7 @@ reported the issue. Please try to include as much information as you can. Detail
 Please read the [Guard Rules Contribution Guide](GUARD_RULES_CONTRIBUTION_GUIDE) before creating a pull request.
 
 
-## Contributing via Pull 
+## Contributing via Pull
 Contributions via pull requests are much appreciated. Before sending us a pull request, please ensure that:
 
 1. You are working against the latest source on the *main* branch.
@@ -32,7 +32,7 @@ Contributions via pull requests are much appreciated. Before sending us a pull r
 
 ### Pull Request Checklist
 - [ ] Title and Description
-  - **Change type**: title prefixed with **fix**, **feat** and module name in parens, which will appear in changelog
+  - **Change type**: title prefixed with **fix:**, **feat:** and module name, which will appear in changelog
   - **Title**: use lower-case and doesn't end with a period
   - **Breaking?**: last paragraph: "BREAKING CHANGE: <describe what changed + link for details>"
   - **Issues**: Indicate issues fixed via: "**Fixes #xxx**" or "**Closes #xxx**"
