@@ -18,7 +18,7 @@ jobs:
         bin/cfn-guard test -d ./rules/
     ## If test fails run step to pull out only failed tests
     - name: Display Failed Rules Only
-        if: ${{ failure() }}
-        shell: bash
-        run: |
-          bin/cfn-guard test -d ./rules/ | grep "FAIL Rules:" -B 2 -A 1
+      if: ${{ failure() }}
+      shell: bash
+      run: |
+        bin/cfn-guard test -d ./rules/ | grep "FAIL Rules:" -B 2 -A 1
