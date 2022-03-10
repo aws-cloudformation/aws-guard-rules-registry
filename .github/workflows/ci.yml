@@ -2,27 +2,23 @@ name: Continuous Integration
 
 on:
   push:
-    branches: [ main ]
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
-
-  # testRules:
-  #   name: "Test"
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: "Setup - Checkout"
-  #       uses: actions/checkout@v2.1.0
-  #     - name: "Validate Guard Registry Rules"
-  #       shell: bash
-  #       run: chmod +x bin/cfn-guard && bin/cfn-guard test -d ./rules/aws/  | grep "FAIL Rules:" -B 2 -A 1
-
   testRules:
+    # cfn-guard binary for macos
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
     - name: Run guard rules tests
       shell: bash
       run: |
-        bin/cfn-guard test -d ./rules/ | grep "FAIL Rules:" -B 2 -A 1
+        bin/cfn-guard test -d ./rules/
+    ## If test fails run step to pull out only failed tests
+    - name: Display Failed Rules Only
+        if: ${{ failure() }}
+        shell: bash
+        run: |
+          bin/cfn-guard test -d ./rules/ | grep "FAIL Rules:" -B 2 -A 1
