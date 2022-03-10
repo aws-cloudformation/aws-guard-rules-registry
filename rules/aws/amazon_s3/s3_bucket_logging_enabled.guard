@@ -1,8 +1,19 @@
 ## Config Rule Name : s3-bucket-logging-enabled
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/s3-bucket-logging-enabled.html"
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/s3-bucket-logging-enabled.html
+
+# Rule Intent: Checks whether logging is enabled for your S3 buckets.
+
+# Expectations:
+# a) SKIP: when there are no S3 resource present
+# b) PASS: when all S3 resources Logging Configuration exists
+# c) FAIL: when all S3 resources have Logging Configuration is not set
+
+#
+# Select all S3 resources from incoming template (payload)
+#
 
 let s3_buckets = Resources.*[ Type == 'AWS::S3::Bucket' ]
 
-rule S3_Bucket_Logging_Enabled when %s3_buckets !empty {
-    %s3_buckets.Properties.Encrypted == true <<EFS filesystems must be encrypted>>
+rule S3_BUCKET_LOGGING_ENABLED when %s3_buckets !empty {
+    %s3_buckets.Properties.LoggingConfiguration exists <<S3 Bucket Logging needs to be configured to enable logging>>
 }

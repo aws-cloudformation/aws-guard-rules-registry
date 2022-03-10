@@ -11,12 +11,9 @@
 let aws_dynamodb_table_resources = Resources.*[ Type == 'AWS::DynamoDB::Table' ]
 
 
-rule dynamodb_table_must_be_encrypted when %aws_dynamodb_table_resources !empty {
+rule DYNAMODB_TABLE_MUST_BE_ENCRYPTED when %aws_dynamodb_table_resources !empty {
+    %aws_dynamodb_table_resources.Properties.SSESpecification exists <<DynamoDB Table properties must include SSESpecification>>
     # Check if encryption is enabled
-    %aws_dynamodb_table_resources.Properties.SSESpecification {
-        SSEEnabled == true
-            <<
-            DynamoDB Table - must be encrypted
-            >>
-    }
+    %aws_dynamodb_table_resources.Properties.SSESpecification.SSEEnabled == true <<DynamoDB Table - must be encrypted>>
+
 }

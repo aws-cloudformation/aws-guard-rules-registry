@@ -1,18 +1,20 @@
 ###
-# dynamodb-pitr-is-enabled test
+# DYNAMODB_PITR_ENABLED test
 ###
 ---
 - name: Empty, SKIP
   input: {}
   expectations:
     rules:
-      dynamodb_pitr_is_enabled: SKIP
+      DYNAMODB_PITR_ENABLED: SKIP
+
 - name: No resources, SKIP
   input:
     Resources: {}
   expectations:
     rules:
-      dynamodb_pitr_is_enabled: SKIP
+      DYNAMODB_PITR_ENABLED: SKIP
+
 - name: DDB with PITR set to true, PASS
   input:
     Resources:
@@ -37,8 +39,9 @@
             PointInTimeRecoveryEnabled: true
   expectations:
     rules:
-      dynamodb_pitr_is_enabled: PASS
+      DYNAMODB_PITR_ENABLED: PASS
 - name: DDB with PITR set to false, FAIL
+
   input:
     Resources:
       Exampletable:
@@ -62,7 +65,8 @@
             PointInTimeRecoveryEnabled: false
   expectations:
     rules:
-      dynamodb_pitr_is_enabled: FAIL
+      DYNAMODB_PITR_ENABLED: FAIL
+
 - name: DDB with missing PITR property, FAIL
   input:
     Resources:
@@ -85,4 +89,4 @@
               AttributeType: S
   expectations:
     rules:
-      dynamodb_pitr_is_enabled: FAIL
+      DYNAMODB_PITR_ENABLED: FAIL

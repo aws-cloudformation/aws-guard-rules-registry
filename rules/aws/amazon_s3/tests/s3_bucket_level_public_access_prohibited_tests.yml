@@ -1,0 +1,67 @@
+###
+# S3_BUCKET_LEVEL_PUBLIC_ACCESS_PROHIBITED tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      S3_BUCKET_LEVEL_PUBLIC_ACCESS_PROHIBITED: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      S3_BUCKET_LEVEL_PUBLIC_ACCESS_PROHIBITED: SKIP
+
+- name: S3 Bucket PublicAccessBlockConfiguration properties set to true, PASS
+  input:
+    Resources:
+      ExampleS3:
+        Type: AWS::S3::Bucket
+        Properties:
+          BucketName: my-bucket
+          BucketEncryption:
+            ServerSideEncryptionConfiguration:
+              - ServerSideEncryptionByDefault:
+                  SSEAlgorithm: AES256
+          PublicAccessBlockConfiguration:
+            BlockPublicAcls: true
+            BlockPublicPolicy: true
+            IgnorePublicAcls: true
+            RestrictPublicBuckets: true
+  expectations:
+    rules:
+      S3_BUCKET_LEVEL_PUBLIC_ACCESS_PROHIBITED: PASS
+
+- name: S3 Bucket PublicAccessBlockConfiguration properties set to false, FAIL
+  input:
+    Resources:
+      ExampleS3:
+        Type: AWS::S3::Bucket
+        Properties:
+          BucketName: my-bucket
+          BucketEncryption:
+            ServerSideEncryptionConfiguration:
+              - SSEAlgorithm: aws:kms
+                KMSMasterKeyID: "ARN:AWS:12345678912"
+          PublicAccessBlockConfiguration:
+            BlockPublicAcls: false
+            BlockPublicPolicy: false
+            IgnorePublicAcls: false
+            RestrictPublicBuckets: false
+  expectations:
+    rules:
+      S3_BUCKET_LEVEL_PUBLIC_ACCESS_PROHIBITED: FAIL
+
+- name: S3 Bucket PublicAccessBlockConfiguration missing, FAIL
+  input:
+    Resources:
+      ExampleS3:
+        Type: AWS::S3::Bucket
+        Properties:
+          BucketName: my-bucket
+  expectations:
+    rules:
+      S3_BUCKET_LEVEL_PUBLIC_ACCESS_PROHIBITED: FAIL

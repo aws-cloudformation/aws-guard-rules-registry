@@ -1,2 +1,19 @@
 ## Config Rule Name : s3-bucket-default-lock-enabled
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/s3-bucket-default-lock-enabled.html"
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/s3-bucket-default-lock-enabled.html
+
+# Rule Intent: Checks whether Amazon S3 bucket has lock enabled, by default
+
+# Expectations:
+# a) SKIP: when there are no S3 resource present
+# b) PASS: when all S3 resources ObjectLockEnabled property is set to true
+# c) FAIL: when all S3 resources do not have the ObjectLockEnabled property is set to true or is missing
+
+#
+# Select all S3 resources from incoming template (payload)
+#
+let s3_buckets = Resources.*[ Type == 'AWS::S3::Bucket' ]
+
+rule S3_BUCKET_DEFAULT_LOCK_ENABLED when %s3_buckets !empty {
+    %s3_buckets.Properties.ObjectLockEnabled exists <<S3 Bucket ObjectLockEnabled must be specified and set to true>>
+    %s3_buckets.Properties.ObjectLockEnabled == true <<S3 Bucket ObjectLockEnabled must be set to true>>
+}

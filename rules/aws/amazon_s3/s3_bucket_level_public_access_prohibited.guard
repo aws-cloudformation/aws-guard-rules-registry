@@ -1,2 +1,22 @@
-    ## Config Rule Name : s3-bucket-level-public-access-prohibited
-    ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/S3_BUCKET_LEVEL_PUBLIC_ACCESS_PROHIBITED.html"
+## Config Rule Name : s3-bucket-level-public-access-prohibited
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/s3-bucket-level-public-access-prohibited.html
+
+# Rule Intent: Checks if Amazon Simple Storage Service (Amazon S3) buckets are publicly accessible.
+
+# Expectations:
+# a) SKIP: when there are no S3 resource present
+# b) PASS: when all S3 resources Public Access Block Configuration element is present and properties are set to true
+# c) FAIL: when all S3 resources do not have the Public Access Block Configuration element present or all properties set to true
+
+#
+# Select all S3 resources from incoming template (payload)
+#
+let s3_buckets = Resources.*[ Type == 'AWS::S3::Bucket' ]
+
+rule S3_BUCKET_LEVEL_PUBLIC_ACCESS_PROHIBITED when %s3_buckets !empty {
+    %s3_buckets.Properties.PublicAccessBlockConfiguration exists <<S3 Bucket Versioning must be enabled>>
+    %s3_buckets.Properties.PublicAccessBlockConfiguration.BlockPublicAcls == true <<Set BlockPublicAcls to true to prevent public access>>
+    %s3_buckets.Properties.PublicAccessBlockConfiguration.BlockPublicPolicy == true <<Set BlockPublicPolicy to true to prevent public access>>
+    %s3_buckets.Properties.PublicAccessBlockConfiguration.IgnorePublicAcls == true <<Set IgnorePublicAcls to true to prevent public access>>
+    %s3_buckets.Properties.PublicAccessBlockConfiguration.RestrictPublicBuckets == true <<Set RestrictPublicBuckets to true to prevent public access>>
+}

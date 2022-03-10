@@ -1,6 +1,6 @@
 # Guard Rules Contribution Guide
 
-## Rules Directory Structure 
+## Rules Directory Structure
 
 1. All Guard rules in this repository are stored under the `rules` directory.
 
@@ -13,13 +13,13 @@
     │       │   └── tests
     │       │       └── apigw_method_auth_type_is_not_none_tests.yml
     │       └── dynamodb
-    │           ├── dynamodb_pitr_is_enabled.guard
+    │           ├── dynamodb_pitr_enabled.guard
     │           └── tests
     │               └── dynamodb_pitr_is_enabled_tests.yml
     ├── kubernetes
     └── terraform
     ```
-## Rule Writing  
+## Rule Writing
 
 1. To understand the contribution process, let's consider an example of the `AWS DynamoDB Point-In-Time-Recovery` rule.
 
@@ -29,7 +29,7 @@
     ```
 3. Create a rule file with a `.guard` extension and the file name must match with the [AWS Config Managed rules](https://docs.aws.amazon.com/config/latest/developerguide/dynamodb-pitr-enabled.html) identifier in lower case.
     ```
-    touch rules/cloudformation/aws/dynamodb/dynamodb_pitr_enabled.guard
+    touch rules/aws/dynamodb/dynamodb_pitr_enabled.guard
     ```
 4. Include the Config rule name and url at the top of the rule file.
     ```
@@ -61,7 +61,7 @@
     #
     let aws_dynamodb_table_resources = Resources.*[ Type == 'AWS::DynamoDB::Table' ]
     ```
-6. Define a named rule block. The rule name should match with the rule file name. Named rule blocks allow for re-usability, improved composition and remove verbosity and repetition.
+6. Define a named rule block. The rule name should match with the rule file name. **If the rule is to match an [AWS Config Managed Rule](https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config_use-managed-rules.html), the rule name should match the AWS Config Identifier in upper case.** Named rule blocks allow for re-usability, improved composition and remove verbosity and repetition.
     ```
     # Rule Intent: All DynamoDB Tables must have Point-In-Time-Recovery enabled
 
@@ -76,11 +76,11 @@
     let aws_dynamodb_table_resources = Resources.*[ Type == 'AWS::DynamoDB::Table' ]
 
 
-    rule dynamodb_pitr_enabled when %aws_dynamodb_table_resources !empty {
+    rule DYNAMODB_PITR_ENABLED when %aws_dynamodb_table_resources !empty {
 
     }
     ```
-7. Write rule clauses inside the named rule block. Please add a `custom message` to each clause. The `custom message` is expressed as `<<message>>` where 'message' is any string which ideally provides information regarding the clause preceding it. 
+7. Write rule clauses inside the named rule block. Please add a `custom message` to each clause. The `custom message` is expressed as `<<message>>` where 'message' is any string which ideally provides information regarding the clause preceding it.
     ```
     ## Config Rule Name : dynamodb-pitr-enabled
     ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/dynamodb-pitr-enabled.html"
@@ -98,41 +98,41 @@
     let aws_dynamodb_table_resources = Resources.*[ Type == 'AWS::DynamoDB::Table' ]
 
 
-    rule dynamodb_pitr_enabled when %aws_dynamodb_table_resources !empty {
+    rule DYNAMODB_PITR_ENABLED when %aws_dynamodb_table_resources !empty {
         # Ensure ALL DynamoDB Tables have Point-In-Time-Recovery enabled
-        %aws_dynamodb_table_resources.Properties.PointInTimeRecoverySpecification.PointInTimeRecoveryEnabled == true 
+        %aws_dynamodb_table_resources.Properties.PointInTimeRecoverySpecification.PointInTimeRecoveryEnabled == true
             <<
             Point In Time Recovery must be enabled for strong resiliency
             >>
     }
     ```
 
-## Writing unit tests
-1. Now, let's write tests for the `dynamodb_pitr_is_enabled` rule. Before we write any code, create a `tests` directory under the appropriate path if it is not present.
+## Writing Unit Tests
+1. Now, let's write tests for the `DYNAMODB_PITR_ENABLED` rule. Before we write any code, create a `tests` directory under the appropriate path if it is not present.
     ```
     mkdir rules/cloudformation/aws/dynamodb/tests
     ```
 2. Create a test file with `.yml` or `.json` extension and the file name must match with the `<rulename>_tests` format.
     ```
-    touch rules/cloudformation/aws/dynamodb/tests/dynamodb_pitr_is_enabled.tests.yml
+    touch rules/cloudformation/aws/dynamodb/tests/dynamodb_pitr_enabled.tests.yml
     ```
-3. Edit `dynamodb_pitr_is_enabled.tests.yml` and start with writing tests for all `SKIP` expectations.
+3. Edit `dynamodb_pitr_enabled_tests.yml` and start with writing tests for all `SKIP` expectations.
     ```
     ###
-    # dynamodb-pitr-is-enabled test
+    # DYNAMODB_PITR_ENABLED tests
     ###
     ---
     - name: Empty, SKIP
     input: {}
     expectations:
         rules:
-        dynamodb_pitr_is_enabled: SKIP
+        DYNAMODB_PITR_ENABLED: SKIP
     - name: No resources, SKIP
     input:
         Resources: {}
     expectations:
         rules:
-        dynamodb_pitr_is_enabled: SKIP
+        DYNAMODB_PITR_ENABLED: SKIP
     ```
 4. Next, write tests for all `PASS` expectations.
     ```
@@ -144,13 +144,13 @@
     input: {}
     expectations:
         rules:
-        dynamodb_pitr_is_enabled: SKIP
+        DYNAMODB_PITR_ENABLED: SKIP
     - name: No resources, SKIP
     input:
         Resources: {}
     expectations:
         rules:
-        dynamodb_pitr_is_enabled: SKIP
+        DYNAMODB_PITR_ENABLED: SKIP
     - name: DDB with PITR set to true, PASS
     input:
         Resources:
@@ -175,27 +175,29 @@
                 PointInTimeRecoveryEnabled: true
     expectations:
         rules:
-        dynamodb_pitr_is_enabled: PASS
+        DYNAMODB_PITR_ENABLED: PASS
     ```
 5. Finally, write tests for all `FAIL` expectations.
     ```
     ###
-    # dynamodb-pitr-is-enabled test
+    # DYNAMODB_PITR_ENABLED test
     ###
     ---
     - name: Empty, SKIP
     input: {}
     expectations:
         rules:
-        dynamodb_pitr_is_enabled: SKIP
+        DYNAMODB_PITR_ENABLED: SKIP
+
     - name: No resources, SKIP
-    input:
+      input:
         Resources: {}
-    expectations:
+      expectations:
         rules:
-        dynamodb_pitr_is_enabled: SKIP
+        DYNAMODB_PITR_ENABLED: SKIP
+
     - name: DDB with PITR set to true, PASS
-    input:
+      input:
         Resources:
         Exampletable:
             Type: AWS::DynamoDB::Table
@@ -216,11 +218,12 @@
                 AttributeType: S
             PointInTimeRecoverySpecification:
                 PointInTimeRecoveryEnabled: true
-    expectations:
+      expectations:
         rules:
-        dynamodb_pitr_is_enabled: PASS
+        DYNAMODB_PITR_ENABLED: PASS
+
     - name: DDB with PITR set to false, FAIL
-    input:
+      input:
         Resources:
         Exampletable:
             Type: AWS::DynamoDB::Table
@@ -241,11 +244,12 @@
                 AttributeType: S
             PointInTimeRecoverySpecification:
                 PointInTimeRecoveryEnabled: false
-    expectations:
+      expectations:
         rules:
-        dynamodb_pitr_is_enabled: FAIL
+        DYNAMODB_PITR_ENABLED: FAIL
+
     - name: DDB with missing PITR property, FAIL
-    input:
+      input:
         Resources:
         Exampletable:
             Type: AWS::DynamoDB::Table
@@ -264,16 +268,23 @@
                 AttributeType: S
                 - AttributeName: createdAt
                 AttributeType: S
-    expectations:
+      expectations:
         rules:
-        dynamodb_pitr_is_enabled: FAIL
+        DYNAMODB_PITR_ENABLED: FAIL
     ```
 ## Running unit tests
+
+All commands assume you are running from the the root of the project for current working directory.
+
 1. To run an individual unit test, execute the following command:
     ```
-    bin/cfn-guard test --rules-file rules/cloudformation/aws/dynamodb/dynamodb_pitr_is_enabled.guard --test-data rules/cloudformation/aws/dynamodb/tests/dynamodb_pitr_is_enabled_tests.yml 
+    bin/cfn-guard test --rules-file rules/aws/dynamodb/dynamodb_pitr_enabled.guard --test-data rules/aws/dynamodb/tests/dynamodb_pitr_enabled_tests.yml
     ```
 2. To run all tests in a directory, execute the following command:
     ```
     bin/cfn-guard test -d rules
+    ```
+3. To quickly discover and display the failed rules execute the following command:
+    ```
+    bin/cfn-guard test -d ./rules/ | grep "FAIL Rules:" -B 2 -A 1
     ```
