@@ -1,2 +1,27 @@
 ## Config Rule Name : ec2-instance-profile-attached
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/EC2_INSTANCE_PROFILE_ATTACHED.html"
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/ec2-instance-profile-attached.html
+
+# Rule Intent: Checks if an Amazon Elastic Compute Cloud (Amazon EC2) instance has an Identity and Access Management (IAM) profile attached to it.
+
+
+# Expectations:
+# a) SKIP: when there are no EFS resource present
+# b) PASS: when all EFS resources have encrypted key property set to true
+# c) FAIL: when all EFS resources have encrypted key property not set or set to false
+
+#
+# Select all EFS resources from incoming template (payload)
+#
+let ec2s = Resources.*[ Type == 'AWS::EC2::Instance' ]
+
+# no corresponding rule for ASG Launch Configuration in config managed rules, but this makes sense
+let asg_launch_configs = Resources.*[ Type == 'AWS::AutoScaling::LaunchConfiguration' ]
+
+rule EC2_INSTANCE_PROFILE_ATTACHED when %ec2s !empty {
+    %ec2s.Properties.Encrypted == true <<EC2 must have IAM profile attached to it>>
+}
+
+## set to lowercase naming due to not being a direct AWS CONFIG Managed Rule
+rule asg_launch_config_instance_profile_attached when %ec2s !empty {
+    %ec2s.Properties.Encrypted == true <<EC2 must have IAM profile attached to it>>
+}
