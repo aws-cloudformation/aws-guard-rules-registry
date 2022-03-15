@@ -4,7 +4,7 @@
       "input": {},
       "expectations": {
         "rules": {
-          "rds_instance_public_access_check": "SKIP"
+          "RDS_INSTANCE_PUBLIC_ACCESS_CHECK": "SKIP"
         }
       }
     },
@@ -22,7 +22,7 @@
       },
       "expectations": {
         "rules": {
-          "rds_instance_public_access_check": "PASS"
+          "RDS_INSTANCE_PUBLIC_ACCESS_CHECK": "PASS"
         }
       }
     },
@@ -40,7 +40,7 @@
       },
       "expectations": {
         "rules": {
-          "rds_instance_public_access_check": "FAIL"
+          "RDS_INSTANCE_PUBLIC_ACCESS_CHECK": "FAIL"
         }
       }
     },
@@ -56,7 +56,7 @@
       },
       "expectations": {
         "rules": {
-          "rds_instance_public_access_check": "FAIL"
+          "RDS_INSTANCE_PUBLIC_ACCESS_CHECK": "FAIL"
         }
       }
     }
