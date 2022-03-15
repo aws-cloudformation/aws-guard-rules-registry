@@ -17,8 +17,6 @@ let aws_rds_instances = Resources.*[ Type == 'AWS::RDS::DBInstance'  ]
 
 
 rule RDS_INSTANCE_PUBLIC_ACCESS_CHECK when %aws_rds_instances !empty {
-
     # ALL RDS instances must have PubliclyAccessible set to true
-    %aws_rds_instances.Properties.PubliclyAccessible == true <<ALL RDS instances must have PubliclyAccessible set to true and the behavior
-    also depends on the presence of DBSubnetGroupName property: https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_CreateDBInstance.html >>
+    %aws_rds_instances.Properties.PubliclyAccessible == true <<All RDS instances must enhanced monitoring enabled >>
 }
