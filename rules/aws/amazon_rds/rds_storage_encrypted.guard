@@ -1,2 +1,23 @@
 ## Config Rule Name : rds-storage-encrypted
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/rds-storage-encrypted.html"
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/rds-storage-encrypted.html
+
+# Rule Intent: Checks whether storage encryption is enabled for your RDS DB instances..
+
+# Expectations:
+# a) SKIP: when there are no RDS instances present
+# b) PASS: when all RDS instances have StorageEncrypted set to true
+# c) FAIL: when all RDS instances have StorageEncrypted set to false
+# d) FAIL: when there are RDS instances with StorageEncrypted property is not present
+
+#
+# Select all RDS instance resources from incoming template (payload)
+#
+
+let aws_rds_instances = Resources.*[ Type == 'AWS::RDS::DBInstance'  ]
+
+
+rule RDS_STORAGE_ENCRYPTED when %aws_rds_instances !empty {
+    %aws_rds_instances.Properties.StorageEncrypted EXISTS
+    %aws_rds_instances.Properties.StorageEncrypted == true
+    <<All RDS instances must have storage encrypted.>>
+}

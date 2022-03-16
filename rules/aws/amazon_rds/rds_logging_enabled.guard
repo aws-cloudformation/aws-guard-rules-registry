@@ -1,2 +1,23 @@
 ## Config Rule Name : rds-logging-enabled
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/rds-logging-enabled.html"
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/rds-logging-enabled.html
+
+# Rule Intent: Checks if log types exported to Amazon CloudWatch for an Amazon Relational Database Service (Amazon RDS) instance are enabled.
+
+# Expectations:
+# a) SKIP: when there are no RDS instances present
+# b) PASS: when all RDS instances have EnableCloudwatchLogsExports set to true
+# c) FAIL: when all RDS instances have EnableCloudwatchLogsExports set to false
+# d) FAIL: when there are RDS instances with EnableCloudwatchLogsExports property is not present
+
+#
+# Select all RDS instance resources from incoming template (payload)
+#
+
+let aws_rds_instances = Resources.*[ Type == 'AWS::RDS::DBInstance'  ]
+
+
+rule RDS_INSTANCE_LOGGING_ENABLED when %aws_rds_instances !empty {
+    %aws_rds_instances.Properties.EnableCloudwatchLogsExports EXISTS
+    <<All RDS instances must have logging enabled to cloudwatch logs>>
+}
+
