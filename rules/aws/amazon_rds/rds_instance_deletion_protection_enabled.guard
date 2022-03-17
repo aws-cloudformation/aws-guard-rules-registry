@@ -18,5 +18,6 @@ let aws_rds_instances = Resources.*[ Type == 'AWS::RDS::DBInstance'  ]
 
 rule RDS_INSTANCE_DELETION_PROTECTION_ENABLED when %aws_rds_instances !empty {
     %aws_rds_instances.Properties.DeletionProtection EXISTS
-    %aws_rds_instances.Properties.DeletionProtection == true <<All RDS instances must deletion protection enabled >>
+    %aws_rds_instances.Properties.DeletionProtection == true
+    <<All RDS instances must deletion protection enabled >>
 }
