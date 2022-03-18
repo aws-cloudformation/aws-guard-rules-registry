@@ -17,7 +17,7 @@ let aws_rds_instances = Resources.*[ Type == 'AWS::RDS::DBInstance'  ]
 
 
 rule RDS_INSTANCE_PUBLIC_ACCESS_CHECK when %aws_rds_instances !empty {
-    # ALL RDS instances must have PubliclyAccessible set to true
-    %aws_rds_instances.Properties.PubliclyAccessible == true
-    <<All RDS instances must not be publicly accessible >>
+    # ALL RDS instances must have PubliclyAccessible set to false
+    %aws_rds_instances.Properties.PubliclyAccessible == false
+    <<All RDS instances must not be publicly accessible. Set the PubliclyAccessible to false  >>
 }
