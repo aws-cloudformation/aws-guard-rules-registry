@@ -19,5 +19,5 @@ let aws_rds_instances = Resources.*[ Type == 'AWS::RDS::DBInstance'  ]
 rule RDS_STORAGE_ENCRYPTED when %aws_rds_instances !empty {
     %aws_rds_instances.Properties.StorageEncrypted EXISTS
     %aws_rds_instances.Properties.StorageEncrypted == true
-    <<All RDS instances must have storage encrypted.>>
+    <<All RDS instances must have storage encrypted. To enable encryption, set the StorageEncrpyted parameter to true on the RDS instance.>>
 }
