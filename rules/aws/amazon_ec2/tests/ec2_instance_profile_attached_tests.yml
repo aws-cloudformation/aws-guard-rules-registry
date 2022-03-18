@@ -29,6 +29,18 @@
     rules:
       EC2_INSTANCE_PROFILE_ATTACHED: PASS
 
+- name: Launch Config has IAM Instance Profile associated to it, PASS
+  input:
+    Resources:
+      myLaunchConfig:
+        Type: AWS::AutoScaling::LaunchConfiguration
+        Properties:
+          ImageId: !Ref LatestAmiId
+          IamInstanceProfile: !Ref RootInstanceProfile
+  expectations:
+    rules:
+      asg_launch_config_instance_profile_attached: PASS
+
 - name: EC2 has no IAM Instance Profile associated to it, FAIL
   input:
     Resources:
@@ -41,3 +53,6 @@
   expectations:
     rules:
       EC2_INSTANCE_PROFILE_ATTACHED: FAIL
+
+
+
