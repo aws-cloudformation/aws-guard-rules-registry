@@ -24,5 +24,5 @@ rule EC2_INSTANCE_PROFILE_ATTACHED when %ec2s !empty {
 
 ## set to lowercase naming due to not being a direct AWS CONFIG Managed Rule
 rule asg_launch_config_instance_profile_attached when %asg_launch_configs !empty {
-    %ec2s.Properties.Encrypted == true <<EC2 must have IAM profile attached to it>>
+    %asg_launch_configs.Properties.Encrypted == true <<EC2 must have IAM profile attached to it>>
 }
