@@ -1,15 +1,15 @@
 [
     {
-      "name": "Rule is not run when RDS instance resource is not present",
+      "name": "Rule is not run when RDS instance resource is not present, SKIP",
       "input": {},
       "expectations": {
         "rules": {
-          "rds_instance_public_access_check": "SKIP"
+          "RDS_INSTANCE_PUBLIC_ACCESS_CHECK": "SKIP"
         }
       }
     },
     {
-      "name": "Rule passes when RDS instances has PubliclyAccessible set to true",
+      "name": "Rule fails when RDS instances has PubliclyAccessible set to true, FAIL",
       "input": {
         "Resources": {
           "MyDB": {
@@ -22,12 +22,12 @@
       },
       "expectations": {
         "rules": {
-          "rds_instance_public_access_check": "PASS"
+          "RDS_INSTANCE_PUBLIC_ACCESS_CHECK": "FAIL"
         }
       }
     },
     {
-      "name": "Rule fails when RDS instances has PubliclyAccessible set to false",
+      "name": "Rule passes when RDS instances has PubliclyAccessible set to false, PASS",
       "input": {
         "Resources": {
           "MyDB": {
@@ -40,12 +40,12 @@
       },
       "expectations": {
         "rules": {
-          "rds_instance_public_access_check": "FAIL"
+          "RDS_INSTANCE_PUBLIC_ACCESS_CHECK": "PASS"
         }
       }
     },
     {
-      "name": "Rule fails when RDS instances has PubliclyAccessible property missing",
+      "name": "Rule fails when RDS instances has PubliclyAccessible property missing. FAIL",
       "input": {
         "Resources": {
           "MyDB": {
@@ -56,7 +56,7 @@
       },
       "expectations": {
         "rules": {
-          "rds_instance_public_access_check": "FAIL"
+          "RDS_INSTANCE_PUBLIC_ACCESS_CHECK": "FAIL"
         }
       }
     }

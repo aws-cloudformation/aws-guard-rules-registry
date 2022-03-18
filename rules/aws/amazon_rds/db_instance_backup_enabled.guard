@@ -1,2 +1,23 @@
 ## Config Rule Name : db-instance-backup-enabled
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/db-instance-backup-enabled.html"
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/db-instance-backup-enabled.html
+
+# Rule Intent: Checks if RDS DB instances have backups enabled.
+
+# Expectations:
+# a) SKIP: when there are no RDS instances present
+# b) PASS: when all RDS instances have BackupRetentionPeriod set to a positive number
+# c) FAIL: when all RDS instances have BackupRetentionPeriod set to 0
+# d) FAIL: when there are RDS instances with BackupRetentionPeriod property is not present
+
+#
+# Select all RDS instance resources from incoming template (payload)
+#
+
+let aws_rds_instances = Resources.*[ Type == 'AWS::RDS::DBInstance'  ]
+
+
+rule DB_INSTANCE_BACKUP_ENABLED when %aws_rds_instances !empty {
+  %aws_rds_instances.Properties.BackupRetentionPeriod EXISTS
+  %aws_rds_instances.Properties.BackupRetentionPeriod IN [1, 35]
+  << All RDS instances must have automated backup enabled by setting values of 1 to 35. Setting this parameter to a positive number enables backups >>
+}

@@ -1,2 +1,23 @@
 ## Config Rule Name : rds-enhanced-monitoring-enabled
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/rds-enhanced-monitoring-enabled.html"
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/rds-enhanced-monitoring-enabled.html
+
+# Rule Intent: Checks whether enhanced monitoring is enabled for Amazon Relational Database Service (Amazon RDS) instances.
+
+# Expectations:
+# a) SKIP: when there are no RDS instances present
+# b) PASS: when all RDS instances have MonitoringInterval set to a value of 1, 5, 10, 15, 30, or 60
+# c) FAIL: when all RDS instances have MonitoringInterval set to 0
+# d) FAIL: when there are RDS instances with MonitoringInterval property is not present
+
+#
+# Select all RDS instance resources from incoming template (payload)
+#
+
+let aws_rds_instances = Resources.*[ Type == 'AWS::RDS::DBInstance'  ]
+
+
+rule RDS_ENHANCED_MONITORING_ENABLED when %aws_rds_instances !empty {
+  %aws_rds_instances.Properties.MonitoringInterval EXISTS
+  %aws_rds_instances.Properties.MonitoringInterval IN [1, 5, 10, 15, 30, 60]
+  <<RDS Instance enhanced monitoring required. Specify a value of 1, 5, 10, 15, 30, or 60 on parameter MonitoringInterval.>>
+}

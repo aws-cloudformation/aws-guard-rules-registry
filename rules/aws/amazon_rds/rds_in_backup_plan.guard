@@ -1,2 +1,11 @@
+## SKIP
+## SKIP RATIONALE: Initial version of Rules Registry pertains to static code analysis. The check for
+##                 a backup plan can be leveraged outside of the RDS resource.
+##                 This can be done with AWS Backup Manager which is a better practice to implement
+##                 over individual resource backup strategies. AWS Backup Manager can be defined
+##                 outside of the stack which RDS is deployed in.
+
 ## Config Rule Name : rds-in-backup-plan
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/rds-in-backup-plan.html"
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/rds-in-backup-plan.html
+
+# Rule Intent: Checks whether Amazon RDS database is present in back plans of AWS Backup

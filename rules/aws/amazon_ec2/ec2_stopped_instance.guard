@@ -1,2 +1,8 @@
+## SKIP
+## SKIP RATIONALE: Initial version of Rules Registry pertains to static code analysis. The check for
+##                 running instances would not be relevant to SAST operations
+
 ## Config Rule Name : ec2-stopped-instance
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/ec2-stopped-instance.html"
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/ec2-stopped-instance.html
+
+# Rule Intent: Checks if there are instances stopped for more than the allowed number of days.

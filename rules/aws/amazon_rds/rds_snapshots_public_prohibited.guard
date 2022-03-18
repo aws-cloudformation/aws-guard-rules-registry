@@ -1,2 +1,9 @@
+## SKIP
+## SKIP RATIONALE: Initial version of Rules Registry pertains to static code analysis. The check
+##                 for prohibiting making RDS snapshots public is covered by config or created in
+##                 an service control policy.
+
 ## Config Rule Name : rds-snapshots-public-prohibited
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/rds-snapshots-public-prohibited.html"
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/rds-snapshots-public-prohibited.html
+
+# Rule Intent: Checks if Amazon Relational Database Service (Amazon RDS) snapshots are public

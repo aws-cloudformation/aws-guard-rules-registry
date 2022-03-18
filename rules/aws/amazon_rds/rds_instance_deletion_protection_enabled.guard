@@ -1,2 +1,23 @@
 ## Config Rule Name : rds-instance-deletion-protection-enabled
 ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/rds-instance-deletion-protection-enabled.html"
+
+# Rule Intent: Checks if an Amazon Relational Database Service (Amazon RDS) instance has deletion protection enabled.
+
+# Expectations:
+# a) SKIP: when there are no RDS instances present
+# b) PASS: when all RDS instances have DeletionProtection set to true
+# c) FAIL: when all RDS instances have DeletionProtection set to false
+# d) FAIL: when there are RDS instances with DeletionProtection property is not present
+
+#
+# Select all RDS instance resources from incoming template (payload)
+#
+
+let aws_rds_instances = Resources.*[ Type == 'AWS::RDS::DBInstance'  ]
+
+
+rule RDS_INSTANCE_DELETION_PROTECTION_ENABLED when %aws_rds_instances !empty {
+    %aws_rds_instances.Properties.DeletionProtection EXISTS
+    %aws_rds_instances.Properties.DeletionProtection == true
+    <<All RDS instances must deletion protection enabled. Set the parameter for DeletionProtection to true. >>
+}
