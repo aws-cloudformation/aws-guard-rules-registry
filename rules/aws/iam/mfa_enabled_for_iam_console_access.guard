@@ -1,2 +1,10 @@
+## SKIP
+## SKIP RATIONALE: Initial version of Guard Rules Registry pertains to static application
+##                 security testing and code analysis.
+
 ## Config Rule Name : mfa-enabled-for-iam-console-access
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/mfa-enabled-for-iam-console-access.html"
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/mfa-enabled-for-iam-console-access.html
+
+# Rule Intent: Checks whether AWS Multi-Factor Authentication (MFA) is enabled for all AWS Identity and Access Management (IAM) users that use a console password.
+
+
