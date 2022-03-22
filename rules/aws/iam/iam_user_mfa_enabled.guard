@@ -1,2 +1,8 @@
+## SKIP
+## SKIP RATIONALE: Initial version of Guard Rules Registry pertains to static application
+##                 security testing and code analysis.
+
 ## Config Rule Name : iam-user-mfa-enabled
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/iam-user-mfa-enabled.html"
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/iam-user-mfa-enabled.html
+
+# Rule Intent: Checks whether the AWS Identity and Access Management users have multi-factor authentication (MFA) enabled.
