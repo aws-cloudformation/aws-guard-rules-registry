@@ -19,5 +19,8 @@ rule EKS_ENDPOINT_NO_PUBLIC_ACCESS when %amazon_eks_clusters !empty {
     %amazon_eks_clusters.Properties.ResourcesVpcConfig.EndpointPublicAccess EXISTS 
     # ensure the parameter is set to false
     %amazon_eks_clusters.Properties.ResourcesVpcConfig.EndpointPublicAccess == false
-    <<EKS endpoint public access is not allowed. Set the boolean parameter EndpointPublicAccess to false >>
+    <<
+    Violation: EKS endpoint public access is not allowed. 
+    Fix: Set the boolean parameter ResourcesVpcConfig.EndpointPublicAccess to false 
+    >>
 }
