@@ -1,2 +1,23 @@
-## Config Rule Name : efs-encrypted-check
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/eks-endpoint-no-public-access.html"
+## Config Rule Name : eks-endpoint-no-public-access
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/eks-endpoint-no-public-access.html
+
+# Rule Intent: Checks whether Amazon Elastic Kubernetes Service (Amazon EKS) endpoint is not publicly accessible. 
+
+# Expectations:
+# a) SKIP: when there are no EKS clusters present
+# b) PASS: when all EKS cluster endpoints are not publicly accessible
+# c) FAIL: when any EKS cluster endpoints are publicly accessible
+
+#
+# Select all EKS cluster resources from incoming template (payload)
+#
+
+let amazon_eks_clusters = Resources.*[ Type == 'AWS::EKS::Cluster' ]
+
+rule EKS_ENDPOINT_NO_PUBLIC_ACCESS when %amazon_eks_clusters !empty {
+    # ensure the optional parameter is specified in the template
+    %amazon_eks_clusters.Properties.ResourcesVpcConfig.EndpointPublicAccess EXISTS 
+    # ensure the parameter is set to false
+    %amazon_eks_clusters.Properties.ResourcesVpcConfig.EndpointPublicAccess == false
+    <<EKS endpoint public access is not allowed. Set the boolean parameter EndpointPublicAccess to false >>
+}
