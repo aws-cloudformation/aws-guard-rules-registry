@@ -25,13 +25,14 @@
           PolicyDocument:
             Version: "2012-10-17"
             Statement:
-              - Action: "s3:*"
+              - Principal: "*"
+                Action: "s3:*"
                 Effect: "Deny"
-                Principal: "*"
-                Resource: "*"
                 Condition:
                   Bool:
                     "aws:SecureTransport": false
+                Resource: "*"
+
   expectations:
     rules:
       S3_BUCKET_SSL_REQUESTS_ONLY: PASS
