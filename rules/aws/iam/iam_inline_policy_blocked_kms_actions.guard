@@ -1,2 +1,9 @@
+## SKIP
+## SKIP RATIONALE: Initial version of Guard Rules Registry pertains to static application
+##                 security testing and code analysis.
+
 ## Config Rule Name : iam-inline-policy-blocked-kms-actions
 ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/iam-inline-policy-blocked-kms-actions.html"
+
+# Rule Intent: Checks that the inline policies attached to your IAM users, roles, and groups 
+# do not allow blocked actions on all AWS Key Management Service (KMS) keys. 
