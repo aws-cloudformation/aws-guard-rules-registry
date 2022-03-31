@@ -12,5 +12,9 @@
 let efs_file_systems = Resources.*[ Type == 'AWS::EFS::FileSystem' ]
 
 rule EFS_RESOURCES_PROTECTED_BY_BACKUP_PLAN when %efs_file_systems !empty {
-    %efs_file_systems.Properties.BackupPolicy.Status == 'ENABLED' <<EFS filesystem must have backup policy set to enabled>>
+  %efs_file_systems.Properties.BackupPolicy.Status == 'ENABLED'
+  <<
+    Violation: EFS filesystem backup policy should be enabled.
+    Fix: Set the EFS Filesystem property BackupPolicy.Status parameter to ENABLED.
+  >>
 }

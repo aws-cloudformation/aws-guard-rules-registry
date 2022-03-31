@@ -17,5 +17,9 @@
 let efs_file_systems = Resources.*[ Type == 'AWS::EFS::FileSystem' ]
 
 rule EFS_ENCRYPTED_CHECK when %efs_file_systems !empty {
-    %efs_file_systems.Properties.Encrypted == true <<EFS filesystems must be encrypted>>
+  %efs_file_systems.Properties.Encrypted == true
+  <<
+    Violation: EFS filesystem must be encrypted.
+    Fix: Set the EFS Filesystem property Encrypted parameter to true.
+  >>
 }

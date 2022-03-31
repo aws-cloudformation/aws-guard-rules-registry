@@ -17,7 +17,11 @@ let s3_buckets = Resources.*[ Type == 'AWS::S3::Bucket' ]
 let s3_bucket_policies = Resources.*[ Type == 'AWS::S3::BucketPolicy' ]
 
 rule S3_BUCKET_SERVER_SIDE_ENCRYPTION_ENABLED when %s3_buckets !empty {
-    %s3_buckets.Properties.BucketEncryption exists <<Buckets must enable server-side encryption>>
-    %s3_buckets.Properties.BucketEncryption.ServerSideEncryptionConfiguration[*].ServerSideEncryptionByDefault.SSEAlgorithm in ["aws:kms","AES256"] <<Buckets must enable server-side encryption>>
+  %s3_buckets.Properties.BucketEncryption exists
+  %s3_buckets.Properties.BucketEncryption.ServerSideEncryptionConfiguration[*].ServerSideEncryptionByDefault.SSEAlgorithm in ["aws:kms","AES256"]
+  <<
+    Violation: S3 Bucket must enable server-side encryption.
+    Fix: Set the S3 Bucket property BucketEncryption.ServerSideEncryptionConfiguration.ServerSideEncryptionByDefault.SSEAlgorithm to either "aws:kms" or "AES256"
+  >>
 }
 
