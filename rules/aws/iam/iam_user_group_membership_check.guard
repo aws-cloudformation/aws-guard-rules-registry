@@ -1,2 +1,8 @@
+## SKIP
+## SKIP RATIONALE: Initial version of Guard Rules Registry pertains to static application
+##                 security testing and code analysis.
+
 ## Config Rule Name : iam-user-group-membership-check
 ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/iam-user-group-membership-check.html"
+
+# Rule Intent: Checks whether IAM users are members of at least one IAM group.

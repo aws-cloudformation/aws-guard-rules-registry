@@ -1,2 +1,22 @@
 ## Config Rule Name : iam-user-no-policies-check
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/iam-user-no-policies-check.html"
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/iam-user-no-policies-check.html
+
+# Rule Intent: Checks that none of your IAM users have policies attached. IAM users must inherit permissions from IAM groups or roles. 
+
+# Expectations:
+# a) SKIP: when there are no IAM Users present
+# b) PASS: when all IAM Users do not have policies attached
+# c) FAIL: when any IAM User have policies attached
+#
+# Select all IAM User resources from incoming template (payload)
+# 
+let iam_users = Resources.*[ Type == 'AWS::IAM::User']
+
+rule IAM_USER_NO_POLICIES_CHECK when %iam_users !empty {
+    %iam_users.Properties.Policies EMPTY
+
+     <<
+     Violation: Inline policies are not allowed on IAM Users. IAM users must inherit permissions from IAM groups or roles.
+     Fix: Remove the Policies list property from any IAM Users. 
+     >>
+}
