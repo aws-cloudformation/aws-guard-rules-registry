@@ -1,2 +1,5 @@
-    ## Config Rule Name : ec2-imdsv2-check
-    ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/ec2-imdsv2-check.html"
+## Config Rule Name : ec2-imdsv2-check
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/ec2-imdsv2-check.html"
+
+# Rule Intent: Checks whether your Amazon Elastic Compute Cloud (Amazon EC2) instance metadata version 
+# is configured with Instance Metadata Service Version 2 (IMDSv2)

@@ -1,12 +1,15 @@
-    ## Config Rule Name : ec2-ebs-encryption-by-default
-    ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/EC2_EBS_ENCRYPTION_BY_DEFAULT.html"
+## Config Rule Name : ec2-ebs-encryption-by-default
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/ec2-ebs-encryption-by-default.html"
+
+# Rule Intent: Check that Amazon Elastic Block Store (EBS) encryption is enabled by default
+
+# Expectations:
+# a) SKIP: when there are no EC2 Volumes resource present
+# b) PASS: when all EC2 Volumes resources Encrypted property is set to true
+# c) FAIL: when all EC2 Volumes resources do not have the Encrypted property set to true or is missing
 
 let ec2_volumes = Resources.*[ Type == 'AWS::EC2::Volume' ]
 
-when %ec2_volumes !empty {
-    %ec2_volumes {
-        Properties {
-            Encrypted == true
-        }
-    }
+rule EC2_EBS_ENCRYPTION_BY_DEFAULT when %ec2_volumes !empty {
+    %ec2_volumes.Properties.Encrypted == true <<EC2 Instance EbsOptimized must be set to true>>
 }

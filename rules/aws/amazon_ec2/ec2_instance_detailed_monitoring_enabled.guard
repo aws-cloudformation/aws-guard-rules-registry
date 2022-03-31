@@ -1,2 +1,15 @@
-    ## Config Rule Name : ec2-instance-detailed-monitoring-enabled
-    ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/EC2_INSTANCE_DETAILED_MONITORING_ENABLED.html"
+## Config Rule Name : ec2-instance-detailed-monitoring-enabled
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/ec2-instance-detailed-monitoring-enabled.html"
+
+# Rule Intent: Checks if detailed monitoring is enabled for EC2 instances.
+
+# Expectations:
+# a) SKIP: when there are no EC2 resource present
+# b) PASS: when all EC2 resources Monitoring property is set to true
+# c) FAIL: when all EC2 resources do not have the Monitoring property set to true or is missing
+
+let ec2_instances = Resources.*[ Type == 'AWS::EC2::Instance' ]
+
+rule EC2_INSTANCE_DETAILED_MONITORING_ENABLED when %ec2_instances !empty {
+    %ec2_instances.Properties.Monitoring == true <<EC2 Instance Monitoring must be set to true>>
+}

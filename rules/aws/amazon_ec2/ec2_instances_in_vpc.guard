@@ -1,2 +1,15 @@
 ## Config Rule Name : ec2-instances-in-vpc
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/EC2_INSTANCES_IN_VPC.html"
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/ec2-instances-in-vpc.html
+
+# Rule Intent: Checks if an Amazon Elastic Compute Cloud (Amazon EC2) instance has an Identity and Access Management (IAM) profile attached to it.
+
+# Expectations:
+# a) SKIP: when there are no EC2 resource present
+# b) PASS: when all EC2 resources SubnetId property is not empty
+# c) FAIL: when all EC2 resources do not have the SubnetId property set or is missing
+
+let ec2_instances = Resources.*[ Type == 'AWS::EC2::Instance' ]
+
+rule EC2_INSTANCES_IN_VPC when %ec2_instances !empty {
+    %ec2_instances.Properties.SubnetId exists <<EC2 Instance SubnetId must be specified>>
+}
