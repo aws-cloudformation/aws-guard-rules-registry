@@ -1,0 +1,57 @@
+###
+# EKS_ENDPOINT_NO_PUBLIC_ACCESS test
+###
+
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      EKS_ENDPOINT_NO_PUBLIC_ACCESS: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      EKS_ENDPOINT_NO_PUBLIC_ACCESS: SKIP
+
+- name: EKS Endpoint Public Access set to false, PASS 
+  input: 
+    Resources: 
+      ExampleEKSCluster: 
+        Type: "AWS::EKS::Cluster"
+        Properties: 
+          ResourcesVpcConfig: 
+            SubnetIds: !Ref SubnetIds
+            EndpointPublicAccess: false
+          RoleArn: !Ref RoleArn
+  expectations:
+    rules:
+      EKS_ENDPOINT_NO_PUBLIC_ACCESS: PASS
+
+- name: EKS Endpoint Public Access set to true, FAIL
+  input: 
+    Resources: 
+      ExampleEKSCluster: 
+        Type: "AWS::EKS::Cluster"
+        Properties: 
+          ResourcesVpcConfig: 
+            SubnetIds: !Ref SubnetIds
+            EndpointPublicAccess: true
+          RoleArn: !Ref RoleArn
+  expectations:
+    rules:
+      EKS_ENDPOINT_NO_PUBLIC_ACCESS: FAIL
+
+- name: EKS Endpoint Public Access not set (default false), FAIL
+  input: 
+    Resources: 
+      ExampleEKSCluster: 
+        Type: "AWS::EKS::Cluster"
+        Properties: 
+          ResourcesVpcConfig: 
+            SubnetIds: !Ref SubnetIds
+          RoleArn: !Ref RoleArn
+  expectations:
+    rules:
+      EKS_ENDPOINT_NO_PUBLIC_ACCESS: FAIL
