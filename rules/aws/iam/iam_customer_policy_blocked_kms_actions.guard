@@ -3,7 +3,7 @@
 ##                 security testing and code analysis.
 
 ## Config Rule Name : iam-customer-policy-blocked-kms-actions
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/iam-customer-policy-blocked-kms-actions.html"
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/iam-customer-policy-blocked-kms-actions.html
 
 # Rule Intent: Checks that the managed AWS Identity and Access Management (IAM) policies that you create 
 # do not allow blocked actions on all AWS KMS keys.

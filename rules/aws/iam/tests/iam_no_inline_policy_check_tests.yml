@@ -25,17 +25,6 @@
     rules: 
       IAM_NO_INLINE_POLICY_CHECK: PASS
 
-- name: IAM User with empty inline policies list, PASS 
-  input: 
-    Resources: 
-      ExampleUser: 
-        Type: "AWS::IAM::User"
-        Properties: 
-          Policies: []
-  expectations:
-    rules: 
-      IAM_NO_INLINE_POLICY_CHECK: PASS
-
 - name: IAM Role with no inline policies list, PASS 
   input: 
     Resources: 
@@ -43,18 +32,6 @@
         Type: "AWS::IAM::Role"
         Properties: 
           AssumeRolePolicyDocument: !Ref AssumeRolePolicyDocument
-  expectations:
-    rules: 
-      IAM_NO_INLINE_POLICY_CHECK: PASS
-
-- name: IAM Role with empty inline policies list, PASS 
-  input: 
-    Resources: 
-      ExampleUser: 
-        Type: "AWS::IAM::Role"
-        Properties: 
-          AssumeRolePolicyDocument: !Ref AssumeRolePolicyDocument
-          Policies: []
   expectations:
     rules: 
       IAM_NO_INLINE_POLICY_CHECK: PASS
@@ -69,18 +46,7 @@
     rules: 
       IAM_NO_INLINE_POLICY_CHECK: PASS
 
-- name: IAM Groups with empty inline policies list, PASS 
-  input: 
-    Resources: 
-      ExampleUser: 
-        Type: "AWS::IAM::Group"
-        Properties: 
-          Policies: []
-  expectations:
-    rules: 
-      IAM_NO_INLINE_POLICY_CHECK: PASS
-
-- name: IAM User with non-empty inline policies list, FAIL
+- name: IAM User with inline policies list, FAIL
   input: 
     Resources: 
       ExampleUser: 
@@ -98,7 +64,7 @@
     rules: 
       IAM_NO_INLINE_POLICY_CHECK: FAIL
 
-- name: IAM Role with non-empty inline policies list, FAIL
+- name: IAM Role with inline policies list, FAIL
   input: 
     Resources: 
       ExampleUser: 
@@ -111,13 +77,13 @@
                 Version: '2012-10-17'
                 Statement:
                   - Effect: Allow
-                    Action: "*"
+                    Action: "service:*"
                     Resource: "*"
   expectations:
     rules: 
       IAM_NO_INLINE_POLICY_CHECK: FAIL
 
-- name: IAM Group with non-empty inline policies list, FAIL
+- name: IAM Group with inline policies list, FAIL
   input: 
     Resources: 
       ExampleUser: 

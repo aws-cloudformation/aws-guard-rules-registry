@@ -1,0 +1,72 @@
+###
+# IAM_POLICY_NO_STATEMENTS_WITH_ADMIN_ACCESS tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      IAM_POLICY_NO_STATEMENTS_WITH_ADMIN_ACCESS: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      IAM_POLICY_NO_STATEMENTS_WITH_ADMIN_ACCESS: SKIP
+
+- name: IAM Policy with S3 read only access statement, PASS
+  input: 
+    Resources: 
+      ExamplePolicy: 
+        Type: "AWS::IAM::Policy"
+        Properties: 
+          Policy Name: S3ReadOnly
+          PolicyDocument: 
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: 
+                  - "s3:Get*"
+                  - "s3:List*:"
+                Resource: "*"
+  expectations:
+    rules: 
+      IAM_POLICY_NO_STATEMENTS_WITH_ADMIN_ACCESS: PASS
+
+- name: IAM Policy with S3 full access statement, PASS
+  input: 
+    Resources: 
+      ExamplePolicy: 
+        Type: "AWS::IAM::Policy"
+        Properties: 
+          Policy Name: Test
+          PolicyDocument: 
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: "s3:*"
+                Resource: "*"
+  expectations:
+    rules: 
+      IAM_POLICY_NO_STATEMENTS_WITH_ADMIN_ACCESS: PASS
+
+- name: IAM Policy with allow statement that grants permissions to all actions on all resources, FAIL 
+  input: 
+    Resources: 
+      ExamplePolicy: 
+        Type: "AWS::IAM::Policy"
+        Properties: 
+          Policy Name: Admin
+          PolicyDocument: 
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: "*"
+                Resource: "*"
+  expectations:
+    rules: 
+      IAM_POLICY_NO_STATEMENTS_WITH_ADMIN_ACCESS: FAIL
+
+
+

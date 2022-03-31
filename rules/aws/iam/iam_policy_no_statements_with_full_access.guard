@@ -1,2 +1,13 @@
 ## Config Rule Name : iam-policy-no-statements-with-full-access
 ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/iam-policy-no-statements-with-full-access.html"
+
+# Rule Intent:
+
+# Expectations:
+# a) SKIP: when
+# b) PASS: when
+# c) FAIL: when 
+
+#
+# Select all  resources from incoming template (payload)
+#
