@@ -1,2 +1,26 @@
-    ## Config Rule Name : cloudtrail-enabled
-    ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/cloudtrail-enabled.html"
+## Config Rule Name : cloudtrail-enabled
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/cloudtrail-enabled.html
+
+# Rule Intent: Checks if AWS CloudTrail is enabled in your AWS account
+
+# Expectations:
+# a) SKIP: when there are no CloudTrail Trails present
+# b) PASS: when all CloudTrail Trails have IsLogging parameter set true
+# c) FAIL: when there are CloudTrail Trails with the IsLogging parameter is set to false
+# d) FAIL: when there are CloudTrail Trails with IsLogging property not present
+
+#
+# Select all CloudTrail Trail resources from incoming template (payload)
+#
+
+
+let cloudtrail_trails = Resources.*[ Type == 'AWS::CloudTrail::Trail' ]
+
+rule CLOUD_TRAIL_ENABLED when %cloudtrail_trails !empty {
+  %cloudtrail_trails.Properties.IsLogging EXISTS
+  %cloudtrail_trails.Properties.IsLogging == true
+  <<
+    Violation: CloudTrail Trail should be enabled.
+    Fix: Set the IsLogging parameter to true.
+  >>
+}
