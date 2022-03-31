@@ -80,7 +80,7 @@
 
     }
     ```
-7. Write rule clauses inside the named rule block. Please add a `custom message` to each clause. The `custom message` is expressed as `<<message>>` where 'message' is any string which ideally provides information regarding the clause preceding it.
+7. Write rule clauses inside the named rule block. Please add a `custom message` to each clause. The `custom message` is expressed as `<<message>>` where 'message' is any string which ideally provides information regarding the clause preceding it. Please reference step 8 below for creating custom messages.
     ```
     ## Config Rule Name : dynamodb-pitr-enabled
     ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/dynamodb-pitr-enabled.html"
@@ -101,10 +101,19 @@
     rule DYNAMODB_PITR_ENABLED when %aws_dynamodb_table_resources !empty {
         # Ensure ALL DynamoDB Tables have Point-In-Time-Recovery enabled
         %aws_dynamodb_table_resources.Properties.PointInTimeRecoverySpecification.PointInTimeRecoveryEnabled == true
-            <<
-            Point In Time Recovery must be enabled for strong resiliency
-            >>
-    }
+          <<
+            Violation: Point In Time Recovery must be enabled for strong resiliency.
+            Fix: Set the property PointInTimeRecoverySpecification.PointInTimeRecoveryEnabled parameter to true.
+          >>
+  }
+    ```
+
+8. **Custom Message Blocks** - each rule block should contain single block multiline `custom message` containing `Violation:` and `Fix:` details. The `<<` and `>>` are to be set on their own lines without text. Example:
+    ```
+      <<
+        Violation: Point In Time Recovery must be enabled for strong resiliency.
+        Fix: Set the property PointInTimeRecoverySpecification.PointInTimeRecoveryEnabled parameter to true.
+      >>
     ```
 
 ## Writing Unit Tests

@@ -1,0 +1,109 @@
+###
+# CLOUDTRAIL_S3_DATAEVENTS_ENABLED tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      CLOUDTRAIL_S3_DATAEVENTS_ENABLED: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      CLOUDTRAIL_S3_DATAEVENTS_ENABLED: SKIP
+
+- name: CloudTrail Trail EventSelectors set to with S3 Events and Dynamodb, PASS
+  input:
+    Resources:
+      ExampleTrail:
+        Type: "AWS::CloudTrail::Trail"
+        Properties:
+          S3BucketName: !Ref BucketName
+          S3KeyPrefix: "Uluru"
+          IsLogging: true
+          TrailName: !Ref TrailName
+          EnableLogFileValidation: true
+          IncludeGlobalServiceEvents: true
+          IsMultiRegionTrail: true
+          KMSKeyId: alias/MyAliasName
+          EventSelectors:
+            - DataResources:
+              - Type: 'AWS::S3::Object'
+                Values: ['arn:aws:s3:::']
+              IncludeManagementEvents: true
+              ReadWriteType: 'All'
+            - DataResources:
+              - Type: 'AWS::DynamoDB::Table'
+                Values: ['arn:aws:dynamodb']
+              IncludeManagementEvents: true
+              ReadWriteType: 'All'
+  expectations:
+    rules:
+      CLOUDTRAIL_S3_DATAEVENTS_ENABLED: PASS
+
+- name: CloudTrail Trail EventSelectors set to with S3 Events, PASS
+  input:
+    Resources:
+      ExampleTrail:
+        Type: "AWS::CloudTrail::Trail"
+        Properties:
+          S3BucketName: !Ref BucketName
+          S3KeyPrefix: "Uluru"
+          IsLogging: true
+          TrailName: !Ref TrailName
+          EnableLogFileValidation: true
+          IncludeGlobalServiceEvents: true
+          IsMultiRegionTrail: true
+          KMSKeyId: alias/MyAliasName
+          EventSelectors:
+            - DataResources:
+              - Type: 'AWS::S3::Object'
+                Values: ['arn:aws:s3:::']
+              IncludeManagementEvents: true
+              ReadWriteType: 'All'
+  expectations:
+    rules:
+      CLOUDTRAIL_S3_DATAEVENTS_ENABLED: PASS
+
+- name: CloudTrail Trail EventSelectors set to with only Dynamodb events, FAIL
+  input:
+    Resources:
+      ExampleTrail:
+        Type: "AWS::CloudTrail::Trail"
+        Properties:
+          S3BucketName: !Ref BucketName
+          S3KeyPrefix: "Uluru"
+          IsLogging: true
+          TrailName: !Ref TrailName
+          EnableLogFileValidation: false
+          IncludeGlobalServiceEvents: true
+          IsMultiRegionTrail: true
+          KMSKeyId: alias/MyAliasName
+          EventSelectors:
+            - DataResources:
+              - Type: 'AWS::DynamoDB::Table'
+                Values: ['arn:aws:dynamodb']
+              IncludeManagementEvents: true
+              ReadWriteType: 'All'
+  expectations:
+    rules:
+      CLOUDTRAIL_S3_DATAEVENTS_ENABLED: FAIL
+
+- name: CloudTrail Trail EventSelectors property missing, FAIL
+  input:
+    Resources:
+      ExampleTrail:
+        Type: AWS::CloudTrail::Trail
+        Properties:
+          S3BucketName: !Ref BucketName
+          S3KeyPrefix: "Uluru"
+          IsLogging: true
+          TrailName: !Ref TrailName
+          IncludeGlobalServiceEvents: true
+          IsMultiRegionTrail: true
+  expectations:
+    rules:
+      CLOUDTRAIL_S3_DATAEVENTS_ENABLED: FAIL

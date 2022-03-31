@@ -1,0 +1,66 @@
+###
+# MULTI_REGION_CLOUD_TRAIL_ENABLED tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      MULTI_REGION_CLOUD_TRAIL_ENABLED: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      MULTI_REGION_CLOUD_TRAIL_ENABLED: SKIP
+
+- name: CloudTrail Trail IsMultiRegionTrail set to true, PASS
+  input:
+    Resources:
+      ExampleTrail:
+        Type: "AWS::CloudTrail::Trail"
+        Properties:
+          S3BucketName: !Ref BucketName
+          S3KeyPrefix: "Uluru"
+          IsLogging: true
+          TrailName: !Ref TrailName
+          EnableLogFileValidation: true
+          IncludeGlobalServiceEvents: true
+          IsMultiRegionTrail: true
+          KMSKeyId: alias/MyAliasName
+  expectations:
+    rules:
+      MULTI_REGION_CLOUD_TRAIL_ENABLED: PASS
+
+- name: CloudTrail Trail IsMultiRegionTrail set false, FAIL
+  input:
+    Resources:
+      ExampleTrail:
+        Type: "AWS::CloudTrail::Trail"
+        Properties:
+          S3BucketName: !Ref BucketName
+          S3KeyPrefix: "Uluru"
+          IsLogging: false
+          TrailName: !Ref TrailName
+          EnableLogFileValidation: false
+          IncludeGlobalServiceEvents: true
+          IsMultiRegionTrail: false
+          KMSKeyId: alias/MyAliasName
+  expectations:
+    rules:
+      MULTI_REGION_CLOUD_TRAIL_ENABLED: FAIL
+
+- name: CloudTrail Trail IsMultiRegionTrail property missing, FAIL
+  input:
+    Resources:
+      ExampleTrail:
+        Type: AWS::CloudTrail::Trail
+        Properties:
+          S3BucketName: !Ref BucketName
+          S3KeyPrefix: "Uluru"
+          TrailName: !Ref TrailName
+          IncludeGlobalServiceEvents: true
+  expectations:
+    rules:
+      MULTI_REGION_CLOUD_TRAIL_ENABLED: FAIL

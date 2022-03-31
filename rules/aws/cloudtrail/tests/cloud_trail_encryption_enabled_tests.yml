@@ -1,0 +1,51 @@
+###
+# CLOUD_TRAIL_ENCRYPTION_ENABLED tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      CLOUD_TRAIL_ENCRYPTION_ENABLED: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      CLOUD_TRAIL_ENCRYPTION_ENABLED: SKIP
+
+- name: CloudTrail Trail KMSKeyId set, PASS
+  input:
+    Resources:
+      ExampleTrail:
+        Type: "AWS::CloudTrail::Trail"
+        Properties:
+          S3BucketName: !Ref BucketName
+          S3KeyPrefix: "Uluru"
+          IsLogging: true
+          TrailName: !Ref TrailName
+          EnableLogFileValidation: true
+          IncludeGlobalServiceEvents: true
+          IsMultiRegionTrail: true
+          KMSKeyId: alias/MyAliasName
+  expectations:
+    rules:
+      CLOUD_TRAIL_ENCRYPTION_ENABLED: PASS
+
+- name: CloudTrail Trail KMSKeyId property missing, FAIL
+  input:
+    Resources:
+      ExampleTrail:
+        Type: AWS::CloudTrail::Trail
+        Properties:
+          S3BucketName: !Ref BucketName
+          S3KeyPrefix: "Uluru"
+          IsLogging: true
+          TrailName: !Ref TrailName
+          EnableLogFileValidation: true
+          IncludeGlobalServiceEvents: true
+          IsMultiRegionTrail: true
+  expectations:
+    rules:
+      CLOUD_TRAIL_ENCRYPTION_ENABLED: FAIL

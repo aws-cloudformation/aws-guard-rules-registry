@@ -1,2 +1,24 @@
-    ## Config Rule Name : cloudtrail-s3-dataevents-enabled
-    ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/cloudtrail-s3-dataevents-enabled.html"
+## Config Rule Name : cloudtrail-s3-dataevents-enabled
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/cloudtrail-s3-dataevents-enabled.html
+
+# Rule Intent: Checks whether at least one AWS CloudTrail trail is logging Amazon S3 data events for all S3 buckets.
+
+# Expectations:
+# a) SKIP: when there are no CloudTrail Trails present
+# b) PASS: when all CloudTrail Trails have EventSelectors parameter set
+# c) FAIL: when there are CloudTrail Trails with EventSelectors property not present
+
+#
+# Select all CloudTrail Trail resources from incoming template (payload)
+#
+
+let cloudtrail_trails = Resources.*[ Type == 'AWS::CloudTrail::Trail' ]
+
+rule CLOUDTRAIL_S3_DATAEVENTS_ENABLED when %cloudtrail_trails !empty {
+  %cloudtrail_trails.Properties.EventSelectors EXISTS
+  some %cloudtrail_trails.Properties.EventSelectors.* == {DataResources:[{Type:'AWS::S3::Object',Values:['arn:aws:s3:::']}],IncludeManagementEvents:true,ReadWriteType:'All'}
+  <<
+    Violation: CloudTrail Trail should have data events being logged.
+    Fix: Set the EventSelectors parameter to enable encryption. The value can be an alias name prefixed by "alias/", a fully specified ARN to an alias, a fully specified ARN to a key, or a globally unique identifier.
+  >>
+}
