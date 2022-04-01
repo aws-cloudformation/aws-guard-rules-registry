@@ -1,5 +1,5 @@
 ## Config Rule Name : iam-no-inline-policy-check
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/iam-no-inline-policy-check.html"
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/iam-no-inline-policy-check.html
 
 # Rule Intent: Checks that inline policy feature is not in use. 
 
@@ -18,7 +18,7 @@ let iam_entities = Resources.*[
 ]
 
 rule IAM_NO_INLINE_POLICY_CHECK when %iam_entities !empty {
-    %iam_entities.Properties.Policies EMPTY
+    %iam_entities.Properties.Policies empty
 
      <<
      Violation: Inline policies are not allowed on IAM Users, Roles, or Groups.

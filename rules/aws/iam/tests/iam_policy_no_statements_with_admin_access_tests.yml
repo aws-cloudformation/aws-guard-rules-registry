@@ -51,7 +51,7 @@
     rules: 
       IAM_POLICY_NO_STATEMENTS_WITH_ADMIN_ACCESS: PASS
 
-- name: IAM Policy with allow statement that grants permissions to all actions on all resources, FAIL 
+- name: IAM Policy with allow statement granting permissions to all actions on all resources, FAIL 
   input: 
     Resources: 
       ExamplePolicy: 

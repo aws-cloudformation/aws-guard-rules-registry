@@ -15,7 +15,7 @@
     rules:
       IAM_NO_INLINE_POLICY_CHECK: SKIP
 
-- name: IAM User with no inline policies list, PASS 
+- name: IAM User with no inline policies, PASS 
   input: 
     Resources: 
       ExampleUser: 
@@ -25,7 +25,7 @@
     rules: 
       IAM_NO_INLINE_POLICY_CHECK: PASS
 
-- name: IAM Role with no inline policies list, PASS 
+- name: IAM Role with no inline policies, PASS 
   input: 
     Resources: 
       ExampleUser: 
@@ -36,7 +36,7 @@
     rules: 
       IAM_NO_INLINE_POLICY_CHECK: PASS
 
-- name: IAM Group with no inline policies list, PASS 
+- name: IAM Group with no inline policies, PASS 
   input: 
     Resources: 
       ExampleUser: 
@@ -46,7 +46,7 @@
     rules: 
       IAM_NO_INLINE_POLICY_CHECK: PASS
 
-- name: IAM User with inline policies list, FAIL
+- name: IAM User with inline policies, FAIL
   input: 
     Resources: 
       ExampleUser: 
@@ -64,7 +64,7 @@
     rules: 
       IAM_NO_INLINE_POLICY_CHECK: FAIL
 
-- name: IAM Role with inline policies list, FAIL
+- name: IAM Role with inline policies, FAIL
   input: 
     Resources: 
       ExampleUser: 
@@ -83,7 +83,7 @@
     rules: 
       IAM_NO_INLINE_POLICY_CHECK: FAIL
 
-- name: IAM Group with inline policies list, FAIL
+- name: IAM Group with inline policies, FAIL
   input: 
     Resources: 
       ExampleUser: 

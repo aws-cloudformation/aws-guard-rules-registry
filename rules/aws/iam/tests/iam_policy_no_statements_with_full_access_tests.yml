@@ -52,7 +52,7 @@
     rules: 
       IAM_POLICY_NO_STATEMENTS_WITH_FULL_ACCESS: PASS
 
-- name: IAM Policy with S3 full access statement, FAIL
+- name: IAM Managed Policy with S3 full access statement, FAIL
   input: 
     Resources: 
       ExamplePolicy: 
@@ -77,7 +77,7 @@
     rules: 
       IAM_POLICY_NO_STATEMENTS_WITH_FULL_ACCESS: FAIL
 
-- name: IAM Policy with allow statement that grants permissions to all actions on all resources, FAIL 
+- name: IAM Managed Policy with allow statement granting permissions to all actions on all resources, FAIL 
   input: 
     Resources: 
       ExamplePolicy: 
