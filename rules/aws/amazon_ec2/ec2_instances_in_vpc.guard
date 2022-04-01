@@ -11,5 +11,9 @@
 let ec2_instances = Resources.*[ Type == 'AWS::EC2::Instance' ]
 
 rule EC2_INSTANCES_IN_VPC when %ec2_instances !empty {
-    %ec2_instances.Properties.SubnetId exists <<EC2 Instance SubnetId must be specified>>
+    %ec2_instances.Properties.SubnetId exists 
+    <<
+        Violation: EC2 Instance SubnetId must be specified
+        Fix: https://docs.aws.amazon.com/config/latest/developerguide/ec2-instances-in-vpc.html
+    >>
 }

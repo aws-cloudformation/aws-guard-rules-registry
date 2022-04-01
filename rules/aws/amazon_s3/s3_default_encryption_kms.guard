@@ -15,6 +15,15 @@
 let s3_buckets = Resources.*[ Type == 'AWS::S3::Bucket' ]
 
 rule S3_DEFAULT_ENCRYPTION_KMS when %s3_buckets !empty {
-  %s3_buckets.Properties.BucketEncryption exists <<Buckets must enable server-side encryption>>
-  %s3_buckets.Properties.BucketEncryption.ServerSideEncryptionConfiguration[*].ServerSideEncryptionByDefault.SSEAlgorithm in ["aws:kms","AES256"] <<Buckets must enable server-side encryption>>
+  %s3_buckets.Properties.BucketEncryption exists 
+  <<
+    Violation: Buckets must enable server-side encryption
+    Fix: https://docs.aws.amazon.com/config/latest/developerguide/s3-default-encryption-kms.html
+  >>
+  
+  %s3_buckets.Properties.BucketEncryption.ServerSideEncryptionConfiguration[*].ServerSideEncryptionByDefault.SSEAlgorithm in ["aws:kms","AES256"] 
+  <<
+    Violation: Buckets must enable server-side encryption
+    Fix: https://docs.aws.amazon.com/config/latest/developerguide/s3-default-encryption-kms.html
+  >>
 }

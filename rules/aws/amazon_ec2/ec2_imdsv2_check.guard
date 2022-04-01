@@ -1,3 +1,7 @@
+## SKIP
+## SKIP RATIONALE: Initial version of Rules Registry pertains to static code analysis. The check
+##                 for enforce IMDSv2 use is not supported in infrastructure as code
+
 ## Config Rule Name : ec2-imdsv2-check
 ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/ec2-imdsv2-check.html"
 
