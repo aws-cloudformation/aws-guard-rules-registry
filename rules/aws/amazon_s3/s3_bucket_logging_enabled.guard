@@ -15,5 +15,9 @@
 let s3_buckets = Resources.*[ Type == 'AWS::S3::Bucket' ]
 
 rule S3_BUCKET_LOGGING_ENABLED when %s3_buckets !empty {
-    %s3_buckets.Properties.LoggingConfiguration exists <<S3 Bucket Logging needs to be configured to enable logging>>
+  %s3_buckets.Properties.LoggingConfiguration exists
+  <<
+    Violation: S3 Bucket Logging needs to be configured to enable logging.
+    Fix: Set the S3 Bucket property LoggingConfiguration to start logging into S3 bucket.
+  >>
 }

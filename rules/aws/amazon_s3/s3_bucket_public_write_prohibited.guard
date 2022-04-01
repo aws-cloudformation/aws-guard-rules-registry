@@ -15,9 +15,13 @@
 let s3_buckets = Resources.*[ Type == 'AWS::S3::Bucket' ]
 
 rule S3_BUCKET_PUBLIC_WRITE_PROHIBITED when %s3_buckets !empty {
-    %s3_buckets.Properties.PublicAccessBlockConfiguration exists <<S3 Bucket Versioning must be enabled>>
-    %s3_buckets.Properties.PublicAccessBlockConfiguration.BlockPublicAcls == true <<Set BlockPublicAcls to true to prevent public access>>
-    %s3_buckets.Properties.PublicAccessBlockConfiguration.BlockPublicPolicy == true <<Set BlockPublicPolicy to true to prevent public access>>
-    %s3_buckets.Properties.PublicAccessBlockConfiguration.IgnorePublicAcls == true <<Set IgnorePublicAcls to true to prevent public access>>
-    %s3_buckets.Properties.PublicAccessBlockConfiguration.RestrictPublicBuckets == true <<Set RestrictPublicBuckets to true to prevent public access>>
+  %s3_buckets.Properties.PublicAccessBlockConfiguration exists
+  %s3_buckets.Properties.PublicAccessBlockConfiguration.BlockPublicAcls == true
+  %s3_buckets.Properties.PublicAccessBlockConfiguration.BlockPublicPolicy == true
+  %s3_buckets.Properties.PublicAccessBlockConfiguration.IgnorePublicAcls == true
+  %s3_buckets.Properties.PublicAccessBlockConfiguration.RestrictPublicBuckets == true
+  <<
+    Violation: S3 Bucket Public Write Access controls need to be restricted.
+    Fix: Set S3 Bucket PublicAccessBlockConfiguration properties for BlockPublicAcls, BlockPublicPolicy, IgnorePublicAcls, RestrictPublicBuckets parameters to true.
+  >>
 }
