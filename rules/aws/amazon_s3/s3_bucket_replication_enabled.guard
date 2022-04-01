@@ -14,6 +14,10 @@
 let s3_buckets = Resources.*[ Type == 'AWS::S3::Bucket' ]
 
 rule S3_BUCKET_REPLICATION_ENABLED when %s3_buckets !empty {
-    %s3_buckets.Properties.ReplicationConfiguration exists <<Buckets must enable replication>>
+  %s3_buckets.Properties.ReplicationConfiguration exists
+  <<
+    Violation: S3 Bucket replication should be enabled.
+    Fix: Set S3 Bucket ReplicationConfiguration to another S3 Bucket.
+  >>
     ## TODO regex to identify cross-region
 }
