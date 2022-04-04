@@ -58,7 +58,6 @@
       ExamplePolicy: 
         Type: "AWS::IAM::ManagedPolicy"
         Properties: 
-          Policy Name: Test
           PolicyDocument: 
             Version: '2012-10-17'
             Statement:
@@ -83,7 +82,6 @@
       ExamplePolicy: 
         Type: "AWS::IAM::ManagedPolicy"
         Properties: 
-          Policy Name: Admin
           PolicyDocument: 
             Version: '2012-10-17'
             Statement:
