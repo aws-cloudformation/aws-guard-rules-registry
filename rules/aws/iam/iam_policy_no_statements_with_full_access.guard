@@ -17,11 +17,11 @@ rule IAM_POLICY_NO_STATEMENTS_WITH_FULL_ACCESS when %iam_managed_policies !empty
 
     let violations = %iam_managed_policies.Properties.PolicyDocument.Statement.*[
         Effect == 'Allow'
-        Action == '*' OR 
-        Action == /^[a-zA-Z0-9]*:\*$/
+        Action == '*'
+        OR Action == /^[a-zA-Z0-9]*:\*$/
     ]
 
-    %violations empty 
+    %violations empty
 
     <<
     Violation: One or more IAM Managed Policies allow full access to at least 1 AWS service
