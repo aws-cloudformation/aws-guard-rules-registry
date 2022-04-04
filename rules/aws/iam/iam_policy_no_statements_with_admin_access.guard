@@ -1,2 +1,34 @@
 ## Config Rule Name : iam-policy-no-statements-with-admin-access
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/iam-policy-no-statements-with-admin-access.html"
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/iam-policy-no-statements-with-admin-access.html
+
+# Rule Intent: Checks the IAM policies that you create for Allow statements that grant permissions to all actions on all resources. 
+
+# Expectations:
+# a) SKIP: when there are no IAM Policies present
+# b) PASS: when all IAM Policies do not grant permissions to all actions on all resources
+# c) FAIL: when any IAM Policies grant permissions to all actions on all resources
+
+#
+# Select all IAM Policy resources from incoming template (payload)
+# 
+let iam_policies = Resources.*[ Type == 'AWS::IAM::Policy' ]
+
+rule IAM_POLICY_NO_STATEMENTS_WITH_ADMIN_ACCESS when %iam_policies !empty {
+    let violations = Resources.*[
+        Type == 'AWS::IAM::Policy' 
+        some Properties.PolicyDocument.Statement[*] {
+            some Action[*] == "*"
+            Effect == "Allow"
+            Resource == "*"
+        }
+    ]
+
+    %violations empty
+
+    <<
+        Violation: One or more IAM policies contain allow statements that grant permissions to all actions on all resources
+        Fix: Remove policy statements that match {"Effect": "Allow", "Action": "*", "Resource": "*"}
+    >>
+} 
+
+
