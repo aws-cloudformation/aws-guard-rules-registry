@@ -53,11 +53,11 @@
         Type: "AWS::IAM::User"
         Properties: 
           Policies: 
-            - PolicyName: Admin
+            - PolicyName: "Admin"
               PolicyDocument: 
-                Version: '2012-10-17'
+                Version: "2012-10-17"
                 Statement:
-                  - Effect: Allow
+                  - Effect: "Allow"
                     Action: "*"
                     Resource: "*"
   expectations:
@@ -72,11 +72,11 @@
         Properties: 
           AssumeRolePolicyDocument: !Ref AssumeRolePolicyDocument
           Policies: 
-            - PolicyName: Admin
+            - PolicyName: "Admin"
               PolicyDocument: 
-                Version: '2012-10-17'
+                Version: "2012-10-17"
                 Statement:
-                  - Effect: Allow
+                  - Effect: "Allow"
                     Action: "service:*"
                     Resource: "*"
   expectations:
@@ -90,11 +90,11 @@
         Type: "AWS::IAM::Group"
         Properties: 
           Policies: 
-            - PolicyName: Admin
+            - PolicyName: "Admin"
               PolicyDocument: 
-                Version: '2012-10-17'
+                Version: "2012-10-17"
                 Statement:
-                  - Effect: Allow
+                  - Effect: "Allow"
                     Action: "*"
                     Resource: "*"
   expectations:

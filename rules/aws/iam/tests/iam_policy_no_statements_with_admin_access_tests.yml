@@ -19,13 +19,13 @@
   input: 
     Resources: 
       ExamplePolicy: 
-        Type: "AWS::IAM::Policy"
+        Type: AWS::IAM::Policy
         Properties: 
-          Policy Name: S3ReadOnly
+          Policy Name: "S3ReadOnly"
           PolicyDocument: 
-            Version: '2012-10-17'
+            Version: "2012-10-17"
             Statement:
-              - Effect: Allow
+              - Effect: "Allow"
                 Action: 
                   - "s3:Get*"
                   - "s3:List*"
@@ -38,30 +38,30 @@
   input: 
     Resources: 
       ExamplePolicy: 
-        Type: "AWS::IAM::Policy"
+        Type: AWS::IAM::Policy
         Properties: 
-          Policy Name: Test
+          Policy Name: "S3Full"
           PolicyDocument: 
-            Version: '2012-10-17'
+            Version: "2012-10-17"
             Statement:
-              - Effect: Allow
+              - Effect: "Allow"
                 Action: "s3:*"
                 Resource: "*"
   expectations:
     rules: 
       IAM_POLICY_NO_STATEMENTS_WITH_ADMIN_ACCESS: PASS
 
-- name: IAM Policy with allow statement granting permissions to all actions on all resources, FAIL 
+- name: IAM Policy with "Allow" statement granting permissions to all actions on all resources, FAIL 
   input: 
     Resources: 
       ExamplePolicy: 
-        Type: "AWS::IAM::Policy"
+        Type: AWS::IAM::Policy
         Properties: 
-          Policy Name: Admin
+          Policy Name: "Admin"
           PolicyDocument: 
-            Version: '2012-10-17'
+            Version: "2012-10-17"
             Statement:
-              - Effect: Allow
+              - Effect: "Allow"
                 Action: "*"
                 Resource: "*"
   expectations:

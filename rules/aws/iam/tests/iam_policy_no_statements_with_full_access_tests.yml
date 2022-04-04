@@ -15,16 +15,16 @@
     rules:
       IAM_POLICY_NO_STATEMENTS_WITH_FULL_ACCESS: SKIP
 
-- name: IAM Managed Policy with only Deny S3 saccess statement, PASS
+- name: IAM Managed Policy with only "Deny" S3 saccess statement, PASS
   input: 
     Resources: 
       ExamplePolicy: 
         Type: "AWS::IAM::ManagedPolicy"
         Properties: 
           PolicyDocument: 
-            Version: '2012-10-17'
+            Version: "2012-10-17"
             Statement:
-              - Effect: Deny
+              - Effect: "Deny"
                 Action: "s3:*"
                 Resource: "*"
   expectations:
@@ -38,12 +38,12 @@
         Type: "AWS::IAM::ManagedPolicy"
         Properties: 
           PolicyDocument: 
-            Version: '2012-10-17'
+            Version: "2012-10-17"
             Statement:
-              - Effect: Deny
+              - Effect: "Deny"
                 Action: "ec2:*"
                 Resource: "*"
-              - Effect: Allow
+              - Effect: "Allow"
                 Action: 
                   - "s3:Get*"
                   - "s3:List*"
@@ -59,33 +59,33 @@
         Type: "AWS::IAM::ManagedPolicy"
         Properties: 
           PolicyDocument: 
-            Version: '2012-10-17'
+            Version: "2012-10-17"
             Statement:
-              - Effect: Deny
+              - Effect: "Deny"
                 Action: "ec2:*"
                 Resource: "*"
-              - Effect: Allow
+              - Effect: "Allow"
                 Action: 
                   - "iam:Get*"
                   - "iam:List*"
                 Resource: "*"
-              - Effect: Allow
+              - Effect: "Allow"
                 Action: "s3:*"
                 Resource: "*"
   expectations:
     rules: 
       IAM_POLICY_NO_STATEMENTS_WITH_FULL_ACCESS: FAIL
 
-- name: IAM Managed Policy with allow statement granting permissions to all actions on all resources, FAIL 
+- name: IAM Managed Policy with "Allow" statement granting permissions to all actions on all resources, FAIL 
   input: 
     Resources: 
       ExamplePolicy: 
         Type: "AWS::IAM::ManagedPolicy"
         Properties: 
           PolicyDocument: 
-            Version: '2012-10-17'
+            Version: "2012-10-17"
             Statement:
-              - Effect: Allow
+              - Effect: "Allow"
                 Action: "*"
                 Resource: "*"
   expectations:

@@ -11,14 +11,23 @@
 #
 # Select all IAM Policy resources from incoming template (payload)
 # 
-let iam_policies = Resources.*[ Type == 'AWS::IAM::Policy']
+let iam_policies = Resources.*[ Type == 'AWS::IAM::Policy' ]
 
 rule IAM_POLICY_NO_STATEMENTS_WITH_ADMIN_ACCESS when %iam_policies !empty {
-    %iam_policies.Properties.PolicyDocument.Statement.* != {"Effect:"Allow","Action":"*","Resource":"*"} 
- 
+    let violations = Resources.*[
+        Type == 'AWS::IAM::Policy' 
+        some Properties.PolicyDocument.Statement[*] {
+            some Action[*] == "*"
+            Effect == "Allow"
+            Resource == "*"
+        }
+    ]
+
+    %violations empty
+
     <<
-    Violation: One or more IAM policies contain allow statements that grant permissions to all actions on all resources
-    Fix: Remove policy statements that match {"Effect": "Allow", "Action": "*", "Resource": "*"}
+        Violation: One or more IAM policies contain allow statements that grant permissions to all actions on all resources
+        Fix: Remove policy statements that match {"Effect": "Allow", "Action": "*", "Resource": "*"}
     >>
 } 
 

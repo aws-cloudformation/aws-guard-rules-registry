@@ -13,7 +13,7 @@
 let iam_users = Resources.*[ Type == 'AWS::IAM::User']
 
 rule IAM_USER_NO_POLICIES_CHECK when %iam_users !empty {
-    %iam_users.Properties.Policies EMPTY
+    %iam_users.Properties.Policies empty
 
      <<
      Violation: Inline policies are not allowed on IAM Users. IAM users must inherit permissions from IAM groups or roles.
