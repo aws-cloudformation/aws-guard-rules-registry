@@ -17,7 +17,10 @@ let aws_rds_instances = Resources.*[ Type == 'AWS::RDS::DBInstance'  ]
 
 
 rule RDS_INSTANCE_LOGGING_ENABLED when %aws_rds_instances !empty {
-    %aws_rds_instances.Properties.EnableCloudwatchLogsExports EXISTS
-    <<All RDS instances must have logging enabled to cloudwatch logs>>
+  %aws_rds_instances.Properties.EnableCloudwatchLogsExports EXISTS
+  <<
+    Violation: Enable CloudWatch Logs Exports for monitoring and logging.
+    Fix: Provide EnableCloudWatchLogsExports object to start exporting cloudwatch logs.
+  >>
 }
 

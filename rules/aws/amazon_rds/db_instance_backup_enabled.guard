@@ -19,5 +19,8 @@ let aws_rds_instances = Resources.*[ Type == 'AWS::RDS::DBInstance'  ]
 rule DB_INSTANCE_BACKUP_ENABLED when %aws_rds_instances !empty {
   %aws_rds_instances.Properties.BackupRetentionPeriod EXISTS
   %aws_rds_instances.Properties.BackupRetentionPeriod IN [1, 35]
-  << All RDS instances must have automated backup enabled by setting values of 1 to 35. Setting this parameter to a positive number enables backups >>
+  <<
+    Violation: All RDS instances must have automated backup enabled.
+    Fix: Set the BackupRetentionPeriod to values of 1 to 35 to enable backups.
+  >>
 }

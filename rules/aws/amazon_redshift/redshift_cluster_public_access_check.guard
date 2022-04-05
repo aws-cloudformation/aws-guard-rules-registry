@@ -18,7 +18,12 @@ let aws_redshift_clusters_resources = Resources.*[ Type == 'AWS::Redshift::Clust
 
 
 rule redshift_cluster_public_access_check when %aws_redshift_clusters_resources !empty {
-    
-    %aws_redshift_clusters_resources.Properties.PubliclyAccessible == false <<Makes sure that your cluster is not accessible from the internet. If this is intentional , deploy additional security controls such as limiting access using security groups , using Enhanced VPC routing and integrate with secrets manager for password rotation.>>
+
+    %aws_redshift_clusters_resources.Properties.PubliclyAccessible == false
     OR %aws_redshift_clusters_resources.Properties.PubliclyAccessible !exists
+
+  <<
+    Violation: Redshift cluster should not be available to public.
+    Fix: Set the Redshift property PubliclyAccessible parameter to false.
+  >>
 }

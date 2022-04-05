@@ -20,6 +20,9 @@ rule AURORA_MYSQL_BACKTRACKING_ENABLED when %aws_rds_clusters !empty {
     when %aws_rds_clusters.Properties.Engine == 'aurora-mysql' {
       %aws_rds_clusters.Properties.BacktrackWindow EXISTS
       %aws_rds_clusters.Properties.BacktrackWindow >= 1
-      <<All MySQL Aurora RDS DB Clusters have backtrack enabled. Set BacktrackWindow parameter value to greater than 0 >>
+      <<
+        Violation: All MySQL Aurora RDS DB Clusters have backtrack enabled.
+        Fix: Set BacktrackWindow parameter value to greater than 0.
+      >>
     }
 }
