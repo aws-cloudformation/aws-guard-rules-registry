@@ -1,2 +1,23 @@
 ## Config Rule Name : lambda-function-public-access-prohibited
 ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/lambda-function-public-access-prohibited.html"
+
+# Rule Intent: Checks if the AWS Lambda function policy attached to the Lambda resource prohibits public access.
+
+# Expectations:
+# a) SKIP: when no AWS Lambda functions are present
+# b) PASS: when all AWS Lambda function attached policies prohibit public access
+# c) FAIL: when any AWS Lambda function attached policy allows public access
+
+#
+# Select all <placeholder> resources from incoming template (payload)
+#
+
+rule  LAMBDA_FUNCTION_PUBLIC_ACCESS_PROHIBITED when %placeholder !empty {
+    
+    <<
+        @ComplianceFramework
+        @ContolsList
+        Violation: 
+        Fix: 
+    >>
+} 

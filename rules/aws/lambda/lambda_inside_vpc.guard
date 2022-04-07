@@ -1,2 +1,23 @@
 ## Config Rule Name : lambda-inside-vpc
 ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/lambda-inside-vpc.html"
+
+# Rule Intent: Checks whether an AWS Lambda function is allowed access to an Amazon Virtual Private Cloud. 
+
+# Expectations:
+# a) SKIP: when no AWS Lambda functions are present
+# b) PASS: when
+# c) FAIL: when 
+
+#
+# Select all <placeholder> resources from incoming template (payload)
+#
+
+rule  LAMBDA_INSIDE_VPC when %placeholder !empty {
+    
+    <<
+        @ComplianceFramework
+        @ContolsList
+        Violation: 
+        Fix: 
+    >>
+} 

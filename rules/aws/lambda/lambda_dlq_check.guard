@@ -1,2 +1,23 @@
 ## Config Rule Name : lambda-dlq-check
 ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/lambda-dlq-check.html"
+
+# Rule Intent: Checks whether an AWS Lambda function is configured with a dead-letter queue.
+
+# Expectations:
+# a) SKIP: when no AWS Lambda functions are present
+# b) PASS: when all AWS Lambda functions are configured with a dead-letter queue
+# c) FAIL: when any AWS Lambda functions are not configured with a dead-letter queue
+
+#
+# Select all <placeholder> resources from incoming template (payload)
+#
+
+rule LAMBDA_DLQ_CHECK when %placeholder !empty {
+    
+    <<
+        @ComplianceFramework
+        @ContolsList
+        Violation: 
+        Fix: 
+    >>
+} 
