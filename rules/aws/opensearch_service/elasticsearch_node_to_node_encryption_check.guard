@@ -1,5 +1,5 @@
 ## Config Rule Name : elasticsearch-node-to-node-encryption-check
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/elasticsearch-node-to-node-encryption-check.html"
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/elasticsearch-node-to-node-encryption-check.html
 
 # Rule Intent: Elasticsearch domains must enforce Node-to-Node Encryption
 
@@ -7,7 +7,7 @@
 # a) SKIP: when there is no elasticsearch domain present
 # b) FAIL: when elasticsearch domain has Node-to-Node encryption set to false
 # c) PASS: when elasticsearch domain has Node-to-Node encryption set to true
-# d) FAIL: when elasticsearch domain has Node-to-Node encryption property missing 
+# d) FAIL: when elasticsearch domain has Node-to-Node encryption property missing
 
 #
 # Select all elasticsearch domains from incoming template
@@ -16,9 +16,9 @@
 let elasticsearch_domains = Resources.*[ Type == 'AWS::Elasticsearch::Domain' ]
 
 rule elasticsearch_node_to_node_encryption_check when %elasticsearch_domains !empty {
-    %elasticsearch_domains.Properties {
-        NodeToNodeEncryptionOptions {
-            Enabled == true <<Elasticsearch domains must enforce Node-to-Node Encryption>>
-        }  
-    }
+    %elasticsearch_domains.Properties.NodeToNodeEncryptionOptions.Enabled == true
+  <<
+    Violation: Elasticsearch domains must enforce Node-to-Node Encryption.
+    Fix: Set the NodeToNodeEncryptionOptions.Enabled parameter to true.
+  >>
 }

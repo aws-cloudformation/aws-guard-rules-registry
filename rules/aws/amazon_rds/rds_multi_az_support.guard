@@ -19,5 +19,8 @@ let aws_rds_instances = Resources.*[ Type == 'AWS::RDS::DBInstance'  ]
 rule RDS_MULTI_AZ_SUPPORT when %aws_rds_instances !empty {
     %aws_rds_instances.Properties.MultiAZ EXISTS
     %aws_rds_instances.Properties.MultiAZ == true
-    <<All RDS instances must have MultiAZ support enabled. Set the MultiAZ parameter to true.>>
+  <<
+    Violation: All RDS instances must have MultiAZ support enabled.
+    Fix: Set the MultiAZ parameter to true.
+  >>
 }

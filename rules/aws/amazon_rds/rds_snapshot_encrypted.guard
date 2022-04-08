@@ -1,7 +1,7 @@
 ## Config Rule Name : rds-snapshot-encrypted
 ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/rds-snapshot-encrypted.html
 
-# Rule Intent:
+# Rule Intent:Checks whether Amazon Relational Database Service (Amazon RDS) DB snapshots are encrypted.
 
 # Expectations:
 # a) SKIP: when there are no RDS instances present
@@ -17,11 +17,10 @@ let aws_rds_instances = Resources.*[ Type == 'AWS::RDS::DBInstance'  ]
 
 
 rule RDS_SNAPSHOT_ENCRYPTED when %aws_rds_instances !empty {
-    %aws_rds_instances.Properties.StorageEncrypted EXISTS
-    %aws_rds_instances.Properties.StorageEncrypted == true
-    <<
-    All RDS instances must have snapshots encrypted.
-    For an Amazon RDS encrypted DB instance, all logs, backups, and snapshots are encrypted.
-    Encrypting the storage will set all snapshots to be encrypted as well.
-    >>
+  %aws_rds_instances.Properties.StorageEncrypted EXISTS
+  %aws_rds_instances.Properties.StorageEncrypted == true
+  <<
+    Violation: All RDS instances must have snapshots encrypted.
+    Fix: Set the StorageEncrypted parameter to true so by default all snapshots are encrypted.
+  >>
 }
