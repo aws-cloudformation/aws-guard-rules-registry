@@ -1,0 +1,50 @@
+###
+# LAMBDA_INSIDE_VPC tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      LAMBDA_INSIDE_VPC: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      LAMBDA_INSIDE_VPC: SKIP
+
+- name: AWS Lambda function VPC Configuration set, PASS
+  input:
+    Resources:
+      ExampleLambda:
+        Type: "AWS::Lambda::Function"
+        Properties: 
+          Role: arn:aws:iam::123456789012:role/lambda-role
+          Code:
+            S3Bucket: my-bucket
+            S3Key: function.zip
+          VpcConfig:
+            SecurityGroupIds:
+              - sg-085912345678492fb
+            SubnetIds:
+              - subnet-071f712345678e7c8
+              - subnet-07fd123456788a036
+  expectations:
+    rules:
+      LAMBDA_INSIDE_VPC: PASS
+
+- name: AWS Lambda function VPC Configuration NOT set, FAIL
+  input:
+    Resources:
+      ExampleLambda:
+        Type: "AWS::Lambda::Function"
+        Properties: 
+          Role: arn:aws:iam::123456789012:role/lambda-role
+          Code:
+            S3Bucket: my-bucket
+            S3Key: function.zip
+  expectations:
+    rules:
+      LAMBDA_INSIDE_VPC: FAIL
