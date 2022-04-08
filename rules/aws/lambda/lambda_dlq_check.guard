@@ -17,8 +17,6 @@ rule LAMBDA_DLQ_CHECK when %lambdas !empty {
      %lambdas.Properties.DeadLetterConfig.TargetArn !empty
     
     <<
-        @ComplianceFramework
-        @ContolsList
         Violation: All AWS Lambda Functions must have a dead-letter queue configured 
         Fix: Set the DeadLetterConfig.TargetAr Property to the Amazon Resource Name (ARN) of an Amazon SQS queue or Amazon SNS topic
     >>

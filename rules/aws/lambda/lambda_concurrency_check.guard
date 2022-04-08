@@ -17,8 +17,6 @@ rule LAMBDA_CONCURRENCY_CHECK when %lambdas !empty {
     %lambdas.Properties.ReservedConcurrentExecutions >= 0
 
     <<
-        @ComplianceFramework
-        @ContolsList
         Violation: All AWS Lambda Functions must have concurrent execution limits configured
         Fix: Set the ReservedConcurrentExecutions property to an integer greater than or equal to 0 
     >>
