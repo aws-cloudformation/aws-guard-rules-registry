@@ -2,9 +2,8 @@ name: Build Rules
 
 on:
   push:
-  # pull_request:
-  #   branches:
-  #     - main
+    branches:
+      - main
 
 jobs:
   testRules:
@@ -22,6 +21,7 @@ jobs:
       shell: bash
       run: |
         bin/cfn-guard test -d ./rules/ | grep "FAIL Rules:" -B 2 -A 1
+
   buildRuleSet:
     runs-on: ubuntu-latest
     steps:
