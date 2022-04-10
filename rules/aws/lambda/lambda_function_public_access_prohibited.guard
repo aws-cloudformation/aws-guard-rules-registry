@@ -11,66 +11,66 @@
 #
 # Select all AWS Lambda Permission resources from incoming template (payload)
 #
-let permissions = Resources.*[ 
-    Type in [ /AWS::Lambda::Permission/,
-              /AWS::Lambda::LayerVersionPermission/ ]
+let permissions = Resources.*[
+  Type in [ /AWS::Lambda::Permission/,
+      /AWS::Lambda::LayerVersionPermission/ ]
 ]
 
 rule  LAMBDA_FUNCTION_PUBLIC_ACCESS_PROHIBITED when %permissions !empty {
 
-    # Lambda permission policy where principal is an account id 
-    %permissions {
-        Type == 'AWS::Lambda::Permission' 
-        Properties {
-            Principal in [ /^\d{12}$/, "AWS::AccountId" ]
-            OR Principal > 0
-        }
-    } 
-    
-    # Lambda permission policy where principal is a service (not s3)
-    OR %permissions {
-        Type == 'AWS::Lambda::Permission' 
-        Properties {
-            Principal != 's3.amazonaws.com'
-            PrincipalOrgID !empty 
-            OR SourceAccount exists
-            OR SourceArn !empty
-            <<
-              Violation: All Lambda permission policies attached to Lambda resources must prohibit public access.
-              Fix: Limit permission policies by setting the Principal property to an account ID, 
-              or limiting a service principal by setting the SourceArn, SourceAccount, or PrincipalOrgID properties.
-            >>
-        }
-    } 
+  # Lambda permission policy where principal is an account id
+  %permissions {
+    Type == 'AWS::Lambda::Permission'
+    Properties {
+      Principal in [ /^\d{12}$/, "AWS::AccountId" ]
+      OR Principal > 0
+    }
+  }
 
-    # Lambda permission policy where principal is s3 service 
-    OR %permissions {
-        Type == 'AWS::Lambda::Permission' 
-        Properties {
-            Principal == 's3.amazonaws.com'
-            PrincipalOrgID !empty 
-            OR SourceAccount exists
-             <<
-              Violation: All Lambda permission policies attached to Lambda resources must prohibit public access.
-              Fix: Limit permission policies by setting the Principal property to an account ID, 
-              or for S3 as the principal specify either a SourceAccount or PrincipalOrgID. 
-              Note: It is possible for an S3 bucket to be deleted by its owner and recreated by another account.
-            >>
-        }
-    } 
+  # Lambda permission policy where principal is a service (not s3)
+  OR %permissions {
+    Type == 'AWS::Lambda::Permission'
+    Properties {
+      Principal != 's3.amazonaws.com'
+      PrincipalOrgID !empty
+      OR SourceAccount exists
+      OR SourceArn !empty
+      <<
+        Violation: All Lambda permission policies attached to Lambda resources must prohibit public access.
+        Fix: Limit permission policies by setting the Principal property to an account ID,
+        or limiting a service principal by setting the SourceArn, SourceAccount, or PrincipalOrgID properties.
+      >>
+    }
+  }
 
-    # Lambda layer version permission policies
-    OR %permissions {
-        Type == 'AWS::Lambda::LayerVersionPermission'
-        Properties {
-            OrganizationId !empty 
-            OR Principal in [ /^\d{12}$/, "AWS::AccountId" ]
-            OR Principal > 0
-            <<
-              Violation: All Lambda permission policies attached to Lambda resources must prohibit public access.
-              Fix: For Lambda layer version permission policies, either limit permissions by the OrganizationId property 
-              or set the Principal property to an account ID rather than using a wildcard (*).
-            >>
-        }
-    } 
-} 
+  # Lambda permission policy where principal is s3 service
+  OR %permissions {
+    Type == 'AWS::Lambda::Permission'
+    Properties {
+      Principal == 's3.amazonaws.com'
+      PrincipalOrgID !empty
+      OR SourceAccount exists
+      <<
+        Violation: All Lambda permission policies attached to Lambda resources must prohibit public access.
+        Fix: Limit permission policies by setting the Principal property to an account ID,
+        or for S3 as the principal specify either a SourceAccount or PrincipalOrgID.
+        Note: It is possible for an S3 bucket to be deleted by its owner and recreated by another account.
+      >>
+    }
+  }
+
+  # Lambda layer version permission policies
+  OR %permissions {
+    Type == 'AWS::Lambda::LayerVersionPermission'
+    Properties {
+      OrganizationId !empty
+      OR Principal in [ /^\d{12}$/, "AWS::AccountId" ]
+      OR Principal > 0
+      <<
+        Violation: All Lambda permission policies attached to Lambda resources must prohibit public access.
+        Fix: For Lambda layer version permission policies, either limit permissions by the OrganizationId property
+        or set the Principal property to an account ID rather than using a wildcard (*).
+      >>
+    }
+  }
+}

@@ -14,10 +14,10 @@
 let lambdas = Resources.*[ Type == 'AWS::Lambda::Function' ]
 
 rule LAMBDA_DLQ_CHECK when %lambdas !empty {
-     %lambdas.Properties.DeadLetterConfig.TargetArn !empty
-    
-    <<
-        Violation: All AWS Lambda Functions must have a dead-letter queue configured 
-        Fix: Set the DeadLetterConfig.TargetAr Property to the Amazon Resource Name (ARN) of an Amazon SQS queue or Amazon SNS topic
-    >>
-} 
+  %lambdas.Properties.DeadLetterConfig.TargetArn !empty
+
+  <<
+    Violation: All AWS Lambda Functions must have a dead-letter queue configured
+    Fix: Set the DeadLetterConfig.TargetAr Property to the Amazon Resource Name (ARN) of an Amazon SQS queue or Amazon SNS topic
+  >>
+}
