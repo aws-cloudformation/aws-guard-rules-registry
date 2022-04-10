@@ -1,0 +1,218 @@
+###
+# LAMBDA_FUNCTION_PUBLIC_ACCESS_PROHIBITED tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      LAMBDA_FUNCTION_PUBLIC_ACCESS_PROHIBITED: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      LAMBDA_FUNCTION_PUBLIC_ACCESS_PROHIBITED: SKIP
+
+- name: Lambda permission policy limited to an account as the principal, PASS
+  input:
+    Resources:
+      ExampleLambdaPermission1: 
+        Type: "AWS::Lambda::Permission"
+        Properties: 
+          Action: lambda:InvokeFunction
+          FunctionName: test-function
+          Principal: 123456789012
+      ExampleLambdaPermission2: 
+        Type: "AWS::Lambda::Permission"
+        Properties: 
+          Action: lambda:InvokeFunction
+          FunctionName: test-function
+          Principal: "123456789012"
+      ExampleLambdaPermission3: 
+        Type: "AWS::Lambda::Permission"
+        Properties: 
+          Action: lambda:InvokeFunction
+          FunctionName: test-function
+          Principal: !Ref AWS::AccountId
+  expectations:
+    rules:
+      LAMBDA_FUNCTION_PUBLIC_ACCESS_PROHIBITED: PASS
+
+- name: Lambda permission policy limited to a service (not S3) as the principal scoped to a principal organization, PASS
+  input:
+    Resources:
+      ExampleLambdaPermission-1: 
+        Type: "AWS::Lambda::Permission"
+        Properties: 
+          Action: lambda:InvokeFunction
+          FunctionName: test-function
+          Principal: sns.amazonaws.com
+          PrincipalOrgID: o-aa111bb222
+  expectations:
+    rules:
+      LAMBDA_FUNCTION_PUBLIC_ACCESS_PROHIBITED: PASS
+
+- name: Lambda permission policy limited to a service (not S3) as the principal and a source account, PASS
+  input:
+    Resources:
+      ExampleLambdaPermission1: 
+        Type: "AWS::Lambda::Permission"
+        Properties: 
+          Action: lambda:InvokeFunction
+          FunctionName: test-function
+          Principal: sns.amazonaws.com
+          SourceAccount: 123456789012
+      ExampleLambdaPermission2: 
+        Type: "AWS::Lambda::Permission"
+        Properties: 
+          Action: lambda:InvokeFunction
+          FunctionName: test-function
+          Principal: sns.amazonaws.com
+          SourceAccount: "123456789012"
+      ExampleLambdaPermission3: 
+        Type: "AWS::Lambda::Permission"
+        Properties: 
+          Action: lambda:InvokeFunction
+          FunctionName: test-function
+          Principal: sns.amazonaws.com
+          SourceAccount: !Ref AWS::AccountId
+  expectations:
+    rules:
+      LAMBDA_FUNCTION_PUBLIC_ACCESS_PROHIBITED: PASS
+
+- name: Lambda permission policy limited to a service (not S3) as the principal and a source ARN, PASS
+  input:
+    Resources:
+      ExampleLambdaPermission: 
+        Type: "AWS::Lambda::Permission"
+        Properties: 
+          Action: lambda:InvokeFunction
+          FunctionName: test-function
+          Principal: sns.amazonaws.com
+          SourceArn: !GetAtt sns-topic.Arn
+  expectations:
+    rules:
+      LAMBDA_FUNCTION_PUBLIC_ACCESS_PROHIBITED: PASS
+
+- name: Lambda permission policy limited to the S3 service as the principal scoped to a source account, PASS
+  input:
+    Resources: 
+      ExampleLambdaPermission1: 
+        Type: "AWS::Lambda::Permission"
+        Properties: 
+          Action: lambda:InvokeFunction
+          FunctionName: test-function
+          Principal: s3.amazonaws.com
+          SourceAccount: 123456789012
+      ExampleLambdaPermission2: 
+        Type: "AWS::Lambda::Permission"
+        Properties: 
+          Action: lambda:InvokeFunction
+          FunctionName: test-function
+          Principal: s3.amazonaws.com
+          SourceAccount: "123456789012"
+      ExampleLambdaPermission3: 
+        Type: "AWS::Lambda::Permission"
+        Properties: 
+          Action: lambda:InvokeFunction
+          FunctionName: test-function
+          Principal: s3.amazonaws.com
+          SourceAccount: !Ref AWS::AccountId
+  expectations:
+    rules:
+      LAMBDA_FUNCTION_PUBLIC_ACCESS_PROHIBITED: PASS
+
+- name: Lambda permission policy limited to the S3 service as the principal scoped to an organization, PASS
+  input:
+    Resources: 
+      ExampleLambdaPermission: 
+        Type: "AWS::Lambda::Permission"
+        Properties: 
+          Action: lambda:InvokeFunction
+          FunctionName: test-function
+          Principal: s3.amazonaws.com
+          PrincipalOrgID: o-aa111bb222
+  expectations:
+    rules:
+      LAMBDA_FUNCTION_PUBLIC_ACCESS_PROHIBITED: PASS
+
+- name: Lambda layer version permission policy limited to an organization, PASS
+  input:
+    Resources:
+      ExampleLambdaLayerVersionPermission: 
+        Type: "AWS::Lambda::LayerVersionPermission"
+        Properties: 
+          Action: lambda:GetLayerVersion
+          LayerVersionArn: arn:aws:lambda:us-west-2:123456789012:layer:my-layer:1
+          Principal: "*"
+          OrganizationId: o-aa111bb222
+  expectations:
+    rules:
+      LAMBDA_FUNCTION_PUBLIC_ACCESS_PROHIBITED: PASS
+
+- name: Lambda layer version permission policy limited to an account as the principal, PASS
+  input:
+    Resources:
+      ExampleLambdaLayerVersionPermission1: 
+        Type: "AWS::Lambda::LayerVersionPermission"
+        Properties: 
+          Action: lambda:GetLayerVersion
+          LayerVersionArn: arn:aws:lambda:us-west-2:123456789012:layer:my-layer:1
+          Principal: !Ref AWS::AccountId
+      ExampleLambdaLayerVersionPermission2: 
+        Type: "AWS::Lambda::LayerVersionPermission"
+        Properties: 
+          Action: lambda:GetLayerVersion
+          LayerVersionArn: arn:aws:lambda:us-west-2:123456789012:layer:my-layer:1
+          Principal: "123456789012"
+      ExampleLambdaLayerVersionPermission3: 
+        Type: "AWS::Lambda::LayerVersionPermission"
+        Properties: 
+          Action: lambda:GetLayerVersion
+          LayerVersionArn: arn:aws:lambda:us-west-2:123456789012:layer:my-layer:1
+          Principal: 123456789012
+  expectations:
+    rules:
+      LAMBDA_FUNCTION_PUBLIC_ACCESS_PROHIBITED: PASS
+
+- name: Lambda permission policy limited to the S3 service as the principal, but NOT scoped to a source account or organization, FAIL
+  input:
+    Resources: 
+      ExampleLambdaPermission: 
+        Type: "AWS::Lambda::Permission"
+        Properties: 
+          Action: lambda:InvokeFunction
+          FunctionName: test-function
+          Principal: s3.amazonaws.com
+          SourceArn: !GetAtt s3-bucket.Arn
+  expectations:
+    rules:
+      LAMBDA_FUNCTION_PUBLIC_ACCESS_PROHIBITED: FAIL
+
+- name: Lambda permission policy with a service as the principal, but NO other limitations, FAIL
+  input:
+    Resources:
+      ExampleLambdaPermission: 
+        Type: "AWS::Lambda::Permission"
+        Properties: 
+          Action: lambda:InvokeFunction
+          FunctionName: test-function
+          Principal: sns.amazonaws.com
+  expectations:
+    rules:
+      LAMBDA_FUNCTION_PUBLIC_ACCESS_PROHIBITED: FAIL
+
+- name: Lambda layer version permission policy with NO account or organization limitations, FAIL
+  input:
+    Resources: 
+      ExampleLambdaLayerVersionPermission: 
+        Type: "AWS::Lambda::LayerVersionPermission"
+        Properties: 
+          Action: lambda:GetLayerVersion
+          LayerVersionArn: arn:aws:lambda:us-west-2:123456789012:layer:my-layer:1
+          Principal: "*"
+  expectations:
+    rules:
+      LAMBDA_FUNCTION_PUBLIC_ACCESS_PROHIBITED: FAIL

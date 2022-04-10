@@ -1,2 +1,23 @@
 ## Config Rule Name : lambda-dlq-check
 ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/lambda-dlq-check.html"
+
+# Rule Intent: Checks whether an AWS Lambda function is configured with a dead-letter queue.
+
+# Expectations:
+# a) SKIP: when no AWS Lambda functions are present
+# b) PASS: when all AWS Lambda functions are configured with a dead-letter queue
+# c) FAIL: when any AWS Lambda functions are not configured with a dead-letter queue
+
+#
+# Select all AWS Lambda Function resources from incoming template (payload)
+#
+let lambdas = Resources.*[ Type == 'AWS::Lambda::Function' ]
+
+rule LAMBDA_DLQ_CHECK when %lambdas !empty {
+     %lambdas.Properties.DeadLetterConfig.TargetArn !empty
+    
+    <<
+        Violation: All AWS Lambda Functions must have a dead-letter queue configured 
+        Fix: Set the DeadLetterConfig.TargetAr Property to the Amazon Resource Name (ARN) of an Amazon SQS queue or Amazon SNS topic
+    >>
+} 
