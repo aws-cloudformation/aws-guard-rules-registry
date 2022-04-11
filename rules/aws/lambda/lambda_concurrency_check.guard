@@ -1,7 +1,7 @@
 ## Config Rule Name : lambda-concurrency-check
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/lambda-concurrency-check.html"
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/lambda-concurrency-check.html
 
-# Rule Intent: Checks whether the AWS Lambda function is configured with function-level concurrent execution limit. 
+# Rule Intent: Checks whether the AWS Lambda function is configured with function-level concurrent execution limit.
 
 # Expectations:
 # a) SKIP: when no AWS Lambda functions are present
@@ -14,10 +14,10 @@
 let lambdas = Resources.*[ Type == 'AWS::Lambda::Function' ]
 
 rule LAMBDA_CONCURRENCY_CHECK when %lambdas !empty {
-    %lambdas.Properties.ReservedConcurrentExecutions >= 0
+  %lambdas.Properties.ReservedConcurrentExecutions >= 0
 
-    <<
-        Violation: All AWS Lambda Functions must have concurrent execution limits configured
-        Fix: Set the ReservedConcurrentExecutions property to an integer greater than or equal to 0 
-    >>
-} 
+  <<
+    Violation: All AWS Lambda Functions must have concurrent execution limits configured
+    Fix: Set the ReservedConcurrentExecutions property to an integer greater than or equal to 0
+  >>
+}
