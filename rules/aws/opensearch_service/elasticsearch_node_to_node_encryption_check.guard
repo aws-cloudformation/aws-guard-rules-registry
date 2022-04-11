@@ -15,8 +15,8 @@
 
 let elasticsearch_domains = Resources.*[ Type == 'AWS::Elasticsearch::Domain' ]
 
-rule elasticsearch_node_to_node_encryption_check when %elasticsearch_domains !empty {
-    %elasticsearch_domains.Properties.NodeToNodeEncryptionOptions.Enabled == true
+rule ELASTICSEARCH_NODE_TO_NODE_ENCRYPTION_CHECK when %elasticsearch_domains !empty {
+  %elasticsearch_domains.Properties.NodeToNodeEncryptionOptions.Enabled == true
   <<
     Violation: Elasticsearch domains must enforce Node-to-Node Encryption.
     Fix: Set the NodeToNodeEncryptionOptions.Enabled parameter to true.
