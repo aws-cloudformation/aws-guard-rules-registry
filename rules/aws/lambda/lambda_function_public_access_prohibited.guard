@@ -1,5 +1,5 @@
 ## Config Rule Name : lambda-function-public-access-prohibited
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/lambda-function-public-access-prohibited.html"
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/lambda-function-public-access-prohibited.html
 
 # Rule Intent: Checks if the AWS Lambda function policy attached to the Lambda resource prohibits public access.
 
@@ -13,7 +13,7 @@
 #
 let permissions = Resources.*[
   Type in [ /AWS::Lambda::Permission/,
-      /AWS::Lambda::LayerVersionPermission/ ]
+    /AWS::Lambda::LayerVersionPermission/ ]
 ]
 
 rule  LAMBDA_FUNCTION_PUBLIC_ACCESS_PROHIBITED when %permissions !empty {
