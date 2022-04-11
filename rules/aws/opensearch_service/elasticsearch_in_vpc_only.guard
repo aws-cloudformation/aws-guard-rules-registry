@@ -14,12 +14,10 @@
 
 let elasticsearch_domains = Resources.*[ Type == 'AWS::Elasticsearch::Domain' ]
 
-rule elasticsearch_in_vpc_only when %elasticsearch_domains !empty {
-  %elasticsearch_domains.Properties {
-    VPCOptions exists
+rule ELASTICSEARCH_IN_VPC_ONLY when %elasticsearch_domains !empty {
+  %elasticsearch_domains.Properties.VPCOptions EXISTS
   <<
     Violation: Elasticsearch domains must be in a VPC.
     Fix: Provide VPCOptions object to enable opensearch to function in a VPC.
   >>
-  }
 }

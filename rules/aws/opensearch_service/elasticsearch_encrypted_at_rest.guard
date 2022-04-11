@@ -15,11 +15,10 @@
 
 let elasticsearch_domains = Resources.*[ Type == 'AWS::Elasticsearch::Domain' ]
 
-rule elasticsearch_encrypted_at_rest when %elasticsearch_domains !empty {
+rule ELASTICSEARCH_ENCRYPTED_AT_REST when %elasticsearch_domains !empty {
   %elasticsearch_domains.Properties.EncryptionAtRestOptions.Enabled == true
   <<
     Violation: Elasticsearch domains must enforce server side encryption.
     Fix: Set the EncryptionAtRestOptions.Enabled parameter to true.
   >>
-
 }
