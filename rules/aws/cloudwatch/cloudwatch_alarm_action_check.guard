@@ -6,8 +6,9 @@
 
 # Expectations:
 # a) SKIP: when there are no cloudwatch alarm resources present
-# b) PASS: when all cloudwatch alarm resources property Alarm Actions, Insufficient Data Actions, or OK Action set
-# c) FAIL: when all cloudwatch alarms resources property Alarm Actions, Insufficient Data Actions, or OK Action are not set with valid value
+# b) PASS: when resource Metadata is set with rule suppressed
+# c) PASS: when all cloudwatch alarm resources property Alarm Actions, Insufficient Data Actions, or OK Action set
+# d) FAIL: when all cloudwatch alarms resources property Alarm Actions, Insufficient Data Actions, or OK Action are not set with valid value
 
 #
 # Select all cloudwatch logs log group resources from incoming template (payload)
@@ -15,11 +16,16 @@
 let cloudwatch_alarm = Resources.*[ Type == 'AWS::CloudWatch::Alarm' ]
 
 rule CLOUDWATCH_ALARM_ACTION_CHECK when %cloudwatch_alarm !empty {
+  ## allow rule to be suppressed by rule name
+  some %cloudwatch_alarm.Metadata.guard.SuppressedRules.* == "CLOUDWATCH_ALARM_ACTION_CHECK" or
+
   %cloudwatch_alarm.Properties.AlarmActions exists or
   %cloudwatch_alarm.Properties.OKActions exists or
   %cloudwatch_alarm.Properties.InsufficientDataActions exists
+
   <<
     Violation: CloudWatch Alarms should have at least one Alarm Action, one Insufficient Data Actions action, or one OK Action enabled.
     Fix: Set one Alarm Action, one Insufficient Data Actions action, or one OK Action on the CloudWatch Alarm resource.
   >>
 }
+

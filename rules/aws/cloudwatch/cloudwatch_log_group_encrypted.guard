@@ -14,6 +14,9 @@
 let cloudwatch_logs = Resources.*[ Type == 'AWS::Logs::LogGroup' ]
 
 rule CLOUDWATCH_LOG_GROUP_ENCRYPTED when %cloudwatch_logs !empty {
+  # allow rule to be suppressed by rule name
+  some %cloudwatch_logs.Metadata.guard.SuppressedRules.* == "CLOUDWATCH_LOG_GROUP_ENCRYPTED" or#
+
   %cloudwatch_logs.Properties.KmsKeyId exists
   <<
     Violation: CloudWatch Log LogsGroup does not have KmsKeyId set.

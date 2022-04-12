@@ -37,3 +37,18 @@
   expectations:
     rules:
       CLOUDWATCH_LOG_GROUP_ENCRYPTED: FAIL
+
+- name: CloudWatch Log LogGroup missing KmsKeyId but rule suppressed, PASS
+  input:
+    Resources:
+      ExampleLogGroup:
+        Type: AWS::Logs::LogGroup
+        Metadata:
+          guard:
+            SuppressedRules:
+            - CLOUDWATCH_LOG_GROUP_ENCRYPTED
+        Properties:
+          LogGroupName: myLogGroup
+  expectations:
+    rules:
+      CLOUDWATCH_LOG_GROUP_ENCRYPTED: PASS

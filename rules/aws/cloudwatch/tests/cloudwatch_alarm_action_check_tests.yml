@@ -131,3 +131,28 @@
   expectations:
     rules:
       CLOUDWATCH_ALARM_ACTION_CHECK: FAIL
+
+- name: CloudWatch Alarm present missing Alarm Action, InsufficientDataActions, or OK Action but suppressed - PASS
+  input:
+    Resources:
+      ExampleCWA:
+        Type: AWS::CloudWatch::Alarm
+        Metadata:
+          guard:
+            SuppressedRules:
+            - CLOUDWATCH_ALARM_ACTION_CHECK
+        Properties:
+          AlarmDescription: "Everything is fine"
+          MetricName: CPUUtilization
+          Namespace: AWS/EC2
+          Statistic: Average
+          Period: 300
+          EvaluationPeriods: 2
+          Threshold: 90
+          ComparisonOperator: GreaterThanThreshold
+          Dimensions:
+            - Name: InstanceId
+              Value: !Ref pEc2InstanceId
+  expectations:
+    rules:
+      CLOUDWATCH_ALARM_ACTION_CHECK: PASS

@@ -14,7 +14,9 @@
 let cloudwatch_logs = Resources.*[ Type == 'AWS::Logs::LogGroup' ]
 
 rule CW_LOGGROUP_RETENTION_PERIOD_CHECK when %cloudwatch_logs !empty {
-  %cloudwatch_logs.Properties.RetentionInDays exists
+  # allow rule to be suppressed by rule name
+  some %cloudwatch_logs.Metadata.guard.SuppressedRules.* == "CW_LOGGROUP_RETENTION_PERIOD_CHECK" or
+
   %cloudwatch_logs.Properties.RetentionInDays IN [1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1827, 3653]
   <<
     Violation: CloudWatch Log LogsGroup does not have RetentionInDays set.
