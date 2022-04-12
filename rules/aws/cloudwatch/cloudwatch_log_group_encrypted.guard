@@ -1,2 +1,25 @@
-    ## Config Rule Name : cloudwatch-log-group-encrypted
-    ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/cloudwatch-log-group-encrypted.html"
+## Config Rule Name : cloudwatch-log-group-encrypted
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/cloudwatch-log-group-encrypted.html
+
+# Rule Intent: Checks if a log group in Amazon CloudWatch Logs is encrypted with a AWS Key Management Service (KMS) managed Customer Master Keys (CMK).
+
+# Expectations:
+# a) SKIP: when there are no cloudwatch logs log group resources present
+# b) PASS: when all cloudwatch logs log group resources property KmsKeyId is set
+# c) FAIL: when all cloudwatch logs log group resources property KmsKeyId is not set with valid value
+
+#
+# Select all cloudwatch logs log group resources from incoming template (payload)
+#
+let cloudwatch_logs = Resources.*[ Type == 'AWS::Logs::LogGroup' ]
+
+rule CLOUDWATCH_LOG_GROUP_ENCRYPTED when %cloudwatch_logs !empty {
+  # allow rule to be suppressed by rule name
+  some %cloudwatch_logs.Metadata.guard.SuppressedRules.* == "CLOUDWATCH_LOG_GROUP_ENCRYPTED" or#
+
+  %cloudwatch_logs.Properties.KmsKeyId exists
+  <<
+    Violation: CloudWatch Log LogsGroup does not have KmsKeyId set.
+    Fix: Set the KmsKeyId parameter to a ARN.
+  >>
+}

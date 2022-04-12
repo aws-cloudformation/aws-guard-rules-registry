@@ -1,0 +1,64 @@
+###
+# CW_LOGGROUP_RETENTION_PERIOD_CHECK tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      CW_LOGGROUP_RETENTION_PERIOD_CHECK: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      CW_LOGGROUP_RETENTION_PERIOD_CHECK: SKIP
+
+- name: CloudWatch Log LogGroup present RetentionInDays, PASS
+  input:
+    Resources:
+      ExampleLogGroup:
+        Type: AWS::Logs::LogGroup
+        Properties:
+          RetentionInDays: 7
+  expectations:
+    rules:
+      CW_LOGGROUP_RETENTION_PERIOD_CHECK: PASS
+
+- name: CloudWatch Log LogGroup present RetentionInDays but references Jenny's number from Tommy Tutone's musical hit, FAIL
+  input:
+    Resources:
+      ExampleLogGroup:
+        Type: AWS::Logs::LogGroup
+        Properties:
+          RetentionInDays: 8675309
+  expectations:
+    rules:
+      CW_LOGGROUP_RETENTION_PERIOD_CHECK: FAIL
+
+- name: CloudWatch Log LogGroup missing RetentionInDays, FAIL
+  input:
+    Resources:
+      ExampleLogGroup:
+        Type: AWS::Logs::LogGroup
+        Properties:
+          LogGroupName: myLogGroup
+  expectations:
+    rules:
+      CW_LOGGROUP_RETENTION_PERIOD_CHECK: FAIL
+
+- name: CloudWatch Log LogGroup missing RetentionInDays but rule suppressed, PASS
+  input:
+    Resources:
+      ExampleLogGroup:
+        Type: AWS::Logs::LogGroup
+        Metadata:
+          guard:
+            SuppressedRules:
+            - CW_LOGGROUP_RETENTION_PERIOD_CHECK
+        Properties:
+          LogGroupName: myLogGroup
+  expectations:
+    rules:
+      CW_LOGGROUP_RETENTION_PERIOD_CHECK: PASS
