@@ -1,2 +1,23 @@
-    ## Config Rule Name : cw-loggroup-retention-period-check
-    ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/cw-loggroup-retention-period-check.html"
+## Config Rule Name : cw-loggroup-retention-period-check
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/cw-loggroup-retention-period-check.html
+
+# Rule Intent: Checks whether Amazon CloudWatch LogGroup retention period is set to specific number of days.
+
+# Expectations:
+# a) SKIP: when there are no cloudwatch logs log group resources present
+# b) PASS: when all cloudwatch logs log group resources property RetentionInDays is set
+# c) FAIL: PASS: when all cloudwatch logs log group resources property RetentionInDays is not set with valid value
+
+#
+# Select all cloudwatch logs log group resources from incoming template (payload)
+#
+let cloudwatch_logs = Resources.*[ Type == 'AWS::Logs::LogGroup' ]
+
+rule CW_LOGGROUP_RETENTION_PERIOD_CHECK when %cloudwatch_logs !empty {
+  %cloudwatch_logs.Properties.RetentionInDays exists
+  %cloudwatch_logs.Properties.RetentionInDays IN [1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1827, 3653]
+  <<
+    Violation: CloudWatch Log LogsGroup does not have RetentionInDays set.
+    Fix: Seth the RetentionInDays parameter to a value of 1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1827, or 3653.
+  >>
+}
