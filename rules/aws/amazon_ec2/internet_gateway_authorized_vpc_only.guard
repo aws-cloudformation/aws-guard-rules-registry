@@ -1,2 +1,6 @@
+## SKIP
+## SKIP RATIONALE: Initial version of Rules Registry pertains to static code analysis. The check for
+##                 IGW is attached to an authorized VPC is not supported in infrastructure as code
+
 ## Config Rule Name : internet-gateway-authorized-vpc-only
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/internet-gateway-authorized-vpc-only.html"
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/internet-gateway-authorized-vpc-only.html

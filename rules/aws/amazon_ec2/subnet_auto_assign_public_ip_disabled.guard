@@ -1,2 +1,17 @@
 ## Config Rule Name : subnet-auto-assign-public-ip-disabled
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/SUBNET_AUTO_ASSIGN_PUBLIC_IP_DISABLED.html"
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/subnet-auto-assign-public-ip-disabled.html
+
+# Expectations:
+# a) SKIP: when there are no subnets resource present
+# b) PASS: when all Subnets MapPublicIpOnLaunch property is set to false
+# c) FAIL: when all Subnets resources do not have the MapPublicIpOnLaunch property set to false
+
+let ec2_subnets = Resources.*[ Type == 'AWS::EC2::Subnet' ]
+
+rule SUBNET_AUTO_ASSIGN_PUBLIC_IP_DISABLED when %ec2_subnets !empty {
+    %ec2_subnets.Properties.MapPublicIpOnLaunch == true 
+    <<
+        Violation: Amazon VPC has subnets that are assigned a public IP address.
+        Fix: https://docs.aws.amazon.com/config/latest/developerguide/subnet-auto-assign-public-ip-disabled.html
+    >>
+}

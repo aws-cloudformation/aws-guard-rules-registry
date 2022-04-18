@@ -1,0 +1,50 @@
+###
+# EC2_EBS_ENCRYPTION_BY_DEFAULT tests
+###
+---
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      EC2_EBS_ENCRYPTION_BY_DEFAULT: SKIP
+
+- name: EC2 Volume has Encrypted property set to true, PASS
+  input:
+    Resources:
+      ExampleEC2:
+        Type: AWS::EC2::Volume
+        Properties:
+          AvailabilityZone: !Ref pAz
+          Size: !Ref pSize
+          Encrypted: true
+  expectations:
+    rules:
+      EC2_EBS_ENCRYPTION_BY_DEFAULT: PASS
+
+- name: EC2 Volume doesn't have the Encrypted property, FAIL
+  input:
+    Resources:
+      ExampleEC2:
+        Type: AWS::EC2::Volume
+        Properties:
+          AvailabilityZone: !Ref pAz
+          Size: !Ref pSize
+  expectations:
+    rules:
+      EC2_EBS_ENCRYPTION_BY_DEFAULT: FAIL
+
+
+- name: EC2 Volume has Encrypted property set to false, FAIL
+  input:
+    Resources:
+      ExampleEC2:
+        Type: AWS::EC2::Volume
+        Properties:
+          AvailabilityZone: !Ref pAz
+          Size: !Ref pSize
+          Encrypted: false
+  expectations:
+    rules:
+      EC2_EBS_ENCRYPTION_BY_DEFAULT: FAIL

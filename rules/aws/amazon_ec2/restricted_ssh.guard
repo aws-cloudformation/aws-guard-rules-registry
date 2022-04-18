@@ -1,2 +1,23 @@
 ## Config Rule Name : restricted-ssh
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/RESTRICTED_SSH.html"
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/restricted-ssh.html
+
+# Expectations:
+# a) SKIP: when there are no Security Groups resource present
+# b) PASS: when all Security Groups do no allow any of the restricted common ports
+# c) FAIL: when a Security Group allows any of the restricted common ports
+
+let sgs = Resources.*[ Type == 'AWS::EC2::SecurityGroup' ]
+
+rule RESTRICTED_SSH when %sgs !empty {
+    sgs.Properties.SecurityGroupIngress[*]{
+        CidrIp == "0.0.0.0/0"
+        FromPort in [22]
+        ToPort in [22]
+        IpProtocol exists
+        IpProtocol == 'tcp'
+    }
+    <<
+        Violation: IP addresses of the incoming SSH traffic in the security groups are restricted (CIDR other than 0.0.0.0/0)
+        Fix: https://docs.aws.amazon.com/config/latest/developerguide/restricted-common-ports.html
+    >>
+}

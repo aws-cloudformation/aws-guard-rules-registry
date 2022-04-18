@@ -1,2 +1,5 @@
+## SKIP RATIONALE: Initial version of Rules Registry pertains to static code analysis. The check
+##                 for EC2 volumne inuse check would not be relevant to SAST operations
+
 ## Config Rule Name : ec2-volume-inuse-check
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/ec2-volume-inuse-check.html"
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/ec2-volume-inuse-check.html

@@ -1,5 +1,9 @@
+## SKIP
+## SKIP RATIONALE: Initial version of Rules Registry pertains to static code analysis. The check for
+##                  VPC default security group closed is not supported in infrastructure as code
+
 ## Config Rule Name : vpc-default-security-group-closed
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/vpc-default-security-group-closed.html"
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/vpc-default-security-group-closed.html
 
 ## NO GUARD RULE TO APPLY
 

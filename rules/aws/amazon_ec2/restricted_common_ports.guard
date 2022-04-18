@@ -1,2 +1,22 @@
 ## Config Rule Name : restricted-common-ports
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/RESTRICTED_COMMON_PORTS.html"
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/restricted-common-ports.html
+
+# Expectations:
+# a) SKIP: when there are no Security Groups resource present
+# b) PASS: when all Security Groups do no allow any of the restricted common ports
+# c) FAIL: when a Security Group allows any of the restricted common ports
+
+let sgs = Resources.*[ Type == 'AWS::EC2::SecurityGroup' ]
+
+rule RESTRICTED_INCOMING_TRAFFIC when %sgs !empty {
+    sgs.Properties.SecurityGroupIngress[*]{
+        FromPort in [20, 21, 3389, 3306, 4333]
+        ToPort in [20, 21, 3389, 3306, 4333]
+        IpProtocol exists
+        IpProtocol == 'tcp'
+    }
+    <<
+        Violation: Security groups must not allow unrestricted incoming TCP traffic to the specified ports [20, 21, 3389, 3306, 4333].
+        Fix: https://docs.aws.amazon.com/config/latest/developerguide/restricted-common-ports.html
+    >>
+}
