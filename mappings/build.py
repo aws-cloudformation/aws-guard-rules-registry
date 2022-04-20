@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import argparse
-from operator import truediv
 import os
 import json
 import glob
