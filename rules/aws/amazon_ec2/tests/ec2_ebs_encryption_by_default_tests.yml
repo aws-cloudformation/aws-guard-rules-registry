@@ -13,7 +13,7 @@
 - name: EC2 Volume has Encrypted property set to true, PASS
   input:
     Resources:
-      ExampleEC2:
+      ExampleVolume:
         Type: AWS::EC2::Volume
         Properties:
           AvailabilityZone: !Ref pAz
@@ -26,7 +26,7 @@
 - name: EC2 Volume doesn't have the Encrypted property, FAIL
   input:
     Resources:
-      ExampleEC2:
+      ExampleVolume:
         Type: AWS::EC2::Volume
         Properties:
           AvailabilityZone: !Ref pAz
@@ -39,7 +39,7 @@
 - name: EC2 Volume has Encrypted property set to false, FAIL
   input:
     Resources:
-      ExampleEC2:
+      ExampleVolume:
         Type: AWS::EC2::Volume
         Properties:
           AvailabilityZone: !Ref pAz

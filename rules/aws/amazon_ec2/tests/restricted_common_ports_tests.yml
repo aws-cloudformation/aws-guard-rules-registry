@@ -1,0 +1,27 @@
+###
+# RESTRICTED_INCOMING_TRAFFIC tests
+###
+---
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      RESTRICTED_INCOMING_TRAFFIC: SKIP
+
+- name: SG port 20 open, FAIL
+  input:
+    Resources:
+      WebAppSecurityGroup:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          GroupDescription: "Allow port 20 inbound and outbound traffic"
+          SecurityGroupIngress:
+            - IpProtocol: tcp
+              FromPort: 20
+              ToPort: 20
+              CidrIp: 0.0.0.0/0
+  expectations:
+    rules:
+      RESTRICTED_INCOMING_TRAFFIC: FAIL

@@ -1,0 +1,70 @@
+###
+# EC2_INSTANCE_DETAILED_MONITORING_ENABLED tests
+###
+---
+
+- name: No nifs resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      prevent_ec2_with_public_ip: SKIP
+
+- name: EC2 that do have NetworkInterfaces does not allow public IP address to be associated at launch, PASS
+  input:
+    Resources:
+      ExampleEC2:
+        Type: AWS::EC2::Instance
+        Properties:
+          ImageId: !Ref LatestAmiId
+          InstanceType: !Ref pInstanceType
+          IamInstanceProfile: !Ref rInstanceProfile
+          NetworkInterfaces:
+            - DeleteOnTermination: true
+              Description: Primary network interface
+              DeviceIndex: '0'
+              SubnetId: !Ref VPCPubSn1
+              AssociatePublicIpAddress: false
+  expectations:
+    rules:
+      prevent_ec2_with_public_ip: PASS
+
+- name: EC2 doesn't have the NetworkInterfaces property, SKIP
+  input:
+    Resources:
+      ExampleEC2:
+        Type: AWS::EC2::Instance
+        Properties:
+          ImageId: !Ref LatestAmiId
+          InstanceType: !Ref pInstanceType
+          IamInstanceProfile: !Ref rInstanceProfile
+  expectations:
+    rules:
+      prevent_ec2_with_public_ip: SKIP
+
+
+- name: EC2 that do have NetworkInterfaces allow public IP address to be associated at launch, FAIL
+  input:
+    Resources:
+      ExampleEC2:
+        Type: AWS::EC2::Instance
+        Properties:
+          ImageId: !Ref LatestAmiId
+          InstanceType: !Ref pInstanceType
+          IamInstanceProfile: !Ref rInstanceProfile
+          NetworkInterfaces:
+            - DeleteOnTermination: true
+              Description: Primary network interface
+              DeviceIndex: '0'
+              SubnetId: !Ref VPCPubSn1
+              AssociatePublicIpAddress: false
+  expectations:
+    rules:
+      prevent_ec2_with_public_ip: FAIL
+
+- name: No AWS::EC2::EIP resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      prevent_eip_associations_with_ec2: SKIP
