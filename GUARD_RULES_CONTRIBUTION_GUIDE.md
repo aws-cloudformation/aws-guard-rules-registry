@@ -37,7 +37,6 @@
     ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/dynamodb-pitr-enabled.html"
     ```
 
-
 5. Edit `dynamodb_pitr_enabled.guard` and describe bookkeeping for the rule, like rule intent and expectations.
     ```
     # Rule Intent: All DynamoDB Tables must have Point-In-Time-Recovery enabled

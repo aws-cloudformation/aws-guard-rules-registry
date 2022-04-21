@@ -28,11 +28,11 @@ jobs:
       - name: Check out repo
         uses: actions/checkout@v2
       - run: |
-          mkdir ./build/output
-          ./build/build.ps1
-        shell: pwsh
+          chmod +x ./mappings/build.py
+          python3 ./mappings/build.py
+        shell: bash
       - uses: actions/upload-artifact@v3
         with:
           name: ruleset-build
-          path: build/output/
+          path: mappings/output/
           if-no-files-found: error
