@@ -30,7 +30,7 @@ jobs:
         uses: actions/checkout@v2
       - run: |
           chmod +x ./mappings/build.py
-          ./mappings/build.py
+          python3 ./mappings/build.py
         shell: bash
       - uses: actions/upload-artifact@v3
         with:
