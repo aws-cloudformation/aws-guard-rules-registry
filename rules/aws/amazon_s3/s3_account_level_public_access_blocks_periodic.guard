@@ -1,8 +1,0 @@
-## SKIP
-## SKIP RATIONALE: Initial version of Rules Registry pertains to static code analysis. The check
-##                 for S3 account-level configurations is not supported in infrastructure as code
-
-## Config Rule Name : s3-account-level-public-access-blocks-periodic
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/s3-account-level-public-access-blocks-periodic.html
-
-# Rule Intent: Checks if the required public access block settings are configured from account level.

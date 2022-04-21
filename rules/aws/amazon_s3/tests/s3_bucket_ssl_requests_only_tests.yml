@@ -103,3 +103,31 @@
   expectations:
     rules:
       S3_BUCKET_SSL_REQUESTS_ONLY: FAIL
+
+- name: S3 Bucket Policy statement to only allow requests to use Secure Socket Layer (SSL) missing but rule suppressed, SKIP
+  input:
+    Resources:
+      ExampleS3:
+        Type: AWS::S3::BucketPolicy
+        Metadata:
+          guard:
+            SuppressedRules:
+            - S3_BUCKET_SSL_REQUESTS_ONLY
+        Properties:
+          Bucket: !Ref rLogsBucket
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Sid: "AWSLogDeliveryWrite"
+                Effect: "Allow"
+                Principal:
+                  Service:
+                    - "delivery.logs.amazonaws.com"
+                Action: "s3:PutObject"
+                Resource: "*"
+                Condition:
+                  StringEquals:
+                    "s3:x-amz-acl": "bucket-owner-full-control"
+  expectations:
+    rules:
+      S3_BUCKET_SSL_REQUESTS_ONLY: SKIP

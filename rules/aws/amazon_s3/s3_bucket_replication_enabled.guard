@@ -11,10 +11,14 @@
 #
 # Select all S3 resources from incoming template (payload)
 #
-let s3_buckets = Resources.*[ Type == 'AWS::S3::Bucket' ]
 
-rule S3_BUCKET_REPLICATION_ENABLED when %s3_buckets !empty {
-  %s3_buckets.Properties.ReplicationConfiguration exists
+let s3_buckets_replication_enabled = Resources.*[ Type == 'AWS::S3::Bucket'
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "S3_BUCKET_REPLICATION_ENABLED"
+]
+
+rule S3_BUCKET_REPLICATION_ENABLED when %s3_buckets_replication_enabled !empty {
+  %s3_buckets_replication_enabled.Properties.ReplicationConfiguration exists
   <<
     Violation: S3 Bucket replication should be enabled.
     Fix: Set S3 Bucket ReplicationConfiguration to another S3 Bucket.

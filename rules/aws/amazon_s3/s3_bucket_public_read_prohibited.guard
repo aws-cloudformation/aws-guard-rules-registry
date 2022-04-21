@@ -12,14 +12,17 @@
 #
 # Select all S3 resources from incoming template (payload)
 #
-let s3_buckets = Resources.*[ Type == 'AWS::S3::Bucket' ]
+let s3_bucket_public_read_prohibited = Resources.*[ Type == 'AWS::S3::Bucket'
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "S3_BUCKET_PUBLIC_READ_PROHIBITED"
+]
 
-rule S3_BUCKET_PUBLIC_READ_PROHIBITED when %s3_buckets !empty {
-  %s3_buckets.Properties.PublicAccessBlockConfiguration exists
-  %s3_buckets.Properties.PublicAccessBlockConfiguration.BlockPublicAcls == true
-  %s3_buckets.Properties.PublicAccessBlockConfiguration.BlockPublicPolicy == true
-  %s3_buckets.Properties.PublicAccessBlockConfiguration.IgnorePublicAcls == true
-  %s3_buckets.Properties.PublicAccessBlockConfiguration.RestrictPublicBuckets == true
+rule S3_BUCKET_PUBLIC_READ_PROHIBITED when %s3_bucket_public_read_prohibited !empty {
+  %s3_bucket_public_read_prohibited.Properties.PublicAccessBlockConfiguration exists
+  %s3_bucket_public_read_prohibited.Properties.PublicAccessBlockConfiguration.BlockPublicAcls == true
+  %s3_bucket_public_read_prohibited.Properties.PublicAccessBlockConfiguration.BlockPublicPolicy == true
+  %s3_bucket_public_read_prohibited.Properties.PublicAccessBlockConfiguration.IgnorePublicAcls == true
+  %s3_bucket_public_read_prohibited.Properties.PublicAccessBlockConfiguration.RestrictPublicBuckets == true
   <<
     Violation: S3 Bucket Public Write Access controls need to be restricted.
     Fix: Set S3 Bucket PublicAccessBlockConfiguration properties for BlockPublicAcls, BlockPublicPolicy, IgnorePublicAcls, RestrictPublicBuckets parameters to true.

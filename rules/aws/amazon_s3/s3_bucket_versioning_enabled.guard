@@ -11,11 +11,14 @@
 #
 # Select all S3 resources from incoming template (payload)
 #
-let s3_buckets = Resources.*[ Type == 'AWS::S3::Bucket' ]
+let s3_buckets_versioning_enabled = Resources.*[ Type == 'AWS::S3::Bucket'
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "S3_BUCKET_VERSIONING_ENABLED"
+]
 
-rule S3_BUCKET_VERSIONING_ENABLED when %s3_buckets !empty {
-  %s3_buckets.Properties.VersioningConfiguration exists
-  %s3_buckets.Properties.VersioningConfiguration.Status == 'Enabled'
+rule S3_BUCKET_VERSIONING_ENABLED when %s3_buckets_versioning_enabled !empty {
+  %s3_buckets_versioning_enabled.Properties.VersioningConfiguration exists
+  %s3_buckets_versioning_enabled.Properties.VersioningConfiguration.Status == 'Enabled'
   <<
     Violation: S3 Bucket Versioning must be enabled.
     Fix: Set the S3 Bucket property VersioningConfiguration.Status to 'Enabled' .
