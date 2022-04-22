@@ -1,18 +1,40 @@
 
-
-## Config Rule Name : efs-resources-protected-by-backup-plan
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/efs-resources-protected-by-backup-plan.html
-
-# Rule Intent: Checks if Amazon Elastic File System (Amazon EFS) File Systems are protected by a backup plan.
-#              The rule is NON_COMPLIANT if the EFS File System is not covered by a backup plan.
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#    EFS_RESOURCES_PROTECTED_BY_BACKUP_PLAN
+#
+# Description:
+#   Checks if Amazon Elastic File System (Amazon EFS) File Systems are protected by a backup plan.
+#   The rule is NON_COMPLIANT if the EFS File System is not covered by a backup plan.
+#
+# Reports on:
+#    AWS::EFS::FileSystem
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
+# a) SKIP: when there are no EFS resource present
+# b) PASS: when all EFS resources have backup policy set to ENABLED
+# c) FAIL: when all EFS resources have backup policy Status to anything but ENABLED
+# d) SKIP: when guard metadata states EFS_RESOURCES_PROTECTED_BY_BACKUP_PLAN to be suppressed
 
 #
 # Select all EFS resources from incoming template (payload)
 #
-let efs_file_systems = Resources.*[ Type == 'AWS::EFS::FileSystem' ]
+let efs_file_systems_protected_by_backup_plan = Resources.*[ Type == 'AWS::EFS::FileSystem'
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "EFS_RESOURCES_PROTECTED_BY_BACKUP_PLAN"
+]
 
-rule EFS_RESOURCES_PROTECTED_BY_BACKUP_PLAN when %efs_file_systems !empty {
-  %efs_file_systems.Properties.BackupPolicy.Status == 'ENABLED'
+rule EFS_RESOURCES_PROTECTED_BY_BACKUP_PLAN when %efs_file_systems_protected_by_backup_plan !empty {
+  %efs_file_systems_protected_by_backup_plan.Properties.BackupPolicy.Status == 'ENABLED'
   <<
     Violation: EFS filesystem backup policy should be enabled.
     Fix: Set the EFS Filesystem property BackupPolicy.Status parameter to ENABLED.

@@ -51,3 +51,18 @@
   expectations:
     rules:
       EFS_RESOURCES_PROTECTED_BY_BACKUP_PLAN: FAIL
+
+- name: EFS Backup Policy missing property status, SKIP
+  input:
+    Resources:
+      ExampleEfs:
+        Type: AWS::EFS::FileSystem
+        Metadata:
+          guard:
+            SuppressedRules:
+            - EFS_RESOURCES_PROTECTED_BY_BACKUP_PLAN
+        Properties:
+          PerformanceMode: generalPurpose
+  expectations:
+    rules:
+      EFS_RESOURCES_PROTECTED_BY_BACKUP_PLAN: SKIP
