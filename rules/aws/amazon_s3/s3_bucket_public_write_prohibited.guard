@@ -1,13 +1,28 @@
-## Config Rule Name : s3-bucket-public-write-prohibited
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/s3-bucket-public-write-prohibited.html"
-
-# Rule Intent: Checks if your Amazon S3 buckets do not allow public write access. The rule checks the Block Public
-#              Access settings, the bucket policy, and the bucket access control list (ACL).
-
-# Expectations:
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#    S3_BUCKET_PUBLIC_WRITE_PROHIBITED
+#
+# Description:
+#   Checks if your Amazon S3 buckets do not allow public write access. The rule checks the Block Public
+#   Access settings, the bucket policy, and the bucket access control list (ACL).
+#
+# Reports on:
+#    AWS::S3::Bucket
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
 # a) SKIP: when there are no S3 resource present
 # b) PASS: when all S3 resources Public Access Block Configuration element is present and properties are set to true
 # c) FAIL: when all S3 resources do not have the Public Access Block Configuration element present or all properties set to true
+# d) SKIP: when metadata includes the suppression for rule S3_BUCKET_PUBLIC_WRITE_PROHIBITED
 
 #
 # Select all S3 resources from incoming template (payload)

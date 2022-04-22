@@ -1,12 +1,27 @@
-## Config Rule Name : s3-bucket-replication-enabled
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/s3-bucket-replication-enabled.html
-
-# Rule Intent: Checks whether the Amazon S3 buckets have cross-region replication enabled.
-
-# Expectations:
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#    S3_BUCKET_REPLICATION_ENABLED
+#
+# Description:
+#   Checks whether the Amazon S3 buckets have cross-region replication enabled.
+#
+# Reports on:
+#    AWS::S3::Bucket
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
 # a) SKIP: when there are no S3 resource present
 # b) PASS: when all S3 resources replication configuration set status is set to Enabled
 # c) FAIL: when all S3 resources have Versioning Configuration status property not set or set to Suspended
+# d) SKIP: when metadata includes the suppression for rule S3_BUCKET_REPLICATION_ENABLED
 
 #
 # Select all S3 resources from incoming template (payload)

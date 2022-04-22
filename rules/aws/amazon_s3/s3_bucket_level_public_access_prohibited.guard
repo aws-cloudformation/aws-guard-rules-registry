@@ -1,12 +1,27 @@
-## Config Rule Name : s3-bucket-level-public-access-prohibited
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/s3-bucket-level-public-access-prohibited.html
-
-# Rule Intent: Checks if Amazon Simple Storage Service (Amazon S3) buckets are publicly accessible.
-
-# Expectations:
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#    S3_BUCKET_LEVEL_PUBLIC_ACCESS_PROHIBITED
+#
+# Description:
+#   Checks if Amazon Simple Storage Service (Amazon S3) buckets are publicly accessible.
+#
+# Reports on:
+#    AWS::S3::Bucket
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
 # a) SKIP: when there are no S3 resource present
 # b) PASS: when all S3 resources Public Access Block Configuration element is present and properties are set to true
 # c) FAIL: when all S3 resources do not have the Public Access Block Configuration element present or all properties set to true
+# d) SKIP: when metada has rule suppression for S3_BUCKET_LEVEL_PUBLIC_ACCESS_PROHIBITED
 
 #
 # Select all S3 resources from incoming template (payload)

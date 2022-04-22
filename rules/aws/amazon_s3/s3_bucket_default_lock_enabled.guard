@@ -1,12 +1,27 @@
-## Config Rule Name : s3-bucket-default-lock-enabled
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/s3-bucket-default-lock-enabled.html
-
-# Rule Intent: Checks whether Amazon S3 bucket has lock enabled, by default
-
-# Expectations:
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#    S3_BUCKET_DEFAULT_LOCK_ENABLED
+#
+# Description:
+#   Checks whether Amazon S3 bucket has lock enabled, by default
+#
+# Reports on:
+#    AWS::S3::Bucket
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
 # a) SKIP: when there are no S3 resource present
 # b) PASS: when all S3 resources ObjectLockEnabled property is set to true
 # c) FAIL: when all S3 resources do not have the ObjectLockEnabled property is set to true or is missing
+# d) SKIP: when metada has rule suppression for S3_BUCKET_DEFAULT_LOCK_ENABLED
 
 #
 # Select all S3 resources from incoming template (payload)

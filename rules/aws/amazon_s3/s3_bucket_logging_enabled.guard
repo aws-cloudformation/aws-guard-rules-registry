@@ -9,7 +9,7 @@
 #   Checks whether logging is enabled for your S3 buckets.
 #
 # Reports on:
-#    AWS::EC2::SecurityGroupIngress
+#    AWS::S3::Bucket
 #
 # Evaluates:
 #    AWS CloudFormation
@@ -21,6 +21,7 @@
 # a) SKIP: when there are no S3 resource present
 # b) PASS: when all S3 resources Logging Configuration exists
 # c) FAIL: when all S3 resources have Logging Configuration is not set
+# d) SKIP: when metadata includes the suppression for rule S3_BUCKET_LOGGING_ENABLED
 
 #
 # Select all S3 resources from incoming template (payload)

@@ -10,7 +10,7 @@
 #   The rule is NON_COMPLIANT if the Amazon S3 bucket is not encrypted with AWS KMS key.
 #
 # Reports on:
-#    AWS::EC2::SecurityGroupIngress
+#    AWS::S3::Bucket
 #
 # Evaluates:
 #    AWS CloudFormation
@@ -22,6 +22,7 @@
 # a) SKIP: when there are no S3 resource present
 # b) PASS: when all S3 resources have ServerSideEncryptionConfiguration property set with values of "aws:kms" or "AES256"
 # c) FAIL: when all S3 resources have ServerSideEncryptionConfiguration property not set or values are not "aws:kms" or "AES256"
+# d) SKIP: when metadata includes the suppression for rule S3_DEFAULT_ENCRYPTION_KMS
 
 #
 # Assignments
