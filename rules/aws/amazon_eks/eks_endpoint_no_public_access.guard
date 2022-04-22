@@ -1,26 +1,46 @@
-## Config Rule Name : eks-endpoint-no-public-access
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/eks-endpoint-no-public-access.html
-
-# Rule Intent: Checks whether Amazon Elastic Kubernetes Service (Amazon EKS) endpoint is not publicly accessible. 
-
-# Expectations:
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#    EKS_ENDPOINT_NO_PUBLIC_ACCESS
+#
+# Description:
+#   Checks whether Amazon Elastic Kubernetes Service (Amazon EKS) endpoint is not publicly accessible.
+#
+# Reports on:
+#    AWS::S3::Bucket
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
 # a) SKIP: when there are no EKS clusters present
 # b) PASS: when all EKS cluster endpoints are not publicly accessible
 # c) FAIL: when any EKS cluster endpoints are publicly accessible
+# d) SKIP: when metada has rule suppression for EKS_ENDPOINT_NO_PUBLIC_ACCESS
+
+
 
 #
 # Select all EKS cluster resources from incoming template (payload)
 #
 
-let amazon_eks_clusters = Resources.*[ Type == 'AWS::EKS::Cluster' ]
+let amazon_eks_clusters = Resources.*[ Type == 'AWS::EKS::Cluster'
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "EKS_ENDPOINT_NO_PUBLIC_ACCESS"
+]
 
 rule EKS_ENDPOINT_NO_PUBLIC_ACCESS when %amazon_eks_clusters !empty {
     # ensure the optional parameter is specified in the template
-    %amazon_eks_clusters.Properties.ResourcesVpcConfig.EndpointPublicAccess EXISTS 
+    %amazon_eks_clusters.Properties.ResourcesVpcConfig.EndpointPublicAccess EXISTS
     # ensure the parameter is set to false
     %amazon_eks_clusters.Properties.ResourcesVpcConfig.EndpointPublicAccess == false
     <<
-    Violation: EKS endpoint public access is not allowed. 
-    Fix: Set the boolean parameter ResourcesVpcConfig.EndpointPublicAccess to false 
+    Violation: EKS endpoint public access is not allowed.
+    Fix: Set the boolean parameter ResourcesVpcConfig.EndpointPublicAccess to false
     >>
 }
