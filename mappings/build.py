@@ -15,10 +15,17 @@ def create_output_directory():
 
 def check_build_skip(guard_file):
   skip = False
-  with open(guard_file) as f:
-    firstline = f.readline().rstrip()
-    if "## SKIP" in firstline:
-      skip = True
+  # if file does not exist in mapping we will skip it
+  file_exists = os.path.exists(guard_file)
+  if file_exists:
+    with open(guard_file) as f:
+      firstline = f.readline().rstrip()
+      if "## SKIP" in firstline:
+        skip = True
+    return skip
+  else:
+    skip = True
+    print("file not found: " + guard_file )
   return skip
 
 def build_custom_message(rule_set, control_list ):
