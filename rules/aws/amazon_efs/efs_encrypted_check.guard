@@ -1,23 +1,41 @@
-## Config Rule Name : efs-encrypted-check
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/efs-encrypted-check.html
-
-# Rule Intent: Checks if Amazon Elastic File System (Amazon EFS) is configured to encrypt the file data
-#              using AWS Key Management Service (AWS KMS). The rule is NON_COMPLIANT if the encrypted
-#              key is set to false on DescribeFileSystems or if the KmsKeyId key on DescribeFileSystems
-#              does not match the KmsKeyId parameter.
-
-# Expectations:
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#    EFS_ENCRYPTED_CHECK
+#
+# Description:
+#   Checks if Amazon Elastic File System (Amazon EFS) is configured to encrypt the file data
+#   using AWS Key Management Service (AWS KMS). The rule is NON_COMPLIANT if the encrypted
+#   key is set to false on DescribeFileSystems or if the KmsKeyId key on DescribeFileSystems
+#   does not match the KmsKeyId parameter.
+#
+# Reports on:
+#    AWS::EFS::FileSystem
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
 # a) SKIP: when there are no EFS resource present
 # b) PASS: when all EFS resources have encrypted key property set to true
 # c) FAIL: when all EFS resources have encrypted key property not set or set to false
+# d) SKIP: when guard metadata states EFS_ENCRYPTED_CHECK to be suppressed
 
 #
 # Select all EFS resources from incoming template (payload)
 #
-let efs_file_systems = Resources.*[ Type == 'AWS::EFS::FileSystem' ]
+let efs_file_systems_encrypted_check = Resources.*[ Type == 'AWS::EFS::FileSystem'
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "EFS_ENCRYPTED_CHECK"
+]
 
-rule EFS_ENCRYPTED_CHECK when %efs_file_systems !empty {
-  %efs_file_systems.Properties.Encrypted == true
+rule EFS_ENCRYPTED_CHECK when %efs_file_systems_encrypted_check !empty {
+  %efs_file_systems_encrypted_check.Properties.Encrypted == true
   <<
     Violation: EFS filesystem must be encrypted.
     Fix: Set the EFS Filesystem property Encrypted parameter to true.
