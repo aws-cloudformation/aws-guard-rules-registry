@@ -29,16 +29,16 @@
 # Select all EKS cluster resources from incoming template (payload)
 #
 
-let amazon_eks_clusters = Resources.*[ Type == 'AWS::EKS::Cluster'
+let amazon_eks_clusters_endpoint_no_public_access = Resources.*[ Type == 'AWS::EKS::Cluster'
   Metadata.guard.SuppressedRules not exists or
   Metadata.guard.SuppressedRules.* != "EKS_ENDPOINT_NO_PUBLIC_ACCESS"
 ]
 
-rule EKS_ENDPOINT_NO_PUBLIC_ACCESS when %amazon_eks_clusters !empty {
+rule EKS_ENDPOINT_NO_PUBLIC_ACCESS when %amazon_eks_clusters_endpoint_no_public_access !empty {
     # ensure the optional parameter is specified in the template
-    %amazon_eks_clusters.Properties.ResourcesVpcConfig.EndpointPublicAccess EXISTS
+    %amazon_eks_clusters_endpoint_no_public_access.Properties.ResourcesVpcConfig.EndpointPublicAccess EXISTS
     # ensure the parameter is set to false
-    %amazon_eks_clusters.Properties.ResourcesVpcConfig.EndpointPublicAccess == false
+    %amazon_eks_clusters_endpoint_no_public_access.Properties.ResourcesVpcConfig.EndpointPublicAccess == false
     <<
     Violation: EKS endpoint public access is not allowed.
     Fix: Set the boolean parameter ResourcesVpcConfig.EndpointPublicAccess to false
