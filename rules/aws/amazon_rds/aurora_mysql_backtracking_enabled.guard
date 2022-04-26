@@ -1,25 +1,43 @@
-## Config Rule Name : aurora-mysql-backtracking-enabled
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/aurora-mysql-backtracking-enabled.html
-
-# Rule Intent: Checks if an Amazon Aurora MySQL cluster has backtracking enabled.
-
-# Expectations:
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#    AURORA_MYSQL_BACKTRACKING_ENABLED
+#
+# Description:
+#    Checks if an Amazon Aurora MySQL cluster has backtracking enabled.
+#
+# Reports on:
+#    AWS::RDS::DBCluster
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
 # a) SKIP: when there are no RDS instances present
 # b) PASS: when all aurora-mysql RDS instances have BacktrackWindow set to greater than 0
 # c) FAIL: when all aurora-mysql RDS instances have BacktrackWindow set to 0
 # d) FAIL: when there are aurora-mysql RDS instances with BacktrackWindow property is not present
+# e) SKIP: hen metadata includes the suppression for rule AURORA_MYSQL_BACKTRACKING_ENABLED
 
 #
 # Select all RDS Clusters resources from incoming template (payload)
 #
 
-let aws_rds_clusters = Resources.*[ Type == 'AWS::RDS::DBCluster'  ]
+let aws_rds_clusters_aurora_mysql_backtracking_enabled = Resources.*[ Type == 'AWS::RDS::DBCluster'
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "AURORA_MYSQL_BACKTRACKING_ENABLED"
+]
 
-rule AURORA_MYSQL_BACKTRACKING_ENABLED when %aws_rds_clusters !empty {
+rule AURORA_MYSQL_BACKTRACKING_ENABLED when %aws_rds_clusters_aurora_mysql_backtracking_enabled !empty {
     # only eval aurora-mysql engine types
-    when %aws_rds_clusters.Properties.Engine == 'aurora-mysql' {
-      %aws_rds_clusters.Properties.BacktrackWindow EXISTS
-      %aws_rds_clusters.Properties.BacktrackWindow >= 1
+    when %aws_rds_clusters_aurora_mysql_backtracking_enabled.Properties.Engine == 'aurora-mysql' {
+      %aws_rds_clusters_aurora_mysql_backtracking_enabled.Properties.BacktrackWindow EXISTS
+      %aws_rds_clusters_aurora_mysql_backtracking_enabled.Properties.BacktrackWindow >= 1
       <<
         Violation: All MySQL Aurora RDS DB Clusters have backtrack enabled.
         Fix: Set BacktrackWindow parameter value to greater than 0.

@@ -64,3 +64,21 @@
   expectations:
     rules:
       RDS_AUTOMATIC_MINOR_VERSION_UPGRADE_ENABLED: FAIL
+
+- name: RDS AutoMinorVersionUpgrade property missing but rule suppressed, SKIP
+  input:
+    Resources:
+      ExampleRDS:
+        Type: AWS::RDS::DBInstance
+        Metadata:
+          guard:
+            SuppressedRules:
+            - RDS_AUTOMATIC_MINOR_VERSION_UPGRADE_ENABLED
+        Properties:
+          DBInstanceClass: !Ref DBInstanceType
+          SourceDBInstanceIdentifier: !Ref SourceDBInstanceIdentifier
+          SourceRegion: !Ref SourceRegion
+          KmsKeyId: !Ref MyKey
+  expectations:
+    rules:
+      RDS_AUTOMATIC_MINOR_VERSION_UPGRADE_ENABLED: SKIP

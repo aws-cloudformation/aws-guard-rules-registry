@@ -60,3 +60,21 @@
   expectations:
     rules:
       RDS_INSTANCE_DELETION_PROTECTION_ENABLED: FAIL
+
+- name: RDS Deletion Protection property missing but rule suppressed, SKIP
+  input:
+    Resources:
+      ExampleRDS:
+        Type: AWS::RDS::DBInstance
+        Metadata:
+          guard:
+            SuppressedRules:
+            - RDS_INSTANCE_DELETION_PROTECTION_ENABLED
+        Properties:
+          DBInstanceClass: !Ref DBInstanceType
+          SourceDBInstanceIdentifier: !Ref SourceDBInstanceIdentifier
+          SourceRegion: !Ref SourceRegion
+          KmsKeyId: !Ref MyKey
+  expectations:
+    rules:
+      RDS_INSTANCE_DELETION_PROTECTION_ENABLED: SKIP

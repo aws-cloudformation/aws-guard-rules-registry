@@ -64,3 +64,21 @@
   expectations:
     rules:
       RDS_STORAGE_ENCRYPTED: FAIL
+
+- name: RDS StorageEncrypted property missing but rule suppressed, SKIP
+  input:
+    Resources:
+      ExampleRDS:
+        Type: AWS::RDS::DBInstance
+        Metadata:
+          guard:
+            SuppressedRules:
+            - RDS_STORAGE_ENCRYPTED
+        Properties:
+          DBInstanceClass: !Ref DBInstanceType
+          SourceDBInstanceIdentifier: !Ref SourceDBInstanceIdentifier
+          SourceRegion: !Ref SourceRegion
+          KmsKeyId: !Ref MyKey
+  expectations:
+    rules:
+      RDS_STORAGE_ENCRYPTED: SKIP

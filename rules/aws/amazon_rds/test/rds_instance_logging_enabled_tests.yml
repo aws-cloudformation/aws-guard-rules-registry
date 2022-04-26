@@ -51,3 +51,23 @@
   expectations:
     rules:
       RDS_INSTANCE_LOGGING_ENABLED: FAIL
+
+- name: RDS EnableCloudwatchLogsExports missing but rule suppressed, SKIP
+  input:
+    Resources:
+      ExampleRDS:
+        Type: "AWS::RDS::DBInstance"
+        Metadata:
+          guard:
+            SuppressedRules:
+            - RDS_INSTANCE_LOGGING_ENABLED
+        Properties:
+          DBInstanceClass: !Ref DBInstanceType
+          SourceDBInstanceIdentifier: !Ref SourceDBInstanceIdentifier
+          SourceRegion: !Ref SourceRegion
+          KmsKeyId: !Ref MyKey
+          MonitoringInterval: 0
+          DeletionProtection: false
+  expectations:
+    rules:
+      RDS_INSTANCE_LOGGING_ENABLED: SKIP
