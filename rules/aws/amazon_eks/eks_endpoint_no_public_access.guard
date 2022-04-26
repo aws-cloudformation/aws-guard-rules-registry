@@ -23,8 +23,6 @@
 # c) FAIL: when any EKS cluster endpoints are publicly accessible
 # d) SKIP: when metada has rule suppression for EKS_ENDPOINT_NO_PUBLIC_ACCESS
 
-
-
 #
 # Select all EKS cluster resources from incoming template (payload)
 #
