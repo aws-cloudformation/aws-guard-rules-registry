@@ -18,13 +18,13 @@
 #    NA
 #
 # Scenarios:
-# a) SKIP: when there are no S3 resource present
-# b) PASS: when all S3 resources ObjectLockEnabled property is set to true
-# c) FAIL: when all S3 resources do not have the ObjectLockEnabled property is set to true or is missing
-# d) SKIP: when metada has rule suppression for S3_BUCKET_DEFAULT_LOCK_ENABLED
+# a) SKIP: when there are no dynamodb table resource present
+# b) PASS: when all dynamodb table resources ObjectLockEnabled property is set to true
+# c) FAIL: when all dynamodb table resources do not have the ObjectLockEnabled property is set to true or is missing
+# d) SKIP: when metada has rule suppression for dynamodb_pitr_is_enabled
 
 #
-# Select all S3 resources from incoming template (payload)
+# Select all dynamodb table resources from incoming template (payload)
 #
 let aws_dynamodb_table_resources = Resources.*[ Type == 'AWS::DynamoDB::Table' ]
 
