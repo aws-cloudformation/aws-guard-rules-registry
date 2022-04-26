@@ -9,7 +9,7 @@
 #   Checks whether Amazon Elastic Kubernetes Service (Amazon EKS) endpoint is not publicly accessible.
 #
 # Reports on:
-#    AWS::S3::Bucket
+#    AWS::EKS::Cluster
 #
 # Evaluates:
 #    AWS CloudFormation
