@@ -23,6 +23,7 @@
         Properties:
             BacktrackWindow: 1
             DatabaseName: MyCluster
+            Engine: 'aurora-mysql'
   expectations:
     rules:
       AURORA_MYSQL_BACKTRACKING_ENABLED: PASS
@@ -35,6 +36,7 @@
         Properties:
             BacktrackWindow: 259200
             DatabaseName: MyCluster
+            Engine: 'aurora-mysql'
   expectations:
     rules:
       AURORA_MYSQL_BACKTRACKING_ENABLED: PASS
@@ -47,6 +49,7 @@
         Properties:
           BacktrackWindow: 0
           DatabaseName: MyCluster
+          Engine: 'aurora-mysql'
   expectations:
     rules:
       AURORA_MYSQL_BACKTRACKING_ENABLED: FAIL
@@ -58,6 +61,7 @@
         Type: AWS::RDS::DBCluster
         Properties:
           DatabaseName: MyCluster
+          Engine: 'aurora-mysql'
   expectations:
     rules:
       AURORA_MYSQL_BACKTRACKING_ENABLED: FAIL
@@ -73,6 +77,7 @@
             - AURORA_MYSQL_BACKTRACKING_ENABLED
         Properties:
           DatabaseName: MyCluster
+          Engine: 'aurora-mysql'
   expectations:
     rules:
       AURORA_MYSQL_BACKTRACKING_ENABLED: SKIP

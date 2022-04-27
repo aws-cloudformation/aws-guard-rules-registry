@@ -66,7 +66,7 @@
         "Resources": {
           "MyDB": {
             "Type": "AWS::RDS::DBInstance",
-            "MetaData": {
+            "Metadata": {
               "guard": {
                 "SuppressedRules": ["RDS_INSTANCE_PUBLIC_ACCESS_CHECK"]
               }
