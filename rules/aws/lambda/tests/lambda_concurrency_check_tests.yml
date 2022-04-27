@@ -59,3 +59,29 @@
   expectations:
     rules:
       LAMBDA_CONCURRENCY_CHECK: FAIL
+
+- name: AWS Lambda Function reserved concurrent execution limit NOT set but rule suppressed, SKIP
+  input:
+    Resources:
+      ExampleLambda-1:
+        Type: "AWS::Lambda::Function"
+        Properties: 
+          Role: arn:aws:iam::123456789012:role/lambda-role
+          Code:
+            S3Bucket: my-bucket
+            S3Key: function.zip
+          ReservedConcurrentExecutions: 100
+      ExampleLambda-2:
+        Type: "AWS::Lambda::Function"
+        Metadata:
+          guard:
+            SuppressedRules:
+            - LAMBDA_CONCURRENCY_CHECK
+        Properties: 
+          Role: arn:aws:iam::123456789012:role/lambda-role
+          Code:
+            S3Bucket: my-bucket
+            S3Key: function.zip
+  expectations:
+    rules:
+      LAMBDA_CONCURRENCY_CHECK: SKIP
