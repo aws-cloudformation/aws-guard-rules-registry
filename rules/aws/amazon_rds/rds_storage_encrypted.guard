@@ -28,15 +28,15 @@
 #
 # Select all RDS instance resources from incoming template (payload)
 #
-let aws_rds_instances = Resources.*[ Type == 'AWS::RDS::DBInstance'
+let aws_rds_instances_storage_encrypted = Resources.*[ Type == 'AWS::RDS::DBInstance'
   Metadata.guard.SuppressedRules not exists or
   Metadata.guard.SuppressedRules.* != "RDS_STORAGE_ENCRYPTED"
 ]
 
 
 rule RDS_STORAGE_ENCRYPTED when %aws_rds_instances_storage_encrypted !empty {
-  %aws_rds_instances_snapshot_encrypted.Properties.StorageEncrypted EXISTS
-  %aws_rds_instances_snapshot_encrypted.Properties.StorageEncrypted == true
+  %aws_rds_instances_storage_encrypted.Properties.StorageEncrypted EXISTS
+  %aws_rds_instances_storage_encrypted.Properties.StorageEncrypted == true
   <<
     Violation: All RDS instances must have encrypted storage.
     Fix: Set the StorageEncrypted parameter to true.

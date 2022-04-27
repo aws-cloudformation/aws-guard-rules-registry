@@ -28,7 +28,7 @@
 #
 # Select all RDS instance resources from incoming template (payload)
 #
-let aws_rds_instances = Resources.*[ Type == 'AWS::RDS::DBInstance'
+let aws_rds_instances_multi_az_support = Resources.*[ Type == 'AWS::RDS::DBInstance'
   Metadata.guard.SuppressedRules not exists or
   Metadata.guard.SuppressedRules.* != "RDS_MULTI_AZ_SUPPORT"
 ]
