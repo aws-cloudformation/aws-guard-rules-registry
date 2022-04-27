@@ -62,3 +62,21 @@
   expectations:
     rules:
       RDS_MULTI_AZ_SUPPORT: FAIL
+
+- name: RDS Multi AZ property missing but rule is suppressed, SKIP
+  input:
+    Resources:
+      ExampleRDS:
+        Type: AWS::RDS::DBInstance
+        Metadata:
+          guard:
+            SuppressedRules:
+            - RDS_MULTI_AZ_SUPPORT
+        Properties:
+          DBInstanceClass: !Ref DBInstanceType
+          SourceDBInstanceIdentifier: !Ref SourceDBInstanceIdentifier
+          SourceRegion: !Ref SourceRegion
+          KmsKeyId: !Ref MyKey
+  expectations:
+    rules:
+      RDS_MULTI_AZ_SUPPORT: SKIP

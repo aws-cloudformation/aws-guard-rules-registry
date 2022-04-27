@@ -61,3 +61,18 @@
   expectations:
     rules:
       AURORA_MYSQL_BACKTRACKING_ENABLED: FAIL
+
+- name: RDS Cluster BacktrackWindow property missing  but rule suppressed, SKIP
+  input:
+    Resources:
+      ExampleRDS:
+        Type: AWS::RDS::DBCluster
+        Metadata:
+          guard:
+            SuppressedRules:
+            - AURORA_MYSQL_BACKTRACKING_ENABLED
+        Properties:
+          DatabaseName: MyCluster
+  expectations:
+    rules:
+      AURORA_MYSQL_BACKTRACKING_ENABLED: SKIP

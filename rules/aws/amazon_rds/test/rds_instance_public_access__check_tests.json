@@ -59,5 +59,26 @@
           "RDS_INSTANCE_PUBLIC_ACCESS_CHECK": "FAIL"
         }
       }
+    },
+    {
+      "name": "Rule fails when RDS instances has PubliclyAccessible property missing but rule suppressed. SKIP",
+      "input": {
+        "Resources": {
+          "MyDB": {
+            "Type": "AWS::RDS::DBInstance",
+            "MetaData": {
+              "guard": {
+                "SuppressedRules": ["RDS_INSTANCE_PUBLIC_ACCESS_CHECK"]
+              }
+            },
+            "Properties": {}
+          }
+        }
+      },
+      "expectations": {
+        "rules": {
+          "RDS_INSTANCE_PUBLIC_ACCESS_CHECK": "SKIP"
+        }
+      }
     }
   ]

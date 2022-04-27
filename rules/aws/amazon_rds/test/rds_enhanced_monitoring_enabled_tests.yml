@@ -133,3 +133,21 @@
   expectations:
     rules:
       RDS_ENHANCED_MONITORING_ENABLED: FAIL
+
+- name: RDS Enhanced Monitoring property missing but rule suppressed, SKIP
+  input:
+    Resources:
+      ExampleRDS:
+        Type: AWS::RDS::DBInstance
+        Metadata:
+          guard:
+            SuppressedRules:
+            - RDS_ENHANCED_MONITORING_ENABLED
+        Properties:
+          DBInstanceClass: !Ref DBInstanceType
+          SourceDBInstanceIdentifier: !Ref SourceDBInstanceIdentifier
+          SourceRegion: !Ref SourceRegion
+          KmsKeyId: !Ref MyKey
+  expectations:
+    rules:
+      RDS_ENHANCED_MONITORING_ENABLED: SKIP

@@ -1,24 +1,41 @@
-## Config Rule Name : rds-multi-az-support
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/rds-multi-az-support.html
-
-# Rule Intent: In a Multi-AZ deployment, Amazon RDS automatically provisions and maintains a synchronous standby replica in a different Availability Zone.
-
-# Expectations:
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#    RDS_MULTI_AZ_SUPPORT
+#
+# Description:
+#    In a Multi-AZ deployment, Amazon RDS automatically provisions and maintains a synchronous
+#    standby replica in a different Availability Zone.
+#
+# Reports on:
+#    AWS::RDS::DBInstance
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
 # a) SKIP: when there are no RDS instances present
 # b) PASS: when all RDS instances have MultiAZ set to true
 # c) FAIL: when all RDS instances have MultiAZ set to false
 # d) FAIL: when there are RDS instances with MultiAZ property is not present
+# e) SKIP: when metadata includes the suppression for rule RDS_MULTI_AZ_SUPPORT
 
 #
 # Select all RDS instance resources from incoming template (payload)
 #
+let aws_rds_instances = Resources.*[ Type == 'AWS::RDS::DBInstance'
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "RDS_MULTI_AZ_SUPPORT"
+]
 
-let aws_rds_instances = Resources.*[ Type == 'AWS::RDS::DBInstance'  ]
-
-
-rule RDS_MULTI_AZ_SUPPORT when %aws_rds_instances !empty {
-    %aws_rds_instances.Properties.MultiAZ EXISTS
-    %aws_rds_instances.Properties.MultiAZ == true
+rule RDS_MULTI_AZ_SUPPORT when %aws_rds_instances_multi_az_support !empty {
+    %aws_rds_instances_multi_az_support.Properties.MultiAZ EXISTS
+    %aws_rds_instances_multi_az_support.Properties.MultiAZ == true
   <<
     Violation: All RDS instances must have MultiAZ support enabled.
     Fix: Set the MultiAZ parameter to true.
