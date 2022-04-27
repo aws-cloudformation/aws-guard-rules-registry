@@ -37,7 +37,7 @@ let aws_iam_entities_no_inline_policy = Resources.*[
 ]
 
 rule IAM_NO_INLINE_POLICY_CHECK when %aws_iam_entities_no_inline_policy !empty {
-  %iaws_iam_entities_no_inline_policy.Properties.Policies empty
+  %aws_iam_entities_no_inline_policy.Properties.Policies empty
   <<
     Violation: Inline policies are not allowed on IAM Users, Roles, or Groups.
     Fix: Remove the Policies list property from any IAM Users, Roles, or Groups.
