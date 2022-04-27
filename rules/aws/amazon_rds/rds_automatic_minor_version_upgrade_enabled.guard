@@ -22,7 +22,6 @@
 # b) PASS: when all RDS instances have AutoMinorVersionUpgrade set to true
 # c) FAIL: when all RDS instances have AutoMinorVersionUpgrade set to false
 # d) FAIL: when there are RDS instances with AutoMinorVersionUpgrade property is not present
-# d) FAIL: when there are RDS instances with BackupRetentionPeriod property is not present
 # e) SKIP: when metadata includes the suppression for rule RDS_AUTOMATIC_MINOR_VERSION_UPGRADE_ENABLED
 
 #
