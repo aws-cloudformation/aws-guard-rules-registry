@@ -28,15 +28,15 @@
 # Select all Redshift cluster resources from incoming template
 #
 
-let aws_redshift_clusters_resources = Resources.*[ Type == 'AWS::Redshift::Cluster'
+let aws_redshift_clusters_resources_public_access_check = Resources.*[ Type == 'AWS::Redshift::Cluster'
   Metadata.guard.SuppressedRules not exists or
   Metadata.guard.SuppressedRules.* != "REDSHIFT_CLUSTER_PUBLIC_ACCESS_CHECK"
 ]
 
 
-rule REDSHIFT_CLUSTER_PUBLIC_ACCESS_CHECK when %aws_redshift_clusters_resources !empty {
-    %aws_redshift_clusters_resources.Properties.PubliclyAccessible == false
-    OR %aws_redshift_clusters_resources.Properties.PubliclyAccessible !exists
+rule REDSHIFT_CLUSTER_PUBLIC_ACCESS_CHECK when %aws_redshift_clusters_resources_public_access_check !empty {
+    %aws_redshift_clusters_resources_public_access_check.Properties.PubliclyAccessible == false
+    OR %aws_redshift_clusters_resources_public_access_check.Properties.PubliclyAccessible !exists
 
   <<
     Violation: Redshift cluster should not be available to public.
