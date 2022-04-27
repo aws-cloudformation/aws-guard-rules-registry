@@ -1,6 +1,6 @@
 [
     {
-      "name": "Rule fails when cluster is publicly accesible",
+      "name": "Rule fails when cluster is publicly accessible",
       "input": {
         "Resources": {
           "ClusterEB0386A7": {
@@ -57,12 +57,12 @@
       },
       "expectations": {
         "rules": {
-          "redshift_cluster_public_access_check": "FAIL"
+          "REDSHIFT_CLUSTER_PUBLIC_ACCESS_CHECK": "FAIL"
         }
       }
     },
     {
-      "name": "Rule passes when cluster is not publicly accesible",
+      "name": "Rule passes when cluster is not publicly accessible",
       "input": {
         "Resources": {
           "ClusterEB0386A7": {
@@ -119,7 +119,7 @@
       },
       "expectations": {
         "rules": {
-          "redshift_cluster_public_access_check": "PASS"
+          "REDSHIFT_CLUSTER_PUBLIC_ACCESS_CHECK": "PASS"
         }
       }
     },
@@ -130,7 +130,7 @@
       },
       "expectations": {
         "rules": {
-          "redshift_cluster_public_access_check": "SKIP"
+          "REDSHIFT_CLUSTER_PUBLIC_ACCESS_CHECK": "SKIP"
         }
       }
     },
@@ -191,7 +191,73 @@
       },
       "expectations": {
         "rules": {
-          "redshift_cluster_public_access_check": "PASS"
+          "REDSHIFT_CLUSTER_PUBLIC_ACCESS_CHECK": "PASS"
+        }
+      }
+    },
+    {
+      "name": "Rule fails when cluster is publicly accessible but rule suppressed",
+      "input": {
+        "Resources": {
+          "ClusterEB0386A7": {
+            "Type": "AWS::Redshift::Cluster",
+            "MetaData": {
+              "guard": {
+                "SuppressedRules": ["REDSHIFT_CLUSTER_PUBLIC_ACCESS_CHECK"]
+              },
+            "Properties": {
+              "ClusterType": "multi-node",
+              "DBName": "my_db",
+              "MasterUsername": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "{{resolve:secretsmanager:",
+                    {
+                      "Ref": "ClusterSecret6368BD0F"
+                    },
+                    ":SecretString:username::}}"
+                  ]
+                ]
+              },
+              "MasterUserPassword": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "{{resolve:secretsmanager:",
+                    {
+                      "Ref": "ClusterSecret6368BD0F"
+                    },
+                    ":SecretString:password::}}"
+                  ]
+                ]
+              },
+              "NodeType": "dc2.large",
+              "AllowVersionUpgrade": true,
+              "AutomatedSnapshotRetentionPeriod": 1,
+              "ClusterSubnetGroupName": {
+                "Ref": "ClusterSubnetsDCFA5CB7"
+              },
+              "Encrypted": true,
+              "KmsKeyId": {
+                "Ref": "customkmskey377C6F9A"
+              },
+              "NumberOfNodes": 2,
+              "PubliclyAccessible": true,
+              "VpcSecurityGroupIds": [
+                {
+                  "Fn::GetAtt": ["ClusterSecurityGroup0921994B", "GroupId"]
+                }
+              ]
+            },
+            "UpdateReplacePolicy": "Delete",
+            "DeletionPolicy": "Delete"
+          }
+        }
+      },
+      "expectations": {
+        "rules": {
+          "REDSHIFT_CLUSTER_PUBLIC_ACCESS_CHECK": "FAIL"
         }
       }
     }

@@ -1,24 +1,40 @@
-## Config Rule Name : redshift-cluster-public-access-check
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/REDSHIFT_CLUSTER_PUBLIC_ACCESS_CHECK.html"
-
-# Rule Intent: Redshift cluster should not be publicly accessible on the internet.
-
-# Expectations:
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#    REDSHIFT_CLUSTER_PUBLIC_ACCESS_CHECK
+#
+# Description:
+#   Redshift cluster should not be publicly accessible on the internet.
+#
+# Reports on:
+#    AWS::EKS::Cluster
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
 # a) SKIP: when there is no Redshift cluster present
 # b) FAIL: When Redshift cluster is present and PubliclyAccessible property is set to true
 # c) PASS: When Redshift cluster is present and PubliclyAccessible property is set to false
 # c) PASS: When Redshift cluster is present and PubliclyAccessible property is not set
-
+# d) SKIP: when metada has rule suppression for REDSHIFT_CLUSTER_PUBLIC_ACCESS_CHECK
 
 #
 # Select all Redshift cluster resources from incoming template
 #
 
-let aws_redshift_clusters_resources = Resources.*[ Type == 'AWS::Redshift::Cluster']
+let aws_redshift_clusters_resources = Resources.*[ Type == 'AWS::Redshift::Cluster'
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "REDSHIFT_CLUSTER_PUBLIC_ACCESS_CHECK"
+]
 
 
-rule redshift_cluster_public_access_check when %aws_redshift_clusters_resources !empty {
-
+rule REDSHIFT_CLUSTER_PUBLIC_ACCESS_CHECK when %aws_redshift_clusters_resources !empty {
     %aws_redshift_clusters_resources.Properties.PubliclyAccessible == false
     OR %aws_redshift_clusters_resources.Properties.PubliclyAccessible !exists
 
