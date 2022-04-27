@@ -68,15 +68,6 @@
     Resources:
       ExampleLambda-1:
         Type: "AWS::Lambda::Function"
-        Properties: 
-          Role: arn:aws:iam::123456789012:role/lambda-role
-          Code:
-            S3Bucket: my-bucket
-            S3Key: function.zip
-          DeadLetterConfig:
-            TargetArn: arn:aws:sqs:us-east-2:123456789012:dlq
-      ExampleLambda-2:
-        Type: "AWS::Lambda::Function"
         Metadata:
           guard:
             SuppressedRules:

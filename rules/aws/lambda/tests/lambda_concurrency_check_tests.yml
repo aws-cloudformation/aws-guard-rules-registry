@@ -65,14 +65,6 @@
     Resources:
       ExampleLambda-1:
         Type: "AWS::Lambda::Function"
-        Properties: 
-          Role: arn:aws:iam::123456789012:role/lambda-role
-          Code:
-            S3Bucket: my-bucket
-            S3Key: function.zip
-          ReservedConcurrentExecutions: 100
-      ExampleLambda-2:
-        Type: "AWS::Lambda::Function"
         Metadata:
           guard:
             SuppressedRules:
