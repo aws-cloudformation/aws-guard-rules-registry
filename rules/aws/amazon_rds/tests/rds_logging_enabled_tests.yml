@@ -1,0 +1,74 @@
+###
+# RDS_INSTANCE_LOGGING_ENABLED tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      RDS_INSTANCE_LOGGING_ENABLED: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      RDS_INSTANCE_LOGGING_ENABLED: SKIP
+
+- name: RDS Enable CloudWatch Logs Exports set with values, PASS
+  input:
+    Resources:
+      ExampleRDS:
+        Type: "AWS::RDS::DBInstance"
+        Properties:
+          DBInstanceClass: !Ref DBInstanceType
+          SourceDBInstanceIdentifier: !Ref SourceDBInstanceIdentifier
+          SourceRegion: !Ref SourceRegion
+          KmsKeyId: !Ref MyKey
+          MonitoringInterval: 1
+          DeletionProtection: true
+          MultiAZ: true
+          EnableCloudwatchLogsExports:
+            - audit
+            - error
+            - general
+            - slowquery
+  expectations:
+    rules:
+      RDS_INSTANCE_LOGGING_ENABLED: PASS
+
+- name: RDS Enable CloudWatch Logs Exports not set, FAIL
+  input:
+    Resources:
+      ExampleRDS:
+        Type: "AWS::RDS::DBInstance"
+        Properties:
+          DBInstanceClass: !Ref DBInstanceType
+          SourceDBInstanceIdentifier: !Ref SourceDBInstanceIdentifier
+          SourceRegion: !Ref SourceRegion
+          KmsKeyId: !Ref MyKey
+          MonitoringInterval: 0
+          DeletionProtection: false
+          MultiAZ: false
+  expectations:
+    rules:
+      RDS_INSTANCE_LOGGING_ENABLED: FAIL
+
+
+- name: RDS Multi AZ property missing but rule is suppressed, SKIP
+  input:
+    Resources:
+      ExampleRDS:
+        Type: AWS::RDS::DBInstance
+        Metadata:
+          guard:
+            SuppressedRules:
+            - RDS_INSTANCE_LOGGING_ENABLED
+        Properties:
+          DBInstanceClass: !Ref DBInstanceType
+          SourceDBInstanceIdentifier: !Ref SourceDBInstanceIdentifier
+          SourceRegion: !Ref SourceRegion
+          KmsKeyId: !Ref MyKey
+  expectations:
+    rules:
+      RDS_INSTANCE_LOGGING_ENABLED: SKIP
