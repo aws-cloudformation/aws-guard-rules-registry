@@ -1,27 +1,45 @@
-## Config Rule Name : iam-no-inline-policy-check
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/iam-no-inline-policy-check.html
-
-# Rule Intent: Checks that inline policy feature is not in use. 
-
-# Expectations:
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#   IAM_NO_INLINE_POLICY_CHECK 
+#
+# Description:
+#   Checks that inline policy feature is not in use.
+#
+# Reports on:
+#   AWS::IAM::User
+#   AWS::IAM::Role
+#   AWS::IAM::Group
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
 # a) SKIP: when there are no IAM Users, Roles, or Groups present
 # b) PASS: when all IAM Users, Roles, or Groups present have no inline policies listed
 # c) FAIL: when any IAM Users, Roles, or Groups present have inline policies listed
+# d) SKIP: when metada has rule suppression for IAM_NO_INLINE_POLICY_CHECK
 
 #
 # Select all IAM User, Role, and Group resources from incoming template (payload)
 #
-let iam_entities = Resources.*[
-    Type in [ /AWS::IAM::User/,
-              /AWS::IAM::Role/,
-              /AWS::IAM::Group/ ]
+let aws_iam_entities_no_inline_policy = Resources.*[
+  Type in [ /AWS::IAM::User/,
+            /AWS::IAM::Role/,
+            /AWS::IAM::Group/ ]
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "IAM_NO_INLINE_POLICY_CHECK"
 ]
 
-rule IAM_NO_INLINE_POLICY_CHECK when %iam_entities !empty {
-    %iam_entities.Properties.Policies empty
-
-     <<
-     Violation: Inline policies are not allowed on IAM Users, Roles, or Groups.
-     Fix: Remove the Policies list property from any IAM Users, Roles, or Groups.
-     >>
+rule IAM_NO_INLINE_POLICY_CHECK when %aws_iam_entities_no_inline_policy !empty {
+  %iaws_iam_entities_no_inline_policy.Properties.Policies empty
+  <<
+    Violation: Inline policies are not allowed on IAM Users, Roles, or Groups.
+    Fix: Remove the Policies list property from any IAM Users, Roles, or Groups.
+  >>
 }

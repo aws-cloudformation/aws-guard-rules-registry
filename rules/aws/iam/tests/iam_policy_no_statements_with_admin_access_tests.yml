@@ -68,5 +68,25 @@
     rules: 
       IAM_POLICY_NO_STATEMENTS_WITH_ADMIN_ACCESS: FAIL
 
+- name: IAM Policy with "Allow" statement granting permissions to all actions on all resources but rule suppressed, SKIP
+  input: 
+    Resources: 
+      ExamplePolicy: 
+        Type: AWS::IAM::Policy
+        Metadata:
+          guard:
+            SuppressedRules:
+            - IAM_POLICY_NO_STATEMENTS_WITH_ADMIN_ACCESS
+        Properties: 
+          Policy Name: "Admin"
+          PolicyDocument: 
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action: "*"
+                Resource: "*"
+  expectations:
+    rules: 
+      IAM_POLICY_NO_STATEMENTS_WITH_ADMIN_ACCESS: SKIP
 
 
