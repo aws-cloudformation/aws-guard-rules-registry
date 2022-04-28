@@ -1,0 +1,38 @@
+name: Build Rules
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  testRules:
+    # cfn-guard binary for macos
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run guard rules tests
+      shell: bash
+      run: |
+        bin/cfn-guard test -d ./rules/
+    ## If test fails run step to pull out only failed tests
+    - name: Display Failed Rules Only
+      if: ${{ failure() }}
+      shell: bash
+      run: |
+        bin/cfn-guard test -d ./rules/ | grep "FAIL Rules:" -B 2 -A 1
+
+  buildRuleSet:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v2
+      - run: |
+          chmod +x ./mappings/build.py
+          python3 ./mappings/build.py
+        shell: bash
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ruleset-build
+          path: mappings/output/
+          if-no-files-found: error

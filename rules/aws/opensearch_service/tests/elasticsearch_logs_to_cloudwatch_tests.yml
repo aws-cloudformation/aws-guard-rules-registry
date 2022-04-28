@@ -1,0 +1,176 @@
+###
+# ELASTICSEARCH_LOGS_TO_CLOUDWATCH tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      ELASTICSEARCH_LOGS_TO_CLOUDWATCH: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      ELASTICSEARCH_LOGS_TO_CLOUDWATCH: SKIP
+
+- name: Elasticsearch with LogPublishingOptions Objects with Enabled set to true, PASS
+  input:
+    Resources:
+      ElasticsearchDomain:
+        Type: AWS::Elasticsearch::Domain
+        Properties:
+          DomainName: 'test'
+          ElasticsearchVersion: '7.10'
+          ElasticsearchClusterConfig:
+            DedicatedMasterEnabled: true
+            InstanceCount: '2'
+            ZoneAwarenessEnabled: true
+            InstanceType: 'm3.medium.elasticsearch'
+            DedicatedMasterType: 'm3.medium.elasticsearch'
+            DedicatedMasterCount: '3'
+          EBSOptions:
+            EBSEnabled: true
+            Iops: '0'
+            VolumeSize: '20'
+            VolumeType: 'gp2'
+          AccessPolicies:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: 'Allow'
+                Principal:
+                  AWS: 'arn:aws:iam::123456789012:user/es-user'
+                Action: 'es:*'
+                Resource: 'arn:aws:es:us-east-1:210987654321:domain/test/*'
+          LogPublishingOptions:
+            ES_APPLICATION_LOGS:
+                CloudWatchLogsLogGroupArn: 'arn:aws:logs:us-east-1:123456789012:log-group:/aws/opensearchservice/domains/es-application-logs'
+                Enabled: true
+            SEARCH_SLOW_LOGS:
+                CloudWatchLogsLogGroupArn: 'arn:aws:logs:us-east-1:123456789012:log-group:/aws/opensearchservice/domains/es-slow-logs'
+                Enabled: true
+            INDEX_SLOW_LOGS:
+                CloudWatchLogsLogGroupArn: 'arn:aws:logs:us-east-1:123456789012:log-group:/aws/opensearchservice/domains/es-index-slow-logs'
+                Enabled: true
+          AdvancedOptions:
+            rest.action.multi.allow_explicit_index: true
+  expectations:
+    rules:
+      ELASTICSEARCH_LOGS_TO_CLOUDWATCH: PASS
+
+- name: Elasticsearch with LogPublishingOptions Objects with Enabled set to true and another set to false, PASS
+  input:
+    Resources:
+      ElasticsearchDomain:
+        Type: AWS::Elasticsearch::Domain
+        Properties:
+          DomainName: 'test'
+          ElasticsearchVersion: '7.10'
+          ElasticsearchClusterConfig:
+            DedicatedMasterEnabled: true
+            InstanceCount: '2'
+            ZoneAwarenessEnabled: true
+            InstanceType: 'm3.medium.elasticsearch'
+            DedicatedMasterType: 'm3.medium.elasticsearch'
+            DedicatedMasterCount: '3'
+          EBSOptions:
+            EBSEnabled: true
+            Iops: '0'
+            VolumeSize: '20'
+            VolumeType: 'gp2'
+          AccessPolicies:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: 'Allow'
+                Principal:
+                  AWS: 'arn:aws:iam::123456789012:user/es-user'
+                Action: 'es:*'
+                Resource: 'arn:aws:es:us-east-1:210987654321:domain/test/*'
+          LogPublishingOptions:
+            ES_APPLICATION_LOGS:
+                CloudWatchLogsLogGroupArn: 'arn:aws:logs:us-east-1:123456789012:log-group:/aws/opensearchservice/domains/es-application-logs'
+                Enabled: true
+            SEARCH_SLOW_LOGS:
+                CloudWatchLogsLogGroupArn: 'arn:aws:logs:us-east-1:123456789012:log-group:/aws/opensearchservice/domains/es-slow-logs'
+                Enabled: false
+            INDEX_SLOW_LOGS:
+                CloudWatchLogsLogGroupArn: 'arn:aws:logs:us-east-1:123456789012:log-group:/aws/opensearchservice/domains/es-index-slow-logs'
+                Enabled: false
+          AdvancedOptions:
+            rest.action.multi.allow_explicit_index: true
+  expectations:
+    rules:
+      ELASTICSEARCH_LOGS_TO_CLOUDWATCH: PASS
+
+- name: Elasticsearch with LogPublishingOptions Objects missing, FAIL
+  input:
+    Resources:
+      ElasticsearchDomain:
+        Type: AWS::Elasticsearch::Domain
+        Properties:
+          DomainName: 'test'
+          ElasticsearchVersion: '7.10'
+          ElasticsearchClusterConfig:
+            DedicatedMasterEnabled: true
+            InstanceCount: '2'
+            ZoneAwarenessEnabled: true
+            InstanceType: 'm3.medium.elasticsearch'
+            DedicatedMasterType: 'm3.medium.elasticsearch'
+            DedicatedMasterCount: '3'
+          EBSOptions:
+            EBSEnabled: true
+            Iops: '0'
+            VolumeSize: '20'
+            VolumeType: 'gp2'
+          AccessPolicies:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: 'Allow'
+                Principal:
+                  AWS: 'arn:aws:iam::123456789012:user/es-user'
+                Action: 'es:*'
+                Resource: 'arn:aws:es:us-east-1:210987654321:domain/test/*'
+          AdvancedOptions:
+            rest.action.multi.allow_explicit_index: true
+  expectations:
+    rules:
+      ELASTICSEARCH_LOGS_TO_CLOUDWATCH: FAIL
+
+- name: Elasticsearch with LogPublishingOptions Objects with Enabled set to false, FAIL
+  input:
+    Resources:
+      ElasticsearchDomain:
+        Type: AWS::Elasticsearch::Domain
+        Properties:
+          DomainName: 'test'
+          ElasticsearchVersion: '7.10'
+          ElasticsearchClusterConfig:
+            DedicatedMasterEnabled: true
+            InstanceCount: '2'
+            ZoneAwarenessEnabled: true
+            InstanceType: 'm3.medium.elasticsearch'
+            DedicatedMasterType: 'm3.medium.elasticsearch'
+            DedicatedMasterCount: '3'
+          EBSOptions:
+            EBSEnabled: true
+            Iops: '0'
+            VolumeSize: '20'
+            VolumeType: 'gp2'
+          AccessPolicies:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: 'Allow'
+                Principal:
+                  AWS: 'arn:aws:iam::123456789012:user/es-user'
+                Action: 'es:*'
+                Resource: 'arn:aws:es:us-east-1:210987654321:domain/test/*'
+          LogPublishingOptions:
+            ES_APPLICATION_LOGS:
+                CloudWatchLogsLogGroupArn: 'arn:aws:logs:us-east-1:123456789012:log-group:/aws/opensearchservice/domains/es-application-logs'
+                Enabled: false
+          AdvancedOptions:
+            rest.action.multi.allow_explicit_index: true
+  expectations:
+    rules:
+      ELASTICSEARCH_LOGS_TO_CLOUDWATCH: FAIL

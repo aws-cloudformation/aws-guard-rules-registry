@@ -1,0 +1,83 @@
+###
+# AURORA_MYSQL_BACKTRACKING_ENABLED tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      AURORA_MYSQL_BACKTRACKING_ENABLED: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      AURORA_MYSQL_BACKTRACKING_ENABLED: SKIP
+
+- name: RDS Cluster BacktrackWindow set with value of 1, PASS
+  input:
+    Resources:
+      ExampleRDS:
+        Type: "AWS::RDS::DBCluster"
+        Properties:
+            BacktrackWindow: 1
+            DatabaseName: MyCluster
+            Engine: 'aurora-mysql'
+  expectations:
+    rules:
+      AURORA_MYSQL_BACKTRACKING_ENABLED: PASS
+
+- name: RDS Cluster BacktrackWindow set with 259200 of true, PASS
+  input:
+    Resources:
+      ExampleRDS:
+        Type: "AWS::RDS::DBCluster"
+        Properties:
+            BacktrackWindow: 259200
+            DatabaseName: MyCluster
+            Engine: 'aurora-mysql'
+  expectations:
+    rules:
+      AURORA_MYSQL_BACKTRACKING_ENABLED: PASS
+
+- name: RDS Cluster BacktrackWindow set with value of 0, FAIL
+  input:
+    Resources:
+      ExampleRDS:
+        Type: "AWS::RDS::DBCluster"
+        Properties:
+          BacktrackWindow: 0
+          DatabaseName: MyCluster
+          Engine: 'aurora-mysql'
+  expectations:
+    rules:
+      AURORA_MYSQL_BACKTRACKING_ENABLED: FAIL
+
+- name: RDS Cluster BacktrackWindow property missing, FAIL
+  input:
+    Resources:
+      ExampleRDS:
+        Type: AWS::RDS::DBCluster
+        Properties:
+          DatabaseName: MyCluster
+          Engine: 'aurora-mysql'
+  expectations:
+    rules:
+      AURORA_MYSQL_BACKTRACKING_ENABLED: FAIL
+
+- name: RDS Cluster BacktrackWindow property missing  but rule suppressed, SKIP
+  input:
+    Resources:
+      ExampleRDS:
+        Type: AWS::RDS::DBCluster
+        Metadata:
+          guard:
+            SuppressedRules:
+            - AURORA_MYSQL_BACKTRACKING_ENABLED
+        Properties:
+          DatabaseName: MyCluster
+          Engine: 'aurora-mysql'
+  expectations:
+    rules:
+      AURORA_MYSQL_BACKTRACKING_ENABLED: SKIP

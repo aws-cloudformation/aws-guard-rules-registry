@@ -1,0 +1,84 @@
+[
+    {
+      "name": "Rule is not run when RDS instance resource is not present, SKIP",
+      "input": {},
+      "expectations": {
+        "rules": {
+          "RDS_INSTANCE_PUBLIC_ACCESS_CHECK": "SKIP"
+        }
+      }
+    },
+    {
+      "name": "Rule fails when RDS instances has PubliclyAccessible set to true, FAIL",
+      "input": {
+        "Resources": {
+          "MyDB": {
+            "Type": "AWS::RDS::DBInstance",
+            "Properties": {
+              "PubliclyAccessible": true
+            }
+          }
+        }
+      },
+      "expectations": {
+        "rules": {
+          "RDS_INSTANCE_PUBLIC_ACCESS_CHECK": "FAIL"
+        }
+      }
+    },
+    {
+      "name": "Rule passes when RDS instances has PubliclyAccessible set to false, PASS",
+      "input": {
+        "Resources": {
+          "MyDB": {
+            "Type": "AWS::RDS::DBInstance",
+            "Properties": {
+              "PubliclyAccessible": false
+            }
+          }
+        }
+      },
+      "expectations": {
+        "rules": {
+          "RDS_INSTANCE_PUBLIC_ACCESS_CHECK": "PASS"
+        }
+      }
+    },
+    {
+      "name": "Rule fails when RDS instances has PubliclyAccessible property missing. FAIL",
+      "input": {
+        "Resources": {
+          "MyDB": {
+            "Type": "AWS::RDS::DBInstance",
+            "Properties": {}
+          }
+        }
+      },
+      "expectations": {
+        "rules": {
+          "RDS_INSTANCE_PUBLIC_ACCESS_CHECK": "FAIL"
+        }
+      }
+    },
+    {
+      "name": "Rule fails when RDS instances has PubliclyAccessible property missing but rule suppressed. SKIP",
+      "input": {
+        "Resources": {
+          "MyDB": {
+            "Type": "AWS::RDS::DBInstance",
+            "Metadata": {
+              "guard": {
+                "SuppressedRules": ["RDS_INSTANCE_PUBLIC_ACCESS_CHECK"]
+              }
+            },
+            "Properties": {}
+          }
+        }
+      },
+      "expectations": {
+        "rules": {
+          "RDS_INSTANCE_PUBLIC_ACCESS_CHECK": "SKIP"
+        }
+      }
+    }
+  ]

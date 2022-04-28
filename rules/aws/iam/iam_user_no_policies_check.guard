@@ -1,2 +1,40 @@
-## Config Rule Name : iam-user-no-policies-check
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/iam-user-no-policies-check.html"
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#   IAM_USER_NO_POLICIES_CHECK
+#
+# Description:
+#   Checks that none of your IAM users have policies attached. IAM users must inherit permissions from IAM groups or roles. 
+#
+# Reports on:
+#   AWS::IAM::User
+#
+# Evaluates:
+#   AWS CloudFormation
+#
+# Rule Parameters:
+#   NA
+#
+# Scenarios:
+# a) SKIP: when there are no IAM Users present
+# b) PASS: when all IAM Users do not have policies attached
+# c) FAIL: when any IAM User have policies attached
+# d) SKIP: when metada has rule suppression for IAM_USER_NO_POLICIES_CHECK
+
+#
+# Select all IAM User resources from incoming template (payload)
+# 
+let aws_iam_users_no_policies = Resources.*[ Type == 'AWS::IAM::User'
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "IAM_USER_NO_POLICIES_CHECK" 
+]
+
+rule IAM_USER_NO_POLICIES_CHECK when %aws_iam_users_no_policies !empty {
+  %aws_iam_users_no_policies.Properties.Policies empty
+  <<
+  	Violation: Inline policies are not allowed on IAM Users. IAM users must inherit permissions from IAM groups or roles.
+  	Fix: Remove the Policies list property from any IAM Users. 
+  >>
+}

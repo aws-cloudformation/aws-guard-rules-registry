@@ -1,0 +1,116 @@
+###
+# DB_INSTANCE_BACKUP_ENABLED tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      DB_INSTANCE_BACKUP_ENABLED: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      DB_INSTANCE_BACKUP_ENABLED: SKIP
+
+- name: RDS BackupRetentionPeriod set with value of 1, PASS
+  input:
+    Resources:
+      ExampleRDS:
+        Type: "AWS::RDS::DBInstance"
+        Properties:
+          DBInstanceClass: !Ref DBInstanceType
+          SourceDBInstanceIdentifier: !Ref SourceDBInstanceIdentifier
+          SourceRegion: !Ref SourceRegion
+          KmsKeyId: !Ref MyKey
+          MonitoringInterval: 1
+          DeletionProtection: true
+          BackupRetentionPeriod: 1
+  expectations:
+    rules:
+      DB_INSTANCE_BACKUP_ENABLED: PASS
+
+- name: RDS BackupRetentionPeriod set with value of 20, PASS
+  input:
+    Resources:
+      ExampleRDS:
+        Type: "AWS::RDS::DBInstance"
+        Properties:
+          DBInstanceClass: !Ref DBInstanceType
+          SourceDBInstanceIdentifier: !Ref SourceDBInstanceIdentifier
+          SourceRegion: !Ref SourceRegion
+          KmsKeyId: !Ref MyKey
+          MonitoringInterval: 1
+          DeletionProtection: true
+          BackupRetentionPeriod: 20
+  expectations:
+    rules:
+      DB_INSTANCE_BACKUP_ENABLED: PASS
+
+- name: RDS BackupRetentionPeriod set with value of 35, PASS
+  input:
+    Resources:
+      ExampleRDS:
+        Type: "AWS::RDS::DBInstance"
+        Properties:
+          DBInstanceClass: !Ref DBInstanceType
+          SourceDBInstanceIdentifier: !Ref SourceDBInstanceIdentifier
+          SourceRegion: !Ref SourceRegion
+          KmsKeyId: !Ref MyKey
+          MonitoringInterval: 1
+          DeletionProtection: true
+          BackupRetentionPeriod: 35
+  expectations:
+    rules:
+      DB_INSTANCE_BACKUP_ENABLED: PASS
+
+- name: RDS BackupRetentionPeriod set with value of 0, FAIL
+  input:
+    Resources:
+      ExampleRDS:
+        Type: "AWS::RDS::DBInstance"
+        Properties:
+          DBInstanceClass: !Ref DBInstanceType
+          SourceDBInstanceIdentifier: !Ref SourceDBInstanceIdentifier
+          SourceRegion: !Ref SourceRegion
+          KmsKeyId: !Ref MyKey
+          MonitoringInterval: 0
+          DeletionProtection: false
+          BackupRetentionPeriod: 0
+  expectations:
+    rules:
+      DB_INSTANCE_BACKUP_ENABLED: FAIL
+
+- name: RDS BackupRetentionPeriod property missing, FAIL
+  input:
+    Resources:
+      ExampleRDS:
+        Type: AWS::RDS::DBInstance
+        Properties:
+          DBInstanceClass: !Ref DBInstanceType
+          SourceDBInstanceIdentifier: !Ref SourceDBInstanceIdentifier
+          SourceRegion: !Ref SourceRegion
+          KmsKeyId: !Ref MyKey
+  expectations:
+    rules:
+      DB_INSTANCE_BACKUP_ENABLED: FAIL
+
+- name: RDS BackupRetentionPeriod property missing but rule suppressed, SKIP
+  input:
+    Resources:
+      ExampleRDS:
+        Type: AWS::RDS::DBInstance
+        Metadata:
+          guard:
+            SuppressedRules:
+            - DB_INSTANCE_BACKUP_ENABLED
+        Properties:
+          DBInstanceClass: !Ref DBInstanceType
+          SourceDBInstanceIdentifier: !Ref SourceDBInstanceIdentifier
+          SourceRegion: !Ref SourceRegion
+          KmsKeyId: !Ref MyKey
+  expectations:
+    rules:
+      DB_INSTANCE_BACKUP_ENABLED: SKIP

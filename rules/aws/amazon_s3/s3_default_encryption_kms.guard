@@ -1,29 +1,42 @@
-## Config Rule Name : s3-default-encryption-kms
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/s3-default-encryption-kms.html
-
-# Rule Intent: Checks whether the Amazon S3 buckets are encrypted with AWS Key Management Service(AWS KMS).
-#              The rule is NON_COMPLIANT if the Amazon S3 bucket is not encrypted with AWS KMS key.
-
-# Expectations:
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#    S3_DEFAULT_ENCRYPTION_KMS
+#
+# Description:
+#   Checks whether the Amazon S3 buckets are encrypted with AWS Key Management Service(AWS KMS).
+#   The rule is NON_COMPLIANT if the Amazon S3 bucket is not encrypted with AWS KMS key.
+#
+# Reports on:
+#    AWS::S3::Bucket
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
 # a) SKIP: when there are no S3 resource present
 # b) PASS: when all S3 resources have ServerSideEncryptionConfiguration property set with values of "aws:kms" or "AES256"
 # c) FAIL: when all S3 resources have ServerSideEncryptionConfiguration property not set or values are not "aws:kms" or "AES256"
+# d) SKIP: when metadata includes the suppression for rule S3_DEFAULT_ENCRYPTION_KMS
 
 #
-# Select all S3 resources from incoming template (payload)
+# Assignments
 #
-let s3_buckets = Resources.*[ Type == 'AWS::S3::Bucket' ]
+let s3_buckets_s3_default_encryption = Resources.*[ Type == 'AWS::S3::Bucket'
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "S3_DEFAULT_ENCRYPTION_KMS"
+]
 
-rule S3_DEFAULT_ENCRYPTION_KMS when %s3_buckets !empty {
-  %s3_buckets.Properties.BucketEncryption exists 
+rule S3_DEFAULT_ENCRYPTION_KMS when %s3_buckets_s3_default_encryption !empty {
+  %s3_buckets_s3_default_encryption.Properties.BucketEncryption exists
+  %s3_buckets_s3_default_encryption.Properties.BucketEncryption.ServerSideEncryptionConfiguration[*].ServerSideEncryptionByDefault.SSEAlgorithm in ["aws:kms","AES256"]
   <<
-    Violation: Buckets must enable server-side encryption
-    Fix: https://docs.aws.amazon.com/config/latest/developerguide/s3-default-encryption-kms.html
-  >>
-  
-  %s3_buckets.Properties.BucketEncryption.ServerSideEncryptionConfiguration[*].ServerSideEncryptionByDefault.SSEAlgorithm in ["aws:kms","AES256"] 
-  <<
-    Violation: Buckets must enable server-side encryption
-    Fix: https://docs.aws.amazon.com/config/latest/developerguide/s3-default-encryption-kms.html
+    Violation: S3 Bucket default encryption must be set.
+    Fix: Set the S3 Bucket property BucketEncryption.ServerSideEncryptionConfiguration.ServerSideEncryptionByDefault.SSEAlgorithm to either "aws:kms" or "AES256"
   >>
 }

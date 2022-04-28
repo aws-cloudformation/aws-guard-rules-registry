@@ -1,23 +1,45 @@
-## Config Rule Name : rds-logging-enabled
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/rds-logging-enabled.html
-
-# Rule Intent: Checks if log types exported to Amazon CloudWatch for an Amazon Relational Database Service (Amazon RDS) instance are enabled.
-
-# Expectations:
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#    RDS_INSTANCE_LOGGING_ENABLED
+#
+# Description:
+#    Checks if log types exported to Amazon CloudWatch for an Amazon Relational
+#    Database Service (Amazon RDS) instance are enabled.
+#
+# Reports on:
+#    AWS::RDS::DBInstance
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
 # a) SKIP: when there are no RDS instances present
 # b) PASS: when all RDS instances have EnableCloudwatchLogsExports set to true
 # c) FAIL: when all RDS instances have EnableCloudwatchLogsExports set to false
 # d) FAIL: when there are RDS instances with EnableCloudwatchLogsExports property is not present
+# e) SKIP: when metadata includes the suppression for rule RDS_INSTANCE_LOGGING_ENABLED
 
 #
 # Select all RDS instance resources from incoming template (payload)
 #
 
-let aws_rds_instances = Resources.*[ Type == 'AWS::RDS::DBInstance'  ]
+let aws_rds_instances_logging_enabled = Resources.*[ Type == 'AWS::RDS::DBInstance'
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "RDS_INSTANCE_LOGGING_ENABLED"
+]
 
 
-rule RDS_INSTANCE_LOGGING_ENABLED when %aws_rds_instances !empty {
-    %aws_rds_instances.Properties.EnableCloudwatchLogsExports EXISTS
-    <<All RDS instances must have logging enabled to cloudwatch logs>>
+rule RDS_INSTANCE_LOGGING_ENABLED when %aws_rds_instances_logging_enabled !empty {
+  %aws_rds_instances_logging_enabled.Properties.EnableCloudwatchLogsExports EXISTS
+  <<
+    Violation: Enable CloudWatch Logs Exports for monitoring and logging.
+    Fix: Provide EnableCloudWatchLogsExports object to start exporting cloudwatch logs.
+  >>
 }
 

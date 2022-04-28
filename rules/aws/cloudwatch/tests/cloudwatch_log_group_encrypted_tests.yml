@@ -1,0 +1,54 @@
+###
+# CLOUDWATCH_LOG_GROUP_ENCRYPTED tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      CLOUDWATCH_LOG_GROUP_ENCRYPTED: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      CLOUDWATCH_LOG_GROUP_ENCRYPTED: SKIP
+
+- name: CloudWatch Log LogGroup present KmsKeyId, PASS
+  input:
+    Resources:
+      ExampleLogGroup:
+        Type: AWS::Logs::LogGroup
+        Properties:
+          RetentionInDays: 7
+          KmsKeyId: !Ref myKmsKeyId
+  expectations:
+    rules:
+      CLOUDWATCH_LOG_GROUP_ENCRYPTED: PASS
+
+- name: CloudWatch Log LogGroup missing KmsKeyId, FAIL
+  input:
+    Resources:
+      ExampleLogGroup:
+        Type: AWS::Logs::LogGroup
+        Properties:
+          LogGroupName: myLogGroup
+  expectations:
+    rules:
+      CLOUDWATCH_LOG_GROUP_ENCRYPTED: FAIL
+
+- name: CloudWatch Log LogGroup missing KmsKeyId but rule suppressed, PASS
+  input:
+    Resources:
+      ExampleLogGroup:
+        Type: AWS::Logs::LogGroup
+        Metadata:
+          guard:
+            SuppressedRules:
+            - CLOUDWATCH_LOG_GROUP_ENCRYPTED
+        Properties:
+          LogGroupName: myLogGroup
+  expectations:
+    rules:
+      CLOUDWATCH_LOG_GROUP_ENCRYPTED: PASS

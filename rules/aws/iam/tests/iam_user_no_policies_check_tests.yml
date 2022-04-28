@@ -1,0 +1,66 @@
+###
+# IAM_USER_NO_POLICIES_CHECK tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      IAM_USER_NO_POLICIES_CHECK: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      IAM_USER_NO_POLICIES_CHECK: SKIP
+
+- name: IAM User with no inline policies, PASS 
+  input: 
+    Resources: 
+      ExampleUser: 
+        Type: "AWS::IAM::User"
+        Properties: 
+  expectations:
+    rules: 
+      IAM_USER_NO_POLICIES_CHECK: PASS
+
+- name: IAM User with inline policies, FAIL
+  input: 
+    Resources: 
+      ExampleUser: 
+        Type: "AWS::IAM::User"
+        Properties: 
+          Policies: 
+            - PolicyName: "Admin"
+              PolicyDocument: 
+                Version: "2012-10-17"
+                Statement:
+                  - Effect: "Allow"
+                    Action: "*"
+                    Resource: "*"
+  expectations:
+    rules: 
+      IAM_USER_NO_POLICIES_CHECK: FAIL
+
+- name: IAM User with inline policies but rule suppressed, SKIP
+  input: 
+    Resources: 
+      ExampleUser: 
+        Type: "AWS::IAM::User"
+        Metadata:
+          guard:
+            SuppressedRules:
+            - IAM_USER_NO_POLICIES_CHECK
+        Properties: 
+          Policies: 
+            - PolicyName: "Admin"
+              PolicyDocument: 
+                Version: "2012-10-17"
+                Statement:
+                  - Effect: "Allow"
+                    Action: "*"
+                    Resource: "*"
+  expectations:
+    rules: 
+      IAM_USER_NO_POLICIES_CHECK: SKIP

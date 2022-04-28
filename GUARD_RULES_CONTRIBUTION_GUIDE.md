@@ -37,8 +37,7 @@
     ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/dynamodb-pitr-enabled.html"
     ```
 
-
-4. Edit `dynamodb_pitr_enabled.guard` and describe bookkeeping for the rule, like rule intent and expectations.
+5. Edit `dynamodb_pitr_enabled.guard` and describe bookkeeping for the rule, like rule intent and expectations.
     ```
     # Rule Intent: All DynamoDB Tables must have Point-In-Time-Recovery enabled
 
@@ -47,7 +46,7 @@
     # b) PASS: when all DynamoDB Tables have PITR enabled
     # c) FAIL: when all DynamoDB Tables have PITR disabled
     ```
-5. Define variables required for a given rule and add comments to the rule wherever possible to make it easier for humans to understand.
+6. Define variables required for a given rule and add comments to the rule wherever possible to make it easier for humans to understand.
     ```
     # Rule Intent: All DynamoDB Tables must have Point-In-Time-Recovery enabled
 
@@ -61,7 +60,7 @@
     #
     let aws_dynamodb_table_resources = Resources.*[ Type == 'AWS::DynamoDB::Table' ]
     ```
-6. Define a named rule block. The rule name should match with the rule file name. **If the rule is to match an [AWS Config Managed Rule](https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config_use-managed-rules.html), the rule name should match the AWS Config Identifier in upper case.** Named rule blocks allow for re-usability, improved composition and remove verbosity and repetition.
+7. Define a named rule block. The rule name should match with the rule file name. **If the rule is to match an [AWS Config Managed Rule](https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config_use-managed-rules.html), the rule name should match the AWS Config Identifier in upper case.** Named rule blocks allow for re-usability, improved composition and remove verbosity and repetition.
     ```
     # Rule Intent: All DynamoDB Tables must have Point-In-Time-Recovery enabled
 
@@ -80,7 +79,7 @@
 
     }
     ```
-7. Write rule clauses inside the named rule block. Please add a `custom message` to each clause. The `custom message` is expressed as `<<message>>` where 'message' is any string which ideally provides information regarding the clause preceding it. Please reference step 8 below for creating custom messages.
+8. Write rule clauses inside the named rule block. Please add a `custom message` to each clause. The `custom message` is expressed as `<<message>>` where 'message' is any string which ideally provides information regarding the clause preceding it. Please reference step 9 below for creating custom messages.
     ```
     ## Config Rule Name : dynamodb-pitr-enabled
     ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/dynamodb-pitr-enabled.html"
@@ -108,7 +107,7 @@
   }
     ```
 
-8. **Custom Message Blocks** - each rule block should contain single block multiline `custom message` containing `Violation:` and `Fix:` details. The `<<` and `>>` are to be set on their own lines without text. Example:
+9. **Custom Message Blocks** - each rule block should contain single block multiline `custom message` containing `Violation:` and `Fix:` details. The `<<` and `>>` are to be set on their own lines without text. Example:
     ```
       <<
         Violation: Point In Time Recovery must be enabled for strong resiliency.

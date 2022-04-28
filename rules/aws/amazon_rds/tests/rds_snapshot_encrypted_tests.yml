@@ -1,0 +1,84 @@
+###
+# RDS_SNAPSHOT_ENCRYPTED tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      RDS_SNAPSHOT_ENCRYPTED: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      RDS_SNAPSHOT_ENCRYPTED: SKIP
+
+- name: RDS StorageEncrypted set with value of true, PASS
+  input:
+    Resources:
+      ExampleRDS:
+        Type: "AWS::RDS::DBInstance"
+        Properties:
+          DBInstanceClass: !Ref DBInstanceType
+          SourceDBInstanceIdentifier: !Ref SourceDBInstanceIdentifier
+          SourceRegion: !Ref SourceRegion
+          KmsKeyId: !Ref MyKey
+          MonitoringInterval: 1
+          DeletionProtection: true
+          MultiAZ: true
+          StorageEncrypted: true
+  expectations:
+    rules:
+      RDS_SNAPSHOT_ENCRYPTED: PASS
+
+- name: RDS StorageEncrypted set with value of false, FAIL
+  input:
+    Resources:
+      ExampleRDS:
+        Type: "AWS::RDS::DBInstance"
+        Properties:
+          DBInstanceClass: !Ref DBInstanceType
+          SourceDBInstanceIdentifier: !Ref SourceDBInstanceIdentifier
+          SourceRegion: !Ref SourceRegion
+          KmsKeyId: !Ref MyKey
+          MonitoringInterval: 0
+          DeletionProtection: false
+          MultiAZ: false
+          StorageEncrypted: false
+  expectations:
+    rules:
+      RDS_SNAPSHOT_ENCRYPTED: FAIL
+
+- name: RDS StorageEncrypted property missing, FAIL
+  input:
+    Resources:
+      ExampleRDS:
+        Type: AWS::RDS::DBInstance
+        Properties:
+          DBInstanceClass: !Ref DBInstanceType
+          SourceDBInstanceIdentifier: !Ref SourceDBInstanceIdentifier
+          SourceRegion: !Ref SourceRegion
+          KmsKeyId: !Ref MyKey
+  expectations:
+    rules:
+      RDS_SNAPSHOT_ENCRYPTED: FAIL
+
+- name: RDS StorageEncrypted property missing but rule suppressed, SKIP
+  input:
+    Resources:
+      ExampleRDS:
+        Type: AWS::RDS::DBInstance
+        Metadata:
+          guard:
+            SuppressedRules:
+            - RDS_SNAPSHOT_ENCRYPTED
+        Properties:
+          DBInstanceClass: !Ref DBInstanceType
+          SourceDBInstanceIdentifier: !Ref SourceDBInstanceIdentifier
+          SourceRegion: !Ref SourceRegion
+          KmsKeyId: !Ref MyKey
+  expectations:
+    rules:
+      RDS_SNAPSHOT_ENCRYPTED: SKIP

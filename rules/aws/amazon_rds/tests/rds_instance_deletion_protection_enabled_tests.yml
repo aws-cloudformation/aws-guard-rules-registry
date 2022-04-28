@@ -1,0 +1,80 @@
+###
+# RDS_INSTANCE_DELETION_PROTECTION_ENABLED tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      RDS_INSTANCE_DELETION_PROTECTION_ENABLED: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      RDS_INSTANCE_DELETION_PROTECTION_ENABLED: SKIP
+
+- name: RDS Deletion Protection set with value of true, PASS
+  input:
+    Resources:
+      ExampleRDS:
+        Type: "AWS::RDS::DBInstance"
+        Properties:
+          DBInstanceClass: !Ref DBInstanceType
+          SourceDBInstanceIdentifier: !Ref SourceDBInstanceIdentifier
+          SourceRegion: !Ref SourceRegion
+          KmsKeyId: !Ref MyKey
+          MonitoringInterval: 1
+          DeletionProtection: true
+  expectations:
+    rules:
+      RDS_INSTANCE_DELETION_PROTECTION_ENABLED: PASS
+
+- name: RDS Deletion Protection set with value of false, FAIL
+  input:
+    Resources:
+      ExampleRDS:
+        Type: "AWS::RDS::DBInstance"
+        Properties:
+          DBInstanceClass: !Ref DBInstanceType
+          SourceDBInstanceIdentifier: !Ref SourceDBInstanceIdentifier
+          SourceRegion: !Ref SourceRegion
+          KmsKeyId: !Ref MyKey
+          MonitoringInterval: 0
+          DeletionProtection: false
+  expectations:
+    rules:
+      RDS_INSTANCE_DELETION_PROTECTION_ENABLED: FAIL
+
+- name: RDS Deletion Protection property missing, FAIL
+  input:
+    Resources:
+      ExampleRDS:
+        Type: AWS::RDS::DBInstance
+        Properties:
+          DBInstanceClass: !Ref DBInstanceType
+          SourceDBInstanceIdentifier: !Ref SourceDBInstanceIdentifier
+          SourceRegion: !Ref SourceRegion
+          KmsKeyId: !Ref MyKey
+  expectations:
+    rules:
+      RDS_INSTANCE_DELETION_PROTECTION_ENABLED: FAIL
+
+- name: RDS Deletion Protection property missing but rule suppressed, SKIP
+  input:
+    Resources:
+      ExampleRDS:
+        Type: AWS::RDS::DBInstance
+        Metadata:
+          guard:
+            SuppressedRules:
+            - RDS_INSTANCE_DELETION_PROTECTION_ENABLED
+        Properties:
+          DBInstanceClass: !Ref DBInstanceType
+          SourceDBInstanceIdentifier: !Ref SourceDBInstanceIdentifier
+          SourceRegion: !Ref SourceRegion
+          KmsKeyId: !Ref MyKey
+  expectations:
+    rules:
+      RDS_INSTANCE_DELETION_PROTECTION_ENABLED: SKIP

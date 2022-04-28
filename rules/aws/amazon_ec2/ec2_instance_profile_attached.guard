@@ -18,18 +18,18 @@ let ec2s = Resources.*[ Type == 'AWS::EC2::Instance' ]
 let asg_launch_configs = Resources.*[ Type == 'AWS::AutoScaling::LaunchConfiguration' ]
 
 rule EC2_INSTANCE_PROFILE_ATTACHED when %ec2s !empty {
-    %ec2s.Properties.IamInstanceProfile EXISTS
-    <<
-        Violation: EC2 must have IAM profile attached to it
-        Fix: https://docs.aws.amazon.com/config/latest/developerguide/ec2-instance-profile-attached.html
-    >>
+  %ec2s.Properties.IamInstanceProfile EXISTS
+  <<
+    Violation: EC2 must have IAM profile attached to it.
+    Fix: Associate EC2 property IamInstanceProfile to an IAM Instance Profile.
+  >>
 }
 
 ## set to lowercase naming due to not being a direct AWS CONFIG Managed Rule
 rule asg_launch_config_instance_profile_attached when %asg_launch_configs !empty {
-    %asg_launch_configs.Properties.IamInstanceProfile EXISTS
-    <<
-        Violation: EC2 AutoScaling Launch Configuration must have IAM profile attached to it
-        Fix: https://docs.aws.amazon.com/config/latest/developerguide/ec2-instance-profile-attached.html
-    >>
+  %asg_launch_configs.Properties.IamInstanceProfile EXISTS
+  <<
+    Violation: EC2 AutoScaling Launch Configuration must have IAM profile attached to it.
+    Fix: Associate EC2 AutoScaling launch property IamInstanceProfile to an IAM Instance Profile.
+  >>
 }

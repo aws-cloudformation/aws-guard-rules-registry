@@ -51,3 +51,18 @@
   expectations:
     rules:
       S3_BUCKET_REPLICATION_ENABLED: FAIL
+
+- name: S3 Bucket missing replication configuration but rule suppressed, SKIP
+  input:
+    Resources:
+      ExampleS3:
+        Type: AWS::S3::Bucket
+        Metadata:
+          guard:
+            SuppressedRules:
+            - S3_BUCKET_REPLICATION_ENABLED
+        Properties:
+          BucketName: my-bucket
+  expectations:
+    rules:
+      S3_BUCKET_REPLICATION_ENABLED: SKIP

@@ -15,13 +15,13 @@
     rules:
       EKS_ENDPOINT_NO_PUBLIC_ACCESS: SKIP
 
-- name: EKS Endpoint Public Access set to false, PASS 
-  input: 
-    Resources: 
-      ExampleEKSCluster: 
+- name: EKS Endpoint Public Access set to false, PASS
+  input:
+    Resources:
+      ExampleEKSCluster:
         Type: "AWS::EKS::Cluster"
-        Properties: 
-          ResourcesVpcConfig: 
+        Properties:
+          ResourcesVpcConfig:
             SubnetIds: !Ref SubnetIds
             EndpointPublicAccess: false
           RoleArn: !Ref RoleArn
@@ -30,12 +30,12 @@
       EKS_ENDPOINT_NO_PUBLIC_ACCESS: PASS
 
 - name: EKS Endpoint Public Access set to true, FAIL
-  input: 
-    Resources: 
-      ExampleEKSCluster: 
+  input:
+    Resources:
+      ExampleEKSCluster:
         Type: "AWS::EKS::Cluster"
-        Properties: 
-          ResourcesVpcConfig: 
+        Properties:
+          ResourcesVpcConfig:
             SubnetIds: !Ref SubnetIds
             EndpointPublicAccess: true
           RoleArn: !Ref RoleArn
@@ -44,14 +44,31 @@
       EKS_ENDPOINT_NO_PUBLIC_ACCESS: FAIL
 
 - name: EKS Endpoint Public Access not set (default false), FAIL
-  input: 
-    Resources: 
-      ExampleEKSCluster: 
+  input:
+    Resources:
+      ExampleEKSCluster:
         Type: "AWS::EKS::Cluster"
-        Properties: 
-          ResourcesVpcConfig: 
+        Properties:
+          ResourcesVpcConfig:
             SubnetIds: !Ref SubnetIds
           RoleArn: !Ref RoleArn
   expectations:
     rules:
       EKS_ENDPOINT_NO_PUBLIC_ACCESS: FAIL
+
+- name: EKS Endpoint Public Access not set (default false) but rule is suppressed, SKIP
+  input:
+    Resources:
+      ExampleEKSCluster:
+        Type: "AWS::EKS::Cluster"
+        Metadata:
+          guard:
+            SuppressedRules:
+            - EKS_ENDPOINT_NO_PUBLIC_ACCESS
+        Properties:
+          ResourcesVpcConfig:
+            SubnetIds: !Ref SubnetIds
+          RoleArn: !Ref RoleArn
+  expectations:
+    rules:
+      EKS_ENDPOINT_NO_PUBLIC_ACCESS: SKIP

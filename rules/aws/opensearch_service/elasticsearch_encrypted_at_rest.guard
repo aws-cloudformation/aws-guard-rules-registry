@@ -1,5 +1,5 @@
 ## Config Rule Name : elasticsearch-encrypted-at-rest
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/elasticsearch-encrypted-at-rest.html"
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/elasticsearch-encrypted-at-rest.html
 
 # Rule Intent: Elasticsearch domains must enforce server side encryption
 
@@ -7,7 +7,7 @@
 # a) SKIP: when there is no elasticsearch domain present
 # b) FAIL: when elasticsearch domain has server side encryption set to false
 # c) PASS: when elasticsearch domain has server side encryption set to true
-# d) FAIL: when elasticsearch domain has server side encryption property is missing  
+# d) FAIL: when elasticsearch domain has server side encryption property is missing
 
 #
 # Select all elasticsearch domains from incoming template
@@ -15,10 +15,10 @@
 
 let elasticsearch_domains = Resources.*[ Type == 'AWS::Elasticsearch::Domain' ]
 
-rule elasticsearch_encrypted_at_rest when %elasticsearch_domains !empty {
-    %elasticsearch_domains.Properties {
-        EncryptionAtRestOptions {
-            Enabled == true <<Elasticsearch domains must enforce server side encryption>>
-        }  
-    }
+rule ELASTICSEARCH_ENCRYPTED_AT_REST when %elasticsearch_domains !empty {
+  %elasticsearch_domains.Properties.EncryptionAtRestOptions.Enabled == true
+  <<
+    Violation: Elasticsearch domains must enforce server side encryption.
+    Fix: Set the EncryptionAtRestOptions.Enabled parameter to true.
+  >>
 }

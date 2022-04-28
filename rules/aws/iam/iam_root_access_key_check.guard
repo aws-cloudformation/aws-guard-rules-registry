@@ -1,8 +1,0 @@
-## SKIP
-## SKIP RATIONALE: Initial version of Guard Rules Registry pertains to static application
-##                 security testing and code analysis.
-
-## Config Rule Name : iam-root-access-key-check
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/iam-root-access-key-check.html
-
-# Rule Intent: Checks if the root user access key is available.

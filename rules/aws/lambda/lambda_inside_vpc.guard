@@ -1,2 +1,25 @@
 ## Config Rule Name : lambda-inside-vpc
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/lambda-inside-vpc.html"
+## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/lambda-inside-vpc.html
+
+# Rule Intent: Checks whether an AWS Lambda function is allowed access to an Amazon Virtual Private Cloud.
+
+# Expectations:
+# a) SKIP: when no AWS Lambda functions are present
+# b) PASS: when all AWS Lambda functions are VPC enabled
+# c) FAIL: when any AWS Lambda functions are not VPC enabled
+
+#
+# Select all AWS Lambda Function resources from incoming template (payload)
+#
+let lambdas = Resources.*[ Type == 'AWS::Lambda::Function' ]
+
+rule  LAMBDA_INSIDE_VPC when %lambdas !empty {
+
+  %lambdas.Properties.VpcConfig.SecurityGroupIds !empty
+  %lambdas.Properties.VpcConfig.SubnetIds !empty
+  <<
+    Violation:  All AWS Lambda Functions must be configured with access to a VPC
+    Fix: set the VpcConfig.SecurityGroupIds and VpcConfig.SubnetIds parameters with a list of security groups and subnets.
+    Lambda creates an elastic network interface for each combination of security group and subnet in the function's VPC configuration.
+  >>
+}

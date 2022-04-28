@@ -1,0 +1,153 @@
+###
+# RDS_ENHANCED_MONITORING_ENABLED tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      RDS_ENHANCED_MONITORING_ENABLED: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      RDS_ENHANCED_MONITORING_ENABLED: SKIP
+
+- name: RDS Enhanced Monitoring set with interval of 1 seconds, PASS
+  input:
+    Resources:
+      ExampleRDS:
+        Type: "AWS::RDS::DBInstance"
+        Properties:
+          DBInstanceClass: !Ref DBInstanceType
+          SourceDBInstanceIdentifier: !Ref SourceDBInstanceIdentifier
+          SourceRegion: !Ref SourceRegion
+          KmsKeyId: !Ref MyKey
+          MonitoringInterval: 1
+  expectations:
+    rules:
+      RDS_ENHANCED_MONITORING_ENABLED: PASS
+
+- name: RDS Enhanced Monitoring set with interval of 5 seconds, PASS
+  input:
+    Resources:
+      ExampleRDS:
+        Type: "AWS::RDS::DBInstance"
+        Properties:
+          DBInstanceClass: !Ref DBInstanceType
+          SourceDBInstanceIdentifier: !Ref SourceDBInstanceIdentifier
+          SourceRegion: !Ref SourceRegion
+          KmsKeyId: !Ref MyKey
+          MonitoringInterval: 5
+  expectations:
+    rules:
+      RDS_ENHANCED_MONITORING_ENABLED: PASS
+
+- name: RDS Enhanced Monitoring set with interval of 10 seconds, PASS
+  input:
+    Resources:
+      ExampleRDS:
+        Type: "AWS::RDS::DBInstance"
+        Properties:
+          DBInstanceClass: !Ref DBInstanceType
+          SourceDBInstanceIdentifier: !Ref SourceDBInstanceIdentifier
+          SourceRegion: !Ref SourceRegion
+          KmsKeyId: !Ref MyKey
+          MonitoringInterval: 10
+  expectations:
+    rules:
+      RDS_ENHANCED_MONITORING_ENABLED: PASS
+
+- name: RDS Enhanced Monitoring set with interval of 15 seconds, PASS
+  input:
+    Resources:
+      ExampleRDS:
+        Type: "AWS::RDS::DBInstance"
+        Properties:
+          DBInstanceClass: !Ref DBInstanceType
+          SourceDBInstanceIdentifier: !Ref SourceDBInstanceIdentifier
+          SourceRegion: !Ref SourceRegion
+          KmsKeyId: !Ref MyKey
+          MonitoringInterval: 15
+  expectations:
+    rules:
+      RDS_ENHANCED_MONITORING_ENABLED: PASS
+
+- name: RDS Enhanced Monitoring set with interval of 30 seconds, PASS
+  input:
+    Resources:
+      ExampleRDS:
+        Type: "AWS::RDS::DBInstance"
+        Properties:
+          DBInstanceClass: !Ref DBInstanceType
+          SourceDBInstanceIdentifier: !Ref SourceDBInstanceIdentifier
+          SourceRegion: !Ref SourceRegion
+          KmsKeyId: !Ref MyKey
+          MonitoringInterval: 30
+  expectations:
+    rules:
+      RDS_ENHANCED_MONITORING_ENABLED: PASS
+
+- name: RDS Enhanced Monitoring set with interval of 60 seconds, PASS
+  input:
+    Resources:
+      ExampleRDS:
+        Type: "AWS::RDS::DBInstance"
+        Properties:
+          DBInstanceClass: !Ref DBInstanceType
+          SourceDBInstanceIdentifier: !Ref SourceDBInstanceIdentifier
+          SourceRegion: !Ref SourceRegion
+          KmsKeyId: !Ref MyKey
+          MonitoringInterval: 60
+  expectations:
+    rules:
+      RDS_ENHANCED_MONITORING_ENABLED: PASS
+
+- name: RDS Enhanced Monitoring set with interval of 0, FAIL
+  input:
+    Resources:
+      ExampleRDS:
+        Type: "AWS::RDS::DBInstance"
+        Properties:
+          DBInstanceClass: !Ref DBInstanceType
+          SourceDBInstanceIdentifier: !Ref SourceDBInstanceIdentifier
+          SourceRegion: !Ref SourceRegion
+          KmsKeyId: !Ref MyKey
+          MonitoringInterval: 0
+  expectations:
+    rules:
+      RDS_ENHANCED_MONITORING_ENABLED: FAIL
+
+- name: RDS Enhanced Monitoring property missing, FAIL
+  input:
+    Resources:
+      ExampleRDS:
+        Type: AWS::RDS::DBInstance
+        Properties:
+          DBInstanceClass: !Ref DBInstanceType
+          SourceDBInstanceIdentifier: !Ref SourceDBInstanceIdentifier
+          SourceRegion: !Ref SourceRegion
+          KmsKeyId: !Ref MyKey
+  expectations:
+    rules:
+      RDS_ENHANCED_MONITORING_ENABLED: FAIL
+
+- name: RDS Enhanced Monitoring property missing but rule suppressed, SKIP
+  input:
+    Resources:
+      ExampleRDS:
+        Type: AWS::RDS::DBInstance
+        Metadata:
+          guard:
+            SuppressedRules:
+            - RDS_ENHANCED_MONITORING_ENABLED
+        Properties:
+          DBInstanceClass: !Ref DBInstanceType
+          SourceDBInstanceIdentifier: !Ref SourceDBInstanceIdentifier
+          SourceRegion: !Ref SourceRegion
+          KmsKeyId: !Ref MyKey
+  expectations:
+    rules:
+      RDS_ENHANCED_MONITORING_ENABLED: SKIP

@@ -56,3 +56,18 @@
   expectations:
     rules:
       S3_DEFAULT_ENCRYPTION_KMS: FAIL
+
+- name: S3 Bucket Encryption not set rule suppressed, SKIP
+  input:
+    Resources:
+      ExampleS3:
+        Type: AWS::S3::Bucket
+        Metadata:
+          guard:
+            SuppressedRules:
+            - S3_DEFAULT_ENCRYPTION_KMS
+        Properties:
+          BucketName: my-bucket
+  expectations:
+    rules:
+      S3_DEFAULT_ENCRYPTION_KMS: SKIP

@@ -1,23 +1,45 @@
-## Config Rule Name : rds-enhanced-monitoring-enabled
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/rds-enhanced-monitoring-enabled.html
-
-# Rule Intent: Checks whether enhanced monitoring is enabled for Amazon Relational Database Service (Amazon RDS) instances.
-
-# Expectations:
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#    RDS_ENHANCED_MONITORING_ENABLED
+#
+# Description:
+#    Checks whether enhanced monitoring is enabled for Amazon Relational Database Service (Amazon RDS) instances.
+#
+# Reports on:
+#    AWS::RDS::DBInstance
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
 # a) SKIP: when there are no RDS instances present
 # b) PASS: when all RDS instances have MonitoringInterval set to a value of 1, 5, 10, 15, 30, or 60
 # c) FAIL: when all RDS instances have MonitoringInterval set to 0
 # d) FAIL: when there are RDS instances with MonitoringInterval property is not present
+# e) SKIP: when metadata includes the suppression for rule RDS_ENHANCED_MONITORING_ENABLED
+
 
 #
 # Select all RDS instance resources from incoming template (payload)
 #
 
-let aws_rds_instances = Resources.*[ Type == 'AWS::RDS::DBInstance'  ]
+let aws_rds_instances_enhanced_monitoring_enabled = Resources.*[ Type == 'AWS::RDS::DBInstance'
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "RDS_ENHANCED_MONITORING_ENABLED"
+]
 
 
-rule RDS_ENHANCED_MONITORING_ENABLED when %aws_rds_instances !empty {
-  %aws_rds_instances.Properties.MonitoringInterval EXISTS
-  %aws_rds_instances.Properties.MonitoringInterval IN [1, 5, 10, 15, 30, 60]
-  <<RDS Instance enhanced monitoring required. Specify a value of 1, 5, 10, 15, 30, or 60 on parameter MonitoringInterval.>>
+rule RDS_ENHANCED_MONITORING_ENABLED when %aws_rds_instances_enhanced_monitoring_enabled !empty {
+  %aws_rds_instances_enhanced_monitoring_enabled.Properties.MonitoringInterval EXISTS
+  %aws_rds_instances_enhanced_monitoring_enabled.Properties.MonitoringInterval IN [1, 5, 10, 15, 30, 60]
+  <<
+    Violation: RDS Instance enhanced monitoring required.
+    Fix: Specify a value of 1, 5, 10, 15, 30, or 60 for the parameter on the property MonitoringInterval.
+  >>
 }
