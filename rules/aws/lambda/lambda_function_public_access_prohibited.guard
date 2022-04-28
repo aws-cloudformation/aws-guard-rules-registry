@@ -1,25 +1,43 @@
-## Config Rule Name : lambda-function-public-access-prohibited
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/lambda-function-public-access-prohibited.html
-
-# Rule Intent: Checks if the AWS Lambda function policy attached to the Lambda resource prohibits public access.
-
-# Expectations:
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#    LAMBDA_FUNCTION_PUBLIC_ACCESS_PROHIBITED
+#
+# Description:
+#    Checks if the AWS Lambda function policy attached to the Lambda resource prohibits public access.
+#
+# Reports on:
+#    AWS::Lambda::Permission
+#    AWS::Lambda::LayerVersionPermission
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
 # a) SKIP: when no AWS Lambda permission policies are present
 # b) PASS: when all AWS Lambda permission policies prohibit public access
 # c) FAIL: when any AWS Lambda permission policies allow public access
+# d) SKIP: hen metadata includes the suppression for rule LAMBDA_FUNCTION_PUBLIC_ACCESS_PROHIBITED
 
 #
 # Select all AWS Lambda Permission resources from incoming template (payload)
 #
-let permissions = Resources.*[
+let aws_lambda_permissions_public_access_prohibited = Resources.*[
   Type in [ /AWS::Lambda::Permission/,
     /AWS::Lambda::LayerVersionPermission/ ]
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "LAMBDA_FUNCTION_PUBLIC_ACCESS_PROHIBITED"
 ]
 
-rule  LAMBDA_FUNCTION_PUBLIC_ACCESS_PROHIBITED when %permissions !empty {
+rule LAMBDA_FUNCTION_PUBLIC_ACCESS_PROHIBITED when %aws_lambda_permissions_public_access_prohibited !empty {
 
   # Lambda permission policy where principal is an account id
-  %permissions {
+  %aws_lambda_permissions_public_access_prohibited {
     Type == 'AWS::Lambda::Permission'
     Properties {
       Principal in [ /^\d{12}$/, "AWS::AccountId" ]
@@ -28,7 +46,7 @@ rule  LAMBDA_FUNCTION_PUBLIC_ACCESS_PROHIBITED when %permissions !empty {
   }
 
   # Lambda permission policy where principal is a service (not s3)
-  OR %permissions {
+  OR %aws_lambda_permissions_public_access_prohibited {
     Type == 'AWS::Lambda::Permission'
     Properties {
       Principal != 's3.amazonaws.com'
@@ -44,7 +62,7 @@ rule  LAMBDA_FUNCTION_PUBLIC_ACCESS_PROHIBITED when %permissions !empty {
   }
 
   # Lambda permission policy where principal is s3 service
-  OR %permissions {
+  OR %aws_lambda_permissions_public_access_prohibited {
     Type == 'AWS::Lambda::Permission'
     Properties {
       Principal == 's3.amazonaws.com'
@@ -60,7 +78,7 @@ rule  LAMBDA_FUNCTION_PUBLIC_ACCESS_PROHIBITED when %permissions !empty {
   }
 
   # Lambda layer version permission policies
-  OR %permissions {
+  OR %aws_lambda_permissions_public_access_prohibited {
     Type == 'AWS::Lambda::LayerVersionPermission'
     Properties {
       OrganizationId !empty

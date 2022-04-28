@@ -216,3 +216,20 @@
   expectations:
     rules:
       LAMBDA_FUNCTION_PUBLIC_ACCESS_PROHIBITED: FAIL
+
+- name: Lambda layer version permission policy with NO account or organization but rule suppressed, SKIP
+  input:
+    Resources: 
+      ExampleLambdaLayerVersionPermission: 
+        Type: "AWS::Lambda::LayerVersionPermission"
+        Metadata:
+          guard:
+            SuppressedRules:
+            - LAMBDA_FUNCTION_PUBLIC_ACCESS_PROHIBITED
+        Properties: 
+          Action: lambda:GetLayerVersion
+          LayerVersionArn: arn:aws:lambda:us-west-2:123456789012:layer:my-layer:1
+          Principal: "*"
+  expectations:
+    rules:
+      LAMBDA_FUNCTION_PUBLIC_ACCESS_PROHIBITED: SKIP

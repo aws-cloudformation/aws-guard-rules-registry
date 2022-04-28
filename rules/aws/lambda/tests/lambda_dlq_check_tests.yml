@@ -62,3 +62,21 @@
   expectations:
     rules:
       LAMBDA_DLQ_CHECK: FAIL
+
+- name: AWS Lambda Function dead-letter queue NOT set but rule suppressed, SKIP
+  input:
+    Resources:
+      ExampleLambda-1:
+        Type: "AWS::Lambda::Function"
+        Metadata:
+          guard:
+            SuppressedRules:
+            - LAMBDA_DLQ_CHECK
+        Properties: 
+          Role: arn:aws:iam::123456789012:role/lambda-role
+          Code:
+            S3Bucket: my-bucket
+            S3Key: function.zip
+  expectations:
+    rules:
+      LAMBDA_DLQ_CHECK: SKIP
