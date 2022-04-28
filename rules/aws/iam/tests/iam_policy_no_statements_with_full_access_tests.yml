@@ -92,5 +92,25 @@
     rules: 
       IAM_POLICY_NO_STATEMENTS_WITH_FULL_ACCESS: FAIL
 
+- name: IAM Managed Policy with "Allow" statement granting permissions to all actions on all resources but rule suppressed, SKIP
+  input: 
+    Resources: 
+      ExamplePolicy: 
+        Type: "AWS::IAM::ManagedPolicy"
+        Metadata:
+          guard:
+            SuppressedRules:
+            - IAM_POLICY_NO_STATEMENTS_WITH_FULL_ACCESS
+        Properties: 
+          PolicyDocument: 
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action: "*"
+                Resource: "*"
+  expectations:
+    rules: 
+      IAM_POLICY_NO_STATEMENTS_WITH_FULL_ACCESS: SKIP
+
 
 

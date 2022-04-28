@@ -1,32 +1,48 @@
-## Config Rule Name : iam-policy-no-statements-with-full-access
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/iam-policy-no-statements-with-full-access.html
-
-# Rule Intent: Checks if AWS Identity and Access Management (IAM) policies grant permissions to all actions on individual AWS resources. 
-
-# Expectations:
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#   IAM_POLICY_NO_STATEMENTS_WITH_FULL_ACCESS
+#
+# Description:
+#   Checks if AWS Identity and Access Management (IAM) policies grant permissions to all actions on individual AWS resources.
+#
+# Reports on:
+#   AWS::IAM::ManagedPolicy
+#
+# Evaluates:
+#   AWS CloudFormation
+#
+# Rule Parameters:
+#   NA
+#
+# Scenarios:
 # a) SKIP: when there are no IAM Managed Policies present
 # b) PASS: when all IAM Managed Policies do not allows full access to at least 1 AWS service
 # c) FAIL: when any IAM Managed Policies allows full access to at least 1 AWS service.
+# d) SKIP: when metada has rule suppression for IAM_POLICY_NO_STATEMENTS_WITH_FULL_ACCESS
 
 #
 # Select all IAM Managed Policy resources from incoming template (payload)
 # 
-let iam_managed_policies = Resources.*[ Type == 'AWS::IAM::ManagedPolicy' ]
+let aws_iam_managed_policies_no_statements_with_full_access = Resources.*[ Type == 'AWS::IAM::ManagedPolicy'
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "IAM_POLICY_NO_STATEMENTS_WITH_FULL_ACCESS" 
+]
 
-rule IAM_POLICY_NO_STATEMENTS_WITH_FULL_ACCESS when %iam_managed_policies !empty {
-    let violations = Resources.*[
-        Type == 'AWS::IAM::ManagedPolicy' 
-        some Properties.PolicyDocument.Statement[*] {
-            some Action[*] in ["*", /^[a-zA-Z0-9]*:\*$/]
-            Effect == "Allow"
-            Resource == "*"
-        }
-    ]
-
-    %violations empty
-
-    <<
-        Violation: One or more IAM Managed Policies allow full access to at least 1 AWS service
-        Fix: Remove policy statements that match {"Effect": "Allow", "Action": "<service-name>:*" ... } or {"Effect": "Allow", "Action": "*" ... }
-    >>
+rule IAM_POLICY_NO_STATEMENTS_WITH_FULL_ACCESS when %aws_iam_managed_policies_no_statements_with_full_access !empty {
+  let violations = Resources.*[
+    Type == 'AWS::IAM::ManagedPolicy' 
+    some Properties.PolicyDocument.Statement[*] {
+      some Action[*] in ["*", /^[a-zA-Z0-9]*:\*$/]
+      Effect == "Allow"
+      Resource == "*"
+    }
+  ]
+  %violations empty
+  <<
+    Violation: One or more IAM Managed Policies allow full access to at least 1 AWS service
+    Fix: Remove policy statements that match {"Effect": "Allow", "Action": "<service-name>:*" ... } or {"Effect": "Allow", "Action": "*" ... }
+  >>
 } 

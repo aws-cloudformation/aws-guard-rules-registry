@@ -101,3 +101,24 @@
     rules: 
       IAM_NO_INLINE_POLICY_CHECK: FAIL
 
+- name: IAM User with inline policies but rule suppressed, SKIP
+  input: 
+    Resources: 
+      ExampleUser: 
+        Type: "AWS::IAM::User"
+        Metadata:
+          guard:
+            SuppressedRules:
+            - IAM_NO_INLINE_POLICY_CHECK
+        Properties: 
+          Policies: 
+            - PolicyName: "Admin"
+              PolicyDocument: 
+                Version: "2012-10-17"
+                Statement:
+                  - Effect: "Allow"
+                    Action: "*"
+                    Resource: "*"
+  expectations:
+    rules: 
+      IAM_NO_INLINE_POLICY_CHECK: SKIP
