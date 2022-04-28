@@ -1,34 +1,50 @@
-## Config Rule Name : iam-policy-no-statements-with-admin-access
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/iam-policy-no-statements-with-admin-access.html
-
-# Rule Intent: Checks the IAM policies that you create for Allow statements that grant permissions to all actions on all resources. 
-
-# Expectations:
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#   IAM_POLICY_NO_STATEMENTS_WITH_ADMIN_ACCESS
+#
+# Description:
+#   Checks the IAM policies that you create for Allow statements that grant permissions to all actions on all resources. 
+#
+# Reports on:
+#   AWS::IAM::Policy
+#
+# Evaluates:
+#   AWS CloudFormation
+#
+# Rule Parameters:
+#   NA
+#
+# Scenarios:
 # a) SKIP: when there are no IAM Policies present
 # b) PASS: when all IAM Policies do not grant permissions to all actions on all resources
 # c) FAIL: when any IAM Policies grant permissions to all actions on all resources
+# d) SKIP: when metada has rule suppression for IAM_POLICY_NO_STATEMENTS_WITH_ADMIN_ACCESS
 
 #
 # Select all IAM Policy resources from incoming template (payload)
 # 
-let iam_policies = Resources.*[ Type == 'AWS::IAM::Policy' ]
+let aws_iam_policies_no_statements_with_admin_access = Resources.*[ Type == 'AWS::IAM::Policy' 
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "IAM_POLICY_NO_STATEMENTS_WITH_ADMIN_ACCESS"
+]
 
-rule IAM_POLICY_NO_STATEMENTS_WITH_ADMIN_ACCESS when %iam_policies !empty {
-    let violations = Resources.*[
-        Type == 'AWS::IAM::Policy' 
-        some Properties.PolicyDocument.Statement[*] {
-            some Action[*] == "*"
-            Effect == "Allow"
-            Resource == "*"
-        }
-    ]
-
-    %violations empty
-
-    <<
-        Violation: One or more IAM policies contain allow statements that grant permissions to all actions on all resources
-        Fix: Remove policy statements that match {"Effect": "Allow", "Action": "*", "Resource": "*"}
-    >>
+rule IAM_POLICY_NO_STATEMENTS_WITH_ADMIN_ACCESS when %aws_iam_policies_no_statements_with_admin_access !empty {
+  let violations = Resources.*[
+    Type == 'AWS::IAM::Policy' 
+    some Properties.PolicyDocument.Statement[*] {
+      some Action[*] == "*"
+      Effect == "Allow"
+      Resource == "*"
+    }
+  ]
+  %violations empty
+	<<
+    Violation: One or more IAM policies contain allow statements that grant permissions to all actions on all resources
+    Fix: Remove policy statements that match {"Effect": "Allow", "Action": "*", "Resource": "*"}
+  >>
 } 
 
 
