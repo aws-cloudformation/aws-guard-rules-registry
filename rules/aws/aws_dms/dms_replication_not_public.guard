@@ -1,10 +1,41 @@
-## Config Rule Name : dms-replication-not-public
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/dms-replication-not-public.html
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#    DMS_REPLICATION_NOT_PUBLIC
+#
+# Description:
+#   Checks whether AWS Database Migration Service replication instances are not set to allow public.
+#
+# Reports on:
+#    AWS::DMS::ReplicationInstance
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
+# a) SKIP: when there is no DMS Replication Instance present
+# b) FAIL: When DMS Replication Instance is present and PubliclyAccessible property is set to true
+# c) PASS: When DMS Replication Instance is present and PubliclyAccessible property is set to false
+# c) PASS: When DMS Replication Instance is present and PubliclyAccessible property is not set
+# d) SKIP: when metada has rule suppression for DMS_REPLICATION_NOT_PUBLIC
 
-let dms_replication_instances = Resources.*[ Type == 'AWS::DMS::ReplicationInstance' ]
+#
+# Select all Redshift cluster resources from incoming template
+#
 
-rule DMS_Replication_Not_Public when %dms_replication_instances !empty {
-    %dms_replication_instances.Properties.PubliclyAccessible == true
+let dms_replication_instances = Resources.*[ Type == 'AWS::DMS::ReplicationInstance'
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "DMS_REPLICATION_NOT_PUBLIC"
+]
+
+rule DMS_REPLICATION_NOT_PUBLIC when %dms_replication_instances !empty {
+  %dms_replication_instances.Properties.PubliclyAccessible exists
+  %dms_replication_instances.Properties.PubliclyAccessible == false
   <<
     Violation: AWS Database Migration Service replication instances should not be public.
     Fix: Set the DMS Replication Instance property PubliclyAccessible parameter to true.
