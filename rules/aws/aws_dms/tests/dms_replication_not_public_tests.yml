@@ -1,0 +1,67 @@
+###
+# DMS_REPLICATION_NOT_PUBLIC tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      DMS_REPLICATION_NOT_PUBLIC: SKIP
+
+- name: Rule skips when no cluster present
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      DMS_REPLICATION_NOT_PUBLIC: SKIP
+
+- name: DMS Replication Instance property PublicAccessible set to false, PASS
+  input:
+    Resources:
+      BasicReplicationInstance:
+        Type: "AWS::DMS::ReplicationInstance"
+        Properties:
+          ReplicationInstanceClass: dms.t2.small
+          PubliclyAccessible: false
+  expectations:
+    rules:
+      DMS_REPLICATION_NOT_PUBLIC: PASS
+
+- name: DMS Replication Instance property PublicAccessible set to true, FAIL
+  input:
+    Resources:
+      BasicReplicationInstance:
+        Type: "AWS::DMS::ReplicationInstance"
+        Properties:
+          ReplicationInstanceClass: dms.t2.small
+          PubliclyAccessible: true
+  expectations:
+    rules:
+      DMS_REPLICATION_NOT_PUBLIC: FAIL
+
+- name: DMS Replication Instance property PublicAccessible missing, FAIL
+  input:
+    Resources:
+      BasicReplicationInstance:
+        Type: "AWS::DMS::ReplicationInstance"
+        Properties:
+          ReplicationInstanceClass: dms.t2.small
+  expectations:
+    rules:
+      DMS_REPLICATION_NOT_PUBLIC: FAIL
+
+- name: DMS Replication Instance property PublicAccessible set to true but rule suppress, SKIP
+  input:
+    Resources:
+      BasicReplicationInstance:
+        Type: "AWS::DMS::ReplicationInstance"
+        Metadata:
+          guard:
+            SuppressedRules:
+            - DMS_REPLICATION_NOT_PUBLIC
+        Properties:
+          ReplicationInstanceClass: dms.t2.small
+          PubliclyAccessible: false
+  expectations:
+    rules:
+      DMS_REPLICATION_NOT_PUBLIC: SKIP
