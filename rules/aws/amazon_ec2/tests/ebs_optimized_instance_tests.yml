@@ -2,6 +2,11 @@
 # EBS_OPTIMIZED_INSTANCE tests
 ###
 ---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      EBS_OPTIMIZED_INSTANCE: SKIP
 
 - name: No resources, SKIP
   input:
@@ -48,3 +53,20 @@
   expectations:
     rules:
       EBS_OPTIMIZED_INSTANCE: FAIL
+
+- name: EC2 has EbsOptimized property set to false but rule suppressed, SKIP
+  input:
+    Resources:
+      ExampleEC2:
+        Type: AWS::EC2::Instance
+        Metadata:
+          guard:
+            SuppressedRules:
+            - EBS_OPTIMIZED_INSTANCE
+        Properties:
+          ImageId: !Ref LatestAmiId
+          InstanceType: !Ref pInstanceType
+          EbsOptimized: false
+  expectations:
+    rules:
+      EBS_OPTIMIZED_INSTANCE: SKIP

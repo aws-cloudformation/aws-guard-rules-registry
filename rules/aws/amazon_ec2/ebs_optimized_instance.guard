@@ -1,17 +1,40 @@
-## Config Rule Name : ebs-optimized-instance
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/ebs-optimized-instance.html"
-
-# Rule Intent: Checks whether EBS optimization is enabled for your EC2 instances that can be EBS-optimized
-
-# Expectations:
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#    EBS_OPTIMIZED_INSTANCE
+#
+# Description:
+#    Checks whether EBS optimization is enabled for your EC2 instances that can be EBS-optimized 
+#
+# Reports on:
+#    AWS::EC2::SecurityGroup
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
 # a) SKIP: when there are no EC2 resource present
 # b) PASS: when all EC2 resources EbsOptimized property is set to true
-# c) FAIL: when all EC2 resources do not have the EbsOptimized property set to true or is missing
+# c) FAIL: when any EC2 resources do not have the EbsOptimized property set to true
+# e) SKIP: hen metadata includes the suppression for rule EBS_OPTIMIZED_INSTANCE
 
-
-let ec2_instances = Resources.*[ Type == 'AWS::EC2::Instance' ]
+#
+# Select all AWS EC2 Instance resources from incoming template (payload)
+#
+let ec2_instances = Resources.*[ Type == 'AWS::EC2::Instance' 
+	Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "EBS_OPTIMIZED_INSTANCE"
+]
 
 rule EBS_OPTIMIZED_INSTANCE when %ec2_instances !empty {
-    %ec2_instances.Properties.EbsOptimized exists <<EC2 Instance EbsOptimized must be specified and set to true>>
-    %ec2_instances.Properties.EbsOptimized == true <<EC2 Instance EbsOptimized must be set to true>>
+    %ec2_instances.Properties.EbsOptimized == true
+    <<
+			Violation: EBS optimization must be enabled for your EC2 instances
+			Fix: set the EbsOptimized property to true
+    >>
 }
