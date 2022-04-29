@@ -9,7 +9,7 @@
 #    Checks whether EBS optimization is enabled for your EC2 instances that can be EBS-optimized 
 #
 # Reports on:
-#    AWS::EC2::SecurityGroup
+#    AWS::EC2::Instance
 #
 # Evaluates:
 #    AWS CloudFormation
@@ -26,13 +26,13 @@
 #
 # Select all AWS EC2 Instance resources from incoming template (payload)
 #
-let ec2_instances = Resources.*[ Type == 'AWS::EC2::Instance' 
+let ec2_ebs_optimized_instances = Resources.*[ Type == 'AWS::EC2::Instance' 
 	Metadata.guard.SuppressedRules not exists or
   Metadata.guard.SuppressedRules.* != "EBS_OPTIMIZED_INSTANCE"
 ]
 
-rule EBS_OPTIMIZED_INSTANCE when %ec2_instances !empty {
-    %ec2_instances.Properties.EbsOptimized == true
+rule EBS_OPTIMIZED_INSTANCE when ec2_ebs_optimized_instances !empty {
+    ec2_ebs_optimized_instances.Properties.EbsOptimized == true
     <<
 			Violation: EBS optimization must be enabled for your EC2 instances
 			Fix: set the EbsOptimized property to true
