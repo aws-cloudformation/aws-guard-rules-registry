@@ -1,23 +1,56 @@
-## Config Rule Name : restricted-ssh
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/restricted-ssh.html
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#    INCOMING_SSH_DISABLED
+#
+# Description:
+#    Checks if the incoming SSH traffic for the security groups is accessible. 
+#
+# Reports on:
+#    AWS::EC2::SecurityGroup
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
+# a) SKIP: when no Security Group resources are present
+# b) SKIP: when no SSH ingress is defined (port 22)
+# c) PASS: when all Security Groups resources restrict the IP address of the incoming SSH traffic
+# d) FAIL: when a Security Group allows SSH traffic from any IP address (0.0.0.0/0). 
+# e) SKIP: hen metadata includes the suppression for rule INCOMING_SSH_DISABLED
 
-# Expectations:
-# a) SKIP: when there are no Security Groups resource present
-# b) PASS: when all Security Groups do no allow any of the restricted common ports
-# c) FAIL: when a Security Group allows any of the restricted common ports
+#
+# Select all Security Group resources from incoming template (payload)
+#
+let aws_security_groups_restricted_ssh = Resources.*[ 
+	Type == 'AWS::EC2::SecurityGroup'
+	some Properties.SecurityGroupIngress[*] {
+		ToPort == 22
+		FromPort == 22
+		IpProtocol == "tcp"
+	}
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "INCOMING_SSH_DISABLED"
+]
 
-let sgs = Resources.*[ Type == 'AWS::EC2::SecurityGroup' ]
-
-rule RESTRICTED_SSH when %sgs !empty {
-    sgs.Properties.SecurityGroupIngress[*]{
-        CidrIp == "0.0.0.0/0"
-        FromPort in [22]
-        ToPort in [22]
-        IpProtocol exists
-        IpProtocol == 'tcp'
-    }
-    <<
-        Violation: IP addresses of the incoming SSH traffic in the security groups are restricted (CIDR other than 0.0.0.0/0)
-        Fix: https://docs.aws.amazon.com/config/latest/developerguide/restricted-common-ports.html
-    >>
+rule INCOMING_SSH_DISABLED when %aws_security_groups_restricted_ssh !empty {
+	let violations = Resources.*[ 
+		Type == 'AWS::EC2::SecurityGroup'
+		some Properties.SecurityGroupIngress[*] {
+			CidrIp == "0.0.0.0/0"
+			ToPort == 22
+			FromPort == 22
+			IpProtocol == "tcp"
+		}
+	]
+	%violations empty 
+  # <<
+  #   Violation: IP addresses of the incoming SSH traffic in the security groups are restricted (CIDR other than 0.0.0.0/0)
+  #   Fix: set SecurityGroupIngress.CidrIp property to a more restrictive CIDR than 0.0.0.0/0
+  # >>
 }
