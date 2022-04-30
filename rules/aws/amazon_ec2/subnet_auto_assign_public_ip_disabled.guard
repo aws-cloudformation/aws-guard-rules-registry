@@ -1,17 +1,41 @@
-## Config Rule Name : subnet-auto-assign-public-ip-disabled
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/subnet-auto-assign-public-ip-disabled.html
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#    SUBNET_AUTO_ASSIGN_PUBLIC_IP_DISABLED
+#
+# Description:
+#    Checks if Amazon Virtual Private Cloud (Amazon VPC) subnets are assigned a public IP address.  
+#
+# Reports on:
+#    AWS::EC2::Subnet
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
+# a) SKIP: when there are no EC2 Subnet resource present
+# b) PASS: when all EC2 Subnet resources have the MapPublicIpOnLaunch property set to false or it is missing (default false)
+# c) FAIL: when any EC2 Subnet resources have the MapPublicIpOnLaunch property set to true
+# d) SKIP: hen metadata includes the suppression for rule SUBNET_AUTO_ASSIGN_PUBLIC_IP_DISABLED
 
-# Expectations:
-# a) SKIP: when there are no subnets resource present
-# b) PASS: when all Subnets MapPublicIpOnLaunch property is set to false
-# c) FAIL: when all Subnets resources do not have the MapPublicIpOnLaunch property set to false
+#
+# Select all EC2 Subnet resources from incoming template (payload)
+#
+let ec2_subnets_auto_assign_public_ip_disabled = Resources.*[ Type == 'AWS::EC2::Subnet' 
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "SUBNET_AUTO_ASSIGN_PUBLIC_IP_DISABLED"
+]
 
-let ec2_subnets = Resources.*[ Type == 'AWS::EC2::Subnet' ]
-
-rule SUBNET_AUTO_ASSIGN_PUBLIC_IP_DISABLED when %ec2_subnets !empty {
-    %ec2_subnets.Properties.MapPublicIpOnLaunch == true 
-    <<
-        Violation: Amazon VPC has subnets that are assigned a public IP address.
-        Fix: https://docs.aws.amazon.com/config/latest/developerguide/subnet-auto-assign-public-ip-disabled.html
-    >>
+rule SUBNET_AUTO_ASSIGN_PUBLIC_IP_DISABLED when %ec2_subnets_auto_assign_public_ip_disabled !empty {
+	%ec2_subnets_auto_assign_public_ip_disabled.Properties.MapPublicIpOnLaunch !exists
+  OR %ec2_subnets_auto_assign_public_ip_disabled.Properties.MapPublicIpOnLaunch == false
+  <<
+    Violation: VPCs should not have subnets that are assigned a public IP address.
+    Fix: remove the MapPublicIpOnLaucnh property or set it to false
+	>>
 }

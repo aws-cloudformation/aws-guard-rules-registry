@@ -1,0 +1,79 @@
+###
+# INCOMING_SSH_DISABLED tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      SUBNET_AUTO_ASSIGN_PUBLIC_IP_DISABLED: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      SUBNET_AUTO_ASSIGN_PUBLIC_IP_DISABLED: SKIP
+
+- name: EC2 Subnet with MapPublicIpOnLaunch property missing (default false), PASS
+  input:
+    Resources:
+      ExampleSubnet:
+        Type: AWS::EC2::Subnet
+        Properties:
+          VpcId:
+            Ref: myVPC
+          CidrBlock: 10.0.0.0/24
+          AvailabilityZone: "us-east-1a"
+  expectations:
+    rules:
+      SUBNET_AUTO_ASSIGN_PUBLIC_IP_DISABLED: PASS
+
+- name: EC2 Subnet with MapPublicIpOnLaunch property set to false, PASS
+  input:
+    Resources:
+      ExampleSubnet:
+        Type: AWS::EC2::Subnet
+        Properties:
+          VpcId:
+            Ref: myVPC
+          CidrBlock: 10.0.0.0/24
+          AvailabilityZone: "us-east-1a"
+          MapPublicIpOnLaunch: false 
+  expectations:
+    rules:
+      SUBNET_AUTO_ASSIGN_PUBLIC_IP_DISABLED: PASS
+
+- name: EC2 Subnet with MapPublicIpOnLaunch property set to true, FAIL
+  input:
+    Resources:
+      ExampleSubnet:
+        Type: AWS::EC2::Subnet
+        Properties:
+          VpcId:
+            Ref: myVPC
+          CidrBlock: 10.0.0.0/24
+          AvailabilityZone: "us-east-1a"
+          MapPublicIpOnLaunch: true
+  expectations:
+    rules:
+      SUBNET_AUTO_ASSIGN_PUBLIC_IP_DISABLED: FAIL
+
+- name: EC2 Subnet with MapPublicIpOnLaunch property set to true but rule suppressed, SKIP
+  input:
+    Resources:
+      ExampleSubnet:
+        Type: AWS::EC2::Subnet
+        Metadata:
+          guard:
+            SuppressedRules:
+            - SUBNET_AUTO_ASSIGN_PUBLIC_IP_DISABLED
+        Properties:
+          VpcId:
+            Ref: myVPC
+          CidrBlock: 10.0.0.0/24
+          AvailabilityZone: "us-east-1a"
+          MapPublicIpOnLaunch: true
+  expectations:
+    rules:
+      SUBNET_AUTO_ASSIGN_PUBLIC_IP_DISABLED: SKIP
