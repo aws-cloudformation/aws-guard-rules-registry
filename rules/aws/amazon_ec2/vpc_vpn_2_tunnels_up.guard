@@ -1,6 +1,0 @@
-## SKIP
-## SKIP RATIONALE: Initial version of Rules Registry pertains to static code analysis. The check for
-##                   VPN tunnels status is not supported in infrastructure as code
-
-## Config Rule Name : vpc-vpn-2-tunnels-up
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/vpc-vpn-2-tunnels-up.html

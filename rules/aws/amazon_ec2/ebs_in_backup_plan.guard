@@ -1,6 +1,0 @@
-## SKIP
-## SKIP RATIONALE: Initial version of Rules Registry pertains to static code analysis. The check
-##                 for EBS in backup plan configurations is not supported in infrastructure as code
-
-## Config Rule Name : ebs-in-backup-plan
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/ebs-in-backup-plan.html"
