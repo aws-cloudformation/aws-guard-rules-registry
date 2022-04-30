@@ -1,19 +1,40 @@
-## Config Rule Name : ec2-instances-in-vpc
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/ec2-instances-in-vpc.html
-
-# Rule Intent: Checks if an Amazon Elastic Compute Cloud (Amazon EC2) instance has an Identity and Access Management (IAM) profile attached to it.
-
-# Expectations:
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#    EC2_INSTANCES_IN_VPC
+#
+# Description:
+#    Checks if your EC2 instances belong to a virtual private cloud (VPC).
+#
+# Reports on:
+#    AWS::EC2::Instance
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
 # a) SKIP: when there are no EC2 resource present
-# b) PASS: when all EC2 resources SubnetId property is not empty
-# c) FAIL: when all EC2 resources do not have the SubnetId property set or is missing
+# b) PASS: when all EC2 resources have the SubnetId property set
+# c) FAIL: when any EC2 resources do not have the SubnetId property set
+# d) SKIP: when metadata includes the suppression for rule EC2_INSTANCES_IN_VPC
 
-let ec2_instances = Resources.*[ Type == 'AWS::EC2::Instance' ]
+#
+# Select all ECS Instance resources from incoming template (payload)
+#
+let ec2_instances_in_vpc = Resources.*[ Type == 'AWS::EC2::Instance' 
+  Metadata.guard.SuppressedRules not exists or 
+  Metadata.guard.SuppressedRules.* != "EC2_INSTANCES_IN_VPC"
+]
 
-rule EC2_INSTANCES_IN_VPC when %ec2_instances !empty {
-    %ec2_instances.Properties.SubnetId exists 
-    <<
-        Violation: EC2 Instance SubnetId must be specified
-        Fix: https://docs.aws.amazon.com/config/latest/developerguide/ec2-instances-in-vpc.html
-    >>
+rule EC2_INSTANCES_IN_VPC when %ec2_instances_in_vpc !empty {
+  %ec2_instances_in_vpc.Properties.SubnetId !empty
+  <<
+  	Violation: EC2 Instances must belong to a VPC
+  	Fix: set the SubnetId property
+  >>
 }

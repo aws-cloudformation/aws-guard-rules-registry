@@ -26,14 +26,14 @@
 #
 # Select all EC2 Instance resources from incoming template (payload)
 #
-let ebs_volumes = Resources.*[ Type == 'AWS::EC2::Volume' 
+let ebs_volumes_encrypted = Resources.*[ Type == 'AWS::EC2::Volume' 
   Metadata.guard.SuppressedRules not exists or
   Metadata.guard.SuppressedRules.* != "ENCRYPTED_VOLUMES"
 ]
 
-rule ENCRYPTED_VOLUMES when %ebs_volumes !empty {
-  %ebs_volumes.Properties.KmsKeyId !empty
-	OR %ebs_volumes.Properties.Encrypted == true
+rule ENCRYPTED_VOLUMES when %ebs_volumes_encrypted !empty {
+  %ebs_volumes_encrypted.Properties.KmsKeyId !empty
+	OR %ebs_volumes_encrypted.Properties.Encrypted == true
   <<
     Violation: EBS volumes in an attached state must encrypted.
     Fix: either set the KmsKeyId property to a key ID, key alias, key ARN, or alias ARN 

@@ -2,6 +2,11 @@
 # EC2_INSTANCES_IN_VPC tests
 ###
 ---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      EC2_INSTANCES_IN_VPC: SKIP
 
 - name: No resources, SKIP
   input:
@@ -24,7 +29,7 @@
     rules:
       EC2_INSTANCES_IN_VPC: PASS
 
-- name: EC2 miss SubnetId property, FAIL
+- name: EC2 SubnetId property not set, FAIL
   input:
     Resources:
       ExampleEC2:
@@ -36,3 +41,20 @@
   expectations:
     rules:
       EC2_INSTANCES_IN_VPC: FAIL
+
+- name: EC2 SubnetId property not set but rule suppressed, SKIP
+  input:
+    Resources:
+      ExampleEC2:
+        Type: AWS::EC2::Instance
+        Metadata:
+          guard:
+            SuppressedRules:
+            - EC2_INSTANCES_IN_VPC
+        Properties:
+          ImageId: !Ref LatestAmiId
+          InstanceType: !Ref pInstanceType
+          IamInstanceProfile: !Ref rInstanceProfile
+  expectations:
+    rules:
+      EC2_INSTANCES_IN_VPC: SKIP
