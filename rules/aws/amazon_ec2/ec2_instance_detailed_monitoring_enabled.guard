@@ -1,19 +1,40 @@
-## Config Rule Name : ec2-instance-detailed-monitoring-enabled
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/ec2-instance-detailed-monitoring-enabled.html"
-
-# Rule Intent: Checks if detailed monitoring is enabled for EC2 instances.
-
-# Expectations:
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#    EC2_INSTANCE_DETAILED_MONITORING_ENABLED
+#
+# Description:
+#    Checks if detailed monitoring is enabled for EC2 instances. 
+#
+# Reports on:
+#    AWS::EC2::Instance
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
 # a) SKIP: when there are no EC2 resource present
-# b) PASS: when all EC2 resources Monitoring property is set to true
-# c) FAIL: when all EC2 resources do not have the Monitoring property set to true or is missing
+# b) PASS: when all EC2 resources have the Monitoring property set to true
+# c) FAIL: when any EC2 resources do not have the Monitoring property set to true
+# d) SKIP: hen metadata includes the suppression for rule EC2_INSTANCE_DETAILED_MONITORING_ENABLED
 
-let ec2_instances = Resources.*[ Type == 'AWS::EC2::Instance' ]
+#
+# Select all EC2 Instance resources from incoming template (payload)
+#
+let ec2_instances_detailed_monitoring_enabled = Resources.*[ Type == 'AWS::EC2::Instance' 
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "EC2_INSTANCE_DETAILED_MONITORING_ENABLED"
+]
 
-rule EC2_INSTANCE_DETAILED_MONITORING_ENABLED when %ec2_instances !empty {
-    %ec2_instances.Properties.Monitoring == true 
+rule EC2_INSTANCE_DETAILED_MONITORING_ENABLED when %ec2_instances_detailed_monitoring_enabled !empty {
+    %ec2_instances_detailed_monitoring_enabled.Properties.Monitoring == true 
     <<
-        Violation: EC2 Instance Monitoring must be set to true
-        Fix: https://docs.aws.amazon.com/config/latest/developerguide/ec2-instance-detailed-monitoring-enabled.html
+      Violation: EC2 Instance Monitoring must be enabled on all EC2 instances
+      Fix: set the Monitoring property to true
     >>
 }
