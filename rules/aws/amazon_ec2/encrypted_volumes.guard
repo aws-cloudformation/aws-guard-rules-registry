@@ -1,17 +1,42 @@
-## Config Rule Name : encrypted-volumes
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/encrypted-volumes.html
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#    ENCRYPTED_VOLUMES
+#
+# Description:
+#    Checks if the EBS volumes that are in an attached state are encrypted. 
+#
+# Reports on:
+#    AWS::EC2::Volume
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
+# a) SKIP: when there are no EBS volume resources present
+# b) PASS: when all EBS volumes have the KmsKeyId property set or the Encrypted property set to true 
+# c) FAIL: when any EC2 volumes do not have the KmsKeyId or Encrypted property set
+# e) SKIP: hen metadata includes the suppression for rule ENCRYPTED_VOLUMES
 
-# Expectations:
-# a) SKIP: when there are no EBS volumes resource present
-# b) PASS: when all EBS volumes kmskeyid property is not empty
-# c) FAIL: when all EC2 resources do not have the kmskeyid property empty or is missing
-
-let ebs_volumes = Resources.*[ Type == 'AWS::EC2::Volume' ]
+#
+# Select all EC2 Instance resources from incoming template (payload)
+#
+let ebs_volumes = Resources.*[ Type == 'AWS::EC2::Volume' 
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "ENCRYPTED_VOLUMES"
+]
 
 rule ENCRYPTED_VOLUMES when %ebs_volumes !empty {
-    %ebs_volumes.Properties.kmskeyid EXISTS
-    <<
-        Violation: EBS volumes in an attached state must encrypted with that KMS key.
-        Fix: https://docs.aws.amazon.com/config/latest/developerguide/encrypted-volumes.html
-    >>
+  %ebs_volumes.Properties.KmsKeyId !empty
+	OR %ebs_volumes.Properties.Encrypted == true
+  <<
+    Violation: EBS volumes in an attached state must encrypted.
+    Fix: either set the KmsKeyId property to a key ID, key alias, key ARN, or alias ARN 
+		or set the Encrypted property to true to encrypt the volume with the account default key or AWS managed key. 
+  >>
 }
