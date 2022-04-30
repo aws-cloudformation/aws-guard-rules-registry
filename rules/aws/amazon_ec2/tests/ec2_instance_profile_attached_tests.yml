@@ -15,20 +15,7 @@
     rules:
       EC2_INSTANCE_PROFILE_ATTACHED: SKIP
 
-- name: Empty, SKIP
-  input: {}
-  expectations:
-    rules:
-      asg_launch_config_instance_profile_attached: SKIP
-
-- name: No resources, SKIP
-  input:
-    Resources: {}
-  expectations:
-    rules:
-      asg_launch_config_instance_profile_attached: SKIP
-
-- name: EC2 has IAM Instance Profile associated to it, PASS
+- name: EC2 Instance has an IAM Instance Profile associated with it, PASS
   input:
     Resources:
       ExampleEC2:
@@ -42,30 +29,7 @@
     rules:
       EC2_INSTANCE_PROFILE_ATTACHED: PASS
 
-- name: Launch Config has IAM Instance Profile associated to it, PASS
-  input:
-    Resources:
-      myLaunchConfig:
-        Type: AWS::AutoScaling::LaunchConfiguration
-        Properties:
-          ImageId: !Ref LatestAmiId
-          IamInstanceProfile: !Ref RootInstanceProfile
-  expectations:
-    rules:
-      asg_launch_config_instance_profile_attached: PASS
-
-- name: Launch Config has IAM Instance no Profile associated to it, FAIL
-  input:
-    Resources:
-      myLaunchConfig:
-        Type: AWS::AutoScaling::LaunchConfiguration
-        Properties:
-          ImageId: !Ref LatestAmiId
-  expectations:
-    rules:
-      asg_launch_config_instance_profile_attached: FAIL
-
-- name: EC2 has no IAM Instance Profile associated to it, FAIL
+- name: EC2 has no IAM Instance Profile associated with it, FAIL
   input:
     Resources:
       ExampleEC2:
@@ -78,5 +42,21 @@
     rules:
       EC2_INSTANCE_PROFILE_ATTACHED: FAIL
 
+- name: EC2 has no IAM Instance Profile associated with it but rule suppressed, SKIP
+  input:
+    Resources:
+      ExampleEC2:
+        Type: AWS::EC2::Instance
+        Metadata:
+          guard:
+            SuppressedRules:
+            - EC2_INSTANCE_PROFILE_ATTACHED
+        Properties:
+          ImageId: !Ref LatestAmiId
+          InstanceType: !Ref pInstanceType
+          Monitoring: true
+  expectations:
+    rules:
+      EC2_INSTANCE_PROFILE_ATTACHED: SKIP
 
 

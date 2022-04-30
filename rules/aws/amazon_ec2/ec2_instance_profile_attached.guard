@@ -1,35 +1,40 @@
-## Config Rule Name : ec2-instance-profile-attached
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/ec2-instance-profile-attached.html
-
-# Rule Intent: Checks if an Amazon Elastic Compute Cloud (Amazon EC2) instance has an Identity and Access Management (IAM) profile attached to it.
-
-
-# Expectations:
-# a) SKIP: when there are no EFS resource present
-# b) PASS: when all EFS resources have encrypted key property set to true
-# c) FAIL: when all EFS resources have encrypted key property not set or set to false
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#    EC2_INSTANCE_PROFILE_ATTACHED
+#
+# Description:
+#    Checks if an Amazon Elastic Compute Cloud (Amazon EC2) instance has an Identity and Access Management (IAM) profile attached to it. 
+#
+# Reports on:
+#    AWS::EC2::Instance
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
+# a) SKIP: when no EC2 Instance resources are present 
+# b) PASS: when all EC2 Instace resources have an associated IAM instance profile 
+# d) FAIL: when any EC2 Instace resources do not have an associated IAM instance profile
+# e) SKIP: hen metadata includes the suppression for rule EC2_INSTANCE_PROFILE_ATTACHED
 
 #
-# Select all EFS resources from incoming template (payload)
+# Select all EC2 Instance resources from incoming template (payload)
 #
-let ec2s = Resources.*[ Type == 'AWS::EC2::Instance' ]
+let ec2_instances_profile_attached = Resources.*[ Type == 'AWS::EC2::Instance' 
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "EC2_INSTANCE_PROFILE_ATTACHED"
+]
 
-# no corresponding rule for ASG Launch Configuration in config managed rules, but this makes sense
-let asg_launch_configs = Resources.*[ Type == 'AWS::AutoScaling::LaunchConfiguration' ]
-
-rule EC2_INSTANCE_PROFILE_ATTACHED when %ec2s !empty {
-  %ec2s.Properties.IamInstanceProfile EXISTS
+rule EC2_INSTANCE_PROFILE_ATTACHED when %ec2_instances_profile_attached !empty {
+  %ec2_instances_profile_attached.Properties.IamInstanceProfile EXISTS
   <<
-    Violation: EC2 must have IAM profile attached to it.
-    Fix: Associate EC2 property IamInstanceProfile to an IAM Instance Profile.
-  >>
-}
-
-## set to lowercase naming due to not being a direct AWS CONFIG Managed Rule
-rule asg_launch_config_instance_profile_attached when %asg_launch_configs !empty {
-  %asg_launch_configs.Properties.IamInstanceProfile EXISTS
-  <<
-    Violation: EC2 AutoScaling Launch Configuration must have IAM profile attached to it.
-    Fix: Associate EC2 AutoScaling launch property IamInstanceProfile to an IAM Instance Profile.
+    Violation: EC2 Instances must have IAM profile attached to it.
+    Fix: Associate the EC2 Instance property IamInstanceProfile with an IAM Instance Profile.
   >>
 }
