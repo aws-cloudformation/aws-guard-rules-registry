@@ -1,16 +1,56 @@
 ###
-# EC2_INSTANCE_DETAILED_MONITORING_ENABLED tests
+# EC2_INSTANCE_NO_PUBLIC_IP tests
 ###
 ---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      EC2_INSTANCE_NO_PUBLIC_IP: SKIP
 
-- name: No nifs resources, SKIP
+- name: No resources, SKIP
   input:
     Resources: {}
   expectations:
     rules:
-      prevent_ec2_with_public_ip: SKIP
+      EC2_INSTANCE_NO_PUBLIC_IP: SKIP
 
-- name: EC2 that do have NetworkInterfaces does not allow public IP address to be associated at launch, PASS
+- name: EC2 Instance with no NetworkInterfaces, SKIP
+  input:
+    Resources:
+      ExampleEC2:
+        Type: AWS::EC2::Instance
+        Properties:
+          ImageId: !Ref LatestAmiId
+          InstanceType: !Ref pInstanceType
+          IamInstanceProfile: !Ref rInstanceProfile
+  expectations:
+    rules:
+      EC2_INSTANCE_NO_PUBLIC_IP: SKIP
+
+- name: EC2 Instance with NetworkInterfaces and no associated public IP address (property missing), PASS
+  input:
+    Resources:
+      ExampleEC2:
+        Type: AWS::EC2::Instance
+        Properties:
+          ImageId: !Ref LatestAmiId
+          InstanceType: !Ref pInstanceType
+          IamInstanceProfile: !Ref rInstanceProfile
+          NetworkInterfaces:
+            - DeleteOnTermination: true
+              Description: Primary network interface
+              DeviceIndex: '0'
+              SubnetId: !Ref VPCPubSn1
+            - DeleteOnTermination: true
+              Description: Secondary network interface
+              DeviceIndex: '1'
+              SubnetId: !Ref VPCPubSn1
+  expectations:
+    rules:
+      EC2_INSTANCE_NO_PUBLIC_IP: PASS
+
+- name: EC2 Instance with NetworkInterfaces and no associated public IP address (property false), PASS
   input:
     Resources:
       ExampleEC2:
@@ -25,25 +65,15 @@
               DeviceIndex: '0'
               SubnetId: !Ref VPCPubSn1
               AssociatePublicIpAddress: false
+            - DeleteOnTermination: true
+              Description: Secondary network interface
+              DeviceIndex: '1'
+              SubnetId: !Ref VPCPubSn1
   expectations:
     rules:
-      prevent_ec2_with_public_ip: PASS
+      EC2_INSTANCE_NO_PUBLIC_IP: PASS
 
-- name: EC2 doesn't have the NetworkInterfaces property, SKIP
-  input:
-    Resources:
-      ExampleEC2:
-        Type: AWS::EC2::Instance
-        Properties:
-          ImageId: !Ref LatestAmiId
-          InstanceType: !Ref pInstanceType
-          IamInstanceProfile: !Ref rInstanceProfile
-  expectations:
-    rules:
-      prevent_ec2_with_public_ip: SKIP
-
-
-- name: EC2 that do have NetworkInterfaces allow public IP address to be associated at launch, FAIL
+- name: EC2 Instance with NetworkInterfaces and public IP address, FAIL
   input:
     Resources:
       ExampleEC2:
@@ -57,14 +87,38 @@
               Description: Primary network interface
               DeviceIndex: '0'
               SubnetId: !Ref VPCPubSn1
-              AssociatePublicIpAddress: false
+              AssociatePublicIpAddress: true
+            - DeleteOnTermination: true
+              Description: Secondary network interface
+              DeviceIndex: '1'
+              SubnetId: !Ref VPCPubSn1
   expectations:
     rules:
-      prevent_ec2_with_public_ip: FAIL
+      EC2_INSTANCE_NO_PUBLIC_IP: FAIL
 
-- name: No AWS::EC2::EIP resources, SKIP
+- name: EC2 Instance with NetworkInterfaces and public IP address but rule suppressed, SKIP
   input:
-    Resources: {}
+    Resources:
+      ExampleEC2:
+        Type: AWS::EC2::Instance
+        Metadata:
+          guard:
+            SuppressedRules:
+            - EC2_INSTANCE_NO_PUBLIC_IP
+        Properties:
+          ImageId: !Ref LatestAmiId
+          InstanceType: !Ref pInstanceType
+          IamInstanceProfile: !Ref rInstanceProfile
+          NetworkInterfaces:
+            - DeleteOnTermination: true
+              Description: Primary network interface
+              DeviceIndex: '0'
+              SubnetId: !Ref VPCPubSn1
+              AssociatePublicIpAddress: true
+            - DeleteOnTermination: true
+              Description: Secondary network interface
+              DeviceIndex: '1'
+              SubnetId: !Ref VPCPubSn1
   expectations:
     rules:
-      prevent_eip_associations_with_ec2: SKIP
+      EC2_INSTANCE_NO_PUBLIC_IP: SKIP

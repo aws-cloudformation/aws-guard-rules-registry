@@ -1,35 +1,46 @@
-## Config Rule Name : ec2-instance-no-public-ip
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/ec2-instance_no_public_ip.html"
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#    EC2_INSTANCE_NO_PUBLIC_IP
+#
+# Description:
+#    Checks whether Amazon Elastic Compute Cloud (Amazon EC2) instances have a public IP association. 
+#
+# Reports on:
+#    AWS::EC2::Instance
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
+# a) SKIP: when no EC2 Instance resources are present
+# b) SKIP: when no EC2 Instances have network interfaces defined
+# c) PASS: when no EC2 Instances with network interfaces have associated public IP addresses
+# d) FAIL: when any EC2 Instances with network interfaces have associated public IP addresses
+# e) SKIP: hen metadata includes the suppression for rule EC2_INSTANCE_NO_PUBLIC_IP
 
+#
+# Select all EC2 Instance resources from incoming template (payload)
+#
+let ec2_instances_no_public_ip = Resources.*[Type == 'AWS::EC2::Instance'
+	Properties.NetworkInterfaces[*] !empty 
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "EC2_INSTANCE_NO_PUBLIC_IP"
+]
 
-#
-# For all EC2 Instances specified in the Template that have network interfaces
-# associated with them
-#
-let ec2 = Resources.*[Type == 'AWS::EC2::Instance']
-
-#
-# Rule Intent
-# ----
-#
-# Ensure that all EC2 instance resources that do have NetworkInterfaces
-# does not allow public IP address to be associated at launch.
-#
-rule prevent_ec2_with_public_ip when %ec2 !empty {
-    %ec2.Properties.NetworkInterfaces[*] !empty 
-    %ec2.Properties.NetworkInterfaces[*].AssociatePublicIpAddress == false
+rule EC2_INSTANCE_NO_PUBLIC_IP when %ec2_instances_no_public_ip !empty {
+	%ec2_instances_no_public_ip.Properties.NetworkInterfaces[*] {
+		AssociatePublicIpAddress !exists OR 
+		AssociatePublicIpAddress == false
+		<<
+    	Violation: EC2 Instances cannot have public IP addresses associated with their network interfaces 
+    	Fix: remove the AssociatePublicIpAddress property from NetworkInterfaces list or set it to false
+  	>>
+	}
 }
 
-let eip_resources = Resources.*[ Type == 'AWS::EC2::EIP' ]
-
-#
-# Rule Intent
-# ----
-#
-# For all EIPs specified in the template, ensure that it does not
-# have an instance ID associated with it, or in other words no EIP
-# has been assigned to any EC2 instance
-#
-rule prevent_eip_associations_with_ec2 when %eip_resources !empty {
-    %eip_resources.Properties.InstanceId !exists
-}

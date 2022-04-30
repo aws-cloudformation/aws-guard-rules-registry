@@ -40,8 +40,8 @@ let aws_security_groups_restricted_ssh = Resources.*[
 
 rule INCOMING_SSH_DISABLED when %aws_security_groups_restricted_ssh !empty {
 	%aws_security_groups_restricted_ssh.Properties.SecurityGroupIngress[*] != {CidrIp:"0.0.0.0/0", ToPort:22, FromPort:22, IpProtocol:"tcp"}
-  # <<
-  #   Violation: IP addresses of the incoming SSH traffic in the security groups are restricted (CIDR other than 0.0.0.0/0)
-  #   Fix: set SecurityGroupIngress.CidrIp property to a more restrictive CIDR than 0.0.0.0/0
-  # >>
+  <<
+    Violation: IP addresses of the incoming SSH traffic in the security groups are restricted (CIDR other than 0.0.0.0/0)
+    Fix: set SecurityGroupIngress.CidrIp property to a more restrictive CIDR than 0.0.0.0/0
+  >>
 }
