@@ -1,21 +1,21 @@
 ###
-# EC2_INSTANCE_PROFILE_ATTACHED tests
+# EBS_OPTIMIZED_INSTANCE tests
 ###
 ---
 - name: Empty, SKIP
   input: {}
   expectations:
     rules:
-      EC2_INSTANCE_PROFILE_ATTACHED: SKIP
+      EBS_OPTIMIZED_INSTANCE: SKIP
 
 - name: No resources, SKIP
   input:
     Resources: {}
   expectations:
     rules:
-      EC2_INSTANCE_PROFILE_ATTACHED: SKIP
+      EBS_OPTIMIZED_INSTANCE: SKIP
 
-- name: EC2 Instance has an IAM Instance Profile associated with it, PASS
+- name: EC2 has EbsOptimized property set to true, PASS
   input:
     Resources:
       ExampleEC2:
@@ -23,13 +23,12 @@
         Properties:
           ImageId: !Ref LatestAmiId
           InstanceType: !Ref pInstanceType
-          Monitoring: true
-          IamInstanceProfile: !Ref rInstanceProfile
+          EbsOptimized: true
   expectations:
     rules:
-      EC2_INSTANCE_PROFILE_ATTACHED: PASS
+      EBS_OPTIMIZED_INSTANCE: PASS
 
-- name: EC2 has no IAM Instance Profile associated with it, FAIL
+- name: EC2 doesn't have the EbsOptimized property, FAIL
   input:
     Resources:
       ExampleEC2:
@@ -37,12 +36,25 @@
         Properties:
           ImageId: !Ref LatestAmiId
           InstanceType: !Ref pInstanceType
-          Monitoring: true
   expectations:
     rules:
-      EC2_INSTANCE_PROFILE_ATTACHED: FAIL
+      EBS_OPTIMIZED_INSTANCE: FAIL
 
-- name: EC2 has no IAM Instance Profile associated with it but rule suppressed, SKIP
+
+- name: EC2 has EbsOptimized property set to false, FAIL
+  input:
+    Resources:
+      ExampleEC2:
+        Type: AWS::EC2::Instance
+        Properties:
+          ImageId: !Ref LatestAmiId
+          InstanceType: !Ref pInstanceType
+          EbsOptimized: false
+  expectations:
+    rules:
+      EBS_OPTIMIZED_INSTANCE: FAIL
+
+- name: EC2 has EbsOptimized property set to false but rule suppressed, SKIP
   input:
     Resources:
       ExampleEC2:
@@ -50,13 +62,11 @@
         Metadata:
           guard:
             SuppressedRules:
-            - EC2_INSTANCE_PROFILE_ATTACHED
+            - EBS_OPTIMIZED_INSTANCE
         Properties:
           ImageId: !Ref LatestAmiId
           InstanceType: !Ref pInstanceType
-          Monitoring: true
+          EbsOptimized: false
   expectations:
     rules:
-      EC2_INSTANCE_PROFILE_ATTACHED: SKIP
-
-
+      EBS_OPTIMIZED_INSTANCE: SKIP

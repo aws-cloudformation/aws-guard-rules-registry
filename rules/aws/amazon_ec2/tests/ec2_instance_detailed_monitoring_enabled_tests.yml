@@ -1,0 +1,76 @@
+###
+# EC2_INSTANCE_DETAILED_MONITORING_ENABLED tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      EC2_INSTANCE_DETAILED_MONITORING_ENABLED: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      EC2_INSTANCE_DETAILED_MONITORING_ENABLED: SKIP
+
+- name: EC2 has Monitoring property set to true, PASS
+  input:
+    Resources:
+      ExampleEC2:
+        Type: AWS::EC2::Instance
+        Properties:
+          ImageId: !Ref LatestAmiId
+          InstanceType: !Ref pInstanceType
+          IamInstanceProfile: !Ref rInstanceProfile
+          Monitoring: true
+  expectations:
+    rules:
+      EC2_INSTANCE_DETAILED_MONITORING_ENABLED: PASS
+
+- name: EC2 doesn't have the Monitoring property, FAIL
+  input:
+    Resources:
+      ExampleEC2:
+        Type: AWS::EC2::Instance
+        Properties:
+          ImageId: !Ref LatestAmiId
+          InstanceType: !Ref pInstanceType
+          IamInstanceProfile: !Ref rInstanceProfile
+  expectations:
+    rules:
+      EC2_INSTANCE_DETAILED_MONITORING_ENABLED: FAIL
+
+
+- name: EC2 has Monitoring property set to false, FAIL
+  input:
+    Resources:
+      ExampleEC2:
+        Type: AWS::EC2::Instance
+        Properties:
+          ImageId: !Ref LatestAmiId
+          InstanceType: !Ref pInstanceType
+          IamInstanceProfile: !Ref rInstanceProfile
+          Monitoring: false
+  expectations:
+    rules:
+      EC2_INSTANCE_DETAILED_MONITORING_ENABLED: FAIL
+
+- name: EC2 has Monitoring property set to false but rule suppressed, SKIP
+  input:
+    Resources:
+      ExampleEC2:
+        Type: AWS::EC2::Instance
+        Metadata:
+          guard:
+            SuppressedRules:
+            - EC2_INSTANCE_DETAILED_MONITORING_ENABLED
+        Properties:
+          ImageId: !Ref LatestAmiId
+          InstanceType: !Ref pInstanceType
+          IamInstanceProfile: !Ref rInstanceProfile
+          Monitoring: false
+  expectations:
+    rules:
+      EC2_INSTANCE_DETAILED_MONITORING_ENABLED: SKIP

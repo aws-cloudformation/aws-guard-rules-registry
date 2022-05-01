@@ -1,21 +1,21 @@
 ###
-# EC2_INSTANCE_PROFILE_ATTACHED tests
+# EC2_INSTANCES_IN_VPC tests
 ###
 ---
 - name: Empty, SKIP
   input: {}
   expectations:
     rules:
-      EC2_INSTANCE_PROFILE_ATTACHED: SKIP
+      EC2_INSTANCES_IN_VPC: SKIP
 
 - name: No resources, SKIP
   input:
     Resources: {}
   expectations:
     rules:
-      EC2_INSTANCE_PROFILE_ATTACHED: SKIP
+      EC2_INSTANCES_IN_VPC: SKIP
 
-- name: EC2 Instance has an IAM Instance Profile associated with it, PASS
+- name: EC2 SubnetId property is not empty, PASS
   input:
     Resources:
       ExampleEC2:
@@ -23,26 +23,26 @@
         Properties:
           ImageId: !Ref LatestAmiId
           InstanceType: !Ref pInstanceType
-          Monitoring: true
+          IamInstanceProfile: !Ref rInstanceProfile
+          SubnetId: !Ref pSubnetId
+  expectations:
+    rules:
+      EC2_INSTANCES_IN_VPC: PASS
+
+- name: EC2 SubnetId property not set, FAIL
+  input:
+    Resources:
+      ExampleEC2:
+        Type: AWS::EC2::Instance
+        Properties:
+          ImageId: !Ref LatestAmiId
+          InstanceType: !Ref pInstanceType
           IamInstanceProfile: !Ref rInstanceProfile
   expectations:
     rules:
-      EC2_INSTANCE_PROFILE_ATTACHED: PASS
+      EC2_INSTANCES_IN_VPC: FAIL
 
-- name: EC2 has no IAM Instance Profile associated with it, FAIL
-  input:
-    Resources:
-      ExampleEC2:
-        Type: AWS::EC2::Instance
-        Properties:
-          ImageId: !Ref LatestAmiId
-          InstanceType: !Ref pInstanceType
-          Monitoring: true
-  expectations:
-    rules:
-      EC2_INSTANCE_PROFILE_ATTACHED: FAIL
-
-- name: EC2 has no IAM Instance Profile associated with it but rule suppressed, SKIP
+- name: EC2 SubnetId property not set but rule suppressed, SKIP
   input:
     Resources:
       ExampleEC2:
@@ -50,13 +50,11 @@
         Metadata:
           guard:
             SuppressedRules:
-            - EC2_INSTANCE_PROFILE_ATTACHED
+            - EC2_INSTANCES_IN_VPC
         Properties:
           ImageId: !Ref LatestAmiId
           InstanceType: !Ref pInstanceType
-          Monitoring: true
+          IamInstanceProfile: !Ref rInstanceProfile
   expectations:
     rules:
-      EC2_INSTANCE_PROFILE_ATTACHED: SKIP
-
-
+      EC2_INSTANCES_IN_VPC: SKIP

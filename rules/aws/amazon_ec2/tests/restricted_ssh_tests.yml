@@ -1,0 +1,100 @@
+###
+# INCOMING_SSH_DISABLED tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      INCOMING_SSH_DISABLED: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      INCOMING_SSH_DISABLED: SKIP
+
+- name: Security Group with no SSH ingress, SKIP
+  input:
+    Resources:
+      ExampleSecurityGroup:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          GroupDescription: "Allow port 22 inbound and outbound traffic"
+          SecurityGroupIngress:
+            - IpProtocol": tcp
+              FromPort: 0
+              ToPort: 65535
+              CidrIp: 0.0.0.0/0
+  expectations:
+    rules:
+      INCOMING_SSH_DISABLED: SKIP
+
+- name: Security Group with SSH port 22 restricted to a CIDR other than 0.0.0.0/0, PASS
+  input:
+    Resources:
+      ExampleSecurityGroup:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          GroupDescription: "Allow port 22 inbound and outbound traffic"
+          SecurityGroupIngress:
+            - IpProtocol: tcp
+              FromPort: 22
+              ToPort: 22
+              CidrIp: 192.168.0.0/16
+            - IpProtocol": tcp
+              FromPort: 0
+              ToPort: 65535
+              CidrIp: 0.0.0.0/0
+  expectations:
+    rules:
+      INCOMING_SSH_DISABLED: PASS
+
+- name: Security Group with SSH port 22 open to all IP addresses (0.0.0.0/0), FAIL
+  input:
+    Resources:
+      ExampleSecurityGroup:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          GroupDescription: "Allow inbound SSH traffic on port 22"
+          SecurityGroupIngress:
+            - IpProtocol: tcp
+              FromPort: 22
+              ToPort: 22
+              CidrIp: 192.168.0.0/16
+            - IpProtocol: tcp
+              FromPort: 22
+              ToPort: 22
+              CidrIp: 0.0.0.0/0
+            - IpProtocol": tcp
+              FromPort: 0
+              ToPort: 65535
+              CidrIp: 0.0.0.0/0
+  expectations:
+    rules:
+      INCOMING_SSH_DISABLED: FAIL
+
+- name: Security Group with SSH port 22 open to all IP addresses (0.0.0.0/0) but rule suppressed, SKIP
+  input:
+    Resources:
+      ExampleSecurityGroup:
+        Type: AWS::EC2::SecurityGroup
+        Metadata:
+          guard:
+            SuppressedRules:
+            - INCOMING_SSH_DISABLED
+        Properties:
+          GroupDescription: "Allow inbound SSH traffic on port 22"
+          SecurityGroupIngress:
+            - IpProtocol: tcp
+              FromPort: 22
+              ToPort: 22
+              CidrIp: 0.0.0.0/0
+            - IpProtocol": tcp
+              FromPort: 0
+              ToPort: 65535
+              CidrIp: 0.0.0.0/0
+  expectations:
+    rules:
+      INCOMING_SSH_DISABLED: SKIP

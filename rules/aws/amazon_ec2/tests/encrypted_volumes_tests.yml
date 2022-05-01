@@ -1,0 +1,69 @@
+###
+# ENCRYPTED_VOLUMES tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      ENCRYPTED_VOLUMES: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      ENCRYPTED_VOLUMES: SKIP
+
+- name: EC2 Volume with KmsKeyId property not empty, PASS
+  input:
+    Resources:
+      ExampleVolume:
+        Type: AWS::EC2::Volume
+        Properties:
+          AvailabilityZone: !Ref pAz
+          Size: !Ref pSize
+          KmsKeyId: !Ref KeyId
+  expectations:
+    rules:
+      ENCRYPTED_VOLUMES: PASS
+- name: EC2 Volume with Encrypted property set to true, PASS
+  input:
+    Resources:
+      ExampleVolume:
+        Type: AWS::EC2::Volume
+        Properties:
+          AvailabilityZone: !Ref pAz
+          Size: !Ref pSize
+          Encrypted: true
+  expectations:
+    rules:
+      ENCRYPTED_VOLUMES: PASS
+
+- name: EC2 Volume without KmsKeyId or Encrypted properties set, FAIL
+  input:
+    Resources:
+      ExampleVolume:
+        Type: AWS::EC2::Volume
+        Properties:
+          AvailabilityZone: !Ref pAz
+          Size: !Ref pSize
+  expectations:
+    rules:
+      ENCRYPTED_VOLUMES: FAIL
+
+- name: EC2 Volume without KmsKeyId or Encrypted properties set but rule suppressed, SKIP
+  input:
+    Resources:
+      ExampleVolume:
+        Type: AWS::EC2::Volume
+        Metadata:
+          guard:
+            SuppressedRules:
+            - ENCRYPTED_VOLUMES
+        Properties:
+          AvailabilityZone: !Ref pAz
+          Size: !Ref pSize
+  expectations:
+    rules:
+      ENCRYPTED_VOLUMES: SKIP

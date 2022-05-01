@@ -1,12 +1,39 @@
-    ## Config Rule Name : ec2-ebs-encryption-by-default
-    ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/EC2_EBS_ENCRYPTION_BY_DEFAULT.html"
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#    EC2_EBS_ENCRYPTION_BY_DEFAULT
+#
+# Description:
+#    Check that Amazon Elastic Block Store (EBS) encryption is enabled by default
+# Reports on:
+#    AWS::EC2::Volume
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
+# a) SKIP: when no EC2 Volume resources are present
+# b) PASS: when all EC2 Volume resources have the Encrypted property set to true
+# c) FAIL: when any EC2 Volumes resources do not have the Encrypted property set to true
+# e) SKIP: when metadata includes the suppression for rule EC2_EBS_ENCRYPTION_BY_DEFAULT
 
-let ec2_volumes = Resources.*[ Type == 'AWS::EC2::Volume' ]
+#
+# Select all EC2 Volume resources from incoming template (payload)
+#
+let ec2_ebs_volumes_encrypted_by_default = Resources.*[ Type == 'AWS::EC2::Volume' 
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "EC2_EBS_ENCRYPTION_BY_DEFAULT"
+]
 
-when %ec2_volumes !empty {
-    %ec2_volumes {
-        Properties {
-            Encrypted == true
-        }
-    }
+rule EC2_EBS_ENCRYPTION_BY_DEFAULT when %ec2_ebs_volumes_encrypted_by_default !empty {
+    %ec2_ebs_volumes_encrypted_by_default.Properties.Encrypted == true 
+		<<
+			Violation: All EBS Volumes should be encryped 
+			Fix: Set Encrypted property to true
+		>>
 }
