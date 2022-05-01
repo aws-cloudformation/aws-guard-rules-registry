@@ -31,8 +31,8 @@ let ec2_ebs_optimized_instances = Resources.*[ Type == 'AWS::EC2::Instance'
   Metadata.guard.SuppressedRules.* != "EBS_OPTIMIZED_INSTANCE"
 ]
 
-rule EBS_OPTIMIZED_INSTANCE when ec2_ebs_optimized_instances !empty {
-    ec2_ebs_optimized_instances.Properties.EbsOptimized == true
+rule EBS_OPTIMIZED_INSTANCE when %ec2_ebs_optimized_instances !empty {
+    %ec2_ebs_optimized_instances.Properties.EbsOptimized == true
     <<
 			Violation: EBS optimization must be enabled for your EC2 instances
 			Fix: set the EbsOptimized property to true
