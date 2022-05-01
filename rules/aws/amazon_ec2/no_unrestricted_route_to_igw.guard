@@ -1,6 +1,46 @@
-## SKIP
-## SKIP RATIONALE: Initial version of Rules Registry pertains to static code analysis. The check for
-##                  public routes in the route table to an Internet Gateway (IGW) is not supported in infrastructure as code
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#    NO_UNRESTRICTED_ROUTE_TO_IGW
+#
+# Description:
+#    Checks if there are public routes in the route table to an Internet Gateway (IGW). 
+#
+# Reports on:
+#    AWS::EC2::Route
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
+# a) SKIP: when no EC2 Route resources are present
+# b) SKIP: when there are no EC2 Routes to an Internet Gateway (no GatewayId property)
+# c) PASS: when all EC2 Routes to an Internet Gateway have a restricted destination CIDR block (not '0.0.0.0/0' or '::/0')
+# d) FAIL: when any EC2 Routes to an Internet Gateway have a destination CIDR block of '0.0.0.0/0' or '::/0' 
+# e) SKIP: hen metadata includes the suppression for rule NO_UNRESTRICTED_ROUTE_TO_IGW
 
-## Config Rule Name : no-unrestricted-route-to-igw
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/no-unrestricted-route-to-igw.html
+#
+# Select all EC2 Route resources from incoming template (payload)
+#
+let routes_no_unrestricted_to_igw = Resources.*[ Type == 'AWS::EC2::Route' 
+	Properties.GatewayId exists
+	Metadata.guard.SuppressedRules not exists or	
+  Metadata.guard.SuppressedRules.* != "NO_UNRESTRICTED_ROUTE_TO_IGW"
+]
+
+rule NO_UNRESTRICTED_ROUTE_TO_IGW when %routes_no_unrestricted_to_igw !empty {
+	%routes_no_unrestricted_to_igw {
+		Properties {
+			DestinationCidrBlock not in ['0.0.0.0/0', '::/0']
+			<<
+				Violation: EC2 Routes to an IGW cannot have a destination CIDR block of '0.0.0.0/0' or '::/0' 
+				Fix: Remove routes to an IGW (with the GatewayId property defined) or modify the DestinationCidrBlock property to a more restricted CIDR block
+			>>
+		}
+	}
+}

@@ -1,0 +1,101 @@
+###
+# INCOMING_SSH_DISABLED tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      NO_UNRESTRICTED_ROUTE_TO_IGW: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      NO_UNRESTRICTED_ROUTE_TO_IGW: SKIP
+  
+- name: EC2 Route not targeting an Internet Gateway (no GatewayId property), SKIP
+  input:
+    Resources:
+      ExampleRoute:
+        Type: AWS::EC2::Route
+        DependsOn: TransitGatewayToOtherVPCs
+        Properties:
+          RouteTableId:
+            Ref: myRouteTable
+          DestinationCidrBlock: 192.168.0.0/16
+          TransitGatewayId:
+            Ref: myTransitGateway  
+  expectations:
+    rules:
+      NO_UNRESTRICTED_ROUTE_TO_IGW: SKIP
+
+- name: EC2 Route targeting an Internet Gateway with a restricted destination CIDR block, PASS
+  input:
+    Resources:
+      ExampleRoute:
+        Type: AWS::EC2::Route
+        DependsOn: GatewayToInternetAndCarrierNetwork
+        Properties:
+          RouteTableId:
+            Ref: myRouteTable
+          DestinationCidrBlock: 192.168.0.0/16
+          GatewayId:
+            Ref: myCarrierGateway
+  expectations:
+    rules:
+      NO_UNRESTRICTED_ROUTE_TO_IGW: PASS
+
+- name: EC2 Route targeting an Internet Gateway with a public destination CIDR block (IPv4), FAIL
+  input:
+    Resources:
+      ExampleRoute:
+        Type: AWS::EC2::Route
+        DependsOn: GatewayToInternetAndCarrierNetwork
+        Properties:
+          RouteTableId:
+            Ref: myRouteTable
+          DestinationCidrBlock: 0.0.0.0/0
+          GatewayId:
+            Ref: myCarrierGateway
+  expectations:
+    rules:
+      NO_UNRESTRICTED_ROUTE_TO_IGW: FAIL
+
+- name: EC2 Route targeting an Internet Gateway with a public destination CIDR block (IPv6), FAIL
+  input:
+    Resources:
+      ExampleRoute:
+        Type: AWS::EC2::Route
+        DependsOn: GatewayToInternetAndCarrierNetwork
+        Properties:
+          RouteTableId:
+            Ref: myRouteTable
+          DestinationCidrBlock: ::/0
+          GatewayId:
+            Ref: myCarrierGateway
+  expectations:
+    rules:
+      NO_UNRESTRICTED_ROUTE_TO_IGW: FAIL
+
+- name: EC2 Route targeting an Internet Gateway with a public destination CIDR block (IPv4) but rule suppressed, SKIP
+  input:
+    Resources:
+      ExampleRoute:
+        Type: AWS::EC2::Route
+        Metadata:
+          guard:
+            SuppressedRules:
+            - NO_UNRESTRICTED_ROUTE_TO_IGW
+        DependsOn: GatewayToInternetAndCarrierNetwork
+        Properties:
+          RouteTableId:
+            Ref: myRouteTable
+          DestinationCidrBlock: 0.0.0.0/0
+          GatewayId:
+            Ref: myCarrierGateway
+  expectations:
+    rules:
+      NO_UNRESTRICTED_ROUTE_TO_IGW: SKIP
+
