@@ -1,27 +1,42 @@
-## Config Rule Name : cloudwatch-alarm-action-check
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/cloudwatch-alarm-action-check.html
-
-
-# Rule Intent: Checks whether CloudWatch alarms have at least one alarm action, one Insufficient Data Actions action, or one OK action enabled.
-
-# Expectations:
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#    CLOUDWATCH_ALARM_ACTION_CHECK
+#
+# Description:
+#   Checks whether CloudWatch alarms have at least one alarm action,
+#   one Insufficient Data Actions action, or one OK action enabled.
+#
+# Reports on:
+#    AWS::Logs::LogGroup
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
 # a) SKIP: when there are no cloudwatch alarm resources present
 # b) PASS: when resource Metadata is set with rule suppressed
 # c) PASS: when all cloudwatch alarm resources property Alarm Actions, Insufficient Data Actions, or OK Action set
 # d) FAIL: when all cloudwatch alarms resources property Alarm Actions, Insufficient Data Actions, or OK Action are not set with valid value
+# e) SKIP: when metada has rule suppression for CLOUDWATCH_ALARM_ACTION_CHECK
 
 #
 # Select all cloudwatch logs log group resources from incoming template (payload)
 #
-let cloudwatch_alarm = Resources.*[ Type == 'AWS::CloudWatch::Alarm' ]
+let cloudwatch_alarm_action_check = Resources.*[ Type == 'AWS::CloudWatch::Alarm'
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "CLOUDWATCH_ALARM_ACTION_CHECK"
+]
 
-rule CLOUDWATCH_ALARM_ACTION_CHECK when %cloudwatch_alarm !empty {
-  ## allow rule to be suppressed by rule name
-  some %cloudwatch_alarm.Metadata.guard.SuppressedRules.* == "CLOUDWATCH_ALARM_ACTION_CHECK" or
-
-  %cloudwatch_alarm.Properties.AlarmActions exists or
-  %cloudwatch_alarm.Properties.OKActions exists or
-  %cloudwatch_alarm.Properties.InsufficientDataActions exists
+rule CLOUDWATCH_ALARM_ACTION_CHECK when %cloudwatch_alarm_action_check !empty {
+  %cloudwatch_alarm_action_check.Properties.AlarmActions exists or
+  %cloudwatch_alarm_action_check.Properties.OKActions exists or
+  %cloudwatch_alarm_action_check.Properties.InsufficientDataActions exists
 
   <<
     Violation: CloudWatch Alarms should have at least one Alarm Action, one Insufficient Data Actions action, or one OK Action enabled.

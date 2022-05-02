@@ -65,3 +65,22 @@
   expectations:
     rules:
       CLOUD_TRAIL_ENABLED: FAIL
+
+- name: CloudTrail Trail IsLogging property missing but rule suppressed, SKIP
+  input:
+    Resources:
+      ExampleTrail:
+        Type: AWS::CloudTrail::Trail
+        Metadata:
+          guard:
+            SuppressedRules:
+            - CLOUD_TRAIL_ENABLED
+        Properties:
+          S3BucketName: !Ref BucketName
+          S3KeyPrefix: "Uluru"
+          TrailName: !Ref TrailName
+          IncludeGlobalServiceEvents: true
+          IsMultiRegionTrail: true
+  expectations:
+    rules:
+      CLOUD_TRAIL_ENABLED: SKIP

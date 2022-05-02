@@ -1,26 +1,27 @@
 ###
-# CLOUD_TRAIL_LOG_FILE_VALIDATION_ENABLED tests
+# CLOUD_TRAIL_CLOUD_WATCH_LOGS_ENABLED tests
 ###
 ---
 - name: Empty, SKIP
   input: {}
   expectations:
     rules:
-      CLOUD_TRAIL_LOG_FILE_VALIDATION_ENABLED: SKIP
+      CLOUD_TRAIL_CLOUD_WATCH_LOGS_ENABLED: SKIP
 
 - name: No resources, SKIP
   input:
     Resources: {}
   expectations:
     rules:
-      CLOUD_TRAIL_LOG_FILE_VALIDATION_ENABLED: SKIP
+      CLOUD_TRAIL_CLOUD_WATCH_LOGS_ENABLED: SKIP
 
-- name: CloudTrail Trail EnableLogFileValidation set to true, PASS
+- name: CloudTrail Trail CloudWatchLogsGroupArn set, PASS
   input:
     Resources:
       ExampleTrail:
         Type: "AWS::CloudTrail::Trail"
         Properties:
+          CloudWatchLogsLogGroupArn: "myCloudWatchLogsArn"
           S3BucketName: !Ref BucketName
           S3KeyPrefix: "Uluru"
           IsLogging: true
@@ -31,27 +32,9 @@
           KMSKeyId: alias/MyAliasName
   expectations:
     rules:
-      CLOUD_TRAIL_LOG_FILE_VALIDATION_ENABLED: PASS
+      CLOUD_TRAIL_CLOUD_WATCH_LOGS_ENABLED: PASS
 
-- name: CloudTrail Trail EnableLogFileValidation set false, FAIL
-  input:
-    Resources:
-      ExampleTrail:
-        Type: "AWS::CloudTrail::Trail"
-        Properties:
-          S3BucketName: !Ref BucketName
-          S3KeyPrefix: "Uluru"
-          IsLogging: true
-          TrailName: !Ref TrailName
-          EnableLogFileValidation: false
-          IncludeGlobalServiceEvents: true
-          IsMultiRegionTrail: true
-          KMSKeyId: alias/MyAliasName
-  expectations:
-    rules:
-      CLOUD_TRAIL_LOG_FILE_VALIDATION_ENABLED: FAIL
-
-- name: CloudTrail Trail EnableLogFileValidation property missing, FAIL
+- name: CloudTrail Trail CloudWatchLogsGroupArn property missing, FAIL
   input:
     Resources:
       ExampleTrail:
@@ -61,13 +44,14 @@
           S3KeyPrefix: "Uluru"
           IsLogging: true
           TrailName: !Ref TrailName
+          EnableLogFileValidation: true
           IncludeGlobalServiceEvents: true
           IsMultiRegionTrail: true
   expectations:
     rules:
-      CLOUD_TRAIL_LOG_FILE_VALIDATION_ENABLED: FAIL
+      CLOUD_TRAIL_CLOUD_WATCH_LOGS_ENABLED: FAIL
 
-- name: CloudTrail Trail EnableLogFileValidation property missing but rule suppressed, SKIP
+- name: CloudTrail Trail CloudWatchLogsGroupArn property missing but rule is suppressed, SKIP
   input:
     Resources:
       ExampleTrail:
@@ -75,14 +59,15 @@
         Metadata:
           guard:
             SuppressedRules:
-            - CLOUD_TRAIL_LOG_FILE_VALIDATION_ENABLED
+            - CLOUD_TRAIL_CLOUD_WATCH_LOGS_ENABLED
         Properties:
           S3BucketName: !Ref BucketName
           S3KeyPrefix: "Uluru"
           IsLogging: true
           TrailName: !Ref TrailName
+          EnableLogFileValidation: true
           IncludeGlobalServiceEvents: true
           IsMultiRegionTrail: true
   expectations:
     rules:
-      CLOUD_TRAIL_LOG_FILE_VALIDATION_ENABLED: SKIP
+      CLOUD_TRAIL_CLOUD_WATCH_LOGS_ENABLED: SKIP

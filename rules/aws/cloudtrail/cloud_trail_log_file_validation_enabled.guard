@@ -1,24 +1,41 @@
-## Config Rule Name : cloud-trail-log-file-validation-enabled
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/cloud-trail-log-file-validation-enabled.html
-
-# Rule Intent: Checks whether AWS CloudTrail creates a signed digest file with logs.
-
-# Expectations:
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#    CLOUD_TRAIL_LOG_FILE_VALIDATION_ENABLED
+#
+# Description:
+#   Checks whether AWS CloudTrail creates a signed digest file with logs.
+#
+# Reports on:
+#    AWS::CloudTrail::Trail
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
 # a) SKIP: when there are no CloudTrail Trails present
 # b) PASS: when all CloudTrail Trails have EnableLogFileValidation parameter set true
 # c) FAIL: when there are CloudTrail Trails with the EnableLogFileValidation parameter is set to false
 # d) FAIL: when there are CloudTrail Trails with EnableLogFileValidation property not present
+# e) SKIP: when metada has rule suppression for CLOUD_TRAIL_LOG_FILE_VALIDATION_ENABLED
+
 
 #
 # Select all CloudTrail Trail resources from incoming template (payload)
 #
+let cloudtrail_trails_log_validation = Resources.*[ Type == 'AWS::CloudTrail::Trail'
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "CLOUD_TRAIL_LOG_FILE_VALIDATION_ENABLED"
+]
 
-
-let cloudtrail_trails = Resources.*[ Type == 'AWS::CloudTrail::Trail' ]
-
-rule CLOUD_TRAIL_LOG_FILE_VALIDATION_ENABLED when %cloudtrail_trails !empty {
-  %cloudtrail_trails.Properties.EnableLogFileValidation EXISTS
-  %cloudtrail_trails.Properties.EnableLogFileValidation == true
+rule CLOUD_TRAIL_LOG_FILE_VALIDATION_ENABLED when %cloudtrail_trails_log_validation !empty {
+  %cloudtrail_trails_log_validation.Properties.EnableLogFileValidation EXISTS
+  %cloudtrail_trails_log_validation.Properties.EnableLogFileValidation == true
   <<
     Violation: CloudTrail Trail should have Log File Validation enabled.
     Fix: Set the EnableLogFileValidation parameter to true.

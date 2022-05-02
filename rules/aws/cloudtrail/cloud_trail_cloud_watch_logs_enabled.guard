@@ -1,2 +1,41 @@
-    ## Config Rule Name : cloud-trail-cloud-watch-logs-enabled
-    ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/cloud-trail-cloud-watch-logs-enabled.html
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#    CLOUD_TRAIL_CLOUD_WATCH_LOGS_ENABLED
+#
+# Description:
+#   Checks whether AWS CloudTrail trails are configured to send logs to Amazon CloudWatch logs.
+#   The trail is non-compliant if the CloudWatchLogsLogGroupArn property of the trail is empty.
+#
+# Reports on:
+#    AWS::CloudTrail::Trail
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
+# a) SKIP: when there are no CloudTrail Trails present
+# b) PASS: when all CloudTrail Trails have CloudWatchLogsLogGroupArn parameter set
+# c) FAIL: when there are CloudTrail Trails with CloudWatchLogsLogGroupArn property not present
+# d) SKIP: when metada has rule suppression for CLOUD_TRAIL_CLOUD_WATCH_LOGS_ENABLED
+
+#
+# Select all CloudTrail Trail resources from incoming template (payload)
+#
+let cloudtrail_trails_cw_logs_enabled = Resources.*[ Type == 'AWS::CloudTrail::Trail'
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "CLOUD_TRAIL_CLOUD_WATCH_LOGS_ENABLED"
+]
+
+rule CLOUD_TRAIL_CLOUD_WATCH_LOGS_ENABLED when %cloudtrail_trails_cw_logs_enabled !empty {
+  %cloudtrail_trails_cw_logs_enabled.Properties.CloudWatchLogsLogGroupArn exists
+  <<
+    Violation: CloudTrail Trail should have logs exported to cloudwatch logs.
+    Fix: Set the CloudWatchLogsLogGroupArn parameter to enable exporting to CloudWatch Logs.
+  >>
+}

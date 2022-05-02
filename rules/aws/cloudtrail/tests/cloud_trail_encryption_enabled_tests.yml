@@ -49,3 +49,24 @@
   expectations:
     rules:
       CLOUD_TRAIL_ENCRYPTION_ENABLED: FAIL
+
+- name: CloudTrail Trail KMSKeyId property missing but rule is suppressed, SKIP
+  input:
+    Resources:
+      ExampleTrail:
+        Type: AWS::CloudTrail::Trail
+        Metadata:
+          guard:
+            SuppressedRules:
+            - CLOUD_TRAIL_ENCRYPTION_ENABLED
+        Properties:
+          S3BucketName: !Ref BucketName
+          S3KeyPrefix: "Uluru"
+          IsLogging: true
+          TrailName: !Ref TrailName
+          EnableLogFileValidation: true
+          IncludeGlobalServiceEvents: true
+          IsMultiRegionTrail: true
+  expectations:
+    rules:
+      CLOUD_TRAIL_ENCRYPTION_ENABLED: SKIP
