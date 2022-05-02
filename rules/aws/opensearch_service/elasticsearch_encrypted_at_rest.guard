@@ -1,22 +1,39 @@
-## Config Rule Name : elasticsearch-encrypted-at-rest
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/elasticsearch-encrypted-at-rest.html
-
-# Rule Intent: Elasticsearch domains must enforce server side encryption
-
-# Expectations:
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#    ELASTICSEARCH_ENCRYPTED_AT_REST
+#
+# Description:
+#   Elasticsearch domains must enforce server side encryption
+#
+# Reports on:
+#    AWS::Elasticsearch::Domain
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
 # a) SKIP: when there is no elasticsearch domain present
 # b) FAIL: when elasticsearch domain has server side encryption set to false
 # c) PASS: when elasticsearch domain has server side encryption set to true
 # d) FAIL: when elasticsearch domain has server side encryption property is missing
+# e) SKIP: when metada has rule suppression for ELASTICSEARCH_ENCRYPTED_AT_REST
 
 #
 # Select all elasticsearch domains from incoming template
 #
+let elasticsearch_domains_encrypted = Resources.*[ Type == 'AWS::Elasticsearch::Domain'
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "ELASTICSEARCH_ENCRYPTED_AT_REST"
+]
 
-let elasticsearch_domains = Resources.*[ Type == 'AWS::Elasticsearch::Domain' ]
-
-rule ELASTICSEARCH_ENCRYPTED_AT_REST when %elasticsearch_domains !empty {
-  %elasticsearch_domains.Properties.EncryptionAtRestOptions.Enabled == true
+rule ELASTICSEARCH_ENCRYPTED_AT_REST when %elasticsearch_domains_encrypted !empty {
+  %elasticsearch_domains_encrypted.Properties.EncryptionAtRestOptions.Enabled == true
   <<
     Violation: Elasticsearch domains must enforce server side encryption.
     Fix: Set the EncryptionAtRestOptions.Enabled parameter to true.

@@ -47,5 +47,28 @@
         "ELASTICSEARCH_IN_VPC_ONLY": "FAIL"
       }
     }
+  },
+  {
+    "name": "Rule fails when ElasticSearch domain does not have VPCOptions property but rule suppressed, SKIP",
+    "input": {
+      "Resources": {
+        "ElasticsearchDomain": {
+          "Type": "AWS::Elasticsearch::Domain",
+          "Metadata": {
+            "guard": {
+              "SuppressedRules": ["ELASTICSEARCH_IN_VPC_ONLY"]
+            }
+          },
+          "Properties": {
+            "DomainName": "test"
+          }
+        }
+      }
+    },
+    "expectations": {
+      "rules": {
+        "ELASTICSEARCH_IN_VPC_ONLY": "SKIP"
+      }
+    }
   }
 ]
