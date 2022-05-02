@@ -132,7 +132,7 @@
     rules:
       CLOUDWATCH_ALARM_ACTION_CHECK: FAIL
 
-- name: CloudWatch Alarm present missing Alarm Action, InsufficientDataActions, or OK Action but suppressed - PASS
+- name: CloudWatch Alarm present missing Alarm Action, InsufficientDataActions, or OK Action but suppressed - SKIP
   input:
     Resources:
       ExampleCWA:
@@ -155,4 +155,4 @@
               Value: !Ref pEc2InstanceId
   expectations:
     rules:
-      CLOUDWATCH_ALARM_ACTION_CHECK: PASS
+      CLOUDWATCH_ALARM_ACTION_CHECK: SKIP

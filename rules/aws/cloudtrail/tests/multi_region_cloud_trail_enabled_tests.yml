@@ -64,3 +64,21 @@
   expectations:
     rules:
       MULTI_REGION_CLOUD_TRAIL_ENABLED: FAIL
+
+- name: CloudTrail Trail IsMultiRegionTrail property missing but rule is suppressed, SKIP
+  input:
+    Resources:
+      ExampleTrail:
+        Type: AWS::CloudTrail::Trail
+        Metadata:
+          guard:
+            SuppressedRules:
+            - MULTI_REGION_CLOUD_TRAIL_ENABLED
+        Properties:
+          S3BucketName: !Ref BucketName
+          S3KeyPrefix: "Uluru"
+          TrailName: !Ref TrailName
+          IncludeGlobalServiceEvents: true
+  expectations:
+    rules:
+      MULTI_REGION_CLOUD_TRAIL_ENABLED: SKIP

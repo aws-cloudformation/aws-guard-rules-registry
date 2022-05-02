@@ -38,7 +38,7 @@
     rules:
       CLOUDWATCH_LOG_GROUP_ENCRYPTED: FAIL
 
-- name: CloudWatch Log LogGroup missing KmsKeyId but rule suppressed, PASS
+- name: CloudWatch Log LogGroup missing KmsKeyId but rule suppressed, SKIP
   input:
     Resources:
       ExampleLogGroup:
@@ -51,4 +51,4 @@
           LogGroupName: myLogGroup
   expectations:
     rules:
-      CLOUDWATCH_LOG_GROUP_ENCRYPTED: PASS
+      CLOUDWATCH_LOG_GROUP_ENCRYPTED: SKIP

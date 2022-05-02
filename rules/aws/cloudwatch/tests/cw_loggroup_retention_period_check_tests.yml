@@ -48,7 +48,7 @@
     rules:
       CW_LOGGROUP_RETENTION_PERIOD_CHECK: FAIL
 
-- name: CloudWatch Log LogGroup missing RetentionInDays but rule suppressed, PASS
+- name: CloudWatch Log LogGroup missing RetentionInDays but rule suppressed, SKIP
   input:
     Resources:
       ExampleLogGroup:
@@ -61,4 +61,4 @@
           LogGroupName: myLogGroup
   expectations:
     rules:
-      CW_LOGGROUP_RETENTION_PERIOD_CHECK: PASS
+      CW_LOGGROUP_RETENTION_PERIOD_CHECK: SKIP

@@ -1,0 +1,42 @@
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#    MULTI_REGION_CLOUD_TRAIL_ENABLED
+#
+# Description:
+#   Checks if there is at least one multi-region AWS CloudTrail.
+#
+# Reports on:
+#    AWS::CloudTrail::Trail
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
+# a) SKIP: when there are no CloudTrail Trails present
+# b) PASS: when all CloudTrail Trails have IsMultiRegionTrail parameter set true
+# c) FAIL: when there are CloudTrail Trails with the IsMultiRegionTrail parameter is set to false
+# d) FAIL: when there are CloudTrail Trails with IsMultiRegionTrail property not present
+# e) SKIP: when metada has rule suppression for MULTI_REGION_CLOUD_TRAIL_ENABLED
+
+#
+# Select all CloudTrail Trail resources from incoming template (payload)
+#
+let cloudtrail_trails_multiregion = Resources.*[ Type == 'AWS::CloudTrail::Trail'
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "MULTI_REGION_CLOUD_TRAIL_ENABLED"
+]
+
+rule MULTI_REGION_CLOUD_TRAIL_ENABLED when %cloudtrail_trails_multiregion !empty {
+  %cloudtrail_trails_multiregion.Properties.IsMultiRegionTrail EXISTS
+  %cloudtrail_trails_multiregion.Properties.IsMultiRegionTrail == true
+  <<
+    Violation: CloudTrail Trail should be set to log multiple regions.
+    Fix: Set the IsMultiRegionTrail parameter to true.
+  >>
+}

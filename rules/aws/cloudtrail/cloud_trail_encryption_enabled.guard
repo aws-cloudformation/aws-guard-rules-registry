@@ -1,23 +1,40 @@
-## Config Rule Name : cloud-trail-encryption-enabled
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/cloud-trail-encryption-enabled.html
-
-# Rule Intent: Checks if AWS CloudTrail is configured to use the server side encryption (SSE) AWS Key Management Service KMS key encryption.
-
-# Expectations:
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#    CLOUD_TRAIL_ENCRYPTION_ENABLED
+#
+# Description:
+#   Checks if AWS CloudTrail is configured to use the server side encryption (SSE)
+#   AWS Key Management Service KMS key encryption.
+#
+# Reports on:
+#    AWS::CloudTrail::Trail
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
 # a) SKIP: when there are no CloudTrail Trails present
 # b) PASS: when all CloudTrail Trails have KMSKeyId parameter set
 # c) FAIL: when there are CloudTrail Trails with KMSKeyId property not present
+# d) SKIP: when metada has rule suppression for CLOUD_TRAIL_ENCRYPTION_ENABLED
 
 #
 # Select all CloudTrail Trail resources from incoming template (payload)
 #
+let cloudtrail_trails_encryption = Resources.*[ Type == 'AWS::CloudTrail::Trail'
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "CLOUD_TRAIL_ENCRYPTION_ENABLED"
+]
 
-
-let cloudtrail_trails = Resources.*[ Type == 'AWS::CloudTrail::Trail' ]
-
-rule CLOUD_TRAIL_ENCRYPTION_ENABLED when %cloudtrail_trails !empty {
-  %cloudtrail_trails.Properties.KMSKeyId EXISTS
-  %cloudtrail_trails.Properties.KMSKeyId is_string
+rule CLOUD_TRAIL_ENCRYPTION_ENABLED when %cloudtrail_trails_encryption !empty {
+  %cloudtrail_trails_encryption.Properties.KMSKeyId EXISTS
+  %cloudtrail_trails_encryption.Properties.KMSKeyId is_string
   <<
     Violation: CloudTrail Trail should be used to encrypt logs delivered by CloudTrail.
     Fix: Set the KMSKeyId parameter to enable encryption. The value can be an alias name prefixed by "alias/", a fully specified ARN to an alias, a fully specified ARN to a key, or a globally unique identifier.

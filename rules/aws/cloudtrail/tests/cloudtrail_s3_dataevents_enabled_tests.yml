@@ -107,3 +107,23 @@
   expectations:
     rules:
       CLOUDTRAIL_S3_DATAEVENTS_ENABLED: FAIL
+
+- name: CloudTrail Trail EventSelectors property missing but rule suppressed, SKIP
+  input:
+    Resources:
+      ExampleTrail:
+        Type: AWS::CloudTrail::Trail
+        Metadata:
+          guard:
+            SuppressedRules:
+            - CLOUDTRAIL_S3_DATAEVENTS_ENABLED
+        Properties:
+          S3BucketName: !Ref BucketName
+          S3KeyPrefix: "Uluru"
+          IsLogging: true
+          TrailName: !Ref TrailName
+          IncludeGlobalServiceEvents: true
+          IsMultiRegionTrail: true
+  expectations:
+    rules:
+      CLOUDTRAIL_S3_DATAEVENTS_ENABLED: SKIP

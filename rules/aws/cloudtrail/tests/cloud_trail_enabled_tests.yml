@@ -1,21 +1,21 @@
 ###
-# CLOUD_TRAIL_LOG_FILE_VALIDATION_ENABLED tests
+# CLOUD_TRAIL_ENABLED tests
 ###
 ---
 - name: Empty, SKIP
   input: {}
   expectations:
     rules:
-      CLOUD_TRAIL_LOG_FILE_VALIDATION_ENABLED: SKIP
+      CLOUD_TRAIL_ENABLED: SKIP
 
 - name: No resources, SKIP
   input:
     Resources: {}
   expectations:
     rules:
-      CLOUD_TRAIL_LOG_FILE_VALIDATION_ENABLED: SKIP
+      CLOUD_TRAIL_ENABLED: SKIP
 
-- name: CloudTrail Trail EnableLogFileValidation set to true, PASS
+- name: CloudTrail Trail IsLogging set to true, PASS
   input:
     Resources:
       ExampleTrail:
@@ -31,9 +31,9 @@
           KMSKeyId: alias/MyAliasName
   expectations:
     rules:
-      CLOUD_TRAIL_LOG_FILE_VALIDATION_ENABLED: PASS
+      CLOUD_TRAIL_ENABLED: PASS
 
-- name: CloudTrail Trail EnableLogFileValidation set false, FAIL
+- name: CloudTrail Trail IsLogging set false, FAIL
   input:
     Resources:
       ExampleTrail:
@@ -41,7 +41,7 @@
         Properties:
           S3BucketName: !Ref BucketName
           S3KeyPrefix: "Uluru"
-          IsLogging: true
+          IsLogging: false
           TrailName: !Ref TrailName
           EnableLogFileValidation: false
           IncludeGlobalServiceEvents: true
@@ -49,9 +49,9 @@
           KMSKeyId: alias/MyAliasName
   expectations:
     rules:
-      CLOUD_TRAIL_LOG_FILE_VALIDATION_ENABLED: FAIL
+      CLOUD_TRAIL_ENABLED: FAIL
 
-- name: CloudTrail Trail EnableLogFileValidation property missing, FAIL
+- name: CloudTrail Trail IsLogging property missing, FAIL
   input:
     Resources:
       ExampleTrail:
@@ -59,15 +59,14 @@
         Properties:
           S3BucketName: !Ref BucketName
           S3KeyPrefix: "Uluru"
-          IsLogging: true
           TrailName: !Ref TrailName
           IncludeGlobalServiceEvents: true
           IsMultiRegionTrail: true
   expectations:
     rules:
-      CLOUD_TRAIL_LOG_FILE_VALIDATION_ENABLED: FAIL
+      CLOUD_TRAIL_ENABLED: FAIL
 
-- name: CloudTrail Trail EnableLogFileValidation property missing but rule suppressed, SKIP
+- name: CloudTrail Trail IsLogging property missing but rule suppressed, SKIP
   input:
     Resources:
       ExampleTrail:
@@ -75,14 +74,13 @@
         Metadata:
           guard:
             SuppressedRules:
-            - CLOUD_TRAIL_LOG_FILE_VALIDATION_ENABLED
+            - CLOUD_TRAIL_ENABLED
         Properties:
           S3BucketName: !Ref BucketName
           S3KeyPrefix: "Uluru"
-          IsLogging: true
           TrailName: !Ref TrailName
           IncludeGlobalServiceEvents: true
           IsMultiRegionTrail: true
   expectations:
     rules:
-      CLOUD_TRAIL_LOG_FILE_VALIDATION_ENABLED: SKIP
+      CLOUD_TRAIL_ENABLED: SKIP

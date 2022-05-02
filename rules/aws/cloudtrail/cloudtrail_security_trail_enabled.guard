@@ -1,8 +1,0 @@
-## SKIP
-## SKIP RATIONALE: Initial version of Guard Rules Registry pertains to static application
-##                 security testing and code analysis.
-
-## Config Rule Name : cloudtrail-security-trail-enabled
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/cloudtrail-security-trail-enabled.html
-
-# Rule Intent: Checks that there is at least one AWS CloudTrail trail defined with security best practices.
