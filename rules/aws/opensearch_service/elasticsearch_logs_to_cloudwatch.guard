@@ -1,25 +1,44 @@
-## Config Rule Name : elasticsearch-logs-to-cloudwatch
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/elasticsearch-logs-to-cloudwatch.html
-
-# Rule Intent: Checks if Amazon OpenSearch Service (OpenSearch Service) domains are configured to send logs to Amazon CloudWatch Logs.
-
-# Expectations:
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#    ELASTICSEARCH_LOGS_TO_CLOUDWATCH
+#
+# Description:
+#   Checks if Amazon OpenSearch Service (OpenSearch Service) domains are
+#   configured to send logs to Amazon CloudWatch Logs.
+#
+# Reports on:
+#    AWS::Elasticsearch::Domain
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
 # a) SKIP: when there is no elasticsearch domain present
 # b) FAIL: when elasticsearch domain does not have LogPublishingOptions or Enabled parameter is set to false for all available keys
 # c) PASS: when elasticsearch domain has LogPublishingOptions with Enabled parameter is set to true on one key
+# d) SKIP: when metada has rule suppression for ELASTICSEARCH_LOGS_TO_CLOUDWATCH
 
 #
 # Select all elasticsearch domains from incoming template
 #
 
-let elasticsearch_domains = Resources.*[ Type == 'AWS::Elasticsearch::Domain' ]
+let elasticsearch_domains_logs_cloudwatch = Resources.*[ Type == 'AWS::Elasticsearch::Domain'
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "ELASTICSEARCH_LOGS_TO_CLOUDWATCH"
+]
 
-rule ELASTICSEARCH_LOGS_TO_CLOUDWATCH when %elasticsearch_domains !empty {
+rule ELASTICSEARCH_LOGS_TO_CLOUDWATCH when %elasticsearch_domains_logs_cloudwatch !empty {
 
-  %elasticsearch_domains.Properties.LogPublishingOptions EXISTS
-  %elasticsearch_domains.Properties.LogPublishingOptions.ES_APPLICATION_LOGS.Enabled == true OR
-  %elasticsearch_domains.Properties.LogPublishingOptions.SEARCH_SLOW_LOGS.Enabled == true OR
-  %elasticsearch_domains.Properties.LogPublishingOptions.INDEX_SLOW_LOGS.Enabled == true
+  %elasticsearch_domains_logs_cloudwatch.Properties.LogPublishingOptions EXISTS
+  %elasticsearch_domains_logs_cloudwatch.Properties.LogPublishingOptions.ES_APPLICATION_LOGS.Enabled == true OR
+  %elasticsearch_domains_logs_cloudwatch.Properties.LogPublishingOptions.SEARCH_SLOW_LOGS.Enabled == true OR
+  %elasticsearch_domains_logs_cloudwatch.Properties.LogPublishingOptions.INDEX_SLOW_LOGS.Enabled == true
   <<
     Violation: Elasticsearch domain must have logging configured to send logs to CloudWatch Logs.
     Fix: Set a LogPublishingOptions object to have the property "Enabled" parameter set to true for keys "ES_APPLICATION_LOGS", "SEARCH_SLOW_LOGS", or "INDEX_SLOW_LOGS".

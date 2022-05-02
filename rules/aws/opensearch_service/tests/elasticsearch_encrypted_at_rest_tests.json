@@ -67,5 +67,28 @@
         "ELASTICSEARCH_ENCRYPTED_AT_REST": "FAIL"
       }
     }
+  },
+  {
+    "name": "Rule fails when ElasticSearch domain has server side encryption property missing but rule suppressed, SKIP",
+    "input": {
+      "Resources": {
+        "ElasticsearchDomain": {
+          "Type": "AWS::Elasticsearch::Domain",
+          "Metadata": {
+            "guard": {
+              "SuppressedRules": ["ELASTICSEARCH_ENCRYPTED_AT_REST"]
+            }
+          },
+          "Properties": {
+            "DomainName": "test"
+          }
+        }
+      }
+    },
+    "expectations": {
+      "rules": {
+        "ELASTICSEARCH_ENCRYPTED_AT_REST": "SKIP"
+      }
+    }
   }
 ]
