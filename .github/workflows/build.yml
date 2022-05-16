@@ -3,7 +3,7 @@ name: Build Rules
 on: push
 
 env:
-  AWS_DEFAULT_REGION: ${{ secrets.ECR_AWS_ACCESS_KEY_ID }}
+  AWS_DEFAULT_REGION: ${{ secrets.ECR_REGION }}
   AWS_DEFAULT_OUTPUT: json
   AWS_ACCESS_KEY_ID: ${{ secrets.ECR_AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.ECR_AWS_SECRET_ACCESS_KEY }}
