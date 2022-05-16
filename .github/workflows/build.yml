@@ -1,9 +1,15 @@
 name: Build Rules
 
-on:
-  push:
-    branches:
-      - main
+on: push
+
+env:
+  AWS_DEFAULT_REGION: ${{ secrets.ECR_AWS_ACCESS_KEY_ID }}
+  AWS_DEFAULT_OUTPUT: json
+  AWS_ACCESS_KEY_ID: ${{ secrets.ECR_AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.ECR_AWS_SECRET_ACCESS_KEY }}
+  ECR_REGISTRY: ${{ secrets.REGISTRY }}
+  ECR_REPOSITORY: ${{ secrets.REPOSITORY }}
+  VERSION: '1.0'
 
 jobs:
   testRules:
@@ -34,5 +40,32 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: ruleset-build
-          path: mappings/output/
+          path: docker/output/
           if-no-files-found: error
+
+  buildDocker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v2
+      - run: |
+          chmod +x ./mappings/build.py
+          python3 ./mappings/build.py
+        shell: bash
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ env.ECR_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.ECR_AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{env.ECR_REGION}}
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+      - name: Build, tag, and push image to Amazon ECR
+        run: |
+          aws ecr-public get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY
+          cd ./docker
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
