@@ -1,6 +1,9 @@
 name: Build Rules
 
-on: push
+on:
+  push:
+    branches:
+      - main
 
 env:
   AWS_DEFAULT_REGION: ${{ secrets.ECR_REGION }}
