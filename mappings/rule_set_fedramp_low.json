@@ -1,6 +1,6 @@
 {
   "owner": "AWS",
-  "ruleSetName": "FedRAMPLow-BestPractices",
+  "ruleSetName": "FedRAMP-Low",
   "version": "0.1.0",
   "description" : "AWS Guard rule set based on the AWS Config Conformance Pack for FedRAMP Low",
   "contact" : "aws-guard-rules-registry@amazon.com",
