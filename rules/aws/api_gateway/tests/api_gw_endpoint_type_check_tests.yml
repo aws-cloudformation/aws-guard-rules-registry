@@ -1,0 +1,89 @@
+###
+# API_GW_ENDPOINT_TYPE_CHECK tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      API_GW_ENDPOINT_TYPE_CHECK: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      API_GW_ENDPOINT_TYPE_CHECK: SKIP
+
+- name: API Gateway Endpoint Configuration set, PASS
+  input:
+    Resources:
+      myDomainName:
+        Type: 'AWS::ApiGateway::DomainName'
+        Properties:
+          DomainName: api.mydomain.com
+          SecurityPolicy: TLS_1_2
+          EndpointConfiguration:
+            Types:
+              - "REGIONAL"
+  expectations:
+    rules:
+      API_GW_ENDPOINT_TYPE_CHECK: PASS
+
+- name: API Gateway Endpoint Configuration set with multiple values, PASS
+  input:
+    Resources:
+      myDomainName:
+        Type: 'AWS::ApiGateway::DomainName'
+        Properties:
+          DomainName: api.mydomain.com
+          SecurityPolicy: TLS_1_2
+          EndpointConfiguration:
+            Types:
+              - "REGIONAL"
+              - "EDGE"
+  expectations:
+    rules:
+      API_GW_ENDPOINT_TYPE_CHECK: PASS
+
+- name: API Gateway Endpoint Configuration set with multiple values but not correct, FAIL
+  input:
+    Resources:
+      myDomainName:
+        Type: 'AWS::ApiGateway::DomainName'
+        Properties:
+          DomainName: api.mydomain.com
+          SecurityPolicy: TLS_1_2
+          EndpointConfiguration:
+            Types:
+              - "BEYONDEDGE"
+  expectations:
+    rules:
+      API_GW_ENDPOINT_TYPE_CHECK: FAIL
+
+- name: API Gateway Endpoint Configuration not set, FAIL
+  input:
+    Resources:
+      myDomainName:
+        Type: 'AWS::ApiGateway::DomainName'
+        Properties:
+          DomainName: api.mydomain.com
+          SecurityPolicy: TLS_1_0
+  expectations:
+    rules:
+      API_GW_ENDPOINT_TYPE_CHECK: FAIL
+
+- name: API Gateway Endpoint Configuration not set but rule suppressed, SKIP
+  input:
+    Resources:
+      myDomainName:
+        Type: 'AWS::ApiGateway::DomainName'
+        Metadata:
+          guard:
+            SuppressedRules:
+              - "API_GW_ENDPOINT_TYPE_CHECK"
+        Properties:
+          DomainName: api.mydomain.com
+  expectations:
+    rules:
+      API_GW_ENDPOINT_TYPE_CHECK: SKIP

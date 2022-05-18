@@ -1,8 +1,0 @@
-## SKIP
-## SKIP RATIONALE: Initial version of Guard Rules Registry pertains to static application
-##                 security testing and code analysis.
-
-## Config Rule Name : securityhub-enabled
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/securityhub-enabled.html
-
-# Rule Intent: Checks that AWS Security Hub is enabled for an AWS Account.

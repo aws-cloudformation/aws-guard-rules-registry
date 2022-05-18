@@ -1,0 +1,163 @@
+###
+# API_GW_EXECUTION_LOGGING_ENABLED tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      API_GW_EXECUTION_LOGGING_ENABLED: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      API_GW_EXECUTION_LOGGING_ENABLED: SKIP
+
+- name: No Method set in API GW Stage, SKIP
+  input:
+    Resources:
+      Type: AWS::ApiGateway::Stage
+      Properties:
+        StageName: Prod
+        Description: Prod Stage
+        RestApiId: !Ref MyRestApi
+        DeploymentId: !Ref TestDeployment
+        DocumentationVersion: !Ref MyDocumentationVersion
+        ClientCertificateId: !Ref ClientCertificate
+        Variables:
+          Stack: Prod
+  expectations:
+    rules:
+      API_GW_EXECUTION_LOGGING_ENABLED: SKIP
+
+- name: LoggingLevel set to INFO, PASS
+  input:
+    Resources:
+      myApiGWStage:
+        Type: AWS::ApiGateway::Stage
+        Properties:
+          StageName: Prod
+          Description: Prod Stage
+          RestApiId: !Ref MyRestApi
+          DeploymentId: !Ref TestDeployment
+          DocumentationVersion: !Ref MyDocumentationVersion
+          ClientCertificateId: !Ref ClientCertificate
+          Variables:
+            Stack: Prod
+          MethodSettings:
+            - ResourcePath: /
+              HttpMethod: GET
+              MetricsEnabled: true
+              DataTraceEnabled: false
+              CacheDataEncrypted: true
+              CachingEnabled: true
+              LoggingLevel: "INFO"
+  expectations:
+    rules:
+      API_GW_EXECUTION_LOGGING_ENABLED: PASS
+
+- name: LoggingLevel set to ERROR, PASS
+  input:
+    Resources:
+      myApiGWStage:
+        Type: AWS::ApiGateway::Stage
+        Properties:
+          StageName: Prod
+          Description: Prod Stage
+          RestApiId: !Ref MyRestApi
+          DeploymentId: !Ref TestDeployment
+          DocumentationVersion: !Ref MyDocumentationVersion
+          ClientCertificateId: !Ref ClientCertificate
+          Variables:
+            Stack: Prod
+          MethodSettings:
+            - ResourcePath: /
+              HttpMethod: GET
+              MetricsEnabled: true
+              DataTraceEnabled: false
+              CacheDataEncrypted: true
+              CachingEnabled: true
+              LoggingLevel: "ERROR"
+  expectations:
+    rules:
+      API_GW_EXECUTION_LOGGING_ENABLED: PASS
+
+- name: LoggingLevel set to SUPER, FAIL
+  input:
+    Resources:
+      myApiGWStage:
+        Type: AWS::ApiGateway::Stage
+        Properties:
+          StageName: Prod
+          Description: Prod Stage
+          RestApiId: !Ref MyRestApi
+          DeploymentId: !Ref TestDeployment
+          DocumentationVersion: !Ref MyDocumentationVersion
+          ClientCertificateId: !Ref ClientCertificate
+          Variables:
+            Stack: Prod
+          MethodSettings:
+            - ResourcePath: /
+              HttpMethod: GET
+              MetricsEnabled: true
+              DataTraceEnabled: false
+              CacheDataEncrypted: true
+              CachingEnabled: false
+              LoggingLevel: "SUPER"
+  expectations:
+    rules:
+      API_GW_EXECUTION_LOGGING_ENABLED: FAIL
+
+- name: LoggingLevel missing, FAIL
+  input:
+    Resources:
+      myApiGWStage:
+        Type: AWS::ApiGateway::Stage
+        Properties:
+          StageName: Prod
+          Description: Prod Stage
+          RestApiId: !Ref MyRestApi
+          DeploymentId: !Ref TestDeployment
+          DocumentationVersion: !Ref MyDocumentationVersion
+          ClientCertificateId: !Ref ClientCertificate
+          Variables:
+            Stack: Prod
+          MethodSettings:
+            - ResourcePath: /
+              HttpMethod: GET
+              MetricsEnabled: true
+              DataTraceEnabled: false
+              CacheDataEncrypted: false
+              CachingEnabled: true
+  expectations:
+    rules:
+      API_GW_EXECUTION_LOGGING_ENABLED: FAIL
+
+- name: LoggingLevel missing but rule suppressed, SKIP
+  input:
+    Resources:
+      myApiGWStage:
+        Type: AWS::ApiGateway::Stage
+        Metadata:
+          guard:
+            SuppressedRules:
+              - "API_GW_EXECUTION_LOGGING_ENABLED"
+        Properties:
+          StageName: Prod
+          Description: Prod Stage
+          RestApiId: !Ref MyRestApi
+          DeploymentId: !Ref TestDeployment
+          DocumentationVersion: !Ref MyDocumentationVersion
+          ClientCertificateId: !Ref ClientCertificate
+          Variables:
+            Stack: Prod
+          MethodSettings:
+            - ResourcePath: /
+              HttpMethod: GET
+              MetricsEnabled: true
+              DataTraceEnabled: false
+  expectations:
+    rules:
+      API_GW_EXECUTION_LOGGING_ENABLED: SKIP

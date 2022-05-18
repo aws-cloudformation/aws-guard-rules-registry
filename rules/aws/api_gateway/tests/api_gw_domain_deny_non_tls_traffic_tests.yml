@@ -1,18 +1,20 @@
 ###
-# apigw_domain_deny_non_tls_traffic
+# API_GW_DOMAIN_DENY_NON_TLS_TRAFFIC
 ###
 ---
 - name: Empty, SKIP
   input: {}
   expectations:
     rules:
-      apigw_domain_deny_non_tls_traffic: SKIP
+      API_GW_DOMAIN_DENY_NON_TLS_TRAFFIC: SKIP
+
 - name: No resources, SKIP
   input:
     Resources: {}
   expectations:
     rules:
-      apigw_domain_deny_non_tls_traffic: SKIP
+      API_GW_DOMAIN_DENY_NON_TLS_TRAFFIC: SKIP
+
 - name: SecurityPolicy TLSv1.2, PASS
   input:
     Resources:
@@ -23,7 +25,8 @@
           SecurityPolicy: TLS_1_2
   expectations:
     rules:
-      apigw_domain_deny_non_tls_traffic: PASS
+      API_GW_DOMAIN_DENY_NON_TLS_TRAFFIC: PASS
+
 - name: SecurityPolicy TLSv1.0, FAIL
   input:
     Resources:
@@ -34,7 +37,8 @@
           SecurityPolicy: TLS_1_0
   expectations:
     rules:
-      apigw_domain_deny_non_tls_traffic: FAIL
+      API_GW_DOMAIN_DENY_NON_TLS_TRAFFIC: FAIL
+
 - name: APIGW domain with missing SecurityPolicy property, FAIL
   input:
     Resources:
@@ -44,4 +48,19 @@
           DomainName: api.mydomain.com
   expectations:
     rules:
-      apigw_domain_deny_non_tls_traffic: FAIL
+      API_GW_DOMAIN_DENY_NON_TLS_TRAFFIC: FAIL
+
+- name: APIGW domain with missing SecurityPolicy property but rule suppressed, SKIP
+  input:
+    Resources:
+      myDomainName:
+        Type: 'AWS::ApiGateway::DomainName'
+        Metadata:
+          guard:
+            SuppressedRules:
+              - "API_GW_DOMAIN_DENY_NON_TLS_TRAFFIC"
+        Properties:
+          DomainName: api.mydomain.com
+  expectations:
+    rules:
+      API_GW_DOMAIN_DENY_NON_TLS_TRAFFIC: SKIP
