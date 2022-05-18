@@ -1,1 +1,40 @@
-## Config Rule: https://docs.aws.amazon.com/config/latest/developerguide/api-gw-cache-enabled-and-encrypted.html
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#    API_GW_CACHE_ENABLED_AND_ENCRYPTED
+#
+# Description:
+#    Checks that all methods in Amazon API Gateway stages have cache enabled and cache encrypted.
+#
+# Reports on:
+#    AWS::ApiGateway::Stage
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
+# a) SKIP: when there are no API GW Stage Methods present
+# b) PASS: when all API Stage Method has caching enabled and encrypted
+# c) FAIL: when API Stage Method does not have caching enabled and encrypted
+# d) SKIP: when metadata includes the suppression for rule API_GW_CACHE_ENABLED_AND_ENCRYPTED
+
+let api_gw_cache_enabled_encrypted = Resources.*[ Type == 'AWS::ApiGateway::Stage'
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "API_GW_CACHE_ENABLED_AND_ENCRYPTED"
+]
+
+rule API_GW_CACHE_ENABLED_AND_ENCRYPTED when %api_gw_cache_enabled_encrypted !empty {
+  when %api_gw_cache_enabled_encrypted.Properties.MethodSettings exists {
+    %api_gw_cache_enabled_encrypted.Properties.MethodSettings.*.CacheDataEncrypted == true
+    %api_gw_cache_enabled_encrypted.Properties.MethodSettings.*.CachingEnabled == true
+    <<
+      Violation: API Gateway Stage Method not set with caching and caching encrypted
+      Fix: API GW Stage Method property CacheDataEncrypted and CachingEnabled set to true
+    >>
+  }
+}
