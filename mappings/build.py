@@ -7,7 +7,7 @@ import glob
 import re
 
 def create_output_directory():
-  path = "./mappings/output/"
+  path = "./docker/output/"
   isExist = os.path.exists(path)
   if not isExist:
     os.makedirs(path)
@@ -40,7 +40,6 @@ def main(directory):
   basedirectory =  directory + '/mappings/rule_set_*.json'
   create_output_directory()
   for build_file in glob.iglob(basedirectory, recursive=True):
-    #print(build_file)
     build_file_contents = open(build_file)
     data = json.load(build_file_contents)
     rule_set = data['ruleSetName']
@@ -53,7 +52,7 @@ def main(directory):
       custom_message = build_custom_message(rule_set, control_list)
       if check_build_skip(guard_file) is False:
         inputfile = open(guard_file).read()
-        output_file_name = "./mappings/output/" + rule_set + ".guard"
+        output_file_name = "./docker/output/" + rule_set + ".guard"
         outputfile = open(output_file_name, "a")
         outputfile.write(re.sub('<<', custom_message, inputfile, flags=re.M))
         outputfile.close()
