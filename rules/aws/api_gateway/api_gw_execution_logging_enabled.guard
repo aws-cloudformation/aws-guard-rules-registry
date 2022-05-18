@@ -20,8 +20,8 @@
 # Scenarios:
 # a) SKIP: when there are no API GW Stage present
 # b) PASS: when all API GW Stage Methods have logginglevel set to "ERROR" OR "INFO"
-# c) FAIL: when API GW Domain Names doesn't have a security policy configured to deny non-TLS traffic
-# d) SKIP: when metadata includes the suppression for rule API_GW_DOMAIN_DENY_NON_TLS_TRAFFIC
+# c) FAIL: when API GW Domain Names doesn't have logginglevel set to "ERROR" OR "INFO"
+# d) SKIP: when metadata includes the suppression for rule API_GW_EXECUTION_LOGGING_ENABLED
 
 let api_gw_execution_logging_enabled = Resources.*[ Type == 'AWS::ApiGateway::Stage'
   Metadata.guard.SuppressedRules not exists or
