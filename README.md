@@ -43,8 +43,8 @@ Many of the guard rules are supported by AWS and correspond to associated AWS Co
 
 AWS Guard Rules registry contains prebuilt managed rule sets compiled from rule mapping files found in the [mappings](/mappings) directory. The following managed Rule Sets are available for use:
 
-| Rule Set  | Rules Set File Name | Source Mapping File |
-| --------- | ------------------- | ------------------- |
+| Rule Set                         | Rules Set File Name | Source Mapping File |
+| -------------------------------- | ------------------- | ------------------- |
 | ABS Cloud Computing Implementation Guide 2.0 - Material Workloads | ABS_CCIGv2_Material | [rule_set_ABS_CCIGv2_Material.json](/mappings/rule_set_ABS_CCIGv2_Material.json) |
 | ABS Cloud Computing Implementation Guide 2.0 | ABS-CCIGv2-Standard | [rule_set_ABS_CCIGv2_Standard.json](/mappings/rule_set_ABS_CCIGv2_Standard.json) |
 | Australian Cyber Security Centre (ACSC) Essential Eight Maturity Model | acsc_essential_8 | [rule_set_acsc_essential_8.json](/mappings/rule_set_acsc_essential_8.json) |
