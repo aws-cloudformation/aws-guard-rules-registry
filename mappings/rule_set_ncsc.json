@@ -1,0 +1,516 @@
+{
+  "owner": "AWS",
+  "ruleSetName": "ncsc",
+  "version": "0.1.0",
+  "description": "AWS Guard rule set for UK National Cyber Security Centre (NCSC) Cloud Security Principles",
+  "contact": "aws-guard-rules-registry@amazon.com",
+  "mappings": [
+    {
+      "guardFilePath": "rules/aws/aws_certificate_manager/acm_certificate_expiration_check.guard",
+      "controls": [
+        "1. Data in transit protection"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/elastic_load_balancing_v2/alb_http_drop_invalid_header_enabled.guard",
+      "controls": [
+        "1. Data in transit protection"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/elastic_load_balancing_v2/alb_http_to_https_redirection_check.guard",
+      "controls": [
+        "1. Data in transit protection"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/opensearch_service/elasticsearch_node_to_node_encryption_check.guard",
+      "controls": [
+        "1. Data in transit protection"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/elastic_load_balancing/elb_acm_certificate_required.guard",
+      "controls": [
+        "1. Data in transit protection"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/api_gateway_v2/api_gw_ssl_enabled.guard",
+      "controls": [
+        "1. Data in transit protection"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/elastic_load_balancing_v2/elbv2_acm_certificate_required.guard",
+      "controls": [
+        "1. Data in transit protection"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/elastic_load_balancing/elb_tls_https_listeners_only.guard",
+      "controls": [
+        "1. Data in transit protection"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_redshift/redshift_require_tls_ssl.guard",
+      "controls": [
+        "1. Data in transit protection"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_s3/s3_bucket_ssl_requests_only.guard",
+      "controls": [
+        "1. Data in transit protection"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_s3/s3_bucket_public_read_prohibited.guard",
+      "controls": [
+        "2: Asset protection and resilience",
+        "11. External interface protection"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_s3/s3_bucket_public_write_prohibited.guard",
+      "controls": [
+        "2: Asset protection and resilience",
+        "11. External interface protection"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/api_gateway/api_gw_cache_enabled_and_encrypted.guard",
+      "controls": [
+        "2. Asset protection and resilience"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/cloudtrail/cloud_trail_encryption_enabled.guard",
+      "controls": [
+        "2. Asset protection and resilience"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/cloudwatch/cloudwatch_log_group_encrypted.guard",
+      "controls": [
+        "2. Asset protection and resilience"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/dynamodb/dynamodb_table_encrypted_kms.guard",
+      "controls": [
+        "2. Asset protection and resilience"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_rds/db_instance_backup_enabled.guard",
+      "controls": [
+        "2. Asset protection and resilience"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/dynamodb/dynamodb_autoscaling_enabled.guard",
+      "controls": [
+        "2. Asset protection and resilience"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/dynamodb/dynamodb_in_backup_plan.guard",
+      "controls": [
+        "2. Asset protection and resilience"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/elasticache/elasticache_redis_cluster_automatic_backup_check.guard",
+      "controls": [
+        "2. Asset protection and resilience"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/elastic_load_balancing/elb_cross_zone_load_balancing_enabled.guard",
+      "controls": [
+        "2. Asset protection and resilience"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/elastic_load_balancing/elb_deletion_protection_enabled.guard",
+      "controls": [
+        "2. Asset protection and resilience"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_rds/rds_multi_az_support.guard",
+      "controls": [
+        "2. Asset protection and resilience"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_s3/s3_bucket_replication_enabled.guard",
+      "controls": [
+        "2. Asset protection and resilience"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_s3/s3_bucket_versioning_enabled.guard",
+      "controls": [
+        "2. Asset protection and resilience"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_s3/s3_bucket_level_public_access_prohibited.guard",
+      "controls": [
+        "2. Asset protection and resilience",
+        "11. External interface protection"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_redshift/redshift_cluster_kms_enabled.guard",
+      "controls": [
+        "2. Asset protection and resilience"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_redshift/redshift_backup_enabled.guard",
+      "controls": [
+        "2. Asset protection and resilience"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_ec2/ec2_ebs_encryption_by_default.guard",
+      "controls": [
+        "2. Asset protection and resilience"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_efs/efs_encrypted_check.guard",
+      "controls": [
+        "2. Asset protection and resilience"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/opensearch_service/elasticsearch_encrypted_at_rest.guard",
+      "controls": [
+        "2. Asset protection and resilience"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_ec2/encrypted_volumes.guard",
+      "controls": [
+        "2. Asset protection and resilience"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/aws_kms/kms_cmk_not_scheduled_for_deletion.guard",
+      "controls": [
+        "2. Asset protection and resilience"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_rds/rds_snapshot_encrypted.guard",
+      "controls": [
+        "2. Asset protection and resilience"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_rds/rds_storage_encrypted.guard",
+      "controls": [
+        "2. Asset protection and resilience"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_redshift/redshift_cluster_configuration_check.guard",
+      "controls": [
+        "2. Asset protection and resilience"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_s3/s3_bucket_server_side_encryption_enabled.guard",
+      "controls": [
+        "2. Asset protection and resilience"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_s3/s3_default_encryption_kms.guard",
+      "controls": [
+        "2. Asset protection and resilience"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_sagemaker/sagemaker_endpoint_configuration_kms_key_configured.guard",
+      "controls": [
+        "2. Asset protection and resilience"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_sagemaker/sagemaker_notebook_instance_kms_key_configured.guard",
+      "controls": [
+        "2. Asset protection and resilience"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_sns/sns_encrypted_kms.guard",
+      "controls": [
+        "2. Asset protection and resilience"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/lambda/lambda_function_public_access_prohibited.guard",
+      "controls": [
+        "2. Asset protection and resilience",
+        "11. External interface protection"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/api_gateway/api_gw_execution_logging_enabled.guard",
+      "controls": [
+        "5. Operational security"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/cloudtrail/cloud_trail_cloud_watch_logs_enabled.guard",
+      "controls": [
+        "5. Operational security",
+        "13. Audit information for users"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/cloudtrail/cloudtrail_s3_dataevents_enabled.guard",
+      "controls": [
+        "5. Operational security"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/cloudwatch/cloudwatch_alarm_action_check.guard",
+      "controls": [
+        "5. Operational security"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/cloudwatch/cw_loggroup_retention_period_check.guard",
+      "controls": [
+        "5. Operational security"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_ec2/restricted_ssh.guard",
+      "controls": [
+        "5. Operational security",
+        "11. External interface protection"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_ec2/restricted_common_ports.guard",
+      "controls": [
+        "5. Operational security",
+        "11. External interface protection"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_ec2/no_unrestricted_route_to_igw.guard",
+      "controls": [
+        "5. Operational security",
+        "11. External interface protection"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/opensearch_service/elasticsearch_logs_to_cloudwatch.guard",
+      "controls": [
+        "5. Operational security"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/elastic_load_balancing/elb_logging_enabled.guard",
+      "controls": [
+        "5. Operational security"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_rds/rds_logging_enabled.guard",
+      "controls": [
+        "5. Operational security"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_redshift/redshift_cluster_maintenancesettings_check.guard",
+      "controls": [
+        "5. Operational security"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_s3/s3_bucket_logging_enabled.guard",
+      "controls": [
+        "5. Operational security"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/aws_waf_v2/wafv2_logging_enabled.guard",
+      "controls": [
+        "5. Operational security"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/lambda/lambda_dlq_check.guard",
+      "controls": [
+        "5. Operational security"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_rds/rds_enhanced_monitoring_enabled.guard",
+      "controls": [
+        "5. Operational security"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/codebuild/codebuild_project_envvar_awscred_check.guard",
+      "controls": [
+        "7. Secure development"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/codebuild/codebuild_project_source_repo_url_check.guard",
+      "controls": [
+        "7. Secure development"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/iam/iam_policy_no_statements_with_admin_access.guard",
+      "controls": [
+        "9. Secure user management"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/iam/iam_user_no_policies_check.guard",
+      "controls": [
+        "9. Secure user management"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/iam/iam_policy_no_statements_with_full_access.guard",
+      "controls": [
+        "9. Secure user management"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_emr/emr_kerberos_enabled.guard",
+      "controls": [
+        "10. Identity and authentication"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/iam/iam_no_inline_policy_check.guard",
+      "controls": [
+        "10. Identity and authentication"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/secrets_manager/secretsmanager_rotation_enabled_check.guard",
+      "controls": [
+        "10. Identity and authentication"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/secrets_manager/secretsmanager_scheduled_rotation_success_check.guard",
+      "controls": [
+        "10. Identity and authentication"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_ecs/ecs_task_definition_user_for_host_mode_check.guard",
+      "controls": [
+        "10. Identity and authentication"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/elastic_load_balancing_v2/alb_waf_enabled.guard",
+      "controls": [
+        "11. External interface protection"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/aws_dms/dms_replication_not_public.guard",
+      "controls": [
+        "11. External interface protection"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_ec2/ec2_instances_in_vpc.guard",
+      "controls": [
+        "11. External interface protection",
+        "11. External interface protection"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_ec2/subnet_auto_assign_public_ip_disabled.guard",
+      "controls": [
+        "11. External interface protection"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_ec2_auto_scaling/autoscaling_launch_config_public_ip_disabled.guard",
+      "controls": [
+        "11. External interface protection"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_redshift/redshift_enhanced_vpc_routing_enabled.guard",
+      "controls": [
+        "11. External interface protection"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/api_gateway_v2/api_gw_associated_with_waf.guard",
+      "controls": [
+        "11. External interface protection"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_ec2/ec2_instance_no_public_ip.guard",
+      "controls": [
+        "11. External interface protection"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/opensearch_service/elasticsearch_in_vpc_only.guard",
+      "controls": [
+        "11. External interface protection"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_emr/emr_master_no_public_ip.guard",
+      "controls": [
+        "11. External interface protection"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/lambda/lambda_inside_vpc.guard",
+      "controls": [
+        "11. External interface protection"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_rds/rds_instance_public_access_check.guard",
+      "controls": [
+        "11. External interface protection"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_redshift/redshift_cluster_public_access_check.guard",
+      "controls": [
+        "11. External interface protection"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_sagemaker/sagemaker_notebook_no_direct_internet_access.guard",
+      "controls": [
+        "11. External interface protection"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/cloudtrail/cloud_trail_log_file_validation_enabled.guard",
+      "controls": [
+        "13. Audit information for users"
+      ]
+    }
+  ]
+}

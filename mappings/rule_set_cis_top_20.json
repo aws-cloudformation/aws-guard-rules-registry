@@ -1,0 +1,392 @@
+{
+  "owner": "AWS",
+  "ruleSetName": "cis-top-20",
+  "version": "0.1.0",
+  "description": "AWS Guard rule set for Center for Center for Internet Security (CIS) Top 20 Critical Security Controls",
+  "contact": "aws-guard-rules-registry@amazon.com",
+  "mappings": [
+    {
+      "guardFilePath": "rules/aws/iam/iam_policy_no_statements_with_admin_access.guard",
+      "controls": [
+        "CIS.4",
+        "CIS.16"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_redshift/redshift_cluster_configuration_check.guard",
+      "controls": [
+        "CIS.5",
+        "CIS.6",
+        "CIS.13"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_redshift/redshift_cluster_maintenancesettings_check.guard",
+      "controls": [
+        "CIS.5"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/api_gateway/api_gw_execution_logging_enabled.guard",
+      "controls": [
+        "CIS.6"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/cloudtrail/cloud_trail_cloud_watch_logs_enabled.guard",
+      "controls": [
+        "CIS.6"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/cloudtrail/cloud_trail_log_file_validation_enabled.guard",
+      "controls": [
+        "CIS.6"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/cloudtrail/cloudtrail_s3_dataevents_enabled.guard",
+      "controls": [
+        "CIS.6"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/cloudwatch/cloudwatch_alarm_action_check.guard",
+      "controls": [
+        "CIS.6",
+        "CIS.16"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/elastic_load_balancing/elb_logging_enabled.guard",
+      "controls": [
+        "CIS.6"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_s3/s3_bucket_logging_enabled.guard",
+      "controls": [
+        "CIS.6"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/aws_dms/dms_replication_not_public.guard",
+      "controls": [
+        "CIS.9",
+        "CIS.12",
+        "CIS.14"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_ec2/ec2_instance_no_public_ip.guard",
+      "controls": [
+        "CIS.9",
+        "CIS.12",
+        "CIS.14"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/opensearch_service/elasticsearch_in_vpc_only.guard",
+      "controls": [
+        "CIS.9",
+        "CIS.12"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_emr/emr_master_no_public_ip.guard",
+      "controls": [
+        "CIS.9",
+        "CIS.12"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_ec2/restricted_ssh.guard",
+      "controls": [
+        "CIS.9",
+        "CIS.11",
+        "CIS.12"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_ec2/ec2_instances_in_vpc.guard",
+      "controls": [
+        "CIS.9",
+        "CIS.12"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/lambda/lambda_function_public_access_prohibited.guard",
+      "controls": [
+        "CIS.9",
+        "CIS.12"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/lambda/lambda_inside_vpc.guard",
+      "controls": [
+        "CIS.9",
+        "CIS.12"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_rds/rds_instance_public_access_check.guard",
+      "controls": [
+        "CIS.9",
+        "CIS.12",
+        "CIS.14"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_redshift/redshift_cluster_public_access_check.guard",
+      "controls": [
+        "CIS.9",
+        "CIS.12",
+        "CIS.14"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_ec2/restricted_common_ports.guard",
+      "controls": [
+        "CIS.9",
+        "CIS.11",
+        "CIS.12"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_s3/s3_bucket_public_read_prohibited.guard",
+      "controls": [
+        "CIS.9",
+        "CIS.12",
+        "CIS.14"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_s3/s3_bucket_public_write_prohibited.guard",
+      "controls": [
+        "CIS.9",
+        "CIS.12",
+        "CIS.14"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_sagemaker/sagemaker_notebook_no_direct_internet_access.guard",
+      "controls": [
+        "CIS.9",
+        "CIS.12"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_rds/db_instance_backup_enabled.guard",
+      "controls": [
+        "CIS.10"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/dynamodb/dynamodb_pitr_enabled.guard",
+      "controls": [
+        "CIS.10"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/elasticache/elasticache_redis_cluster_automatic_backup_check.guard",
+      "controls": [
+        "CIS.10"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_s3/s3_bucket_replication_enabled.guard",
+      "controls": [
+        "CIS.10"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_s3/s3_bucket_versioning_enabled.guard",
+      "controls": [
+        "CIS.10"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/aws_certificate_manager/acm_certificate_expiration_check.guard",
+      "controls": [
+        "CIS.13",
+        "CIS.14"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/elastic_load_balancing_v2/alb_http_to_https_redirection_check.guard",
+      "controls": [
+        "CIS.13",
+        "CIS.14"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/api_gateway/api_gw_cache_enabled_and_encrypted.guard",
+      "controls": [
+        "CIS.13",
+        "CIS.14"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/cloudtrail/cloud_trail_encryption_enabled.guard",
+      "controls": [
+        "CIS.13",
+        "CIS.14"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/cloudwatch/cloudwatch_log_group_encrypted.guard",
+      "controls": [
+        "CIS.13",
+        "CIS.14"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_ec2/ec2_ebs_encryption_by_default.guard",
+      "controls": [
+        "CIS.13",
+        "CIS.14"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_efs/efs_encrypted_check.guard",
+      "controls": [
+        "CIS.13",
+        "CIS.14"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/opensearch_service/elasticsearch_encrypted_at_rest.guard",
+      "controls": [
+        "CIS.13",
+        "CIS.14"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/elastic_load_balancing/elb_acm_certificate_required.guard",
+      "controls": [
+        "CIS.13",
+        "CIS.14"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_ec2/encrypted_volumes.guard",
+      "controls": [
+        "CIS.13",
+        "CIS.14"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/aws_kms/kms_cmk_not_scheduled_for_deletion.guard",
+      "controls": [
+        "CIS.13",
+        "CIS.14"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_rds/rds_snapshot_encrypted.guard",
+      "controls": [
+        "CIS.13",
+        "CIS.14"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_rds/rds_storage_encrypted.guard",
+      "controls": [
+        "CIS.13",
+        "CIS.14"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_redshift/redshift_require_tls_ssl.guard",
+      "controls": [
+        "CIS.13",
+        "CIS.14"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_s3/s3_bucket_default_lock_enabled.guard",
+      "controls": [
+        "CIS.13",
+        "CIS.14"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_s3/s3_bucket_server_side_encryption_enabled.guard",
+      "controls": [
+        "CIS.13",
+        "CIS.14"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_s3/s3_bucket_ssl_requests_only.guard",
+      "controls": [
+        "CIS.13",
+        "CIS.14"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_sagemaker/sagemaker_endpoint_configuration_kms_key_configured.guard",
+      "controls": [
+        "CIS.13",
+        "CIS.14"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_sagemaker/sagemaker_notebook_instance_kms_key_configured.guard",
+      "controls": [
+        "CIS.13",
+        "CIS.14"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_sns/sns_encrypted_kms.guard",
+      "controls": [
+        "CIS.13",
+        "CIS.14"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_emr/emr_kerberos_enabled.guard",
+      "controls": [
+        "CIS.14",
+        "CIS.16"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_s3/s3_bucket_policy_grantee_check.guard",
+      "controls": [
+        "CIS.14"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/iam/iam_user_no_policies_check.guard",
+      "controls": [
+        "CIS.16"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/secrets_manager/secretsmanager_rotation_enabled_check.guard",
+      "controls": [
+        "CIS.16"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/secrets_manager/secretsmanager_scheduled_rotation_success_check.guard",
+      "controls": [
+        "CIS.16"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/codebuild/codebuild_project_envvar_awscred_check.guard",
+      "controls": [
+        "CIS.18"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/codebuild/codebuild_project_source_repo_url_check.guard",
+      "controls": [
+        "CIS.18"
+      ]
+    }
+  ]
+}

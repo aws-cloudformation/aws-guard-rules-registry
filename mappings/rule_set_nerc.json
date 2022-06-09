@@ -1,0 +1,231 @@
+{
+  "owner": "AWS",
+  "ruleSetName": "nerc",
+  "version": "0.1.0",
+  "description": "AWS Guard rule set for North American Electric Reliability Corporation Critical Infrastructure Protection Standards (NERC CIP) for BES Cyber System Information (BCSI), CIP-004-7 & CIP-011-3",
+  "contact": "aws-guard-rules-registry@amazon.com",
+  "mappings": [
+    {
+      "guardFilePath": "rules/aws/amazon_emr/emr_kerberos_enabled.guard",
+      "controls": [
+        "CIP-004-7-R6-Part 6.1"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/iam/iam_policy_no_statements_with_admin_access.guard",
+      "controls": [
+        "CIP-004-7-R6-Part 6.1"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/iam/iam_user_no_policies_check.guard",
+      "controls": [
+        "CIP-004-7-R6-Part 6.1"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_s3/s3_bucket_public_read_prohibited.guard",
+      "controls": [
+        "CIP-004-7-R6-Part 6.1"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_s3/s3_bucket_public_write_prohibited.guard",
+      "controls": [
+        "CIP-004-7-R6-Part 6.1"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_s3/s3_bucket_policy_grantee_check.guard",
+      "controls": [
+        "CIP-004-7-R6-Part 6.1"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/aws_dms/dms_replication_not_public.guard",
+      "controls": [
+        "CIP-011-3-R1-Part 1.2"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/lambda/lambda_function_public_access_prohibited.guard",
+      "controls": [
+        "CIP-011-3-R1-Part 1.2"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_rds/rds_instance_public_access_check.guard",
+      "controls": [
+        "CIP-011-3-R1-Part 1.2"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_redshift/redshift_cluster_public_access_check.guard",
+      "controls": [
+        "CIP-011-3-R1-Part 1.2"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_sagemaker/sagemaker_notebook_no_direct_internet_access.guard",
+      "controls": [
+        "CIP-011-3-R1-Part 1.2"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/aws_certificate_manager/acm_certificate_expiration_check.guard",
+      "controls": [
+        "CIP-011-3-R1-Part 1.2"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/elastic_load_balancing_v2/alb_http_drop_invalid_header_enabled.guard",
+      "controls": [
+        "CIP-011-3-R1-Part 1.2"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/elastic_load_balancing_v2/alb_http_to_https_redirection_check.guard",
+      "controls": [
+        "CIP-011-3-R1-Part 1.2"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/api_gateway/api_gw_cache_enabled_and_encrypted.guard",
+      "controls": [
+        "CIP-011-3-R1-Part 1.2"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/cloudtrail/cloud_trail_encryption_enabled.guard",
+      "controls": [
+        "CIP-011-3-R1-Part 1.2"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/cloudwatch/cloudwatch_log_group_encrypted.guard",
+      "controls": [
+        "CIP-011-3-R1-Part 1.2"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/aws_kms/cmk_backing_key_rotation_enabled.guard",
+      "controls": [
+        "CIP-011-3-R1-Part 1.2"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/dynamodb/dynamodb_table_encrypted_kms.guard",
+      "controls": [
+        "CIP-011-3-R1-Part 1.2"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_ec2/ec2_ebs_encryption_by_default.guard",
+      "controls": [
+        "CIP-011-3-R1-Part 1.2"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_efs/efs_encrypted_check.guard",
+      "controls": [
+        "CIP-011-3-R1-Part 1.2"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/opensearch_service/elasticsearch_encrypted_at_rest.guard",
+      "controls": [
+        "CIP-011-3-R1-Part 1.2"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/opensearch_service/elasticsearch_node_to_node_encryption_check.guard",
+      "controls": [
+        "CIP-011-3-R1-Part 1.2"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/elastic_load_balancing/elb_acm_certificate_required.guard",
+      "controls": [
+        "CIP-011-3-R1-Part 1.2"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/elastic_load_balancing/elb_tls_https_listeners_only.guard",
+      "controls": [
+        "CIP-011-3-R1-Part 1.2"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_ec2/encrypted_volumes.guard",
+      "controls": [
+        "CIP-011-3-R1-Part 1.2"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/aws_kms/kms_cmk_not_scheduled_for_deletion.guard",
+      "controls": [
+        "CIP-011-3-R1-Part 1.2"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_rds/rds_snapshot_encrypted.guard",
+      "controls": [
+        "CIP-011-3-R1-Part 1.2"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_rds/rds_storage_encrypted.guard",
+      "controls": [
+        "CIP-011-3-R1-Part 1.2"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_redshift/redshift_cluster_configuration_check.guard",
+      "controls": [
+        "CIP-011-3-R1-Part 1.2"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_redshift/redshift_require_tls_ssl.guard",
+      "controls": [
+        "CIP-011-3-R1-Part 1.2"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_s3/s3_bucket_server_side_encryption_enabled.guard",
+      "controls": [
+        "CIP-011-3-R1-Part 1.2"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_s3/s3_bucket_ssl_requests_only.guard",
+      "controls": [
+        "CIP-011-3-R1-Part 1.2"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_s3/s3_default_encryption_kms.guard",
+      "controls": [
+        "CIP-011-3-R1-Part 1.2"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_sagemaker/sagemaker_endpoint_configuration_kms_key_configured.guard",
+      "controls": [
+        "CIP-011-3-R1-Part 1.2"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_sagemaker/sagemaker_notebook_instance_kms_key_configured.guard",
+      "controls": [
+        "CIP-011-3-R1-Part 1.2"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_sns/sns_encrypted_kms.guard",
+      "controls": [
+        "CIP-011-3-R1-Part 1.2"
+      ]
+    }
+  ]
+}

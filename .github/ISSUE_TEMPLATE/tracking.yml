@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Add your +1 👍  to help us prioritize features for CloudFormation Guard
+        Add your +1 👍  to help us prioritize features for AWS Guard Rules Registry
 
   - type: textarea
     id: overview
@@ -22,7 +22,7 @@ body:
     attributes:
       label: Implementation
       description: |
-        Checklist of use cases, features that will ship in this chnage.
+        Checklist of use cases, features that will ship in this change.
     validations:
       required: true
 

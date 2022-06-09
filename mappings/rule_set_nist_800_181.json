@@ -1,0 +1,911 @@
+{
+  "owner": "AWS",
+  "ruleSetName": "nist-800-181",
+  "version": "0.1.0",
+  "description": "AWS Guard rule set for NIST 800-181",
+  "contact": "aws-guard-rules-registry@amazon.com",
+  "mappings": [
+    {
+      "guardFilePath": "rules/aws/aws_backup/backup_plan_min_frequency_and_min_retention_check.guard",
+      "controls": [
+        "T0008",
+        "T0017",
+        "T0051",
+        "T0065",
+        "T0070",
+        "T0162"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/dynamodb/dynamodb_autoscaling_enabled.guard",
+      "controls": [
+        "T0008",
+        "T0017",
+        "T0051",
+        "T0065",
+        "T0070",
+        "T0152"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/dynamodb/dynamodb_in_backup_plan.guard",
+      "controls": [
+        "T0008",
+        "T0051",
+        "T0065",
+        "T0070",
+        "T0152",
+        "T0162"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/dynamodb/dynamodb_pitr_enabled.guard",
+      "controls": [
+        "T0008",
+        "T0017",
+        "T0051",
+        "T0065",
+        "T0070",
+        "T0152",
+        "T0162"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/dynamodb/dynamodb_throughput_limit_check.guard",
+      "controls": [
+        "T0008",
+        "T0051",
+        "T0152",
+        "T0153",
+        "T0154",
+        "T0706",
+        "T0960"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/elasticache/elasticache_redis_cluster_automatic_backup_check.guard",
+      "controls": [
+        "T0008",
+        "T0017",
+        "T0051",
+        "T0065",
+        "T0070",
+        "T0162"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/elastic_load_balancing/elb_cross_zone_load_balancing_enabled.guard",
+      "controls": [
+        "T0008",
+        "T0017",
+        "T0051",
+        "T0065",
+        "T0070"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_rds/rds_multi_az_support.guard",
+      "controls": [
+        "T0008",
+        "T0017",
+        "T0051",
+        "T0065",
+        "T0070",
+        "T0152"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_redshift/redshift_backup_enabled.guard",
+      "controls": [
+        "T0008",
+        "T0017",
+        "T0051",
+        "T0065",
+        "T0070",
+        "T0152",
+        "T0162"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_s3/s3_bucket_replication_enabled.guard",
+      "controls": [
+        "T0008",
+        "T0017",
+        "T0051",
+        "T0065",
+        "T0070",
+        "T0162"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/api_gateway_v2/api_gw_ssl_enabled.guard",
+      "controls": [
+        "T0017",
+        "T0416",
+        "T0553"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/cloudtrail/cloud_trail_encryption_enabled.guard",
+      "controls": [
+        "T0017",
+        "T0553"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_ec2/ec2_ebs_encryption_by_default.guard",
+      "controls": [
+        "T0017",
+        "T0553"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_efs/efs_encrypted_check.guard",
+      "controls": [
+        "T0017",
+        "T0553"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/opensearch_service/elasticsearch_encrypted_at_rest.guard",
+      "controls": [
+        "T0017",
+        "T0553"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/opensearch_service/elasticsearch_node_to_node_encryption_check.guard",
+      "controls": [
+        "T0017",
+        "T0416",
+        "T0553"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/elastic_load_balancing/elb_acm_certificate_required.guard",
+      "controls": [
+        "T0017",
+        "T0416",
+        "T0553"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/elastic_load_balancing/elb_tls_https_listeners_only.guard",
+      "controls": [
+        "T0017",
+        "T0416",
+        "T0553"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/elastic_load_balancing_v2/elbv2_acm_certificate_required.guard",
+      "controls": [
+        "T0017",
+        "T0416"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_ec2/encrypted_volumes.guard",
+      "controls": [
+        "T0017",
+        "T0553"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_redshift/redshift_cluster_kms_enabled.guard",
+      "controls": [
+        "T0017",
+        "T0152",
+        "T0553"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_redshift/redshift_require_tls_ssl.guard",
+      "controls": [
+        "T0017",
+        "T0152",
+        "T0416",
+        "T0553"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_s3/s3_bucket_server_side_encryption_enabled.guard",
+      "controls": [
+        "T0017",
+        "T0553"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_s3/s3_bucket_ssl_requests_only.guard",
+      "controls": [
+        "T0017",
+        "T0416",
+        "T0553"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_s3/s3_default_encryption_kms.guard",
+      "controls": [
+        "T0017",
+        "T0553"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_sagemaker/sagemaker_endpoint_configuration_kms_key_configured.guard",
+      "controls": [
+        "T0017",
+        "T0553"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_sagemaker/sagemaker_notebook_instance_kms_key_configured.guard",
+      "controls": [
+        "T0017",
+        "T0553"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/cloudtrail/cloud_trail_log_file_validation_enabled.guard",
+      "controls": [
+        "T0017",
+        "T0168",
+        "T0244",
+        "T0284"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_ec2_auto_scaling/autoscaling_launch_config_public_ip_disabled.guard",
+      "controls": [
+        "T0017",
+        "T0144",
+        "T0195",
+        "T0262",
+        "T0284",
+        "T0421",
+        "T0475",
+        "T0609"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/aws_dms/dms_replication_not_public.guard",
+      "controls": [
+        "T0017",
+        "T0144",
+        "T0195",
+        "T0262",
+        "T0284",
+        "T0421",
+        "T0475",
+        "T0609"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_ec2/ec2_instance_no_public_ip.guard",
+      "controls": [
+        "T0017",
+        "T0144",
+        "T0195",
+        "T0262",
+        "T0284",
+        "T0421",
+        "T0475",
+        "T0609"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_emr/emr_master_no_public_ip.guard",
+      "controls": [
+        "T0017",
+        "T0144",
+        "T0195",
+        "T0262",
+        "T0284",
+        "T0421",
+        "T0475",
+        "T0609"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/lambda/lambda_function_public_access_prohibited.guard",
+      "controls": [
+        "T0017",
+        "T0144",
+        "T0195",
+        "T0262",
+        "T0284",
+        "T0421",
+        "T0475",
+        "T0609"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_rds/rds_instance_public_access_check.guard",
+      "controls": [
+        "T0017",
+        "T0144",
+        "T0152",
+        "T0195",
+        "T0262",
+        "T0284",
+        "T0421",
+        "T0475",
+        "T0609"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_redshift/redshift_cluster_public_access_check.guard",
+      "controls": [
+        "T0017",
+        "T0144",
+        "T0152",
+        "T0195",
+        "T0262",
+        "T0284",
+        "T0421",
+        "T0475",
+        "T0609"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_s3/s3_bucket_level_public_access_prohibited.guard",
+      "controls": [
+        "T0017",
+        "T0144",
+        "T0195",
+        "T0262",
+        "T0284",
+        "T0421",
+        "T0475",
+        "T0609"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_s3/s3_bucket_public_read_prohibited.guard",
+      "controls": [
+        "T0017",
+        "T0144",
+        "T0195",
+        "T0262",
+        "T0284",
+        "T0421",
+        "T0475",
+        "T0609"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_s3/s3_bucket_public_write_prohibited.guard",
+      "controls": [
+        "T0017",
+        "T0144",
+        "T0195",
+        "T0262",
+        "T0284",
+        "T0421",
+        "T0475",
+        "T0609"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_ec2/subnet_auto_assign_public_ip_disabled.guard",
+      "controls": [
+        "T0017",
+        "T0144",
+        "T0195",
+        "T0262",
+        "T0284",
+        "T0421",
+        "T0475",
+        "T0609"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/aws_certificate_manager/acm_certificate_expiration_check.guard",
+      "controls": [
+        "T0017",
+        "T0416"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/elastic_load_balancing_v2/alb_http_to_https_redirection_check.guard",
+      "controls": [
+        "T0017",
+        "T0416",
+        "T0553"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/api_gateway/api_gw_cache_enabled_and_encrypted.guard",
+      "controls": [
+        "T0017",
+        "T0553"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/aws_kms/cmk_backing_key_rotation_enabled.guard",
+      "controls": [
+        "T0017",
+        "T0557"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/aws_kms/kms_cmk_not_scheduled_for_deletion.guard",
+      "controls": [
+        "T0017",
+        "T0557"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_rds/rds_snapshot_encrypted.guard",
+      "controls": [
+        "T0017",
+        "T0152",
+        "T0553"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_rds/rds_storage_encrypted.guard",
+      "controls": [
+        "T0017",
+        "T0152",
+        "T0553"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_redshift/redshift_cluster_configuration_check.guard",
+      "controls": [
+        "T0017",
+        "T0152",
+        "T0154",
+        "T0166",
+        "T0489",
+        "T0553",
+        "T0706"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_rds/db_instance_backup_enabled.guard",
+      "controls": [
+        "T0017",
+        "T0051",
+        "T0065",
+        "T0070",
+        "T0152",
+        "T0162"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/elastic_load_balancing/elb_deletion_protection_enabled.guard",
+      "controls": [
+        "T0017",
+        "T0051",
+        "T0065",
+        "T0070",
+        "T0314"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_rds/rds_instance_deletion_protection_enabled.guard",
+      "controls": [
+        "T0017",
+        "T0051",
+        "T0065",
+        "T0070",
+        "T0152"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_s3/s3_bucket_versioning_enabled.guard",
+      "controls": [
+        "T0017",
+        "T0051",
+        "T0065",
+        "T0070",
+        "T0162"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/dynamodb/dynamodb_resources_protected_by_backup_plan.guard",
+      "controls": [
+        "T0017",
+        "T0051",
+        "T0065",
+        "T0070",
+        "T0152",
+        "T0162"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/cloudwatch/cw_loggroup_retention_period_check.guard",
+      "controls": [
+        "T0024",
+        "T0154",
+        "T0166",
+        "T0706"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_redshift/redshift_cluster_maintenancesettings_check.guard",
+      "controls": [
+        "T0065",
+        "T0086",
+        "T0128",
+        "T0152",
+        "T0156",
+        "T0162",
+        "T0284"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/elastic_beanstalk/elastic_beanstalk_managed_updates_enabled.guard",
+      "controls": [
+        "T0086",
+        "T0128",
+        "T0156"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_rds/rds_automatic_minor_version_upgrade_enabled.guard",
+      "controls": [
+        "T0086",
+        "T0128",
+        "T0152",
+        "T0160",
+        "T0284"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/cloudwatch/cloudwatch_alarm_action_check.guard",
+      "controls": [
+        "T0110",
+        "T0151",
+        "T0154",
+        "T0306",
+        "T0706",
+        "T0960"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/elastic_load_balancing_v2/alb_waf_enabled.guard",
+      "controls": [
+        "T0144",
+        "T0195",
+        "T0262",
+        "T0284",
+        "T0609"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_ec2/restricted_ssh.guard",
+      "controls": [
+        "T0144",
+        "T0195",
+        "T0609"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_ec2/no_unrestricted_route_to_igw.guard",
+      "controls": [
+        "T0144",
+        "T0195",
+        "T0262",
+        "T0284",
+        "T0609"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_redshift/redshift_enhanced_vpc_routing_enabled.guard",
+      "controls": [
+        "T0144",
+        "T0152",
+        "T0195",
+        "T0262",
+        "T0284",
+        "T0609"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/api_gateway_v2/api_gw_associated_with_waf.guard",
+      "controls": [
+        "T0144",
+        "T0195",
+        "T0262",
+        "T0284",
+        "T0609"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_emr/emr_kerberos_enabled.guard",
+      "controls": [
+        "T0144",
+        "T0284",
+        "T0376",
+        "T0421",
+        "T0475",
+        "T0877",
+        "T0992"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/iam/iam_no_inline_policy_check.guard",
+      "controls": [
+        "T0144",
+        "T0284",
+        "T0358",
+        "T0376",
+        "T0475",
+        "T0553",
+        "T0877",
+        "T0992",
+        "T0993"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/iam/iam_policy_no_statements_with_admin_access.guard",
+      "controls": [
+        "T0144",
+        "T0284",
+        "T0358",
+        "T0376",
+        "T0475",
+        "T0553",
+        "T0877",
+        "T0992",
+        "T0993"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/iam/iam_user_no_policies_check.guard",
+      "controls": [
+        "T0144",
+        "T0284",
+        "T0358",
+        "T0376",
+        "T0475",
+        "T0553",
+        "T0877",
+        "T0992",
+        "T0993"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/iam/iam_policy_no_statements_with_full_access.guard",
+      "controls": [
+        "T0144",
+        "T0284",
+        "T0358",
+        "T0376",
+        "T0475",
+        "T0553",
+        "T0877",
+        "T0992",
+        "T0993"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_ec2/ec2_instance_profile_attached.guard",
+      "controls": [
+        "T0144",
+        "T0284",
+        "T0376",
+        "T0475",
+        "T0877",
+        "T0992"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/opensearch_service/elasticsearch_in_vpc_only.guard",
+      "controls": [
+        "T0144",
+        "T0195",
+        "T0262",
+        "T0284",
+        "T0475",
+        "T0609"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_ec2/ec2_instances_in_vpc.guard",
+      "controls": [
+        "T0144",
+        "T0195",
+        "T0262",
+        "T0284",
+        "T0475",
+        "T0609"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/lambda/lambda_inside_vpc.guard",
+      "controls": [
+        "T0144",
+        "T0195",
+        "T0262",
+        "T0284",
+        "T0475",
+        "T0609"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_sagemaker/sagemaker_notebook_no_direct_internet_access.guard",
+      "controls": [
+        "T0144",
+        "T0195",
+        "T0262",
+        "T0284",
+        "T0475",
+        "T0609"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_ecs/ecs_task_definition_user_for_host_mode_check.guard",
+      "controls": [
+        "T0144",
+        "T0284",
+        "T0376",
+        "T0475",
+        "T0877",
+        "T0992"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/secrets_manager/secretsmanager_rotation_enabled_check.guard",
+      "controls": [
+        "T0144",
+        "T0992"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_ec2/restricted_common_ports.guard",
+      "controls": [
+        "T0144",
+        "T0156",
+        "T0195",
+        "T0262",
+        "T0284",
+        "T0314",
+        "T0609",
+        "T0877"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_rds/rds_enhanced_monitoring_enabled.guard",
+      "controls": [
+        "T0152",
+        "T0154",
+        "T0706",
+        "T0960"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_rds/rds_logging_enabled.guard",
+      "controls": [
+        "T0152",
+        "T0154",
+        "T0166",
+        "T0376",
+        "T0489",
+        "T0706"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_ec2_auto_scaling/autoscaling_group_elb_healthcheck_required.guard",
+      "controls": [
+        "T0153",
+        "T0154",
+        "T0706",
+        "T0960"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/api_gateway/api_gw_execution_logging_enabled.guard",
+      "controls": [
+        "T0154",
+        "T0166",
+        "T0489",
+        "T0706"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/elastic_beanstalk/beanstalk_enhanced_health_reporting_enabled.guard",
+      "controls": [
+        "T0154",
+        "T0706",
+        "T0960"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/cloudtrail/cloud_trail_cloud_watch_logs_enabled.guard",
+      "controls": [
+        "T0154",
+        "T0166",
+        "T0376",
+        "T0489",
+        "T0706"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/cloudtrail/cloudtrail_s3_dataevents_enabled.guard",
+      "controls": [
+        "T0154",
+        "T0166",
+        "T0376",
+        "T0489",
+        "T0706"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_ec2/ec2_instance_detailed_monitoring_enabled.guard",
+      "controls": [
+        "T0154",
+        "T0706",
+        "T0960"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/elastic_load_balancing/elb_logging_enabled.guard",
+      "controls": [
+        "T0154",
+        "T0166",
+        "T0489",
+        "T0706"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/lambda/lambda_concurrency_check.guard",
+      "controls": [
+        "T0154",
+        "T0706",
+        "T0960"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/lambda/lambda_dlq_check.guard",
+      "controls": [
+        "T0154",
+        "T0706",
+        "T0960"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/amazon_s3/s3_bucket_logging_enabled.guard",
+      "controls": [
+        "T0154",
+        "T0166",
+        "T0376",
+        "T0489",
+        "T0706"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/aws_waf_v2/wafv2_logging_enabled.guard",
+      "controls": [
+        "T0154",
+        "T0166",
+        "T0489",
+        "T0706"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/opensearch_service/elasticsearch_logs_to_cloudwatch.guard",
+      "controls": [
+        "T0154",
+        "T0166",
+        "T0376",
+        "T0489",
+        "T0706"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/codebuild/codebuild_project_envvar_awscred_check.guard",
+      "controls": [
+        "T0284"
+      ]
+    },
+    {
+      "guardFilePath": "rules/aws/codebuild/codebuild_project_source_repo_url_check.guard",
+      "controls": [
+        "T0284"
+      ]
+    }
+  ]
+}
