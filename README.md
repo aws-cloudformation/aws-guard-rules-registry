@@ -43,55 +43,55 @@ Many of the guard rules are supported by AWS and correspond to associated AWS Co
 
 AWS Guard Rules registry contains prebuilt managed rule sets compiled from rule mapping files found in the [mappings](/mappings) directory. The following managed Rule Sets are available for use:
 
-| Rule Set                         | Rules Set File Name | Source Mapping File |
+| Rule Set                         | Rules Set Name | Source Mapping File |
 | -------------------------------- | -------- | ---------- |
 | ABS Cloud Computing Implementation Guide 2.0 - Material Workloads | ABS_CCIGv2_Material | [Link](/mappings/rule_set_ABS_CCIGv2_Material.json) |
 | ABS Cloud Computing Implementation Guide 2.0 | ABS-CCIGv2-Standard | [Link](/mappings/rule_set_ABS_CCIGv2_Standard.json) |
-| Australian Cyber Security Centre (ACSC) Essential Eight Maturity Model | acsc_essential_8 | [Link](/mappings/rule_set_acsc_essential_8.json) |
-| Australian Cyber Security Centre (ACSC) Information Security Manual (ISM) 2020-06 | acsc_ism | [Link](/mappings/rule_set_acsc_ism.json) |
+| Australian Cyber Security Centre (ACSC) Essential Eight Maturity Model | acsc-essential-8 | [Link](/mappings/rule_set_acsc_essential_8.json) |
+| Australian Cyber Security Centre (ACSC) Information Security Manual (ISM) 2020-06 | acsc-ism | [Link](/mappings/rule_set_acsc_ism.json) |
 | Australian Prudential Regulation Authority (APRA) CPG 234 | apra_cpg_234 | [Link](/mappings/rule_set_apra_cpg_234.json) |
 | Bank Negara Malaysia (BNM) Risk Management in Technology (RMiT) | bnm_rmit | [Link](/mappings/rule_set_bnm_rmit.json) |
-| Center for Internet Security (CIS) Amazon Web Services Foundation v1.4 Level 1 | cis_aws_benchmark_level_1 | [Link](/mappings/rule_set_cis_aws_benchmark_level_1.json) |
-| Center for Internet Security (CIS) Amazon Web Services Foundation v1.4 Level2 | cis_aws_benchmark_level_2 | [Link](/mappings/rule_set_cis_aws_benchmark_level_2.json) |
-| Center for Internet Security (CIS) Critical Security Controls v8 IG1 | cis_critical_security_controls_v8_ig1 | [Link](/mappings/rule_set_cis_critical_security_controls_v8_ig1.json) |
-| Center for Internet Security (CIS) Critical Security Controls v8 IG2 | cis_critical_security_controls_v8_ig2 | [Link](/mappings/rule_set_cis_critical_security_controls_v8_ig2.json) |
-| Center for Internet Security (CIS) Critical Security Controls v8 IG3 | cis_critical_security_controls_v8_ig3 | [Link](/mappings/rule_set_cis_critical_security_controls_v8_ig3.json) |
-| Center for Internet Security (CIS) Top 20 Critical Security Controls | cis_top_20 | [Link](/mappings/rule_set_cis_top_20.json) |
-| Cybersecurity & Infrastructure Security Agency (CISA) Cyber Essentials (CE) | cisa_ce | [Link](/mappings/rule_set_cisa_ce.json) |
-| Cybersecurity Maturity Model Certification (CMMC) Level 1 | cmmc_level_1 | [Link](/mappings/rule_set_cmmc_level_1.json) |
-| Cybersecurity Maturity Model Certification (CMMC) Level 2 | cmmc_level_2 | [Link](/mappings/rule_set_cmmc_level_2.json) |
-| Cybersecurity Maturity Model Certification (CMMC) Level 3 | cmmc_level_3 | [Link](/mappings/rule_set_cmmc_level_3.json) |
-| Cybersecurity Maturity Model Certification (CMMC) Level 4 | cmmc_level_4 | [Link](/mappings/rule_set_cmmc_level_4.json) |
-| Cybersecurity Maturity Model Certification (CMMC) Level 5 | cmmc_level_5 | [Link](/mappings/rule_set_cmmc_level_5.json) |
-| European Union Agency for Cybersecurity (ENISA) Cybersecurity guide for SMEs  | enisa_cybersecurity_guide_for_smes | [Link](/mappings/rule_set_enisa_cybersecurity_guide_for_smes.json) |
-| Spain Esquema Nacional de Seguridad (ENS) High framework controls | ens_high | [Link](/mappings/rule_set_ens_high.json) |
-| Spain Esquema Nacional de Seguridad (ENS) Low framework controls | ens_low | [Link](/mappings/rule_set_ens_low.json) |
-| Spain Esquema Nacional de Seguridad (ENS) Medium framework controls | ens_medium | [Link](/mappings/rule_set_ens_medium.json) |
-| Title 21 of the Code of Federal Regulations (CFR) Part 11 | FDA_21CFR_Part_11 | [Link](/mappings/rule_set_FDA_21CFR_Part_11.json) |
-| Federal Risk and Authorization Management Program (FedRAMP) Moderate | fedramp_moderate | [Link](/mappings/rule_set_fedramp_moderate.json) |
-| Federal Risk and Authorization Management Program (FedRAMP) Low | fedramp_low  | [Link](/mappings/rule_set_fedramp_low.json) |
+| Center for Internet Security (CIS) Amazon Web Services Foundation v1.4 Level 1 | cis-aws-benchmark-level-1 | [Link](/mappings/rule_set_cis_aws_benchmark_level_1.json) |
+| Center for Internet Security (CIS) Amazon Web Services Foundation v1.4 Level2 | cis-aws-benchmark-level-2 | [Link](/mappings/rule_set_cis_aws_benchmark_level_2.json) |
+| Center for Internet Security (CIS) Critical Security Controls v8 IG1 | cis-critical-security-controls-v8-ig1 | [Link](/mappings/rule_set_cis_critical_security_controls_v8_ig1.json) |
+| Center for Internet Security (CIS) Critical Security Controls v8 IG2 | cis-critical-security-controls-v8-ig2 | [Link](/mappings/rule_set_cis_critical_security_controls_v8_ig2.json) |
+| Center for Internet Security (CIS) Critical Security Controls v8 IG3 | cis-critical-security-controls-v8-ig3 | [Link](/mappings/rule_set_cis_critical_security_controls_v8_ig3.json) |
+| Center for Internet Security (CIS) Top 20 Critical Security Controls | cis-top-20 | [Link](/mappings/rule_set_cis_top_20.json) |
+| Cybersecurity & Infrastructure Security Agency (CISA) Cyber Essentials (CE) | cisa-ce | [Link](/mappings/rule_set_cisa_ce.json) |
+| Cybersecurity Maturity Model Certification (CMMC) Level 1 | cmmc-level-1 | [Link](/mappings/rule_set_cmmc_level_1.json) |
+| Cybersecurity Maturity Model Certification (CMMC) Level 2 | cmmc-level-2 | [Link](/mappings/rule_set_cmmc_level_2.json) |
+| Cybersecurity Maturity Model Certification (CMMC) Level 3 | cmmc-level-3 | [Link](/mappings/rule_set_cmmc_level_3.json) |
+| Cybersecurity Maturity Model Certification (CMMC) Level 4 | cmmc-level-4 | [Link](/mappings/rule_set_cmmc_level_4.json) |
+| Cybersecurity Maturity Model Certification (CMMC) Level 5 | cmmc-level-5 | [Link](/mappings/rule_set_cmmc_level_5.json) |
+| European Union Agency for Cybersecurity (ENISA) Cybersecurity guide for SMEs  | enisa-cybersecurity-guide-for-smes | [Link](/mappings/rule_set_enisa_cybersecurity_guide_for_smes.json) |
+| Spain Esquema Nacional de Seguridad (ENS) High framework controls | ens-high | [Link](/mappings/rule_set_ens_high.json) |
+| Spain Esquema Nacional de Seguridad (ENS) Low framework controls | ens-low | [Link](/mappings/rule_set_ens_low.json) |
+| Spain Esquema Nacional de Seguridad (ENS) Medium framework controls | ens-medium | [Link](/mappings/rule_set_ens_medium.json) |
+| Title 21 of the Code of Federal Regulations (CFR) Part 11 | FDA-21CFR-Part-11 | [Link](/mappings/rule_set_FDA_21CFR_Part_11.json) |
+| Federal Risk and Authorization Management Program (FedRAMP) Moderate | fedramp-moderate | [Link](/mappings/rule_set_fedramp_moderate.json) |
+| Federal Risk and Authorization Management Program (FedRAMP) Low | fedramp-low  | [Link](/mappings/rule_set_fedramp_low.json) |
 | Federal Financial Institutions Examination Council (FFIEC) Cyber Security Assessment Tool domains | ffiec | [Link](/mappings/rule_set_ffiec.json) |
-| Health Insurance Portability and Accountability Act (HIPAA) | hipaa_security | [Link](/mappings/rule_set_hipaa_security.json) |
-| Korea – Information Security Management System (ISMS) | k_isms | [Link](/mappings/rule_set_k_isms.json) |
-| Monetary Authority of Singapore (MAS) Notice 655 – Cyber Hygiene | mas_notice_655 | [Link](/mappings/rule_set_mas_notice_655.json) |
-| Monetary Authority of Singapore (MAS) Technology Risk Managment Guidelines (TRMG) January 2021 | mas_trmg | [Link](/mappings/rule_set_mas_trmg.json) |
-| National Bank of Cambodia’s (NBC) Technology Risk Management (TRM) Guidelines framework | nbc_trmg | [Link](/mappings/rule_set_nbc_trmg.json) |
-| UK National Cyber Security Centre (NCSC) Cyber Assessment Framework (CAF) controls | ncsc_cafv3 | [rule_set_ncsc_cafv3.json](/mappings/rule_set_ncsc_cafv3.json) |
+| Health Insurance Portability and Accountability Act (HIPAA) | hipaa-security | [Link](/mappings/rule_set_hipaa_security.json) |
+| Korea – Information Security Management System (ISMS) | k-isms | [Link](/mappings/rule_set_k_isms.json) |
+| Monetary Authority of Singapore (MAS) Notice 655 – Cyber Hygiene | mas-notice-655 | [Link](/mappings/rule_set_mas_notice_655.json) |
+| Monetary Authority of Singapore (MAS) Technology Risk Management Guidelines (TRMG) January 2021 | mas-trmg | [Link](/mappings/rule_set_mas_trmg.json) |
+| National Bank of Cambodia’s (NBC) Technology Risk Management (TRM) Guidelines framework | nbc-trmg | [Link](/mappings/rule_set_nbc_trmg.json) |
+| UK National Cyber Security Centre (NCSC) Cyber Assessment Framework (CAF) controls | ncsc-cafv3 | [rule_set_ncsc_cafv3.json](/mappings/rule_set_ncsc_cafv3.json) |
 | K National Cyber Security Centre (NCSC) Cloud Security Principles | ncsc | [rule_set_ncsc.json](/mappings/rule_set_ncsc.json) |
 | North American Electric Reliability Corporation Critical Infrastructure Protection Standards (NERC CIP) for BES Cyber System Information (BCSI), CIP-004-7 & CIP-011-3  | nerc | [Link](/mappings/rule_set_nerc.json) |
-| NIST 1800-25 | nist_1800_25 | [Link](/mappings/rule_set_nist_1800_25.json) |
-| NIST 800-171 | nist_800_171 | [Link](/mappings/rule_set_nist_800_171.json) |
-| NIST 800-172 | nist_800_172 | [Link](/mappings/rule_set_nist_800_172.json) |
-| NIST 800-181 | nist_800_181 | [Link](/mappings/rule_set_nist_800_181.json) |
-| NIST 800-53 Revision 4 | nist800_53rev4 | [Link](/mappings/rule_set_nist800_53rev4.json) |
-| NIST 800-53 Revision 5| nist800_53rev5 | [Link](/mappings/rule_set_nist800_53rev5.json) |
-| NIST Cyber Security Framework (CSF)  | nist_csf | [Link](/mappings/rule_set_nist_csf.json) |
-| NIST Privacy Framework | nist_privacy_framework | [Link](/mappings/rule_set_nist_privacy_framework.json) |
+| NIST 1800-25 | nist-1800-25 | [Link](/mappings/rule_set_nist_1800_25.json) |
+| NIST 800-171 | nist-800-171 | [Link](/mappings/rule_set_nist_800_171.json) |
+| NIST 800-172 | nist-800-172 | [Link](/mappings/rule_set_nist_800_172.json) |
+| NIST 800-181 | nist-800-181 | [Link](/mappings/rule_set_nist_800_181.json) |
+| NIST 800-53 Revision 4 | nist800-53rev4 | [Link](/mappings/rule_set_nist800_53rev4.json) |
+| NIST 800-53 Revision 5| nist800-53rev5 | [Link](/mappings/rule_set_nist800_53rev5.json) |
+| NIST Cyber Security Framework (CSF)  | nist-csf | [Link](/mappings/rule_set_nist_csf.json) |
+| NIST Privacy Framework | nist-privacy-framework | [Link](/mappings/rule_set_nist_privacy_framework.json) |
 | New Zealand Government Communications Security Bureau (GCSB) Information Security Manual (NZISM) | nzism | [Link](/mappings/rule_set_nzism.json) |
 | Payment Card Industry Data Security Standard (PCI DSS) 3.2.1 | pci_dss_3_2_1 | [Link](/mappings/rule_set_pci_dss_3_2_1.json) |
-| Reserve Bank of India (RBI) Cyber Security Framework for Urban Cooperative Banks (UCBs) | rbi_bcsf_ucb | [Link](/mappings/rule_set_rbi_bcsf_ucb.json) |
-| Reserve Bank of India (RBI) Master Direction – Information Technology Framework | rbi_md_itf | [Link](/mappings/rule_set_rbi_md_itf.json) |
-| New York State Department Of Financial Services (NYDFS) cybersecurity requirements for financial services companies (23 NYCRR 500) | us_nydfs | [Link](/mappings/rule_set_us_nydfs.json) |
+| Reserve Bank of India (RBI) Cyber Security Framework for Urban Cooperative Banks (UCBs) | rbi-bcsf-ucb | [Link](/mappings/rule_set_rbi_bcsf_ucb.json) |
+| Reserve Bank of India (RBI) Master Direction – Information Technology Framework | rbi-md-itf | [Link](/mappings/rule_set_rbi_md_itf.json) |
+| New York State Department Of Financial Services (NYDFS) cybersecurity requirements for financial services companies (23 NYCRR 500) | us-nydfs | [Link](/mappings/rule_set_us_nydfs.json) |
 | Amazon Web Services' Well-Architected Framework Reliability Pillar | wa-Reliability-Pillar | [Link](/mappings/rule_set_wa-Reliability-Pillar.json) |
 | AWS Guard rule set for Amazon Web Services' Well-Architected Framework Security Pillar | wa-Security-Pillar | [Link](/mappings/rule_set_wa-Security-Pillar.json) |
 
