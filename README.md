@@ -1,18 +1,20 @@
 # AWS Guard Rules Registry
 
-AWS Guard Rules Registry is an open-source repository of AWS `cfn-guard` rule files and managed rule sets. The intent of the registry is to give users AWS guard rules that provide policy as code solutions which compliment the AWS Config Managed Rules as well as custom developed Guard rules.
+
+
+
+
+## About
+
+AWS Guard Rules Registry is an open-source repository of AWS `cfn-guard` rule files and managed rule sets. The intent of the registry is to give users AWS guard rules that provide policy as code solutions which compliment the AWS Config Managed Rules as well as custom developed Guard rules.. Many of the guard rules supported by AWS are guard rule implementation of AWS Config Managed Rules.
+
+> **Note:** Not all AWS Config Managed Rules are present in the AWS Guard Rules Registry. Some of the AWS Config Managed Rules are detective only in nature and are not able to be validated in infrastructure as code relevant to development practices.
 
 The Guard Rules Registry offers the following value:
 
 * Easy to consume Managed Rules Sets based on sample AWS Conformance Packs. [see Getting Started]()
 * Individual Guard Rule files corresponding to many of the AWS Config Managed Rules
 * Rule Set Build process to compile single rule set files for public consumption
-
-## About
-
-The AWS Guard Rules Registry provides guard rules and prebuilt managed rule sets for implementing in policy-as-code initiatives. Many of the guard rules supported by AWS are guard rule implementation of AWS Config Managed Rules.
-
-> **Note:** Not all AWS Config Managed Rules are present in the AWS Guard Rules Registry. Some of the AWS Config Managed Rules are detective only in nature and are not able to be validated in infrastructure as code relevant to development practices.
 
 Within the Guard Rules Registry you will find cfn-guard Registry Rule files and builds of Managed Rule Sets.
 
@@ -43,7 +45,7 @@ Many of the guard rules are supported by AWS and correspond to associated AWS Co
 
 AWS Guard Rules registry contains prebuilt managed rule sets compiled from rule mapping files found in the [mappings](/mappings) directory. The following managed Rule Sets are available for use:
 
-| Rule Set                         | Rules Set Name | Source Mapping File |
+| Rule Set                         | Rules Set Name | Mapping File |
 | -------------------------------- | -------- | ---------- |
 | ABS Cloud Computing Implementation Guide 2.0 - Material Workloads | ABS_CCIGv2_Material | [Link](/mappings/rule_set_ABS_CCIGv2_Material.json) |
 | ABS Cloud Computing Implementation Guide 2.0 | ABS-CCIGv2-Standard | [Link](/mappings/rule_set_ABS_CCIGv2_Standard.json) |
@@ -76,8 +78,8 @@ AWS Guard Rules registry contains prebuilt managed rule sets compiled from rule 
 | Monetary Authority of Singapore (MAS) Notice 655 – Cyber Hygiene | mas-notice-655 | [Link](/mappings/rule_set_mas_notice_655.json) |
 | Monetary Authority of Singapore (MAS) Technology Risk Management Guidelines (TRMG) January 2021 | mas-trmg | [Link](/mappings/rule_set_mas_trmg.json) |
 | National Bank of Cambodia’s (NBC) Technology Risk Management (TRM) Guidelines framework | nbc-trmg | [Link](/mappings/rule_set_nbc_trmg.json) |
-| UK National Cyber Security Centre (NCSC) Cyber Assessment Framework (CAF) controls | ncsc-cafv3 | [rule_set_ncsc_cafv3.json](/mappings/rule_set_ncsc_cafv3.json) |
-| K National Cyber Security Centre (NCSC) Cloud Security Principles | ncsc | [rule_set_ncsc.json](/mappings/rule_set_ncsc.json) |
+| UK National Cyber Security Centre (NCSC) Cyber Assessment Framework (CAF) controls | ncsc-cafv3 | [Link](/mappings/rule_set_ncsc_cafv3.json) |
+| K National Cyber Security Centre (NCSC) Cloud Security Principles | ncsc | [Link](/mappings/rule_set_ncsc.json) |
 | North American Electric Reliability Corporation Critical Infrastructure Protection Standards (NERC CIP) for BES Cyber System Information (BCSI), CIP-004-7 & CIP-011-3  | nerc | [Link](/mappings/rule_set_nerc.json) |
 | NIST 1800-25 | nist-1800-25 | [Link](/mappings/rule_set_nist_1800_25.json) |
 | NIST 800-171 | nist-800-171 | [Link](/mappings/rule_set_nist_800_171.json) |
