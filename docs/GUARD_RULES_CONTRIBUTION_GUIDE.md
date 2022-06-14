@@ -1,5 +1,7 @@
 # Guard Rules Contribution Guide
 
+The Guard Rules registry
+
 ## Rules Directory Structure
 
 1. All Guard rules in this repository are stored under the `rules` directory.
@@ -21,7 +23,9 @@
     ```
 ## Rule Writing
 
-1. To understand the contribution process, let's consider an example of the `AWS DynamoDB Point-In-Time-Recovery` rule.
+The following outlines the general process to develop individual AWS Guard Rules that work with the `Guard Rules Registry` and its `Guard Map Rule Sets`. Leverage the complete individual [template file](../rules/aws/_template/aws_managed_rule_identifier.guard) while developing new Guard Rules. Below outlines the details necessary of the referenced [template file](../rules/aws/_template/aws_managed_rule_identifier.guard).
+
+1. To understand the contribution process, let's consider an example of the `AWS DynamoDB` `Point-In-Time-Recovery` rule.
 
 2. If the sub-directory for technology/provider/service doesn't already exist, create a new sub-directory under the appropriate path.
     ```
@@ -31,50 +35,42 @@
     ```
     touch rules/aws/dynamodb/dynamodb_pitr_enabled.guard
     ```
-4. Include the Config rule name and url at the top of the rule file.
+5. Edit `dynamodb_pitr_enabled.guard` file and insert the [template header](../rules/aws/_template/aws_managed_rule_identifier.guard) filling out the necessary details.
     ```
-    ## Config Rule Name : dynamodb-pitr-enabled
-    ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/dynamodb-pitr-enabled.html"
+    #
+    # Rule Identifier:
+    #    dynamodb_pitr_is_enabled
+    #
+    # Description:
+    #   Brief description of the rule
+    #
+    # Reports on:
+    #    AWS::DynamoDB::Table
+    #
+    # Evaluates:
+    #    AWS CloudFormation
+    #
+    # Rule Parameters:
+    #    NA
+    #
+    # Scenarios:
+    # a) SKIP: when there are no dynamodb table resource present
+    # b) PASS: when all dynamodb table resources ObjectLockEnabled property is set to true
+    # c) FAIL: when all dynamodb table resources do not have the ObjectLockEnabled property is set to true or is missing
+    # d) SKIP: when metada has rule suppression for dynamodb_pitr_is_enabled
     ```
-
-5. Edit `dynamodb_pitr_enabled.guard` and describe bookkeeping for the rule, like rule intent and expectations.
+6. Below the header, define variables required for a given rule and add comments to the rule wherever possible to make it easier for humans to understand. **AWS Guard Rules support rule suppression and requires you to add the guard rule name during variable assignment.** By adding in the `SuppressedRules` metadata, you override the rule within the code-base give ability to express rule exceptions at the code-level.
     ```
-    # Rule Intent: All DynamoDB Tables must have Point-In-Time-Recovery enabled
-
-    # Expectations:
-    # a) SKIP: when there are no DynamoDB Tables present
-    # b) PASS: when all DynamoDB Tables have PITR enabled
-    # c) FAIL: when all DynamoDB Tables have PITR disabled
-    ```
-6. Define variables required for a given rule and add comments to the rule wherever possible to make it easier for humans to understand.
-    ```
-    # Rule Intent: All DynamoDB Tables must have Point-In-Time-Recovery enabled
-
-    # Expectations:
-    # a) SKIP: when there are no DynamoDB Tables present
-    # b) PASS: when all DynamoDB Tables have PITR enabled
-    # c) FAIL: when all DynamoDB Tables have PITR disabled
-
     #
     # Select all DynamoDB Table resources from incoming template (payload)
     #
-    let aws_dynamodb_table_resources = Resources.*[ Type == 'AWS::DynamoDB::Table' ]
+    let aws_dynamodb_table_resources = Resources.*[ Type == 'AWS::DynamoDB::Table'
+      Metadata.guard.SuppressedRules not exists or
+      Metadata.guard.SuppressedRules.* != "DYNAMODB_PITR_ENABLED" ## this is the name of the rule block
+    ]
     ```
 7. Define a named rule block. The rule name should match with the rule file name. **If the rule is to match an [AWS Config Managed Rule](https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config_use-managed-rules.html), the rule name should match the AWS Config Identifier in upper case.** Named rule blocks allow for re-usability, improved composition and remove verbosity and repetition.
-    ```
-    # Rule Intent: All DynamoDB Tables must have Point-In-Time-Recovery enabled
-
-    # Expectations:
-    # a) SKIP: when there are no DynamoDB Tables present
-    # b) PASS: when all DynamoDB Tables have PITR enabled
-    # c) FAIL: when all DynamoDB Tables have PITR disabled
-
-    #
-    # Select all DynamoDB Table resources from incoming template (payload)
-    #
-    let aws_dynamodb_table_resources = Resources.*[ Type == 'AWS::DynamoDB::Table' ]
-
-
+   ```
     rule DYNAMODB_PITR_ENABLED when %aws_dynamodb_table_resources !empty {
 
     }

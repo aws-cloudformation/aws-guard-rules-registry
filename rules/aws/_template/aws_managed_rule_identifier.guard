@@ -1,7 +1,4 @@
 #
-#####################################
-##           Gherkin               ##
-#####################################
 # Rule Identifier:
 #    dynamodb_pitr_is_enabled
 #
@@ -26,7 +23,10 @@
 #
 # Select all dynamodb table resources from incoming template (payload)
 #
-let aws_dynamodb_table_resources = Resources.*[ Type == 'AWS::DynamoDB::Table' ]
+let aws_dynamodb_table_resources = Resources.*[ Type == 'AWS::DynamoDB::Table'
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "dynamodb_pitr_is_enabled"
+]
 
 
 rule dynamodb_pitr_is_enabled when %aws_dynamodb_table_resources !empty {
