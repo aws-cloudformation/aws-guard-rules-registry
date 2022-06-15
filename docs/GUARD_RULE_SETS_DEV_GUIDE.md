@@ -1,3 +1,5 @@
+# Developing Managed Rule Sets
+
 # Using Guard Map
 
 Guard Map is the process of creating a Guard Rule Sets by mapping individual guard rule files to compliance framework controls. Contributors can submit Pull Requests containing a Guard Map file that upon build time will generate a Guard Rule Registry Rule Set made available in the release and the supported docker image build.
@@ -7,7 +9,7 @@ AWS Guard Rule Registry supports a pipeline through GitHub Actions that facilita
 
 ## Rule Set Mapping Files
 
-The `mappings` directory holds rule set documents that describe control mappings between a standard or framework and rules in the registry. All Guard Map files are prefixed with `rule_set_` and are built whenever a merge to the main branch happens.
+The `mappings` directory holds rule set json files that describe control mappings between a standard or framework and rules in the registry. **All Guard Map files are required to be prefixed with `rule_set_` and are built whenever a merge to the main branch happens.**
 
 | **Attribute** | **Description** |
 | ------------: | --------------- |

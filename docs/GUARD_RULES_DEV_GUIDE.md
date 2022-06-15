@@ -1,11 +1,21 @@
-# Guard Rules Contribution Guide
+# Guard Rule Contribution Guide
 
-The Guard Rules registry
+The following details the development requirements to submit individual Guard rules for use in the Guard Rules Registry. The development conventions and standards allow Guard Rule Registry to be a modular and support Guard Rule Sets builds via the Guard Map process. All Guard Rule contributions must follow the standards in order for pull-request to be approved.
+
+## Guidelines and Conventions Summary
+
+* A single guard rule file will have a single rule block
+* Guard rule block `custom messages` will document the `Violation;` and the recommended `Fix;` separated by a line break
+* Guard rule blocks will be in all lowercase unless it represents a corresponding AWS Config Managed Rule
+* Guard Rules in the Rules Registry must support rule suppression at the resource level by defining a metadata exception.
+* Guard Rule files are named in all lowercase and leverage snake case convention.
+* Guard `rule block` name should match with the rule file name. The only time it will differ is if the rule block is representing an AWS Config Managed Rule which will require the rule block name ot be all upper case while the file name be lower case.
+* Guard rule file `Assignments` should be verbose and descriptive as possible to avoid naming conflicts during Rule Set mapping process
+* All Guard rule files should have a corresponding _tests.yml file.
 
 ## Rules Directory Structure
 
 1. All Guard rules in this repository are stored under the `rules` directory.
-
 2. The `rules` directory has multiple sub-directories based on different technologies, providers and services.
     ```
     rules
@@ -21,9 +31,9 @@ The Guard Rules registry
     ├── kubernetes
     └── terraform
     ```
-## Rule Writing
+## Rule Writing Guide
 
-The following outlines the general process to develop individual AWS Guard Rules that work with the `Guard Rules Registry` and its `Guard Map Rule Sets`. Leverage the complete individual [template file](../rules/aws/_template/aws_managed_rule_identifier.guard) while developing new Guard Rules. Below outlines the details necessary of the referenced [template file](../rules/aws/_template/aws_managed_rule_identifier.guard).
+The following outlines the general process to develop individual AWS Guard Rules that work with the `Guard Rules Registry` and its `Guard Map Rule Sets`. Reference the complete individual [template file](../rules/aws/_template/aws_managed_rule_identifier.guard) while developing new Guard Rules. Below outlines the details necessary of the referenced [template file](../rules/aws/_template/aws_managed_rule_identifier.guard).
 
 1. To understand the contribution process, let's consider an example of the `AWS DynamoDB` `Point-In-Time-Recovery` rule.
 
@@ -31,7 +41,7 @@ The following outlines the general process to develop individual AWS Guard Rules
     ```
     mkdir rules/cloudformation/aws/dynamodb
     ```
-3. Create a rule file with a `.guard` extension and the file name must match with the [AWS Config Managed rules](https://docs.aws.amazon.com/config/latest/developerguide/dynamodb-pitr-enabled.html) identifier in lower case.
+3. Create a rule file with a `.guard` extension and the file name must match with the [AWS Config Managed rules](https://docs.aws.amazon.com/config/latest/developerguide/dynamodb-pitr-enabled.html) identifier in *lower case*.
     ```
     touch rules/aws/dynamodb/dynamodb_pitr_enabled.guard
     ```
@@ -39,7 +49,7 @@ The following outlines the general process to develop individual AWS Guard Rules
     ```
     #
     # Rule Identifier:
-    #    dynamodb_pitr_is_enabled
+    #    DYNAMODB_PITR_ENABLED
     #
     # Description:
     #   Brief description of the rule
@@ -57,59 +67,39 @@ The following outlines the general process to develop individual AWS Guard Rules
     # a) SKIP: when there are no dynamodb table resource present
     # b) PASS: when all dynamodb table resources ObjectLockEnabled property is set to true
     # c) FAIL: when all dynamodb table resources do not have the ObjectLockEnabled property is set to true or is missing
-    # d) SKIP: when metada has rule suppression for dynamodb_pitr_is_enabled
+    # d) SKIP: when metada has rule suppression for DYNAMODB_PITR_ENABLED
     ```
-6. Below the header, define variables required for a given rule and add comments to the rule wherever possible to make it easier for humans to understand. **AWS Guard Rules support rule suppression and requires you to add the guard rule name during variable assignment.** By adding in the `SuppressedRules` metadata, you override the rule within the code-base give ability to express rule exceptions at the code-level.
+6. Below the header, define the assignments required for a given rule and add comments to the rule wherever possible to make it easier for humans to understand. **AWS Guard Rules support rule suppression and requires you to add the guard rule name during variable assignment.** By adding in the `SuppressedRules` metadata, you override the rule within the code-base give ability to express rule exceptions at the code-level. **Assignment names should be try to unique within the Rules Registry. Be verbose and detailed in naming the assignment.**
     ```
     #
     # Select all DynamoDB Table resources from incoming template (payload)
     #
-    let aws_dynamodb_table_resources = Resources.*[ Type == 'AWS::DynamoDB::Table'
+    let aws_dynamodb_table_resources_pitr = Resources.*[ Type == 'AWS::DynamoDB::Table'
       Metadata.guard.SuppressedRules not exists or
       Metadata.guard.SuppressedRules.* != "DYNAMODB_PITR_ENABLED" ## this is the name of the rule block
     ]
     ```
 7. Define a named rule block. The rule name should match with the rule file name. **If the rule is to match an [AWS Config Managed Rule](https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config_use-managed-rules.html), the rule name should match the AWS Config Identifier in upper case.** Named rule blocks allow for re-usability, improved composition and remove verbosity and repetition.
    ```
-    rule DYNAMODB_PITR_ENABLED when %aws_dynamodb_table_resources !empty {
+    rule DYNAMODB_PITR_ENABLED when %aws_dynamodb_table_resources_pitr !empty {
 
     }
     ```
 8. Write rule clauses inside the named rule block. Please add a `custom message` to each clause. The `custom message` is expressed as `<<message>>` where 'message' is any string which ideally provides information regarding the clause preceding it. Please reference step 9 below for creating custom messages.
     ```
-    ## Config Rule Name : dynamodb-pitr-enabled
-    ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/dynamodb-pitr-enabled.html"
+    ...
 
-    # Rule Intent: All DynamoDB Tables must have Point-In-Time-Recovery enabled
-
-    # Expectations:
-    # a) SKIP: when there are no DynamoDB Tables present
-    # b) PASS: when all DynamoDB Tables have PITR enabled
-    # c) FAIL: when all DynamoDB Tables have PITR disabled
-
-    #
-    # Select all DynamoDB Table resources from incoming template (payload)
-    #
-    let aws_dynamodb_table_resources = Resources.*[ Type == 'AWS::DynamoDB::Table' ]
-
-
-    rule DYNAMODB_PITR_ENABLED when %aws_dynamodb_table_resources !empty {
-        # Ensure ALL DynamoDB Tables have Point-In-Time-Recovery enabled
-        %aws_dynamodb_table_resources.Properties.PointInTimeRecoverySpecification.PointInTimeRecoveryEnabled == true
-          <<
-            Violation: Point In Time Recovery must be enabled for strong resiliency.
-            Fix: Set the property PointInTimeRecoverySpecification.PointInTimeRecoveryEnabled parameter to true.
-          >>
-  }
-    ```
-
-9. **Custom Message Blocks** - each rule block should contain single block multiline `custom message` containing `Violation:` and `Fix:` details. The `<<` and `>>` are to be set on their own lines without text. Example:
-    ```
+    rule DYNAMODB_PITR_ENABLED when %aws_dynamodb_table_resources_pitr_example !empty {
+      # Ensure ALL DynamoDB Tables have Point-In-Time-Recovery enabled
+      %aws_dynamodb_table_resources_pitr_example.Properties.PointInTimeRecoverySpecification.PointInTimeRecoveryEnabled == true
       <<
-        Violation: Point In Time Recovery must be enabled for strong resiliency.
-        Fix: Set the property PointInTimeRecoverySpecification.PointInTimeRecoveryEnabled parameter to true.
+        Violation: Point In Time Recovery must be enabled for strong resiliency
+        Fix: your fix here
       >>
+    }
     ```
+9. **Custom Message Blocks** - each rule block should contain single block multiline `custom message` containing `Violation:` and `Fix:` details. The `<<` and `>>` are to be set on their own lines without text. Example:
+
 
 ## Writing Unit Tests
 1. Now, let's write tests for the `DYNAMODB_PITR_ENABLED` rule. Before we write any code, create a `tests` directory under the appropriate path if it is not present.
@@ -181,51 +171,8 @@ The following outlines the general process to develop individual AWS Guard Rules
         rules:
         DYNAMODB_PITR_ENABLED: PASS
     ```
-5. Finally, write tests for all `FAIL` expectations.
+5. Next, write tests for all `FAIL` expectations.
     ```
-    ###
-    # DYNAMODB_PITR_ENABLED test
-    ###
-    ---
-    - name: Empty, SKIP
-    input: {}
-    expectations:
-        rules:
-        DYNAMODB_PITR_ENABLED: SKIP
-
-    - name: No resources, SKIP
-      input:
-        Resources: {}
-      expectations:
-        rules:
-        DYNAMODB_PITR_ENABLED: SKIP
-
-    - name: DDB with PITR set to true, PASS
-      input:
-        Resources:
-        Exampletable:
-            Type: AWS::DynamoDB::Table
-            Properties:
-            KeySchema:
-                - AttributeName: Id
-                KeyType: HASH
-            AttributeDefinitions:
-                - AttributeName: Id
-                AttributeType: S
-                - AttributeName: dummy
-                AttributeType: S
-                - AttributeName: name
-                AttributeType: S
-                - AttributeName: owner
-                AttributeType: S
-                - AttributeName: createdAt
-                AttributeType: S
-            PointInTimeRecoverySpecification:
-                PointInTimeRecoveryEnabled: true
-      expectations:
-        rules:
-        DYNAMODB_PITR_ENABLED: PASS
-
     - name: DDB with PITR set to false, FAIL
       input:
         Resources:
@@ -276,7 +223,38 @@ The following outlines the general process to develop individual AWS Guard Rules
         rules:
         DYNAMODB_PITR_ENABLED: FAIL
     ```
-## Running unit tests
+6. Finally, write tests for all `Suppressed` rules which will be have the `SKIP` expectations.
+  ```
+  - name: DDB with missing PITR property but rule suppression added, SKIP
+      input:
+        Resources:
+        Exampletable:
+            Type: AWS::DynamoDB::Table
+            Metadata:
+              guard:
+                SuppressedRules:
+                  - "DYNAMODB_PITR_ENABLED"
+            Properties:
+            KeySchema:
+                - AttributeName: Id
+                KeyType: HASH
+            AttributeDefinitions:
+                - AttributeName: Id
+                AttributeType: S
+                - AttributeName: dummy
+                AttributeType: S
+                - AttributeName: name
+                AttributeType: S
+                - AttributeName: owner
+                AttributeType: S
+                - AttributeName: createdAt
+                AttributeType: S
+      expectations:
+        rules:
+        DYNAMODB_PITR_ENABLED: SKIP
+  ```
+
+## Running unit tests and validations
 
 All commands assume you are running from the the root of the project for current working directory.
 
@@ -291,4 +269,8 @@ All commands assume you are running from the the root of the project for current
 3. To quickly discover and display the failed rules execute the following command:
     ```
     bin/cfn-guard test -d ./rules/ | grep "FAIL Rules:" -B 2 -A 1
+    ```
+4. To identify rules that have an error processing run the following command:
+    ```
+    bin/cfn-guard test -d ./rules/ | grep "Error processing" -B 2 -A 2
     ```
