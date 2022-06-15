@@ -18,7 +18,7 @@
 # a) SKIP: when there are no dynamodb table resource present
 # b) PASS: when all dynamodb table resources ObjectLockEnabled property is set to true
 # c) FAIL: when all dynamodb table resources do not have the ObjectLockEnabled property is set to true or is missing
-# d) SKIP: when metada has rule suppression for dynamodb_pitr_is_enabled
+# d) SKIP: when metadata has rule suppression for dynamodb_pitr_is_enabled
 
 #
 # Select all dynamodb table resources from incoming template (payload)

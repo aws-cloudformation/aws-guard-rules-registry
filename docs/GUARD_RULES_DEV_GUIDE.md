@@ -77,7 +77,7 @@ The following outlines the general process to develop individual AWS Guard Rules
     # a) SKIP: when there are no dynamodb table resource present
     # b) PASS: when all dynamodb table resources ObjectLockEnabled property is set to true
     # c) FAIL: when all dynamodb table resources do not have the ObjectLockEnabled property is set to true or is missing
-    # d) SKIP: when metada has rule suppression for DYNAMODB_PITR_ENABLED
+    # d) SKIP: when metadata has rule suppression for DYNAMODB_PITR_ENABLED
     ```
 5. Below the header, define the assignments required for a given rule and add comments to the rule wherever possible to make it easier for humans to understand. **AWS Guard Rules support rule suppression and requires you to add the guard rule name during variable assignment.** By adding in the `SuppressedRules` metadata, you override the rule within the code-base give ability to express rule exceptions at the code-level. **Assignment names should be try to unique within the Rules Registry. Be verbose and detailed in naming the assignment.**
     ```
