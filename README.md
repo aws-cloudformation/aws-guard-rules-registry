@@ -52,8 +52,8 @@ AWS Guard Rules registry contains prebuilt managed rule sets compiled from rule 
 
 | Managed Rule Set                         | Rules Set Name | Mapping File |
 | -------------------------------- | -------- | ---------- |
-| ABS Cloud Computing Implementation Guide 2.0 - Material Workloads | ABS_CCIGv2_Material | [Link](/mappings/rule_set_ABS_CCIGv2_Material.json) |
-| ABS Cloud Computing Implementation Guide 2.0 | ABS-CCIGv2-Standard | [Link](/mappings/rule_set_ABS_CCIGv2_Standard.json) |
+| ABS Cloud Computing Implementation Guide 2.0 - Material Workloads | ABS-CCIGv2-Material | [Link](/mappings/rule_set_ABS_CCIGv2_Material.json) |
+| ABS Cloud Computing Implementation Guide 2.0 - Standard Workloads | ABS-CCIGv2-Standard | [Link](/mappings/rule_set_ABS_CCIGv2_Standard.json) |
 | Australian Cyber Security Centre (ACSC) Essential Eight Maturity Model | acsc-essential-8 | [Link](/mappings/rule_set_acsc_essential_8.json) |
 | Australian Cyber Security Centre (ACSC) Information Security Manual (ISM) 2020-06 | acsc-ism | [Link](/mappings/rule_set_acsc_ism.json) |
 | Australian Prudential Regulation Authority (APRA) CPG 234 | apra_cpg_234 | [Link](/mappings/rule_set_apra_cpg_234.json) |
