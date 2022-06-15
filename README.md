@@ -56,8 +56,8 @@ AWS Guard Rules registry contains prebuilt managed rule sets compiled from rule 
 | ABS Cloud Computing Implementation Guide 2.0 - Standard Workloads | ABS-CCIGv2-Standard | [Link](/mappings/rule_set_ABS_CCIGv2_Standard.json) |
 | Australian Cyber Security Centre (ACSC) Essential Eight Maturity Model | acsc-essential-8 | [Link](/mappings/rule_set_acsc_essential_8.json) |
 | Australian Cyber Security Centre (ACSC) Information Security Manual (ISM) 2020-06 | acsc-ism | [Link](/mappings/rule_set_acsc_ism.json) |
-| Australian Prudential Regulation Authority (APRA) CPG 234 | apra_cpg_234 | [Link](/mappings/rule_set_apra_cpg_234.json) |
-| Bank Negara Malaysia (BNM) Risk Management in Technology (RMiT) | bnm_rmit | [Link](/mappings/rule_set_bnm_rmit.json) |
+| Australian Prudential Regulation Authority (APRA) CPG 234 | apra-cpg-234 | [Link](/mappings/rule_set_apra_cpg_234.json) |
+| Bank Negara Malaysia (BNM) Risk Management in Technology (RMiT) | bnm-rmit | [Link](/mappings/rule_set_bnm_rmit.json) |
 | Center for Internet Security (CIS) Amazon Web Services Foundation v1.4 Level 1 | cis-aws-benchmark-level-1 | [Link](/mappings/rule_set_cis_aws_benchmark_level_1.json) |
 | Center for Internet Security (CIS) Amazon Web Services Foundation v1.4 Level2 | cis-aws-benchmark-level-2 | [Link](/mappings/rule_set_cis_aws_benchmark_level_2.json) |
 | Center for Internet Security (CIS) Critical Security Controls v8 IG1 | cis-critical-security-controls-v8-ig1 | [Link](/mappings/rule_set_cis_critical_security_controls_v8_ig1.json) |
