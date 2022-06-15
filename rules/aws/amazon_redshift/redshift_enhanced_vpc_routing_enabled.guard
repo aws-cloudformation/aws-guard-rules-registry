@@ -1,2 +1,41 @@
-    ## Config Rule Name : redshift-enhanced-vpc-routing-enabled
-    ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/REDSHIFT_ENHANCED_VPC_ROUTING_ENABLED.html"
+####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#    REDSHIFT_ENHANCED_VPC_ROUTING_ENABLED
+#
+# Description:
+#    Checks if Amazon Redshift cluster has 'enhancedVpcRouting' enabled.
+#
+# Reports on:
+#   AWS::Redshift::Cluster
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
+# a) SKIP: when there are no Redshift Cluster resource present
+# b) PASS: when Redshift Cluster resources have property EnhancedVpcRouting set to true 
+# c) FAIL: when any Redshift Cluster resources do not have EnhancedVpcRouting property set (defualt false)
+# d) FAIL: when any Redshift Cluster resources have EnhancedVpcRouting property set to false 
+# e) SKIP: when metadata includes the suppression for rule REDSHIFT_ENHANCED_VPC_ROUTING_ENABLED
+
+#
+# Select all Redshift Cluster resources from incoming template (payload)
+#
+let redhshift_enhanced_vpc_routing_enabled_clusters = Resources.*[ Type == 'AWS::Redshift::Cluster' 
+	Metadata.guard.SuppressedRules not exists or
+    Metadata.guard.SuppressedRules.* != "REDSHIFT_ENHANCED_VPC_ROUTING_ENABLED"
+]
+
+rule REDSHIFT_ENHANCED_VPC_ROUTING_ENABLED when %redhshift_enhanced_vpc_routing_enabled_clusters !empty {
+    %redhshift_enhanced_vpc_routing_enabled_clusters.Properties.EnhancedVpcRouting == true
+
+    <<
+			Violation: Enhanced VPC Routing must be enabled on Redshift clusters 
+			Fix: set the EnhancedVpcRouting property to true
+    >>
+}
