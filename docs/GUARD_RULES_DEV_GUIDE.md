@@ -55,7 +55,7 @@ The following outlines the general process to develop individual AWS Guard Rules
     ```
     touch rules/aws/dynamodb/dynamodb_pitr_enabled.guard
     ```
-5. Edit `dynamodb_pitr_enabled.guard` file and insert the [template header](../rules/aws/_template/aws_managed_rule_identifier.guard) filling out the necessary details.
+4. Edit `dynamodb_pitr_enabled.guard` file and insert the [template header](../rules/aws/_template/aws_managed_rule_identifier.guard) filling out the necessary details.
     ```
     #
     # Rule Identifier:
@@ -79,7 +79,7 @@ The following outlines the general process to develop individual AWS Guard Rules
     # c) FAIL: when all dynamodb table resources do not have the ObjectLockEnabled property is set to true or is missing
     # d) SKIP: when metada has rule suppression for DYNAMODB_PITR_ENABLED
     ```
-6. Below the header, define the assignments required for a given rule and add comments to the rule wherever possible to make it easier for humans to understand. **AWS Guard Rules support rule suppression and requires you to add the guard rule name during variable assignment.** By adding in the `SuppressedRules` metadata, you override the rule within the code-base give ability to express rule exceptions at the code-level. **Assignment names should be try to unique within the Rules Registry. Be verbose and detailed in naming the assignment.**
+5. Below the header, define the assignments required for a given rule and add comments to the rule wherever possible to make it easier for humans to understand. **AWS Guard Rules support rule suppression and requires you to add the guard rule name during variable assignment.** By adding in the `SuppressedRules` metadata, you override the rule within the code-base give ability to express rule exceptions at the code-level. **Assignment names should be try to unique within the Rules Registry. Be verbose and detailed in naming the assignment.**
     ```
     #
     # Select all DynamoDB Table resources from incoming template (payload)
@@ -89,13 +89,13 @@ The following outlines the general process to develop individual AWS Guard Rules
       Metadata.guard.SuppressedRules.* != "DYNAMODB_PITR_ENABLED" ## this is the name of the rule block
     ]
     ```
-7. Define a named rule block. The rule name should match with the rule file name. **If the rule is to match an [AWS Config Managed Rule](https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config_use-managed-rules.html), the rule name should match the AWS Config Identifier in upper case.** Named rule blocks allow for re-usability, improved composition and remove verbosity and repetition.
+6. Define a named rule block. The rule name should match with the rule file name. **If the rule is to match an [AWS Config Managed Rule](https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config_use-managed-rules.html), the rule name should match the AWS Config Identifier in upper case.** Named rule blocks allow for re-usability, improved composition and remove verbosity and repetition.
    ```
     rule DYNAMODB_PITR_ENABLED when %aws_dynamodb_table_resources_pitr !empty {
 
     }
     ```
-8. Write rule clauses inside the named rule block. Please add a `custom message` to each clause. The `custom message` is expressed as `<<message>>` where 'message' is any string which ideally provides information regarding the clause preceding it. Please reference step 9 below for creating custom messages.
+7. Write rule clauses inside the named rule block. Please add a `custom message` to each clause. The `custom message` is expressed as `<<message>>` where 'message' is any string which ideally provides information regarding the clause preceding it. Please reference step 8 below for creating custom messages.
     ```
     ...
 
@@ -108,7 +108,13 @@ The following outlines the general process to develop individual AWS Guard Rules
       >>
     }
     ```
-9. **Custom Message Blocks** - each rule block should contain single block multiline `custom message` containing `Violation:` and `Fix:` details. The `<<` and `>>` are to be set on their own lines without text. Example:
+8. **Custom Message Blocks** - each rule block should contain single block multiline `custom message` containing `Violation:` and `Fix:` details. The `<<` and `>>` are to be set on their own lines without text. Example:
+  ```
+  <<
+    Violation: Point In Time Recovery must be enabled for strong resiliency
+    Fix: your fix here
+  >>
+  ```
 
 
 ## Writing Unit Tests
