@@ -1,6 +1,6 @@
 # AWS Guard Rules Registry
 
-AWS Guard Rules Registry is an open-source repository of AWS `cfn-guard` rule files and managed rule sets.
+AWS Guard Rules Registry is an open-source repository of AWS `cfn-guard` rule files and managed rule sets that help organizations `Shift Left` in their SDLC process.
 
 ## TL;DR
 
@@ -25,7 +25,7 @@ The Guard Rules Registry offers the following value:
 
 ### Registry Rules Files
 
-The intent of AWS Guard Rules registry is to create modular single file guard rule files that can be mapped into multiple managed rule sets. AWS Guard Rules Registry contains individual guard rule files associated to a single rule. The [rules directory](/rules) contains multiple sub-directories based on different technologies, providers and services.
+The intent of AWS Guard Rules Registry is to create modular single file guard rule files that can be mapped into multiple managed rule sets similar to how AWS Config Conformance Packs work with AWS Config Managed Rules. AWS Guard Rules Registry contains individual guard rule files associated to a single rule. The [rules directory](/rules) contains multiple sub-directories based on different technologies, providers and services.
 
     ```
     rules
@@ -42,7 +42,7 @@ The intent of AWS Guard Rules registry is to create modular single file guard ru
     └── terraform
     ```
 
-Many of the guard rules are supported by AWS and correspond to associated AWS Config Managed Rules. These rules can be identified by the all uppercase naming convention which is identical to the AWS Config Managed Rule identifier.
+Many of the guard rules are supported by AWS and correspond or compliment associated AWS Config Managed Rules. These rules can be identified by the all uppercase naming convention which is identical to the AWS Config Managed Rule identifier.
 
 > **Note:** Guard rule names that are in all uppercase are intentionally set this way. The names reflects the AWS Config Managed rule identifier the guard rule is satisfying.
 
@@ -102,9 +102,6 @@ AWS Guard Rules registry contains prebuilt managed rule sets compiled from rule 
 | Amazon Web Services' Well-Architected Framework Reliability Pillar | wa-Reliability-Pillar | [Link](/mappings/rule_set_wa-Reliability-Pillar.json) |
 | AWS Guard rule set for Amazon Web Services' Well-Architected Framework Security Pillar | wa-Security-Pillar | [Link](/mappings/rule_set_wa-Security-Pillar.json) |
 
-## Developing Custom Rule Sets
-
-CFN-GUARD allows for teams to create multiple rule files and categorize them as a `rule set` so that you can validate your JSON- or YAML-formatted data against multiple rule files at the same time. The AWS Guard Rules Registry provides a centralized repository of Guard rule files which can be mapped into a rule set during the build process. To develop a rule set mapping file and submit your own Registry Rule Set see [CONTRIBUTING](CONTRIBUTING.md) for more information.
 
 ## Security
 

@@ -4,14 +4,24 @@ The following details the development requirements to submit individual Guard ru
 
 ## Guidelines and Conventions Summary
 
+**Guard Rule Files:**
+
 * A single guard rule file will have a single rule block
-* Guard rule block `custom messages` will document the `Violation;` and the recommended `Fix;` separated by a line break
-* Guard rule blocks will be in all lowercase unless it represents a corresponding AWS Config Managed Rule
-* Guard Rules in the Rules Registry must support rule suppression at the resource level by defining a metadata exception.
+* All Guard rule files should have a corresponding `[GUARD RULE FILE NAME]_tests.yml` file located in `tests` sub directory.
 * Guard Rule files are named in all lowercase and leverage snake case convention.
+
+**Guard Rules**
+
 * Guard `rule block` name should match with the rule file name. The only time it will differ is if the rule block is representing an AWS Config Managed Rule which will require the rule block name ot be all upper case while the file name be lower case.
+* Guard `rule blocks` will be in all lowercase unless it represents a corresponding AWS Config Managed Rule
 * Guard rule file `Assignments` should be verbose and descriptive as possible to avoid naming conflicts during Rule Set mapping process
-* All Guard rule files should have a corresponding _tests.yml file.
+* Guard Rules in the Rules Registry must support rule suppression at the resource level by defining a metadata exception.
+
+**Guard Rule Custom Messages:**
+
+* Guard rule block `custom messages` will document the `Violation;` and the recommended `Fix;` separated by a line break
+* Guard rule block `custom messages` must have the starting `<<` and ending `>>` on their own lines. Do not shorten by placing the custom message in one line. This will break the Guard Mapping process for rule set builds.
+
 
 ## Rules Directory Structure
 
@@ -21,19 +31,19 @@ The following details the development requirements to submit individual Guard ru
     rules
     ├── aws
     │   └── apigateway
-    │       │   ├── apigw_method_auth_type_is_not_none.guard
-    │       │   └── tests
-    │       │       └── apigw_method_auth_type_is_not_none_tests.yml
-    │       └── dynamodb
-    │           ├── dynamodb_pitr_enabled.guard
-    │           └── tests
-    │               └── dynamodb_pitr_is_enabled_tests.yml
+    │   │   ├── apigw_method_auth_type_is_not_none.guard
+    │   │   └── tests
+    │   │       └── apigw_method_auth_type_is_not_none_tests.yml
+    │   └── dynamodb
+    │       ├── dynamodb_pitr_enabled.guard
+    │       └── tests
+    │           └── dynamodb_pitr_is_enabled_tests.yml
     ├── kubernetes
     └── terraform
     ```
-## Rule Writing Guide
+## Rule Development Walk-through
 
-The following outlines the general process to develop individual AWS Guard Rules that work with the `Guard Rules Registry` and its `Guard Map Rule Sets`. Reference the complete individual [template file](../rules/aws/_template/aws_managed_rule_identifier.guard) while developing new Guard Rules. Below outlines the details necessary of the referenced [template file](../rules/aws/_template/aws_managed_rule_identifier.guard).
+The following outlines the general process to develop individual AWS Guard Rules that work with the `Guard Rules Registry` and its `Guard Map Rule Sets`. Reference the complete individual [template file](../docs/_template/aws_managed_rule_identifier.guard) while developing new Guard Rules. Below outlines the details necessary of the referenced [template file](../rules/aws/_template/aws_managed_rule_identifier.guard).
 
 1. To understand the contribution process, let's consider an example of the `AWS DynamoDB` `Point-In-Time-Recovery` rule.
 
