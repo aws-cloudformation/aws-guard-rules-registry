@@ -5,7 +5,7 @@
 #    REDSHIFT_CLUSTER_CONFIGURATION_CHECK
 #
 # Description:
-#    Checks whether Amazon Redshift clusters have the specified settings (Encrypted, LoggingProperties) 
+#    Checks whether Amazon Redshift clusters have the specified settings (Encrypted Only)  
 #
 # Reports on:
 #   AWS::Redshift::Cluster
@@ -18,11 +18,10 @@
 #
 # Scenarios:
 # a) SKIP: when there are no Redshift Cluster resource present
-# b) PASS: when Redshift Cluster resources have LoggingProperties property set and Encrypted property set to true
+# b) PASS: when Redshift Cluster resources have the Encrypted property set to true
 # c) FAIL: when any Redshift Cluster resources do not have Encrypted property set (default false)
 # d) FAIL: when any Redshift Cluster resources have Encrypted property set to false 
-# e) FAIL: when any Redshift Cluster resources do not have LoggingProperties property set
-# f) SKIP: when metadata includes the suppression for rule REDSHIFT_CLUSTER_CONFIGURATION_CHECK
+# e) SKIP: when metadata includes the suppression for rule REDSHIFT_CLUSTER_CONFIGURATION_CHECK
 
 #
 # Select all Redshift Cluster resources from incoming template (payload)
@@ -33,11 +32,10 @@ let redhshift_clusters_configuration_check = Resources.*[ Type == 'AWS::Redshift
 ]
 
 rule REDSHIFT_CLUSTER_CONFIGURATION_CHECK when %redhshift_clusters_configuration_check !empty {
-    %redhshift_clusters_configuration_check.Properties.LoggingProperties exists
     %redhshift_clusters_configuration_check.Properties.Encrypted == true
 
     <<
-			Violation: Amazon Redshift configuration should have encryption and logging enabled
-			Fix: Set the Encrypted property to true and the LoggingProperties property to an S3 bucket where the log files are to be stored
+			Violation: Amazon Redshift configuration should have encryption enabled
+			Fix: Set the Encrypted property to true 
     >>
 }
