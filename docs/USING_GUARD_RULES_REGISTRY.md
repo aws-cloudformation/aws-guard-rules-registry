@@ -1,21 +1,58 @@
 # Using Guard Rules Registry
 
-The document details a *Getting Started* scenarios for AWS Guard Rules Registry. The Guard Rules Registry Rule Set mappings are built into supported release formats enabling quick and easy consumption. Since AWS Guard does not require access to your AWS environment, the static application security testing process can happen in a variety of
+The document details a *Getting Started* scenarios for AWS Guard Rules Registry. The Guard Rules Registry Rule Set mappings are built into supported release formats enabling quick and easy consumption. Since AWS Guard does not require access to your AWS environment, the static application security testing process can happen in a variety of CI platforms and services.
 
 
 ## Guard Rules Registry Release Builds
 
+Every merge into the main branch will produce a new `release` of all AWS Guard Rules Registry. View the latest release for download [here](TODO)
+
 
 ## Guard Rules Registry Local Development
 
+To leverage the Guard Rules Registry Rule Sets, download the latest release or specific version you require in the releases and run via cfn-guard command line specifying the rule set file from the release via `--rules `:
+
+```sh
+cfn-guard validate --rules ./NIST800-53Rev4.guard --data myCloudFormation.yml --show-summary fail -p
+```
 
 ## Guard Rules Registry Docker Builds
 
+All AWS Guard Rule Registry are build into a docker image with cfn-guard installed. The release rule set files are built and copied into the docker image allowing for simplified rule set specific. Follow these steps to pull the docker image and view the available rule sets.
+
+1. run: `docker pull public.ecr.aws/r7q6h7y6/shiftleft:1.0`
+2. enter the container to view available rules:
+  ```
+  docker run -it public.ecr.aws/r7q6h7y6/shiftleft:1.0 sh
+  ls
+  ```
+3. all rule sets are built into the / directory
+
+> **Note:** The docker image version identifies the release version. Using the latest tag will give you the latest release.
 
 ## AWS CodePipeline
 
+*Coming Soon!*
 
 ## GitHub Actions
 
+Leveraging the docker image, a simply GitHub Action was created called [ShiftLeft](github.com/grolston/ShiftLeft)
 
 ## Gitlab-CI
+
+Gitlab-CI can leverage the AWS Guard Rules Registry docker image. The example below runs a
+
+```yml
+image:
+  repository: public.ecr.aws/r7q6h7y6/shiftleft
+  tag: 1.0
+
+stages:
+ - ci
+
+cfn-guard-job:
+  stage: ci
+  script:
+    - cfn-guard validate --data ${INPUT_DATA_DIRECTORY} --rules /${INPUT_RULE_SET_NAME}.guard --show-summary fail -p
+
+```
