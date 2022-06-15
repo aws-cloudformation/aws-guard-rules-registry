@@ -1,0 +1,166 @@
+###
+# REDSHIFT_CLUSTER_MAINTENANCESETTINGS_CHECK tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      REDSHIFT_CLUSTER_MAINTENANCESETTINGS_CHECK: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      REDSHIFT_CLUSTER_MAINTENANCESETTINGS_CHECK: SKIP
+
+- name: Redshift cluster with PreferredMaintenanceWindow property set and AllowVersionUpgrade and AutomatedSnapshotRetentionPeriod not set (defaults true and 1 day), PASS
+  input:
+    Resources: 
+      TestCluster:
+        Type: AWS::Redshift::Cluster
+        Properties:
+          ClusterType: multi-node
+          DBName: dev 
+          MasterUsername: 
+          MasterUserPassword:
+          NodeType: 
+          NumberOfNodes: 2
+          PreferredMaintenanceWindow: Mon:09:30-Mon:10:00
+  expectations:
+    rules:
+      REDSHIFT_CLUSTER_MAINTENANCESETTINGS_CHECK: PASS
+
+- name: Redshift cluster with PreferredMaintenanceWindow property set, AllowVersionUpgrade set to true, and AutomatedSnapshotRetentionPeriod not set (default 1 day), PASS
+  input:
+    Resources: 
+      TestCluster:
+        Type: AWS::Redshift::Cluster
+        Properties:
+          ClusterType: multi-node
+          DBName: dev 
+          MasterUsername: 
+          MasterUserPassword:
+          NodeType: 
+          NumberOfNodes: 2
+          PreferredMaintenanceWindow: Mon:09:30-Mon:10:00
+          AllowVersionUpgrade: true
+  expectations:
+    rules:
+      REDSHIFT_CLUSTER_MAINTENANCESETTINGS_CHECK: PASS
+
+- name: Redshift cluster with PreferredMaintenanceWindow property set, AllowVersionUpgrade set to true, and AutomatedSnapshotRetentionPeriod property set to greater than 0, PASS
+  input:
+    Resources: 
+      TestCluster:
+        Type: AWS::Redshift::Cluster
+        Properties:
+          ClusterType: multi-node
+          DBName: dev 
+          MasterUsername: 
+          MasterUserPassword:
+          NodeType: 
+          NumberOfNodes: 2
+          PreferredMaintenanceWindow: Mon:09:30-Mon:10:00
+          AllowVersionUpgrade: true
+          AutomatedSnapshotRetentionPeriod: 2
+  expectations:
+    rules:
+      REDSHIFT_CLUSTER_MAINTENANCESETTINGS_CHECK: PASS
+
+- name: Redshift cluster with PreferredMaintenanceWindow property NOT set, FAIL
+  input:
+    Resources: 
+      TestCluster:
+        Type: AWS::Redshift::Cluster
+        Properties:
+          ClusterType: multi-node
+          DBName: dev 
+          MasterUsername: 
+          MasterUserPassword:
+          NodeType: 
+          NumberOfNodes: 2
+          AllowVersionUpgrade: true
+          AutomatedSnapshotRetentionPeriod: 2
+  expectations:
+    rules:
+      REDSHIFT_CLUSTER_MAINTENANCESETTINGS_CHECK: FAIL
+
+- name: Redshift cluster with AllowVersionUpgrade set to false, FAIL
+  input:
+    Resources: 
+      TestCluster:
+        Type: AWS::Redshift::Cluster
+        Properties:
+          ClusterType: multi-node
+          DBName: dev 
+          MasterUsername: 
+          MasterUserPassword:
+          NodeType: 
+          NumberOfNodes: 2
+          PreferredMaintenanceWindow: Mon:09:30-Mon:10:00
+          AllowVersionUpgrade: false
+          AutomatedSnapshotRetentionPeriod: 2
+  expectations:
+    rules:
+      REDSHIFT_CLUSTER_MAINTENANCESETTINGS_CHECK: FAIL
+
+- name: Redshift cluster with AutomatedSnapshotRetentionPeriod property set to 0, FAIL
+  input:
+    Resources: 
+      TestCluster:
+        Type: AWS::Redshift::Cluster
+        Properties:
+          ClusterType: multi-node
+          DBName: dev 
+          MasterUsername: 
+          MasterUserPassword:
+          NodeType: 
+          NumberOfNodes: 2
+          PreferredMaintenanceWindow: Mon:09:30-Mon:10:00
+          AllowVersionUpgrade: true
+          AutomatedSnapshotRetentionPeriod: 0
+  expectations:
+    rules:
+      REDSHIFT_CLUSTER_MAINTENANCESETTINGS_CHECK: FAIL
+
+- name: Redshift cluster with PreferredMaintenanceWindow property NOT set, AllowVersionUpgrade set to false, and AutomatedSnapshotRetentionPeriod property set to 0, FAIL
+  input:
+    Resources: 
+      TestCluster:
+        Type: AWS::Redshift::Cluster
+        Properties:
+          ClusterType: multi-node
+          DBName: dev 
+          MasterUsername: 
+          MasterUserPassword:
+          NodeType: 
+          NumberOfNodes: 2
+          AllowVersionUpgrade: false
+          AutomatedSnapshotRetentionPeriod: 0
+  expectations:
+    rules:
+      REDSHIFT_CLUSTER_MAINTENANCESETTINGS_CHECK: FAIL
+  
+- name: Redshift cluster with PreferredMaintenanceWindow property NOT set, AllowVersionUpgrade set to false, and AutomatedSnapshotRetentionPeriod property set to 0, but rule suppressed, SKIP
+  input:
+    Resources: 
+      TestCluster:
+        Type: AWS::Redshift::Cluster
+        Metadata:
+          guard:
+            SuppressedRules:
+            - REDSHIFT_CLUSTER_MAINTENANCESETTINGS_CHECK
+        Properties:
+          ClusterType: multi-node
+          DBName: dev 
+          MasterUsername: 
+          MasterUserPassword:
+          NodeType: 
+          NumberOfNodes: 2
+          AllowVersionUpgrade: false
+          AutomatedSnapshotRetentionPeriod: 0
+  expectations:
+    rules:
+      REDSHIFT_CLUSTER_MAINTENANCESETTINGS_CHECK: SKIP

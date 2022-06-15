@@ -22,14 +22,14 @@
 # c) FAIL: when any Redshift Cluster resources do not have Encrypted property set (default false)
 # d) FAIL: when any Redshift Cluster resources have Encrypted property set to false 
 # e) FAIL: when any Redshift Cluster resources do not have LoggingProperties property set
-# f) SKIP: hen metadata includes the suppression for rule REDSHIFT_CLUSTER_CONFIGURATION_CHECK
+# f) SKIP: when metadata includes the suppression for rule REDSHIFT_CLUSTER_CONFIGURATION_CHECK
 
 #
 # Select all Redshift Cluster resources from incoming template (payload)
 #
 let redhshift_clusters_configuration_check = Resources.*[ Type == 'AWS::Redshift::Cluster' 
 	Metadata.guard.SuppressedRules not exists or
-  Metadata.guard.SuppressedRules.* != "REDSHIFT_CLUSTER_CONFIGURATION_CHECK"
+    Metadata.guard.SuppressedRules.* != "REDSHIFT_CLUSTER_CONFIGURATION_CHECK"
 ]
 
 rule REDSHIFT_CLUSTER_CONFIGURATION_CHECK when %redhshift_clusters_configuration_check !empty {

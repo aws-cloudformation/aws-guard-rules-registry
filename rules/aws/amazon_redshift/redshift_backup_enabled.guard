@@ -22,14 +22,14 @@
 # b) PASS: when Redshift Cluster resources don't have the AutomatedSnapshotRetentionPeriod property set (default retention period is 1 day)
 # c) PASS: when Redshift Cluster resources have the AutomatedSnapshotRetentionPeriod property set to greater than 0 
 # d) FAIL: when any Redshift Cluster resources have the AutomatedSnapshotRetentionPeriod property set to 0 
-# e) SKIP: hen metadata includes the suppression for rule REDSHIFT_BACKUP_ENABLED
+# e) SKIP: when metadata includes the suppression for rule REDSHIFT_BACKUP_ENABLED
 
 #
 # Select all Redshift Cluster resources from incoming template (payload)
 #
 let redhshift_backup_enabled_clusters = Resources.*[ Type == 'AWS::Redshift::Cluster' 
 	Metadata.guard.SuppressedRules not exists or
-  Metadata.guard.SuppressedRules.* != "REDSHIFT_BACKUP_ENABLED"
+    Metadata.guard.SuppressedRules.* != "REDSHIFT_BACKUP_ENABLED"
 ]
 
 rule REDSHIFT_BACKUP_ENABLED when %redhshift_backup_enabled_clusters !empty {
