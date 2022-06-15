@@ -1,5 +1,7 @@
 # AWS Guard Rules Registry
 
+AWS Guard Rules Registry is an open-source repository of AWS `cfn-guard` rule files and managed rule sets.
+
 ## TL;DR
 
 **You want to leverage the existing AWS Guard Registry rule sets currently available?** Read the [Using Guard Rules Registry Guide](./docs/USING_GUARD_RULES_REGISTRY.md) for information on how to integrate into your existing continuous integration and development processes.
