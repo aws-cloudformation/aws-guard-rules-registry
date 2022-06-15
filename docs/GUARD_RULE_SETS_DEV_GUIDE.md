@@ -42,7 +42,7 @@ The following is an example of a Guard Map file.
 
 ```json
 {
-  "owner": "exmample.com",
+  "owner": "example.com",
   "ruleSetName": "example-framework",
   "version": "1.0.0",
   "description" : "example.com CCOE compliance framework",
