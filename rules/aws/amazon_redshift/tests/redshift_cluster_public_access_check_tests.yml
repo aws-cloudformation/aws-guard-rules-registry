@@ -8,14 +8,14 @@
     rules:
       REDSHIFT_CLUSTER_PUBLIC_ACCESS_CHECK: SKIP
 
-- name: Rule skips when no cluster present
+- name: No resources, SKIP
   input:
     Resources: {}
   expectations:
     rules:
       REDSHIFT_CLUSTER_PUBLIC_ACCESS_CHECK: SKIP
 
-- name: Rule passes when PubliclyAccessible property is not set
+- name: Redshift cluster with PubliclyAccessible property NOT set (default false), PASS
   input:
     Resources:
       ClusterEB0386A7:
@@ -54,7 +54,7 @@
     rules:
       REDSHIFT_CLUSTER_PUBLIC_ACCESS_CHECK: PASS
 
-- name: Rule passes when cluster is not publicly accessible
+- name: Redshift cluster with PubliclyAccessible property set to false, PASS
   input:
     Resources:
       ClusterEB0386A7:
@@ -94,7 +94,7 @@
     rules:
       REDSHIFT_CLUSTER_PUBLIC_ACCESS_CHECK: PASS
 
-- name: Rule fails when cluster is publicly accessible
+- name: Redshift cluster with PubliclyAccessible property set to true, FAIL
   input:
     Resources:
       ClusterEB0386A7:
@@ -134,7 +134,7 @@
     rules:
       REDSHIFT_CLUSTER_PUBLIC_ACCESS_CHECK: FAIL
 
-- name: Rule fails when cluster is publicly accessible but rule suppressed
+- name: Redshift cluster with PubliclyAccessible property set to true, but rule suppressed, SKIP 
   input:
     Resources:
       ClusterEB0386A7:

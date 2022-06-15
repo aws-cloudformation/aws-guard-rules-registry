@@ -19,10 +19,10 @@
 #
 # Scenarios:
 # a) SKIP: when there is no Redshift cluster present
-# b) FAIL: When Redshift cluster is present and PubliclyAccessible property is set to true
-# c) PASS: When Redshift cluster is present and PubliclyAccessible property is set to false
-# c) PASS: When Redshift cluster is present and PubliclyAccessible property is not set
-# d) SKIP: when metada has rule suppression for REDSHIFT_CLUSTER_PUBLIC_ACCESS_CHECK
+# b) PASS: when Redshift Cluster resources do not have the publiclyAccessible property set (default false)
+# c) PASS: when Redshift Cluster resources have the PubliclyAccessible property set to false
+# d) FAIL: when any Redshift Cluster resources have the PubliclyAccessible property set to true
+# e) SKIP: when metada includes the suppression for rule REDSHIFT_CLUSTER_PUBLIC_ACCESS_CHECK
 
 #
 # Select all Redshift cluster resources from incoming template
@@ -35,8 +35,8 @@ let aws_redshift_clusters_resources_public_access_check = Resources.*[ Type == '
 
 
 rule REDSHIFT_CLUSTER_PUBLIC_ACCESS_CHECK when %aws_redshift_clusters_resources_public_access_check !empty {
-    %aws_redshift_clusters_resources_public_access_check.Properties.PubliclyAccessible == false or
-    %aws_redshift_clusters_resources_public_access_check.Properties.PubliclyAccessible  not exists
+    %aws_redshift_clusters_resources_public_access_check.Properties.PubliclyAccessible  not exists or
+    %aws_redshift_clusters_resources_public_access_check.Properties.PubliclyAccessible == false
 
   <<
     Violation: Redshift cluster should not be available to public.
