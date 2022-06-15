@@ -95,7 +95,7 @@ AWS Guard Rules registry contains prebuilt managed rule sets compiled from rule 
 | NIST Cyber Security Framework (CSF)  | nist-csf | [Link](/mappings/rule_set_nist_csf.json) |
 | NIST Privacy Framework | nist-privacy-framework | [Link](/mappings/rule_set_nist_privacy_framework.json) |
 | New Zealand Government Communications Security Bureau (GCSB) Information Security Manual (NZISM) | nzism | [Link](/mappings/rule_set_nzism.json) |
-| Payment Card Industry Data Security Standard (PCI DSS) 3.2.1 | pci-dss-3-2-1 | [Link](/mappings/rule_set_pci_dss_3_2_1.json) |
+| Payment Card Industry Data Security Standard (PCI DSS) 3.2.1 | PCI-DSS-3-2-1 | [Link](/mappings/rule_set_pci_dss_3_2_1.json) |
 | Reserve Bank of India (RBI) Cyber Security Framework for Urban Cooperative Banks (UCBs) | rbi-bcsf-ucb | [Link](/mappings/rule_set_rbi_bcsf_ucb.json) |
 | Reserve Bank of India (RBI) Master Direction – Information Technology Framework | rbi-md-itf | [Link](/mappings/rule_set_rbi_md_itf.json) |
 | New York State Department Of Financial Services (NYDFS) cybersecurity requirements for financial services companies (23 NYCRR 500) | us-nydfs | [Link](/mappings/rule_set_us_nydfs.json) |
