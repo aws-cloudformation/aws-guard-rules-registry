@@ -50,7 +50,7 @@ Many of the guard rules are supported by AWS and correspond to associated AWS Co
 
 AWS Guard Rules registry contains prebuilt managed rule sets compiled from rule mapping files found in the [mappings](/mappings) directory. The following managed Rule Sets are available for use:
 
-| Rule Set                         | Rules Set Name | Mapping File |
+| Managed Rule Set                         | Rules Set Name | Mapping File |
 | -------------------------------- | -------- | ---------- |
 | ABS Cloud Computing Implementation Guide 2.0 - Material Workloads | ABS_CCIGv2_Material | [Link](/mappings/rule_set_ABS_CCIGv2_Material.json) |
 | ABS Cloud Computing Implementation Guide 2.0 | ABS-CCIGv2-Standard | [Link](/mappings/rule_set_ABS_CCIGv2_Standard.json) |
