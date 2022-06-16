@@ -30,7 +30,7 @@ The Guard Rules Registry offers the following value:
 
 ### Registry Rules Files
 
-The intent of AWS Guard Rules Registry is to create modular single file guard rule files that can be mapped into multiple managed rule sets similar to how AWS Config Conformance Packs work with AWS Config Managed Rules. AWS Guard Rules Registry contains individual guard rule files associated to a single rule. The [rules directory](/rules) contains multiple sub-directories based on different technologies, providers and services.
+One of the intents of AWS Guard Rules Registry is to create modular single file guard rule files that can be mapped into multiple managed rule sets similar to how AWS Config Conformance Packs work with AWS Config Managed Rules. AWS Guard Rules Registry contains individual guard rule files associated to a single rule. The [rules directory](/rules) contains multiple sub-directories based on different technologies, providers and services.
 
     ```
     rules
