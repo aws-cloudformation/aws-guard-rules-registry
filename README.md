@@ -22,9 +22,10 @@ AWS Guard Rules Registry is an open-source repository of AWS `cfn-guard` rule fi
 
 The Guard Rules Registry offers the following value:
 
-* Easy to consume Managed Rules Sets based on sample AWS Conformance Packs. See *[Getting Started]()*
-* Individual Guard Rule files corresponding to many of the AWS Config Managed Rules
+* Easy to consume Managed Rules Sets based on many of the sample AWS Conformance Packs. *see [Guard Rules Registry Managed Rule Sets](#managed-rule-sets)*
+* Individual Guard Rule files giving best effort to correspond to an AWS Config Managed Rule
 * Rule Set mapping process to compile single rule set files for public consumption
+* A centralized locations for users, teams, and organizations to manage and open source their custom cfn-guard rule sets
 
 
 ### Registry Rules Files
