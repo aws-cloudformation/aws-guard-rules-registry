@@ -46,7 +46,7 @@ One of the intents of AWS Guard Rules Registry is to create modular single file 
     └── terraform
     ```
 
-Many of the guard rules are supported by AWS and correspond or complement associated AWS Config Managed Rules. These rules can be identified by the all uppercase naming convention which is identical to the AWS Config Managed Rule identifier.
+Many of the Guard rules are supported by AWS and correspond or complement associated AWS Config Managed Rules. These rules can be identified by the all-uppercase naming convention which is identical to the AWS Config Managed Rule identifier.
 
 > **Note:** Guard rule names that are in all uppercase are intentionally set this way. The names reflects the AWS Config Managed rule identifier the guard rule is satisfying.
 
