@@ -15,7 +15,7 @@ AWS Guard Rules Registry is an open-source repository of AWS `cfn-guard` rule fi
 
 ## About
 
-AWS Guard Rules Registry is an open-source repository of AWS `cfn-guard` rule files and managed rule sets. The intent of the registry is to give users AWS guard rules that provide policy as code solutions which compliment the AWS Config Managed Rules as well as custom developed Guard rules. Many of the guard rules supported by AWS are best effort guard rule implementations of AWS Config Managed Rules.
+AWS Guard Rules Registry is an open-source repository of AWS `cfn-guard` rule files and managed rule sets. The intent of the registry is to give users AWS guard rules that provide policy as code solutions which complement the AWS Config Managed Rules as well as custom developed Guard rules. Many of the guard rules supported by AWS are best effort guard rule implementations of AWS Config Managed Rules.
 
 
 > **Note:** Not all AWS Config Managed Rules are present in the AWS Guard Rules Registry. Some of the AWS Config Managed Rules are detective only in nature and are not able to be expressed in infrastructure as code relevant to development practices.
@@ -47,7 +47,7 @@ One of the intents of AWS Guard Rules Registry is to create modular single file 
     └── terraform
     ```
 
-Many of the guard rules are supported by AWS and correspond or compliment associated AWS Config Managed Rules. These rules can be identified by the all uppercase naming convention which is identical to the AWS Config Managed Rule identifier.
+Many of the guard rules are supported by AWS and correspond or complement associated AWS Config Managed Rules. These rules can be identified by the all uppercase naming convention which is identical to the AWS Config Managed Rule identifier.
 
 > **Note:** Guard rule names that are in all uppercase are intentionally set this way. The names reflects the AWS Config Managed rule identifier the guard rule is satisfying.
 
