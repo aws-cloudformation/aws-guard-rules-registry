@@ -1,0 +1,86 @@
+###
+# REDSHIFT_CLUSTER_CONFIGURATION_CHECK tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      REDSHIFT_CLUSTER_CONFIGURATION_CHECK: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      REDSHIFT_CLUSTER_CONFIGURATION_CHECK: SKIP
+
+- name: Redshift cluster withEncrypted property set to true, PASS
+  input:
+    Resources: 
+      TestCluster:
+        Type: AWS::Redshift::Cluster
+        Properties:
+          ClusterType: multi-node
+          DBName: dev 
+          MasterUsername: 
+          MasterUserPassword:
+          NodeType: 
+          NumberOfNodes: 2
+          Encrypted: true
+  expectations:
+    rules:
+      REDSHIFT_CLUSTER_CONFIGURATION_CHECK: PASS
+
+- name: Redshift cluster with Encrypted property NOT set (default false), FAIL
+  input:
+    Resources: 
+      TestCluster:
+        Type: AWS::Redshift::Cluster
+        Properties:
+          ClusterType: multi-node
+          DBName: dev 
+          MasterUsername: 
+          MasterUserPassword:
+          NodeType: 
+          NumberOfNodes: 2
+  expectations:
+    rules:
+      REDSHIFT_CLUSTER_CONFIGURATION_CHECK: FAIL
+
+- name: Redshift cluster with Encrypted property set to false, FAIL
+  input:
+    Resources: 
+      TestCluster:
+        Type: AWS::Redshift::Cluster
+        Properties:
+          ClusterType: multi-node
+          DBName: dev 
+          MasterUsername: 
+          MasterUserPassword:
+          NodeType: 
+          NumberOfNodes: 2
+          Encrypted: false
+  expectations:
+    rules:
+      REDSHIFT_CLUSTER_CONFIGURATION_CHECK: FAIL
+
+- name: Redshift cluster with Encrypted property NOT set, but rule suppressed, SKIP
+  input:
+    Resources: 
+      TestCluster:
+        Type: AWS::Redshift::Cluster
+        Metadata:
+          guard:
+            SuppressedRules:
+            - REDSHIFT_CLUSTER_CONFIGURATION_CHECK
+        Properties:
+          ClusterType: multi-node
+          DBName: dev 
+          MasterUsername: 
+          MasterUserPassword:
+          NodeType: 
+          NumberOfNodes: 2
+  expectations:
+    rules:
+      REDSHIFT_CLUSTER_CONFIGURATION_CHECK: SKIP

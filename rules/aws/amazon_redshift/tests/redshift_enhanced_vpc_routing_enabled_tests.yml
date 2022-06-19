@@ -1,0 +1,86 @@
+###
+# REDSHIFT_ENHANCED_VPC_ROUTING_ENABLED tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      REDSHIFT_ENHANCED_VPC_ROUTING_ENABLED: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      REDSHIFT_ENHANCED_VPC_ROUTING_ENABLED: SKIP
+
+- name: Redshift cluster with EnhancedVpcRouting property set to true, PASS
+  input:
+    Resources: 
+      TestCluster:
+        Type: AWS::Redshift::Cluster
+        Properties:
+          ClusterType: multi-node
+          DBName: dev 
+          MasterUsername: 
+          MasterUserPassword:
+          NodeType: 
+          NumberOfNodes: 2
+          EnhancedVpcRouting: true
+  expectations:
+    rules:
+      REDSHIFT_ENHANCED_VPC_ROUTING_ENABLED: PASS
+
+- name: Redshift cluster with EnhancedVpcRouting property set to false, FAIL
+  input:
+    Resources: 
+      TestCluster:
+        Type: AWS::Redshift::Cluster
+        Properties:
+          ClusterType: multi-node
+          DBName: dev 
+          MasterUsername: 
+          MasterUserPassword:
+          NodeType: 
+          NumberOfNodes: 2
+          EnhancedVpcRouting: false
+  expectations:
+    rules:
+      REDSHIFT_ENHANCED_VPC_ROUTING_ENABLED: FAIL 
+
+- name: Redshift cluster with EnhancedVpcRouting property NOT set, FAIL
+  input:
+    Resources: 
+      TestCluster:
+        Type: AWS::Redshift::Cluster
+        Properties:
+          ClusterType: multi-node
+          DBName: dev 
+          MasterUsername: 
+          MasterUserPassword:
+          NodeType: 
+          NumberOfNodes: 2
+  expectations:
+    rules:
+      REDSHIFT_ENHANCED_VPC_ROUTING_ENABLED: FAIL 
+
+- name: Redshift cluster with EnhancedVpcRouting property NOT set, but rule suppressed, SKIP
+  input:
+    Resources: 
+      TestCluster:
+        Type: AWS::Redshift::Cluster
+        Metadata:
+          guard:
+            SuppressedRules:
+            - REDSHIFT_ENHANCED_VPC_ROUTING_ENABLED
+        Properties:
+          ClusterType: multi-node
+          DBName: dev 
+          MasterUsername: 
+          MasterUserPassword:
+          NodeType: 
+          NumberOfNodes: 2
+  expectations:
+    rules:
+      REDSHIFT_ENHANCED_VPC_ROUTING_ENABLED: SKIP

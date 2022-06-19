@@ -1,2 +1,49 @@
-    ## Config Rule Name : redshift-cluster-maintenancesettings-check
-    ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/REDSHIFT_CLUSTER_MAINTENANCESETTINGS_CHECK.html"
+####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#    REDSHIFT_CLUSTER_MAINTENANCESETTINGS_CHECK
+#
+# Description:
+#    Checks whether Amazon Redshift clusters have the specified maintenance settings (AllowVersionUpgrade, PreferredMaintenanceWindow, AutomatedSnapshotRetentionPeriod) 
+#
+# Reports on:
+#   AWS::Redshift::Cluster
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
+# a) SKIP: when there are no Redshift Cluster resource present
+# b) PASS: when Redshift Cluster resources have properties PreferredMaintenanceWindow set, AllowVersionUpgrade either not set (default true) or set to true, and AutomatedSnapshotRetentionPeriod either not set (default 1 day) or set to greated than 0. 
+# c) FAIL: when any Redshift Cluster resources do not have PreferredMaintenanceWindow property set
+# d) FAIL: when any Redshift Cluster resources have AllowVersionUpgrade property set to false 
+# e) FAIL: when any Redshift Cluster resources have AutomatedSnapshotRetentionPeriod property set to 0
+# f) SKIP: when metadata includes the suppression for rule REDSHIFT_CLUSTER_MAINTENANCESETTINGS_CHECK
+
+#
+# Select all Redshift Cluster resources from incoming template (payload)
+#
+let redhshift_clusters_maintenancesettings_check = Resources.*[ Type == 'AWS::Redshift::Cluster' 
+	Metadata.guard.SuppressedRules not exists or
+    Metadata.guard.SuppressedRules.* != "REDSHIFT_CLUSTER_MAINTENANCESETTINGS_CHECK"
+]
+
+rule REDSHIFT_CLUSTER_MAINTENANCESETTINGS_CHECK when %redhshift_clusters_maintenancesettings_check !empty {
+    %redhshift_clusters_maintenancesettings_check.Properties.PreferredMaintenanceWindow exists
+    
+    %redhshift_clusters_maintenancesettings_check.Properties.AllowVersionUpgrade not exists or 
+    %redhshift_clusters_maintenancesettings_check.Properties.AllowVersionUpgrade == true
+
+
+    %redhshift_clusters_maintenancesettings_check.Properties.AutomatedSnapshotRetentionPeriod not exists or 
+    %redhshift_clusters_maintenancesettings_check.Properties.AutomatedSnapshotRetentionPeriod > 0
+
+    <<
+			Violation: Amazon Redshift maintenance settings must be configured
+			Fix: set the PreferredMaintenanceWindow property, remove the AllowVersionUpgrade property (default true) or set it to true, and remove the AutomatedSnapshotRetentionPeriod property (default 1 day) or set it to greated than 0. 
+    >>
+}

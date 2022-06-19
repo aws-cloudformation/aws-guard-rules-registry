@@ -1,0 +1,89 @@
+###
+# REDSHIFT_BACKUP_ENABLED tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      REDSHIFT_BACKUP_ENABLED: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      REDSHIFT_BACKUP_ENABLED: SKIP
+
+- name: Redshift cluster without property AutomatedSnapshotRetentionPeriod set (using default of 1 day), PASS
+  input:
+    Resources: 
+      TestCluster:
+        Type: AWS::Redshift::Cluster
+        Properties:
+          ClusterType: multi-node
+          DBName: dev 
+          MasterUsername: 
+          MasterUserPassword:
+          NodeType: 
+          NumberOfNodes: 2
+  expectations:
+    rules:
+      REDSHIFT_BACKUP_ENABLED: PASS
+
+- name: Redshift cluster with property AutomatedSnapshotRetentionPeriod set to greater than 0, PASS
+  input:
+    Resources: 
+      TestCluster:
+        Type: AWS::Redshift::Cluster
+        Properties:
+          ClusterType: multi-node
+          DBName: dev 
+          MasterUsername: 
+          MasterUserPassword:
+          NodeType: 
+          NumberOfNodes: 2
+          AutomatedSnapshotRetentionPeriod: 2
+  expectations:
+    rules:
+      REDSHIFT_BACKUP_ENABLED: PASS
+          
+- name: Redshift cluster with property AutomatedSnapshotRetentionPeriod set to 0, FAIL
+  input:
+    Resources: 
+      TestCluster:
+        Type: AWS::Redshift::Cluster
+        Properties:
+          ClusterType: multi-node
+          DBName: dev 
+          MasterUsername: 
+          MasterUserPassword:
+          NodeType: 
+          NumberOfNodes: 2
+          AutomatedSnapshotRetentionPeriod: 0
+  expectations:
+    rules:
+      REDSHIFT_BACKUP_ENABLED: FAIL
+
+- name: Redshift cluster with property AutomatedSnapshotRetentionPeriod set to 0, but rule suppressed, SKIP
+  input:
+    Resources: 
+      TestCluster:
+        Type: AWS::Redshift::Cluster
+        Metadata:
+          guard:
+            SuppressedRules:
+            - REDSHIFT_BACKUP_ENABLED
+        Properties:
+          ClusterType: multi-node
+          DBName: dev 
+          MasterUsername: 
+          MasterUserPassword:
+          NodeType: 
+          NumberOfNodes: 2
+          AutomatedSnapshotRetentionPeriod: 0
+  expectations:
+    rules:
+      REDSHIFT_BACKUP_ENABLED: SKIP
+
+

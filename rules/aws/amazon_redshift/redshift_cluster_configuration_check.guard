@@ -1,2 +1,41 @@
-    ## Config Rule Name : redshift-cluster-configuration-check
-    ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/REDSHIFT_CLUSTER_CONFIGURATION_CHECK.html"
+####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#    REDSHIFT_CLUSTER_CONFIGURATION_CHECK
+#
+# Description:
+#    Checks whether Amazon Redshift clusters have the specified settings (Encrypted Only)  
+#
+# Reports on:
+#   AWS::Redshift::Cluster
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
+# a) SKIP: when there are no Redshift Cluster resource present
+# b) PASS: when Redshift Cluster resources have the Encrypted property set to true
+# c) FAIL: when any Redshift Cluster resources do not have Encrypted property set (default false)
+# d) FAIL: when any Redshift Cluster resources have Encrypted property set to false 
+# e) SKIP: when metadata includes the suppression for rule REDSHIFT_CLUSTER_CONFIGURATION_CHECK
+
+#
+# Select all Redshift Cluster resources from incoming template (payload)
+#
+let redhshift_clusters_configuration_check = Resources.*[ Type == 'AWS::Redshift::Cluster' 
+	Metadata.guard.SuppressedRules not exists or
+    Metadata.guard.SuppressedRules.* != "REDSHIFT_CLUSTER_CONFIGURATION_CHECK"
+]
+
+rule REDSHIFT_CLUSTER_CONFIGURATION_CHECK when %redhshift_clusters_configuration_check !empty {
+    %redhshift_clusters_configuration_check.Properties.Encrypted == true
+
+    <<
+			Violation: Amazon Redshift configuration should have encryption enabled
+			Fix: Set the Encrypted property to true 
+    >>
+}
