@@ -1,6 +1,6 @@
 # AWS Guard Rules Registry
 
-AWS Guard Rules Registry is an open-source repository of AWS `cfn-guard` rule files and managed rule sets that help organizations *shift left* in their SDLC process.
+AWS Guard Rules Registry is an open-source repository of [AWS CloudFormation Guard](https://github.com/aws-cloudformation/cloudformation-guard) rule files and managed rule sets that help organizations *shift left* in their Software Development Life Cycle (SDLC) processes.
 
 ## TL;DR
 
