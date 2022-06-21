@@ -1,6 +1,6 @@
 # Developing Managed Rule Sets
 
-CFN-GUARD allows for users,  groups, and organizations to map multiple rule files and categorize them as a single `rule set` so that you can validate your JSON- or YAML-formatted data against a single source. The AWS Guard Rules Registry provides provides a process to automatically map and build these rule sets against its centralized repository of Guard rule files.
+[AWS CloudFormation Guard](https://github.com/aws-cloudformation/cloudformation-guard) allows for organizations and groups to create multiple rule files and categorize them as a single `rule set` so that you can validate your JSON- or YAML-formatted data against a single source. The AWS Guard Rules Registry provides provides a process to automatically map and build these rule sets against its centralized repository of Guard rule files.
 
 ## How to Contribute
 
@@ -12,18 +12,17 @@ To start developing your own Guard Registry Rule Set start by forking this repos
 
 Guard Map is the process of creating a Guard Rule Sets by mapping individual Guard Rule Files to your compliance framework and list of controls. Contributors can submit [Pull Requests](../CONTRIBUTING.md/#contributing-via-pull) containing a Guard Map file that upon build time will generate a Guard Rule Registry Rule Set made available in the release and the supported docker image build.
 
-
-AWS Guard Rule Registry supports a pipeline through GitHub Actions that facilitates a guard rule test and compilation of Managed Rule Set files based on mapping files located in the [mappings](/mappings) directory. Follow these steps to create a custom AWS Guard Rules Registry Rule Set:
+AWS Guard Rule Registry supports a pipeline through GitHub Actions that facilitates a Guard rule test and compilation of Managed Rule Set files based on mapping files located in the [mappings](/mappings) directory. Follow these steps to create a custom AWS Guard Rules Registry Rule Set:
 
 1. Within the [./mappings/](../mappings/) directory create a .json file with the prefix `rule_set_` and the name of your aws rule set (use snake casing with all lowercase)
-2. Edit your mapping json file creating a json structure detailed in the [Rule Set Mapping File](#rule-set-mapping-file) section below. Create as many mapping list elements as your compliance framework requires
-3. Validate your information within the mappings json file ensuring all requires information is set or updated.
+2. Edit your mapping JSON file creating a JSON structure detailed in the [Rule Set Mapping File](#rule-set-mapping-file) section below. Create as many mapping list elements as your compliance framework requires
+3. Validate your information within the mappings JSON file ensuring all required information is set or updated.
 4. Review the [Pull Request Checklist](../CONTRIBUTING.md/#pull-request-checklist)
 5. Submit a [Pull Request](../CONTRIBUTING.md/#contributing-via-pull)
 
 ## Rule Set Mapping File
 
-The `mappings` directory holds rule set json files that describe control mappings between a standard or framework and rules in the registry. **All Guard Map files are required to be prefixed with `rule_set_` and are built whenever a merge to the main branch happens.**
+The `mappings` directory holds rule set JSON files that describe control mappings between a standard or framework and rules in the registry. **All Guard Map files are required to be prefixed with `rule_set_` and are built whenever a merge to the main branch happens.**
 
 | **Attribute** | **Description** |
 | ------------: | :-------------- |
