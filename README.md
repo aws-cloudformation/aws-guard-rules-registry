@@ -4,13 +4,13 @@ AWS Guard Rules Registry is an open-source repository of [AWS CloudFormation Gua
 
 ## TL;DR
 
-**You want to leverage the existing AWS Guard Registry Rule Sets currently available?**
+**Leverage the existing AWS Guard Registry Rule Sets currently available:**
 * Read the [Using Guard Rules Registry Guide](./docs/USING_GUARD_RULES_REGISTRY.md) for information on how to integrate into your existing continuous integration and development processes. Then pick from the list of [Guard Rules Registry Managed Rule Sets](#managed-rule-sets).
 
-**You want to contribute to the individual AWS Guard Registry Rules?**
+**Contribute to the individual AWS Guard Registry Rules:**
 * Read the [Guard Rules Development Guide](./docs/GUARD_RULES_DEV_GUIDE.md) for details in how to contribute and develop Guard Registry Rules.
 
-**You want to create and contribute your own open source AWS Guard Rules Registry custom rule set?**
+**Create and contribute your own open source AWS Guard Rules Registry custom rule set:**
 * Read the [Guard Rule Sets Development Guide](./docs/GUARD_RULE_SETS_DEV_GUIDE.md) for details on creating or updating the Guard Map rule set files.
 
 ## About
