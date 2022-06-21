@@ -104,16 +104,16 @@ The following outlines the general process to develop individual AWS Guard Rules
       # Ensure ALL DynamoDB Tables have Point-In-Time-Recovery enabled
       %aws_dynamodb_table_resources_pitr_example.Properties.PointInTimeRecoverySpecification.PointInTimeRecoveryEnabled == true
       <<
-        Violation: Point In Time Recovery must be enabled for strong resiliency
-        Fix: your fix here
+        Violation: All DynamoDB Tables must have Point-In-Time-Recovery enabled.
+        Fix: Set the dynamodb table property PointInTimeRecoverySpecification.PointInTimeRecoveryEnabled to true.
       >>
     }
     ```
 8. **Custom Message Blocks** - each rule block should contain single block multiline `custom message` containing `Violation:` and `Fix:` details. The `<<` and `>>` are to be set on their own lines without text. Example:
   ```
   <<
-    Violation: Point In Time Recovery must be enabled for strong resiliency
-    Fix: your fix here
+    Violation: All DynamoDB Tables must have Point-In-Time-Recovery enabled.
+    Fix: Set the dynamodb table property PointInTimeRecoverySpecification.PointInTimeRecoveryEnabled to true.
   >>
   ```
 
