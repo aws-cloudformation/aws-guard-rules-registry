@@ -1,6 +1,6 @@
 # Developing Managed Rule Sets
 
-CFN-GUARD allows for organizations and groups to create multiple rule files and categorize them as a single `rule set` so that you can validate your JSON- or YAML-formatted data against a single source. The AWS Guard Rules Registry provides provides a process to automatically map and build these rule sets against its centralized repository of Guard rule files.
+CFN-GUARD allows for users,  groups, and organizations to map multiple rule files and categorize them as a single `rule set` so that you can validate your JSON- or YAML-formatted data against a single source. The AWS Guard Rules Registry provides provides a process to automatically map and build these rule sets against its centralized repository of Guard rule files.
 
 ## How to Contribute
 
