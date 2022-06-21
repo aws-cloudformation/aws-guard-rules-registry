@@ -4,24 +4,25 @@ The following details the development requirements to submit individual Guard ru
 
 ## Guidelines and Conventions Summary
 
+This section provides general rules and conventions to follow when developing a Guard Rules Registry rule. For the detailed walk-though and reference go to [Rule Development Walk-through](#rule-development-walk-through).
+
 **Guard Rule Files:**
 
 * A single guard rule file will have a single rule block
-* All Guard rule files should have a corresponding `[GUARD RULE FILE NAME]_tests.yml` file located in `tests` sub directory.
-* Guard Rule files are named in all lowercase and leverage snake case convention.
+* All Guard rule files should have a corresponding `[GUARD RULE FILE NAME]_tests.yml` file located in `tests` sub directory
+* Guard Rule files are named in all lowercase and leverage snake case convention
 
-**Guard Rules**
+**Guard Rules:**
 
-* Guard `rule block` name should match with the rule file name. The only time it will differ is if the rule block is representing an AWS Config Managed Rule which will require the rule block name ot be all upper case while the file name be lower case.
+* Guard `rule block` name should match with the rule file name. The only time it will differ is if the rule block is representing an AWS Config Managed Rule which will require the rule block name ot be all upper case while the file name be lower case
 * Guard `rule blocks` will be in all lowercase unless it represents a corresponding AWS Config Managed Rule
-* Guard rule file `Assignments` should be verbose and descriptive as possible to avoid naming conflicts during Rule Set mapping process
+* Guard rule file `Assignments` should be verbose and descriptive as possible to avoid naming conflicts during Rule Set mapping process (reference example [Rule Development Walk-through](#rule-development-walk-through) step 5)
 * Guard Rules in the Rules Registry must support rule suppression at the resource level by defining a metadata exception.
 
 **Guard Rule Custom Messages:**
 
-* Guard rule block `custom messages` will document the `Violation;` and the recommended `Fix;` separated by a line break
-* Guard rule block `custom messages` must have the starting `<<` and ending `>>` on their own lines. Do not shorten by placing the custom message in one line. This will break the Guard Mapping process for rule set builds.
-
+* Guard rule block `custom messages` must have the starting `<<` and ending `>>` on their own lines. Do not shorten by placing the custom message in one line. This will break the Guard Mapping process for rule set builds (reference example [Rule Development Walk-through](#rule-development-walk-through) step 7)
+* Guard rule block `custom messages` will document the `Violation;` and the recommended `Fix:` separated by a line break (reference example [Rule Development Walk-through](#rule-development-walk-through) step 8)
 
 ## Rules Directory Structure
 
@@ -51,11 +52,11 @@ The following outlines the general process to develop individual AWS Guard Rules
     ```
     mkdir rules/cloudformation/aws/dynamodb
     ```
-3. Create a rule file with a `.guard` extension and the file name must match with the [AWS Config Managed rules](https://docs.aws.amazon.com/config/latest/developerguide/dynamodb-pitr-enabled.html) identifier in *lower case*.
+3. Create a rule file with a `.guard` extension using snake casing and all lower case. If the rule being developed is a best-effort Guard implementation, then file name must match with the [AWS Config Managed rules](https://docs.aws.amazon.com/config/latest/developerguide/dynamodb-pitr-enabled.html) identifier but still be in *lower case*.
     ```
     touch rules/aws/dynamodb/dynamodb_pitr_enabled.guard
     ```
-4. Edit `dynamodb_pitr_enabled.guard` file and insert the [template header](../rules/aws/_template/aws_managed_rule_identifier.guard) filling out the necessary details.
+4. Edit `dynamodb_pitr_enabled.guard` file and insert the [template header](../rules/aws/_template/aws_managed_rule_identifier.guard) filling out the necessary details. **Be sure to update the `Scenarios` section adding in any additional scenarios needed.** At minimum there should be in the order of SKIP, PASS, FAIL scenarios. The last required scenario defined should be a SKIP which represents a suppressed rule.
     ```
     #
     # Rule Identifier:
