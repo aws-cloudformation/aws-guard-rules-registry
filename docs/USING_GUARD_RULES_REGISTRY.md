@@ -2,6 +2,41 @@
 
 The document details a *Getting Started* scenarios for AWS Guard Rules Registry. The Guard Rules Registry Rule Set mappings are built into supported release formats enabling quick and easy consumption. Since AWS Guard does not require access to your AWS environment, the static application security testing process can happen in a variety of CI platforms and services.
 
+## Guard Rules Registry Rule Suppression
+
+The rules build in the Guard Rules Registry support resource-level rule suppress. Suppressed Rules are marked as SKIP in the validation process. To suppress a rule add into the resource metadata the following `Metadata`:
+
+**YAML:**
+Suppressing rule `EC2_INSTANCE_PROFILE_ATTACHED`
+```yaml
+Resources:
+  ExampleEC2:
+    Type: AWS::EC2::Instance
+    Metadata:
+      guard:
+        SuppressedRules:
+        - EC2_INSTANCE_PROFILE_ATTACHED
+```
+
+**JSON:**
+Suppressing rule `ELASTICSEARCH_ENCRYPTED_AT_REST`
+```json
+"Resources": {
+  "ElasticsearchDomain": {
+    "Type": "AWS::Elasticsearch::Domain",
+    "Metadata": {
+      "guard": {
+        "SuppressedRules": ["ELASTICSEARCH_ENCRYPTED_AT_REST"]
+      }
+    },
+    "Properties": {
+      "DomainName": "test"
+    }
+  }
+}
+```
+
+The intent of Guard rule suppression is to allow explicit and approved compliance exceptions to be documented and allowed at the code-base level. This facilitates a single compliance rule set to be used across an entire Organization while placing the rule deviations at the resource level. Changes are not made at the Guard Rules Registry rule set, but within the code-base. Auditing the code-base will show the rule exception intentionally/knowingly allowed while still allowing your CI testing to be successful.
 
 ## Guard Rules Registry Release Builds
 
