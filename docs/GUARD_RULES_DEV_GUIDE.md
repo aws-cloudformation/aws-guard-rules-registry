@@ -24,6 +24,12 @@ This section provides general rules and conventions to follow when developing a 
 * Guard rule block `custom messages` must have the starting `<<` and ending `>>` on their own lines. Do not shorten by placing the custom message in one line. This will break the Guard Mapping process for rule set builds (reference example [Rule Development Walk-through](#rule-development-walk-through) step 7)
 * Guard rule block `custom messages` will document the `Violation;` and the recommended `Fix:` separated by a line break (reference example [Rule Development Walk-through](#rule-development-walk-through) step 8)
 
+**Testing Guard Rules**
+
+* All Guard rule files will have a corresponding test file. (reference example [Writing Unit Tests](#writing-unit-tests))
+* The tests sub-directory contains unit tests for some of the corner cases we expect a Guard rule to have a status of `PASS`/`FAIL`/`SKIP`. Each status should be tested for all guard rules
+
+
 ## Rules Directory Structure
 
 1. All Guard rules in this repository are stored under the `rules` directory.
@@ -119,11 +125,14 @@ The following outlines the general process to develop individual AWS Guard Rules
 
 
 ## Writing Unit Tests
+
+Within the current directory where you developed the guard rule, there should be (or you will need to create) a `tests` directory. This directory will be used to create unit tests for guard rules and be automatically tested with CI.
+
 1. Now, let's write tests for the `DYNAMODB_PITR_ENABLED` rule. Before we write any code, create a `tests` directory under the appropriate path if it is not present.
     ```
     mkdir rules/cloudformation/aws/dynamodb/tests
     ```
-2. Create a test file with `.yml` or `.json` extension and the file name must match with the `<rulename>_tests` format.
+2. Create a test file with `.yml` or `.json` extension and the file name must match with the `<rulename>_tests` format. The test rule name file casing should be identical to the rule file name casing (all lower case).
     ```
     touch rules/cloudformation/aws/dynamodb/tests/dynamodb_pitr_enabled.tests.yml
     ```

@@ -51,6 +51,8 @@ Many of the Guard rules are supported by AWS and correspond or complement associ
 
 > **Note:** Guard rule names that are in all uppercase are intentionally set this way. The names reflects the AWS Config Managed rule identifier the guard rule is satisfying.
 
+Within each directory that contains Guard rules, there is a `tests` sub-directory contains unit tests for some of the corner cases we expect Guard rule to `PASS`/`FAIL`/`SKIP`. The `test` sub-directory contains the corresponding test file for the Guard rule with the suffix `_tests` and can have the extension of `.yml` or `.json`. To learn more, see [Guard Rules Dev Guide](./docs/GUARD_RULES_DEV_GUIDE.md#writing-unit-tests) for more detail on how to create unit tests for your guard rule.
+
 ### Managed Rule Sets
 
 AWS Guard Rules registry contains prebuilt managed rule sets compiled from rule mapping files found in the [mappings](/mappings) directory. The following managed Rule Sets are available for use:
