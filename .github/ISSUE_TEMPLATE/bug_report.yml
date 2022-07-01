@@ -17,10 +17,10 @@ body:
       description: |
         1. Example rules and template that results in the error
         1. The commands you used to invoke the tool
-        1. The output of a `-v` log level if it's not related to cfn-guard-lambda, or the relevant CloudWatch log messages if it is related to the cfn-guard-lambda
+        1. The output of a `-v` log level or the `cfn-guard test -d` output
     validations:
       required: true
-   
+
   - type: markdown
     attributes:
       value: |

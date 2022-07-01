@@ -14,9 +14,9 @@ body:
       label: General Issue
       description: |
         Important Information - Please look at the following sections before creating an issue to see if your question was already answered:
-        * [Open issues](https://github.com/aws-cloudformation/cloudformation-guard/issues)
-        * All our [PRs](https://github.com/aws-cloudformation/cloudformation-guard/pulls?q=is%3Apr), both open and close
-        * Our [documentation](https://github.com/aws-cloudformation/cloudformation-guard#aws-cloudformation-guard)
+        * [Open issues](https://github.com/aws-cloudformation/aws-guard-rules-registry/issues)
+        * All our [PRs](https://github.com/aws-cloudformation/aws-guard-rules-registry/pulls?q=is%3Apr), both open and close
+        * Our [documentation](https://github.com/aws-cloudformation/aws-guard-rules-registry/docs)
     validations:
       required: true
 
@@ -33,7 +33,7 @@ body:
     id: guard-version
     attributes:
       label: CloudFormation Guard Version
-      description: Output of `cfn-guard -V`
+      description: Output of `cfn-guard -V` or `cfn-guard test -d`
     validations:
       required: true
 
@@ -58,6 +58,6 @@ body:
     attributes:
       label: Other information
       description: |
-        e.g. detailed explanation, scrennshots, stacktraces, related issues, suggestions how to fix, links for us to have context, eg. associated pull-request, stackoverflow, slack, etc
+        e.g. detailed explanation, screenshots, stacktraces, related issues, suggestions how to fix, links for us to have context, eg. associated pull-request, stackoverflow, slack, etc
     validations:
       required: false
