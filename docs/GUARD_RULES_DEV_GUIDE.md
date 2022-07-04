@@ -282,21 +282,29 @@ Within the current directory where you developed the guard rule, there should be
 
 ## Running unit tests and validations
 
-All commands assume you are running from the the root of the project for current working directory.
+Running unit tests and validations prior to putting in a Pull-Request helps mitigate risks of rework or bugs working into the managed rule sets. Please run the full checks listed below at minimum. **All commands assume you are running from the the root of the project for current working directory.**
 
-1. To run an individual unit test, execute the following command:
+> **Dev Note:** Leverage cfn-guard 2.0 or greater when developing Guard Rules Registry rules. Installation instructions can be found at [cfn-guard github repository installation documentation](https://github.com/aws-cloudformation/cloudformation-guard#installation)
+
+1. Validate you are running **cfn-guard 2.0 or later**:
+  ```
+  cfn-guard -V
+  ```
+2. To run an individual unit test, execute the following command:
     ```
-    bin/cfn-guard test --rules-file rules/aws/dynamodb/dynamodb_pitr_enabled.guard --test-data rules/aws/dynamodb/tests/dynamodb_pitr_enabled_tests.yml
+    cfn-guard test --rules-file rules/aws/dynamodb/dynamodb_pitr_enabled.guard --test-data rules/aws/dynamodb/tests/dynamodb_pitr_enabled_tests.yml
     ```
-2. To run all tests in a directory, execute the following command:
+3. To run all tests in a directory, execute the following command:
     ```
-    bin/cfn-guard test -d rules
+    cfn-guard test -d rules
     ```
-3. To quickly discover and display the failed rules execute the following command:
+4. To quickly discover and display the failed rules execute the following command:
     ```
-    bin/cfn-guard test -d ./rules/ | grep "FAIL Rules:" -B 2 -A 1
+    cfn-guard test -d ./rules/ | grep "FAIL Rules:" -B 2 -A 1
     ```
-4. To identify rules that have an error processing run the following command:
+5. To identify rules that have an error processing run the following command:
     ```
-    bin/cfn-guard test -d ./rules/ | grep "Error processing" -B 2 -A 2
+    cfn-guard test -d ./rules/ | grep "Error processing" -B 2 -A 2
     ```
+
+The `cfn-guard test` command supports the additional parameter of `-v` to show verbose output. Leverage the verbose output when diving into an issue or opening a Issue or Pull-Request of *bug* or *fix*.
