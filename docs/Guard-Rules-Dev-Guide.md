@@ -308,3 +308,5 @@ Running unit tests and validations prior to putting in a Pull-Request helps miti
     ```
 
 The `cfn-guard test` command supports the additional parameter of `-v` to show verbose output. Leverage the verbose output when diving into an issue or opening a Issue or Pull-Request of *bug* or *fix*.
+
+Once all of your testing is complete, you can submit a Pull-Request to the `main` branch to start a formal publication of a new release. Please visit the [Release](./Release.md) documentation as well as the [CONTRIBUTING](../CONTRIBUTING.md) for guidance on the release process and creating a pull-request.
