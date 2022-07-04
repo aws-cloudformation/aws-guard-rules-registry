@@ -22,7 +22,7 @@ jobs:
       if: ${{ failure() }}
       shell: bash
       run: |
-        bin/cfn-guard test -d ./rules/ | grep "FAIL Rules:" -B 2 -A 1
+        cfn-guard test -d ./rules/ | grep "FAIL Rules:" -B 2 -A 1
 
 # jobs:
 #   testRules:
