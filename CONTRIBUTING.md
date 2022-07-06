@@ -5,6 +5,10 @@ Thank you for your interest in contributing to our project. Whether it's a bug r
 Please read through this document before submitting any issues or pull requests to ensure we have all the necessary
 information to effectively respond to your bug report or contribution.
 
+## Good First Contribution
+
+Guard Rules Registry has several staged Guard rule files to do best of effort representation of AWS Config Managed rules and have yet to be implemented. These Guard rules are listed as open issues labeled `good first issue`. If you are looking to start adding to the project, start by completing one of the `good first issue` guard rules.
+
 
 ## Reporting Bugs/Feature Requests
 
