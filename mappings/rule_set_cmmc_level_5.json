@@ -1,7 +1,7 @@
 {
   "owner": "AWS",
   "ruleSetName": "cmmc-level-5",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "AWS Guard rule set for Center for Cybersecurity Maturity Model Certification (CMMC) Level 5",
   "contact": "aws-guard-rules-registry@amazon.com",
   "mappings": [

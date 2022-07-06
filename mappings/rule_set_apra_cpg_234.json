@@ -1,7 +1,7 @@
 {
   "owner": "AWS",
   "ruleSetName": "apra-cpg-234",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "AWS Guard rule set for Australian Prudential Regulation Authority (APRA) CPG 234",
   "contact": "aws-guard-rules-registry@amazon.com",
   "mappings": [

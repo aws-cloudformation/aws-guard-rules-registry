@@ -1,7 +1,7 @@
 {
   "owner": "AWS",
   "ruleSetName": "nerc",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "AWS Guard rule set for North American Electric Reliability Corporation Critical Infrastructure Protection Standards (NERC CIP) for BES Cyber System Information (BCSI), CIP-004-7 & CIP-011-3",
   "contact": "aws-guard-rules-registry@amazon.com",
   "mappings": [

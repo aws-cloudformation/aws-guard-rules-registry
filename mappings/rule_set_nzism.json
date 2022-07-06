@@ -1,7 +1,7 @@
 {
   "owner": "AWS",
   "ruleSetName": "nzism",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "AWS Guard rule set for New Zealand Government Communications Security Bureau (GCSB) Information Security Manual (NZISM)",
   "contact": "aws-guard-rules-registry@amazon.com",
   "mappings": [

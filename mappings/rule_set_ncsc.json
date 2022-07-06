@@ -1,7 +1,7 @@
 {
   "owner": "AWS",
   "ruleSetName": "ncsc",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "AWS Guard rule set for UK National Cyber Security Centre (NCSC) Cloud Security Principles",
   "contact": "aws-guard-rules-registry@amazon.com",
   "mappings": [

@@ -1,7 +1,7 @@
 {
   "owner": "AWS",
   "ruleSetName": "PCI-DSS-3-2-1",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description" : "AWS Guard rule set based on the AWS Config Conformance Pack for PCI DSS 3.2.1.",
   "contact" : "aws-guard-rules-registry@amazon.com",
   "mappings": [

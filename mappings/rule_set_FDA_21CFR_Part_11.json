@@ -1,7 +1,7 @@
 {
   "owner": "AWS",
   "ruleSetName": "FDA-21CFR-Part-11",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "AWS Guard rule set for Title 21 of the Code of Federal Regulations (CFR) Part 11",
   "contact": "aws-guard-rules-registry@amazon.com",
   "mappings": [

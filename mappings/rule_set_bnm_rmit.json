@@ -1,7 +1,7 @@
 {
   "owner": "AWS",
   "ruleSetName": "bnm-rmit",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "AWS Guard rule set for Bank Negara Malaysia (BNM) Risk Management in Technology (RMiT)",
   "contact": "aws-guard-rules-registry@amazon.com",
   "mappings": [

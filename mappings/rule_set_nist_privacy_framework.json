@@ -1,7 +1,7 @@
 {
   "owner": "AWS",
   "ruleSetName": "nist-privacy-framework",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "AWS Guard rule set for NIST Privacy Framework",
   "contact": "aws-guard-rules-registry@amazon.com",
   "mappings": [

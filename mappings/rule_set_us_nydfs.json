@@ -1,7 +1,7 @@
 {
   "owner": "AWS",
   "ruleSetName": "us-nydfs",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "AWS Guard rule set for New York State Department Of Financial Services (NYDFS) cybersecurity requirements for financial services companies (23 NYCRR 500)",
   "contact": "aws-guard-rules-registry@amazon.com",
   "mappings": [

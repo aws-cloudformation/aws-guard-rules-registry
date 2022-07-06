@@ -1,7 +1,7 @@
 {
   "owner": "AWS",
   "ruleSetName": "mas-notice-655",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "AWS Guard rule set for Monetary Authority of Singapore (MAS) Notice 655 - Cyber Hygiene",
   "contact": "aws-guard-rules-registry@amazon.com",
   "mappings": [
