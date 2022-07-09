@@ -1,7 +1,7 @@
 {
   "owner": "AWS",
   "ruleSetName": "cis-top-20",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "AWS Guard rule set for Center for Center for Internet Security (CIS) Top 20 Critical Security Controls",
   "contact": "aws-guard-rules-registry@amazon.com",
   "mappings": [

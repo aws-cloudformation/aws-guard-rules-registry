@@ -1,7 +1,7 @@
 {
   "owner": "AWS",
   "ruleSetName": "wa-Security-Pillar",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "AWS Guard rule set for Amazon Web Services' Well-Architected Framework Security Pillar",
   "contact": "aws-guard-rules-registry@amazon.com",
   "mappings": [

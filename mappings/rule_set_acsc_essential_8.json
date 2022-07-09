@@ -1,7 +1,7 @@
 {
   "owner": "AWS",
   "ruleSetName": "acsc-essential-8",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "AWS Guard rule set for Australian Cyber Security Centre (ACSC) Essential Eight Maturity Model",
   "contact": "aws-guard-rules-registry@amazon.com",
   "mappings": [

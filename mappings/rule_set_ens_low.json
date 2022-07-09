@@ -1,7 +1,7 @@
 {
   "owner": "AWS",
   "ruleSetName": "ens-low",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "AWS Guard rule set for Spain Esquema Nacional de Seguridad (ENS) Low framework controls",
   "contact": "aws-guard-rules-registry@amazon.com",
   "mappings": [

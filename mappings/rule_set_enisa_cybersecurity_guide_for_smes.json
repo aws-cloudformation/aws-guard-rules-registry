@@ -1,7 +1,7 @@
 {
   "owner": "AWS",
   "ruleSetName": "enisa-cybersecurity-guide-for-smes",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "AWS Guard rule set for European Union Agency for Cybersecurity (ENISA) Cybersecurity guide for SMEs",
   "contact": "aws-guard-rules-registry@amazon.com",
   "mappings": [

@@ -1,0 +1,81 @@
+name: Publish
+
+on:
+  push:
+    branches:
+      - publish
+    tags: '[0-9]+.[0-9]+.[0-9]+'
+
+env:
+  AWS_DEFAULT_REGION: ${{ secrets.ECR_REGION }}
+  AWS_DEFAULT_OUTPUT: json
+  AWS_ACCESS_KEY_ID: ${{ secrets.ECR_AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.ECR_AWS_SECRET_ACCESS_KEY }}
+  ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
+  ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  testRules:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run guard rules tests
+      shell: bash
+      run: |
+        curl --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/aws-cloudformation/cloudformation-guard/main/install-guard.sh | sh
+        export PATH=${PATH}:~/.guard/bin
+        cfn-guard test -d ./rules/
+    ## If test fails run step to pull out only failed tests
+    - name: Display Failed Rules Only
+      if: ${{ failure() }}
+      shell: bash
+      run: |
+        cfn-guard test -d ./rules/ | grep "FAIL Rules:" -B 2 -A 1
+
+  buildRuleSet:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v2
+      - run: |
+          chmod +x ./mappings/build.py
+          python3 ./mappings/build.py
+        shell: bash
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ruleset-build
+          path: docker/output/
+          if-no-files-found: error
+
+  buildDockerRelease:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v2
+      - run: |
+          chmod +x ./mappings/build.py
+          python3 ./mappings/build.py
+        shell: bash
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.ECR_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.ECR_AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.ECR_REGION }}
+      - name: Retrieve git tag for version
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+      - name: Build, tag, and push image to Amazon ECR
+        run: |
+          aws ecr-public get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY
+          cd ./docker
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:${{ steps.get_version.outputs.VERSION }} .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:${{ steps.get_version.outputs.VERSION }}

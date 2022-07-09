@@ -1,7 +1,7 @@
 {
   "owner": "AWS",
   "ruleSetName": "ffiec",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "AWS Guard rule set for Federal Financial Institutions Examination Council (FFIEC) Cyber Security Assessment Tool domains",
   "contact": "aws-guard-rules-registry@amazon.com",
   "mappings": [

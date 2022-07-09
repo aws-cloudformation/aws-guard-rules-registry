@@ -1,7 +1,7 @@
 {
   "owner": "AWS",
   "ruleSetName": "cis-critical-security-controls-v8-ig3",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "AWS Guard rule set for Center for Internet Security (CIS) Critical Security Controls v8 IG3",
   "contact": "aws-guard-rules-registry@amazon.com",
   "mappings": [

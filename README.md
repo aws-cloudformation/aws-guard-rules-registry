@@ -5,13 +5,13 @@ AWS Guard Rules Registry is an open-source repository of [AWS CloudFormation Gua
 ## TL;DR
 
 **Leverage the existing AWS Guard Registry Rule Sets currently available:**
-* Read the [Using Guard Rules Registry Guide](./docs/USING_GUARD_RULES_REGISTRY.md) for information on how to integrate into your existing continuous integration and development processes. Then pick from the list of [Guard Rules Registry Managed Rule Sets](#managed-rule-sets).
+* Read the [Using Guard Rules Registry Guide](./docs/Using-Guard-Rules-Registry.md) for information on how to integrate into your existing continuous integration and development processes. Then pick from the list of [Guard Rules Registry Managed Rule Sets](#managed-rule-sets).
 
 **Contribute to the individual AWS Guard Registry Rules:**
-* Read the [Guard Rules Development Guide](./docs/GUARD_RULES_DEV_GUIDE.md) for details in how to contribute and develop Guard Registry Rules.
+* Read the [Guard Rules Development Guide](./docs/Guard-Rules-Dev-Guide.md) for details in how to contribute and develop Guard Rules Registry rules. Additionally, Guard Rules Registry has several staged Guard rule files that have yet to be implemented. These Guard rules are to be a *best of effort* representation of AWS Config Managed rules. To get started look for an open issues labeled `good first issue`.
 
 **Create and contribute your own open source AWS Guard Rules Registry custom rule set:**
-* Read the [Guard Rule Sets Development Guide](./docs/GUARD_RULE_SETS_DEV_GUIDE.md) for details on creating or updating the Guard Map rule set files.
+* Read the [Guard Rule Sets Development Guide](./docs/Guard-Rule-Sets-Dev-Guide.md) for details on creating or updating the Guard Map rule set files.
 
 ## About
 
@@ -25,8 +25,7 @@ The Guard Rules Registry offers the following value:
 * Individual Guard Rule files giving *best effort* to correspond to an AWS Config Managed Rule
 * Rule Set mapping process to compile single rule set files for public consumption
 * A centralized location for users, teams, and organizations to manage and open source their custom Guard rule sets
-* Resource level rule suppress! See [Using Guard Rules Registry Rule Suppression](./docs/USING_GUARD_RULES_REGISTRY.md#guard-rules-registry-rule-suppression) for more details.
-
+* Resource level rule suppress! See [Using Guard Rules Registry Rule Suppression](./docs/Using-Guard-Rules-Registry.md#guard-rules-registry-rule-suppression) for more details.
 
 ### Registry Rules Files
 
@@ -51,7 +50,7 @@ Many of the Guard rules are supported by AWS and correspond or complement associ
 
 > **Note:** Guard rule names that are in all uppercase are intentionally set this way. The names reflects the AWS Config Managed rule identifier the guard rule is satisfying.
 
-Within each directory that contains Guard rules, there is a `tests` sub-directory contains unit tests for some of the corner cases we expect Guard rule to `PASS`/`FAIL`/`SKIP`. The `test` sub-directory contains the corresponding test file for the Guard rule with the suffix `_tests` and can have the extension of `.yml` or `.json`. To learn more, see [Guard Rules Dev Guide](./docs/GUARD_RULES_DEV_GUIDE.md#writing-unit-tests) for more detail on how to create unit tests for your guard rule.
+Within each directory that contains Guard rules, there is a `tests` sub-directory contains unit tests for some of the corner cases we expect Guard rule to `PASS`/`FAIL`/`SKIP`. The `test` sub-directory contains the corresponding test file for the Guard rule with the suffix `_tests` and can have the extension of `.yml` or `.json`. To learn more, see [Guard Rules Dev Guide](./docs/Guard-Rules-Dev-Guide.md#writing-unit-tests) for more detail on how to create unit tests for your guard rule.
 
 ### Managed Rule Sets
 

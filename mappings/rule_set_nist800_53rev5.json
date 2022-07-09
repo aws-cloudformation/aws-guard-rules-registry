@@ -1,7 +1,7 @@
 {
   "owner": "AWS",
   "ruleSetName": "NIST800-53Rev5",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description" : "AWS Guard rule set based on the AWS Config Conformance Pack for NIST 800-53 revision 5.",
   "contact" : "aws-guard-rules-registry@amazon.com",
   "mappings": [

@@ -1,7 +1,7 @@
 {
   "owner": "AWS",
   "ruleSetName": "rbi-md-itf",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "AWS Guard rule set for Reserve Bank of India (RBI) Master Direction ��� Information Technology Framework",
   "contact": "aws-guard-rules-registry@amazon.com",
   "mappings": [

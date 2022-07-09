@@ -1,7 +1,7 @@
 {
   "owner": "AWS",
   "ruleSetName": "nbc-trmg",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "AWS Guard rule set for National Bank of Cambodia's (NBC) Technology Risk Management (TRM) Guidelines framework",
   "contact": "aws-guard-rules-registry@amazon.com",
   "mappings": [

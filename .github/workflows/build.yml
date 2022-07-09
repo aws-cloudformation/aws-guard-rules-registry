@@ -1,35 +1,27 @@
-name: Build Rules
+name: Build Artifacts
 
 on:
   push:
     branches:
       - main
 
-env:
-  AWS_DEFAULT_REGION: ${{ secrets.ECR_REGION }}
-  AWS_DEFAULT_OUTPUT: json
-  AWS_ACCESS_KEY_ID: ${{ secrets.ECR_AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.ECR_AWS_SECRET_ACCESS_KEY }}
-  ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
-  ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
-  VERSION: '1.0'
-
 jobs:
   testRules:
-    # cfn-guard binary for macos
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Run guard rules tests
       shell: bash
       run: |
-        bin/cfn-guard test -d ./rules/
+        curl --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/aws-cloudformation/cloudformation-guard/main/install-guard.sh | sh
+        export PATH=${PATH}:~/.guard/bin
+        cfn-guard test -d ./rules/
     ## If test fails run step to pull out only failed tests
     - name: Display Failed Rules Only
       if: ${{ failure() }}
       shell: bash
       run: |
-        bin/cfn-guard test -d ./rules/ | grep "FAIL Rules:" -B 2 -A 1
+        cfn-guard test -d ./rules/ | grep "FAIL Rules:" -B 2 -A 1
 
   buildRuleSet:
     runs-on: ubuntu-latest
@@ -45,30 +37,3 @@ jobs:
           name: ruleset-build
           path: docker/output/
           if-no-files-found: error
-
-  buildDocker:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out repo
-        uses: actions/checkout@v2
-      - run: |
-          chmod +x ./mappings/build.py
-          python3 ./mappings/build.py
-        shell: bash
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.ECR_AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.ECR_AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.ECR_REGION }}
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-      - name: Build, tag, and push image to Amazon ECR
-        run: |
-          aws ecr-public get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY
-          cd ./docker
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$VERSION .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$VERSION
