@@ -71,7 +71,7 @@ All AWS Guard Rule Registry are build into a Docker image with Guard installed. 
 
 ## GitHub Actions
 
-Leveraging the Docker image, a GitHub Action was created called [ShiftLeft](github.com/grolston/ShiftLeft). Leverage or refactor this GitHub Action to fit your needs.
+Leveraging the Docker image, a GitHub Action was created called [Guard Action](https://github.com/grolston/guard-action). Leverage or refactor this GitHub Action to fit your needs.
 
 ## Gitlab-CI
 
