@@ -55,6 +55,7 @@ def main(directory):
         output_file_name = "./docker/output/" + rule_set + ".guard"
         outputfile = open(output_file_name, "a")
         outputfile.write(re.sub('<<', custom_message, inputfile, flags=re.M))
+        outputfile.write("\n")
         outputfile.close()
     # Closing file
     build_file_contents.close()
