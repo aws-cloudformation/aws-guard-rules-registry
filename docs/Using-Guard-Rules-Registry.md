@@ -40,8 +40,7 @@ The intent of Guard rule suppression is to allow explicit and approved complianc
 
 ## Guard Rules Registry Release Builds
 
-Every merge into the main branch will produce a new `release` of all AWS Guard Rules Registry. View the latest release for download [here](TODO)
-
+Every merge into the main branch will produce a new `release` of all AWS Guard Rules Registry. View the latest release for download [here](https://github.com/aws-cloudformation/aws-guard-rules-registry/releases)
 
 ## Guard Rules Registry Local Development
 
@@ -55,10 +54,10 @@ cfn-guard validate --rules ./NIST800-53Rev4.guard --data myCloudFormation.yml --
 
 All AWS Guard Rule Registry are build into a Docker image with Guard installed. The release rule set files are built and copied into the Docker image allowing for simplified rule set specific. Follow these steps to pull the Docker image and view the available rule sets.
 
-1. run: `docker pull public.ecr.aws/r7q6h7y6/guard:1.0`
+1. run: `docker pull public.ecr.aws/r7q6h7y6/guard:1.0.0`
 2. enter the container to view available rules:
   ```
-  docker run -it public.ecr.aws/r7q6h7y6/guard:1.0 sh
+  docker run -it public.ecr.aws/r7q6h7y6/guard:1.0.0 sh
   ls
   ```
 3. all rule sets are built into the root directory
@@ -71,7 +70,7 @@ All AWS Guard Rule Registry are build into a Docker image with Guard installed. 
 
 ## GitHub Actions
 
-Leveraging the Docker image, a GitHub Action was created called [ShiftLeft](github.com/grolston/ShiftLeft). Leverage or refactor this GitHub Action to fit your needs.
+Leveraging the Docker image, a GitHub Action was created called [Guard Action](https://github.com/grolston/guard-action). Leverage or refactor this GitHub Action to fit your needs.
 
 ## Gitlab-CI
 
@@ -80,7 +79,7 @@ Gitlab-CI can leverage the AWS Guard Rules Registry docker image. The example be
 ```yml
 image:
   repository: public.ecr.aws/r7q6h7y6/guard
-  tag: 1.0
+  tag: 1.0.0
 
 stages:
  - ci
