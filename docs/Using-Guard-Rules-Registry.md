@@ -54,15 +54,15 @@ cfn-guard validate --rules ./NIST800-53Rev4.guard --data myCloudFormation.yml --
 
 All AWS Guard Rule Registry are build into a Docker image with Guard installed. The release rule set files are built and copied into the Docker image allowing for simplified rule set specific. Follow these steps to pull the Docker image and view the available rule sets.
 
-1. run: `docker pull public.ecr.aws/r7q6h7y6/guard:1.0.0`
+1. run: `docker pull public.ecr.aws/r7q6h7y6/guard:1.0.1`
 2. enter the container to view available rules:
   ```
-  docker run -it public.ecr.aws/r7q6h7y6/guard:1.0.0 sh
+  docker run -it public.ecr.aws/r7q6h7y6/guard:1.0.1 sh
   ls
   ```
 3. all rule sets are built into the root directory
 
-> **Note:** The Docker image version identifies the release version. Using the latest tag will give you the latest release.
+> **Note:** The Docker image version identifies the release version. Using the `latest` tag will give you the latest release.
 
 ## AWS CodePipeline
 
@@ -79,7 +79,7 @@ Gitlab-CI can leverage the AWS Guard Rules Registry docker image. The example be
 ```yml
 image:
   repository: public.ecr.aws/r7q6h7y6/guard
-  tag: 1.0.0
+  tag: 1.0.1
 
 stages:
  - ci
