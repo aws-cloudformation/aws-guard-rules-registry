@@ -38,7 +38,6 @@ jobs:
       - name: Check out repo
         uses: actions/checkout@v2
       - run: |
-          chmod +x ./mappings/build.py
           python3 ./mappings/build.py
         shell: bash
       - uses: actions/upload-artifact@v3
@@ -69,7 +68,7 @@ jobs:
         run: |
           aws ecr-public get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY
           cd ./docker
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$VERSION .
+          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$VERSION $ECR_REGISTRY/$ECR_REPOSITORY:latest
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$VERSION
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
