@@ -1,6 +1,6 @@
 # Guard Rule Contribution Guide
 
-The following details the development requirements to submit individual Guard rules for use in the Guard Rules Registry. The development conventions and standards allow Guard Rule Registry to be a modular and support Guard Rule Sets builds via the Guard Map process. All Guard Rule contributions must follow the standards in order for pull-request to be approved.
+The following details the development requirements to submit individual Guard rules for use in the Guard Rules Registry. The development conventions and standards allow Guard Rule Registry to be modular and support Guard Rule Set builds via the Guard Map process. All Guard Rule contributions must follow the standards in order for pull-request to be approved.
 
 ## Guidelines and Conventions Summary
 
@@ -28,7 +28,6 @@ This section provides general rules and conventions to follow when developing a 
 
 * All Guard rule files will have a corresponding test file. (reference example [Writing Unit Tests](#writing-unit-tests))
 * The tests sub-directory contains unit tests for some of the corner cases we expect a Guard rule to have a status of `PASS`/`FAIL`/`SKIP`. Each status should be tested for all guard rules
-
 
 ## Rules Directory Structure
 
@@ -86,7 +85,7 @@ The following outlines the general process to develop individual AWS Guard Rules
     # c) FAIL: when all dynamodb table resources do not have the ObjectLockEnabled property is set to true or is missing
     # d) SKIP: when metadata has rule suppression for DYNAMODB_PITR_ENABLED
     ```
-5. Below the header, define the assignments required for a given rule and add comments to the rule wherever possible to make it easier for humans to understand. **AWS Guard Rules support rule suppression and requires you to add the guard rule name during variable assignment.** By adding in the `SuppressedRules` metadata, you override the rule within the code-base give ability to express rule exceptions at the code-level. **Assignment names should be try to unique within the Rules Registry. Be verbose and detailed in naming the assignment.**
+5. Below the header, define the assignments required for a given rule and add comments to the rule wherever possible to make it easier for humans to understand. **AWS Guard Rule Registry supports rule suppression and requires you to add the guard rule name during variable assignment as shown below.** By adding in the `SuppressedRules` metadata, you override the rule within the code-base giving ability to express rule exceptions at the code-level. **Assignment names should be unique within the Guard Rules Registry. Be verbose and detailed in naming the assignment.**
     ```
     #
     # Select all DynamoDB Table resources from incoming template (payload)
