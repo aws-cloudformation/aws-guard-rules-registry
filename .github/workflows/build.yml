@@ -28,12 +28,13 @@ jobs:
 
   buildRuleSet:
     runs-on: ubuntu-latest
+    #if: github.ref == 'refs/heads/main'
     steps:
       - name: Check out repo
         uses: actions/checkout@v2
       - run: |
           chmod +x ./mappings/build.py
-          python3 ./mappings/build.py -r $VERSION
+          python3 ./mappings/build.py -r ${{ VERSION }}
         shell: bash
       - uses: actions/upload-artifact@v3
         with:
