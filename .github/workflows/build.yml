@@ -33,7 +33,7 @@ jobs:
         uses: actions/checkout@v2
       - run: |
           chmod +x ./mappings/build.py
-          python3 ./mappings/build.py --release $VERSION
+          python3 ./mappings/build.py -r $VERSION
         shell: bash
       - uses: actions/upload-artifact@v3
         with:
