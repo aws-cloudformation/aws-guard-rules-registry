@@ -38,12 +38,14 @@ jobs:
       - name: Check out repo
         uses: actions/checkout@v2
       - run: |
-          python3 ./mappings/build.py
+          python3 ./mappings/build.py -r $VERSION
         shell: bash
       - uses: actions/upload-artifact@v3
         with:
           name: ruleset-build
-          path: docker/output/
+          path: |
+            docker/output/
+            mappings/rule_set_guard_rules_registry_all_rules.json
           if-no-files-found: error
 
   buildDockerRelease:
