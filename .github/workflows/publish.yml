@@ -12,7 +12,7 @@ env:
   ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
   ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
   ## publish version for docker image
-  VERSION: "1.0.1"
+  VERSION: "1.0.2"
 
 jobs:
   testRules:
@@ -38,12 +38,14 @@ jobs:
       - name: Check out repo
         uses: actions/checkout@v2
       - run: |
-          python3 ./mappings/build.py
+          python3 ./mappings/build.py -r $VERSION
         shell: bash
       - uses: actions/upload-artifact@v3
         with:
           name: ruleset-build
-          path: docker/output/
+          path: |
+            docker/output/
+            mappings/rule_set_guard_rules_registry_all_rules.json
           if-no-files-found: error
 
   buildDockerRelease:
