@@ -1,0 +1,101 @@
+###
+# CLOUDFRONT_ORIGIN_FAILOVER_ENABLED tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      CLOUDFRONT_ORIGIN_FAILOVER_ENABLED: SKIP
+
+- name: Scenario a) No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      CLOUDFRONT_ORIGIN_FAILOVER_ENABLED: SKIP
+
+- name: Scenario b) Rule suppressed, SKIP
+  input:
+    Resources:
+      CloudFrontDistribution:
+        Type: AWS::CloudFront::Distribution
+        Metadata:
+          guard:
+            SuppressedRules:
+              - "CLOUDFRONT_ORIGIN_FAILOVER_ENABLED"
+  expectations:
+    rules:
+      CLOUDFRONT_ORIGIN_FAILOVER_ENABLED: SKIP
+
+- name: Scenario c) 'DistributionConfig.OriginGroups' is missing on the CloudFront Distribution, FAIL
+  input:
+    Resources:
+      CloudFrontDistribution:
+        Type: AWS::CloudFront::Distribution
+        Properties:
+          DistributionConfig: {}
+  expectations:
+    rules:
+      CLOUDFRONT_ORIGIN_FAILOVER_ENABLED: FAIL
+
+- name: Scenario d) 'DistributionConfig.OriginGroups.Quantity' is < 1, FAIL
+  input:
+    Resources:
+      CloudFrontDistribution:
+        Type: AWS::CloudFront::Distribution
+        Properties:
+          DistributionConfig:
+            OriginGroups:
+              Quantity: 0
+  expectations:
+    rules:
+      CLOUDFRONT_ORIGIN_FAILOVER_ENABLED: FAIL
+
+- name: Scenario e) 'DistributionConfig.OriginGroups.Items.Members.Quantity' is < 2 (0), FAIL
+  input:
+    Resources:
+      CloudFrontDistribution:
+        Type: AWS::CloudFront::Distribution
+        Properties:
+          DistributionConfig:
+            OriginGroups:
+              Quantity: 1
+              Items:
+                - Members:
+                   Quantity: 0
+  expectations:
+    rules:
+      CLOUDFRONT_ORIGIN_FAILOVER_ENABLED: FAIL
+
+- name: Scenario e) 'DistributionConfig.OriginGroups.Items.Members.Quantity' is < 2 (1), FAIL
+  input:
+    Resources:
+      CloudFrontDistribution:
+        Type: AWS::CloudFront::Distribution
+        Properties:
+          DistributionConfig:
+            OriginGroups:
+              Quantity: 1
+              Items:
+                - Members:
+                   Quantity: 1
+  expectations:
+    rules:
+      CLOUDFRONT_ORIGIN_FAILOVER_ENABLED: FAIL
+
+- name: Scenario f) 'DistributionConfig.OriginGroups.Items.Members.Quantity' is 2, PASS
+  input:
+    Resources:
+      CloudFrontDistribution:
+        Type: AWS::CloudFront::Distribution
+        Properties:
+          DistributionConfig:
+            OriginGroups:
+              Quantity: 1
+              Items:
+                - Members:
+                   Quantity: 2
+  expectations:
+    rules:
+      CLOUDFRONT_ORIGIN_FAILOVER_ENABLED: PASS

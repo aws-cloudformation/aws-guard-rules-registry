@@ -1,0 +1,93 @@
+###
+# CLOUDFRONT_CUSTOM_SSL_CERTIFICATE tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      CLOUDFRONT_CUSTOM_SSL_CERTIFICATE: SKIP
+
+- name: Scenario a) No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      CLOUDFRONT_CUSTOM_SSL_CERTIFICATE: SKIP
+
+- name: Scenario b) Rule suppressed, SKIP
+  input:
+    Resources:
+      CloudFrontDistribution:
+        Type: AWS::CloudFront::Distribution
+        Metadata:
+          guard:
+            SuppressedRules:
+              - "CLOUDFRONT_CUSTOM_SSL_CERTIFICATE"
+  expectations:
+    rules:
+      CLOUDFRONT_CUSTOM_SSL_CERTIFICATE: SKIP
+
+- name: Scenario c) Missing 'ViewerCertificate' Config, FAIL
+  input:
+    Resources:
+      CloudFrontDistribution:
+        Type: AWS::CloudFront::Distribution
+        Properties:
+          DistributionConfig: {}
+  expectations:
+    rules:
+      CLOUDFRONT_CUSTOM_SSL_CERTIFICATE: FAIL
+
+- name: Scenario d) 'ViewerCertificate' Config provided with CloudFrontDefaultCertificate set to True, FAIL
+  input:
+    Resources:
+      CloudFrontDistribution:
+        Type: AWS::CloudFront::Distribution
+        Properties:
+          DistributionConfig:
+            ViewerCertificate:
+              CloudFrontDefaultCertificate: true
+  expectations:
+    rules:
+      CLOUDFRONT_CUSTOM_SSL_CERTIFICATE: FAIL
+
+- name: Scenario e) 'ViewerCertificate' Config provided with a provided 'AcmCertificateArn', PASS
+  input:
+    Resources:
+      CloudFrontDistribution:
+        Type: AWS::CloudFront::Distribution
+        Properties:
+          DistributionConfig:
+            ViewerCertificate:
+              AcmCertificateArn: arn:aws:acm:us-west-2:123456789012:certificate/12345678-12ab-34cd-56ef-12345678
+  expectations:
+    rules:
+      CLOUDFRONT_CUSTOM_SSL_CERTIFICATE: PASS
+
+- name: Scenario e) 'ViewerCertificate' Config provided with a provided 'IamCertificateId', PASS
+  input:
+    Resources:
+      CloudFrontDistribution:
+        Type: AWS::CloudFront::Distribution
+        Properties:
+          DistributionConfig:
+            ViewerCertificate:
+              IamCertificateId: arn:aws:iam:us-west-2:123456789012:server-certificate/cloudfront/test/ExampleCertificate
+  expectations:
+    rules:
+      CLOUDFRONT_CUSTOM_SSL_CERTIFICATE: PASS
+
+- name: Scenario e) 'ViewerCertificate' Config provided with a provided 'AcmCertificateArn' and 'CloudFrontDefaultCertificate' set to False, PASS
+  input:
+    Resources:
+      CloudFrontDistribution:
+        Type: AWS::CloudFront::Distribution
+        Properties:
+          DistributionConfig:
+            ViewerCertificate:
+              AcmCertificateArn: arn:aws:acm:us-west-2:123456789012:certificate/12345678-12ab-34cd-56ef-12345678
+              CloudFrontDefaultCertificate: false
+  expectations:
+    rules:
+      CLOUDFRONT_CUSTOM_SSL_CERTIFICATE: PASS

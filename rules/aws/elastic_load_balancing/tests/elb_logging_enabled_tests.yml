@@ -1,0 +1,63 @@
+###
+# ELB_LOGGING_ENABLED tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      ELB_LOGGING_ENABLED: SKIP
+
+- name: Scenario a) No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      ELB_LOGGING_ENABLED: SKIP
+
+- name: Scenario b) Rule suppressed, SKIP
+  input:
+    Resources:
+      Elb:
+        Type: AWS::ElasticLoadBalancing::LoadBalancer
+        Metadata:
+          guard:
+            SuppressedRules:
+              - "ELB_LOGGING_ENABLED"
+  expectations:
+    rules:
+      ELB_LOGGING_ENABLED: SKIP
+
+- name: Scenario c) 'AccessLoggingPolicy' has not been specified, FAIL
+  input:
+    Resources:
+      Elb:
+        Type: AWS::ElasticLoadBalancing::LoadBalancer
+        Properties: {}
+  expectations:
+    rules:
+      ELB_LOGGING_ENABLED: FAIL
+
+- name: Scenario d) 'AccessLoggingPolicy' has been specified and 'Enabled' in 'AccessLoggingPolicy' has been set to false, FAIL
+  input:
+    Resources:
+      Elb:
+        Type: AWS::ElasticLoadBalancing::LoadBalancer
+        Properties:
+          AccessLoggingPolicy:
+            Enabled: false
+  expectations:
+    rules:
+      ELB_LOGGING_ENABLED: FAIL
+
+- name: Scenario e) 'AccessLoggingPolicy' has been specified and 'Enabled' in 'AccessLoggingPolicy' has been set to true, PASS
+  input:
+    Resources:
+      Elb:
+        Type: AWS::ElasticLoadBalancing::LoadBalancer
+        Properties:
+          AccessLoggingPolicy:
+            Enabled: true
+  expectations:
+    rules:
+      ELB_LOGGING_ENABLED: PASS

@@ -1,2 +1,55 @@
 ## Config Rule Name : elb-acm-certificate-required
 ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/elb-acm-certificate-required.html"
+#
+#####################################
+##           Gherkin               ##
+#####################################
+#
+# Rule Identifier:
+#   ELB_ACM_CERTIFICATE_REQUIRED
+#
+# Description:
+#   This rule checks whether the Classic Load Balancer uses HTTPS/SSL certificates provided by AWS Certificate Manager (ACM).
+#   The rule will FAIL if the Classic Load Balancer configured with HTTPS/SSL listener does not use a certificate provided by ACM.
+#
+# Reports on:
+#   AWS::ElasticLoadBalancing::LoadBalancer
+#
+# Evaluates:
+#   AWS CloudFormation
+#
+# Rule Parameters:
+#   None
+#
+# Scenarios:
+# a) SKIP: when there are no Elastic Load Balancing Resources
+# b) SKIP: when metadata has rule suppression for ELB_ACM_CERTIFICATE_REQUIRED
+# c) SKIP: when there are no HTTPS or SSL 'Listeners'
+# d) PASS: when 'SSLCertificateId' matches an ACM certificate ARN for all HTTPS and SSL 'Listeners'
+
+#
+# Select all Elastic Load Balancing Resources from incoming template (payload)
+#
+let elb_acm_certificate_required_resources = Resources.*[ Type == 'AWS::ElasticLoadBalancing::LoadBalancer'
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "ELB_ACM_CERTIFICATE_REQUIRED"
+]
+
+rule ELB_ACM_CERTIFICATE_REQUIRED when %elb_acm_certificate_required_resources !empty {
+    %elb_acm_certificate_required_resources.Properties {
+        let https_ssl_listeners = Listeners.[
+            Protocol in ['HTTPS', 'SSL']
+        ]
+
+        when %https_ssl_listeners not empty {
+            %https_ssl_listeners {
+                # Scenarios c) and d)
+                SSLCertificateId exists
+                <<
+                    Violation: Classic Load Balancer Listeners need to use HTTPS/SSL certificates provided by AWS Certificate Manager (ACM).
+                    Fix: Set the Classic Load Balancer Listeners.*.SSLCertificateId property to the ARN of an ACM Certificate.
+                >>
+            }
+        }
+    }
+}

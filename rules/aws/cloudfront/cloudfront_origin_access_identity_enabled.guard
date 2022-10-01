@@ -1,0 +1,47 @@
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#    CLOUDFRONT_ORIGIN_ACCESS_IDENTITY_ENABLED
+#
+# Description:
+#  Checks if Amazon CloudFront distributions backed by S3 are configured with an Origin Access Identity (OAI).
+#
+# Reports on:
+#    AWS::CloudFront::Distribution
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
+# a) SKIP: when there are no CloudFront Distribution Resources
+# b) SKIP: when metadata has rule suppression for CLOUDFRONT_ORIGIN_ACCESS_IDENTITY_ENABLED
+# c) FAIL: when CloudFront Distribution Resources have a Legacy S3 Origin configuration present
+# d) FAIL: when CloudFront Distribution Resources have an S3 Origin configured without an Origin Access Identity (OAI)
+# e) PASS: when CloudFront Distribution Resources do not have an S3 Origin configured
+# f) PASS: when CloudFront Distribution Resources have an S3 Origin configured with an Origin Access Identity (OAI)
+
+#
+# Select all CloudFront Distribution Resources from incoming template (payload)
+#
+let cloudfront_origin_access_identity_enabled_resources = Resources.*[ Type == 'AWS::CloudFront::Distribution'
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "CLOUDFRONT_ORIGIN_ACCESS_IDENTITY_ENABLED"
+]
+
+rule CLOUDFRONT_ORIGIN_ACCESS_IDENTITY_ENABLED when %cloudfront_origin_access_identity_enabled_resources !empty {
+  let violations = %cloudfront_origin_access_identity_enabled_resources.Properties.DistributionConfig.Origins.[
+    DomainName == /[a-z0-9\.-]{3,63}\.s3\.amazonaws\.com/
+    S3OriginConfig.OriginAccessIdentity !exists or
+    S3OriginConfig.OriginAccessIdentity == ""
+  ]
+  %violations empty
+  <<
+    Violation: CloudFront Distributions backed by S3 must be configured with an Origin Access Identity (OAI).
+    Fix: Set the S3OriginConfig.OriginAccessIdentity property for CloudFront Distribution Origins backed by S3.
+  >>
+}

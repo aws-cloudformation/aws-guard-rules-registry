@@ -1,0 +1,53 @@
+#
+#####################################
+##           Gherkin               ##
+#####################################
+#
+# Rule Identifier:
+#   ELB_DELETION_PROTECTION_ENABLED
+#
+# Description:
+#   This rule will check to see if cross-zone load balancing is enabled for the Classic Load Balancer.
+#
+# Reports on:
+#   AWS::ElasticLoadBalancingV2::LoadBalancer
+#
+# Evaluates:
+#   AWS CloudFormation
+#
+# Rule Parameters:
+#   None
+#
+# Scenarios:
+# a) SKIP: when there are no Elastic Load Balancing Resources
+# b) SKIP: when metadata has rule suppression for ELB_DELETION_PROTECTION_ENABLED
+# c) FAIL: when 'LoadBalancerAttributes' has not been specified
+# d) FAIL: when 'LoadBalancerAttributes' has been specified and the attribute 'deletion_protection.enabled' has not been provided
+# d) FAIL: when 'LoadBalancerAttributes' has been specified with the attribute 'deletion_protection.enabled' set to false
+# d) PASS: when 'LoadBalancerAttributes' has been specified with the attribute 'deletion_protection.enabled' set to true
+
+#
+# Select all Elastic Load Balancing Resources from incoming template (payload)
+#
+let elb_deletion_protection_enabled_resources = Resources.*[ Type == 'AWS::ElasticLoadBalancingV2::LoadBalancer'
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "ELB_DELETION_PROTECTION_ENABLED"
+]
+
+rule ELB_DELETION_PROTECTION_ENABLED when %elb_deletion_protection_enabled_resources !empty {
+    %elb_deletion_protection_enabled_resources {
+        Properties {
+        # Scenario c)
+        LoadBalancerAttributes exists
+        when LoadBalancerAttributes exists {
+            some LoadBalancerAttributes[*] {
+					Key == "deletion_protection.enabled"
+					Value == true
+			}
+        }
+        <<
+            Violation: AWS Application Load Balancers (ALB) must be configured with deletion protection.
+            Fix: Set the 'LoadBalancerAttribute' 'deletion_protection.enabled' to 'true'
+        >>
+    }
+}

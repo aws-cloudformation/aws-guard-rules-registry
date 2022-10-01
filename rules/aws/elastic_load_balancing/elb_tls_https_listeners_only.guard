@@ -1,2 +1,46 @@
-## Config Rule Name : elb-tls-https-listeners-only
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/elb-tls-https-listeners-only.html"
+#
+#####################################
+##           Gherkin               ##
+#####################################
+#
+# Rule Identifier:
+#   ELB_TLS_HTTPS_LISTENERS_ONLY
+#
+# Description:
+#   This rule checks whether Classic Load Balancer listeners are configured with HTTPS or SSL protocol for front-end (client to load balancer).
+#
+# Reports on:
+#   AWS::ElasticLoadBalancing::LoadBalancer
+#
+# Evaluates:
+#   AWS CloudFormation
+#
+# Rule Parameters:
+#   None
+#
+# Scenarios:
+# a) SKIP: when there are no Elastic Load Balancing Resources
+# b) SKIP: when metadata has rule suppression for ELB_TLS_HTTPS_LISTENERS_ONLY
+# c) FAIL: when 'Protocol' on 'Listeners' is not set to 'HTTPS' or 'SSL'
+# d) PASS: when 'Protocol' on all 'Listeners' is set to 'HTTPS' or 'SSL'
+
+#
+# Select all Elastic Load Balancing Resources from incoming template (payload)
+#
+let elb_tls_https_listeners_only_resources = Resources.*[ Type == 'AWS::ElasticLoadBalancing::LoadBalancer'
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "ELB_TLS_HTTPS_LISTENERS_ONLY"
+]
+
+rule ELB_TLS_HTTPS_LISTENERS_ONLY when %elb_tls_https_listeners_only_resources !empty {
+    %elb_tls_https_listeners_only_resources.Properties {
+        Listeners.* {
+           # Scenarios c) and d)
+           Protocol in ['HTTPS', 'SSL']
+            <<
+                Violation: Classic Load Balancer listeners must be configured with HTTPS or SSL protocol for front-end (client to load balancer).
+                Fix: Set a Classic Load Balancer Listeners.*.Protocol to 'HTTPS' or 'SSL'.
+            >>
+        }
+    }
+}

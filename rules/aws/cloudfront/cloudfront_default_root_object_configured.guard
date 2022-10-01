@@ -1,0 +1,44 @@
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#    CLOUDFRONT_DEFAULT_ROOT_OBJECT_CONFIGURED
+#
+# Description:
+#  Checks if an Amazon CloudFront distribution is configured to return a specific object that is the default root object.
+#
+# Reports on:
+#    AWS::CloudFront::Distribution
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
+# a) SKIP: when there are no CloudFront Distribution Resources
+# b) SKIP: when metadata has rule suppression for CLOUDFRONT_DEFAULT_ROOT_OBJECT_CONFIGURED
+# c) FAIL: when CloudFront Distribution Resources do not have a Default Root Object configured
+# d) FAIL: when CloudFront Distribution Resources have an empty Default Root Object configured
+# e) PASS: when all CloudFront Distribution Resources have a Default Root Object configured
+
+#
+# Select all CloudFront Distribution Resources from incoming template (payload)
+#
+let cloudfront_default_root_object_configured_resources = Resources.*[ Type == 'AWS::CloudFront::Distribution'
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "CLOUDFRONT_DEFAULT_ROOT_OBJECT_CONFIGURED"
+]
+
+rule CLOUDFRONT_DEFAULT_ROOT_OBJECT_CONFIGURED when %cloudfront_default_root_object_configured_resources !empty {
+  # Scenario c)
+  %cloudfront_default_root_object_configured_resources.Properties.DistributionConfig.DefaultRootObject exists
+  # Scenarios d) and e)
+  %cloudfront_default_root_object_configured_resources.Properties.DistributionConfig.DefaultRootObject != ""
+  <<
+    Violation: CloudFront Distributions must be configured to return a default root object.
+    Fix: Set the CloudFront Distribution DistributionConfig.DefaultRootObject property to the object that you want CloudFront to request from your origin for requests to the root URL of your distribution.
+  >>
+}

@@ -1,0 +1,50 @@
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#    CLOUDFRONT_CUSTOM_SSL_CERTIFICATE
+#
+# Description:
+#  Checks if Amazon CloudFront distributions are associated with either WAF or WAFv2 web access control lists (ACLs).
+#
+# Reports on:
+#    AWS::CloudFront::Distribution
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
+# a) SKIP: when there are no CloudFront Distribution Resources
+# b) SKIP: when metadata has rule suppression for CLOUDFRONT_CUSTOM_SSL_CERTIFICATE
+# c) FAIL: when CloudFront Distribution Resources do not have the Viewer Certificate configuration present
+# d) FAIL: when CloudFront Distribution Resources have the Viewer Certificate configuration present and CloudFront Default Certificate is set to true
+# e) PASS: when all CloudFront Distribution Resources have a Viewer Certificate configuration present with an AcmCertificateArn or IamCertificateId
+
+#
+# Select all CloudFront Distribution Resources from incoming template (payload)
+#
+let cloudfront_custom_ssl_certificate_resources = Resources.*[ Type == 'AWS::CloudFront::Distribution'
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "CLOUDFRONT_CUSTOM_SSL_CERTIFICATE"
+]
+
+rule CLOUDFRONT_CUSTOM_SSL_CERTIFICATE when %cloudfront_custom_ssl_certificate_resources !empty {
+  %cloudfront_custom_ssl_certificate_resources.Properties.DistributionConfig {
+    # Scenario c)
+    ViewerCertificate exists
+    # Scenario d)
+    ViewerCertificate.CloudFrontDefaultCertificate not exists or
+    ViewerCertificate.CloudFrontDefaultCertificate == false
+    # Scenario e)
+    ViewerCertificate.AcmCertificateArn exists or
+    ViewerCertificate.IamCertificateId exists
+    <<
+      Violation: CloudFront Distributions need to to use a custom SSL/TLS certificate.
+      Fix: Set the AcmCertificateArn or IamCertificateId properties in the CloudFront Distribution DistributionConfig.ViewerCertificate configuration.
+    >>
+  }
+}

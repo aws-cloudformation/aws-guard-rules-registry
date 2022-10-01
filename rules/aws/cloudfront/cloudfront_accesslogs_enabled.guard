@@ -1,0 +1,40 @@
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#    CLOUDFRONT_ACCESSLOGS_ENABLED
+#
+# Description:
+#  Checks if Amazon CloudFront Distributions are configured with access logging.
+#
+# Reports on:
+#    AWS::CloudFront::Distribution
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
+# a) SKIP: when there are no CloudFront Distribution Resources
+# b) SKIP: when metada has rule suppression for CLOUDFRONT_ACCESSLOGS_ENABLED
+# c) FAIL: when all CloudFront Distribution Resources do not have the Logging Configuration element present
+# d) PASS: when all CloudFront Distribution Resources have a Logging Configuration element present
+
+#
+# Select all CloudFront Distribution Resources from incoming template (payload)
+#
+let cloudfront_accesslogs_enabled_resources = Resources.*[ Type == 'AWS::CloudFront::Distribution'
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "CLOUDFRONT_ACCESSLOGS_ENABLED"
+]
+
+rule CLOUDFRONT_ACCESSLOGS_ENABLED when %cloudfront_accesslogs_enabled_resources !empty {
+  %cloudfront_accesslogs_enabled_resources.Properties.DistributionConfig.Logging exists
+  <<
+    Violation: CloudFront Distributions need to be configured to log informaiton about requests the Distribution receives.
+    Fix: Set the CloudFront Distribution DistributionConfig.Logging.Bucket property to an S3 bucket you own that has been configured to receive CloudFront standard logs.
+  >>
+}

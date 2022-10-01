@@ -1,0 +1,52 @@
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#    CLOUDFRONT_SNI_ENABLED
+#
+# Description:
+#  Checks if Amazon CloudFront distributions are configured to use SNI to serve HTTPS requests.
+#
+# Reports on:
+#    AWS::CloudFront::Distribution
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
+# a) SKIP: when there are no CloudFront Distribution Resources
+# b) SKIP: when metadata has rule suppression for CLOUDFRONT_SNI_ENABLED
+# c) FAIL: when CloudFront Distribution Resources do not have a Viewer Certificate configuration
+# d) FAIL: when CloudFront Distribution Resources have a Viewer Certificate configuration and a CloudFront Default Certificate
+# e) FAIL: when CloudFront Distribution Resources have SSL Support Method set to 'vip'
+# f) PASS: when CloudFront Distribution Resources have SSL Support Method set to 'sni-only'
+
+#
+# Select all CloudFront Distribution Resources from incoming template (payload)
+#
+let cloudfront_sni_enabled_resources = Resources.*[ Type == 'AWS::CloudFront::Distribution'
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "CLOUDFRONT_SNI_ENABLED"
+]
+
+rule CLOUDFRONT_SNI_ENABLED when %cloudfront_sni_enabled_resources !empty {
+  %cloudfront_sni_enabled_resources.Properties.DistributionConfig {
+    # Scenario c)
+    ViewerCertificate exists
+    # Scenario d)
+    ViewerCertificate.CloudFrontDefaultCertificate not exists or
+    ViewerCertificate.CloudFrontDefaultCertificate == false
+    # Scenarios e) and f)
+    ViewerCertificate.SslSupportMethod exists
+    ViewerCertificate.SslSupportMethod not in ['vip']
+    ViewerCertificate.SslSupportMethod == 'sni-only'
+    <<
+      Violation: CloudFront Distributions are configured to use SNI to serve HTTPS requests.
+      Fix: Set the SslSupportMethod to 'sni-only' in the CloudFront Distribution DistributionConfig.ViewerCertificate configuration.
+    >>
+  }
+}

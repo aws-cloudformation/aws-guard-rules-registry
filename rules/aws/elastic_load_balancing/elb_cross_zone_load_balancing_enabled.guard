@@ -1,2 +1,45 @@
-## Config Rule Name : elb-cross-zone-load-balancing-enabled
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/elb-cross-zone-load-balancing-enabled.html"
+
+#####################################
+##           Gherkin               ##
+#####################################
+#
+# Rule Identifier:
+#   ELB_CROSS_ZONE_LOAD_BALANCING_ENABLED
+#
+# Description:
+#   This rule will check to see if cross-zone load balancing is enabled for the Classic Load Balancer.
+#
+# Reports on:
+#   AWS::ElasticLoadBalancing::LoadBalancer
+#
+# Evaluates:
+#   AWS CloudFormation
+#
+# Rule Parameters:
+#   None
+#
+# Scenarios:
+# a) SKIP: when there are no Elastic Load Balancing Resources
+# b) SKIP: when metadata has rule suppression for ELB_CROSS_ZONE_LOAD_BALANCING_ENABLED
+# c) FAIL: when 'CrossZone' has not been specified
+# d) FAIL: when 'CrossZone' has been specified and set to false
+# e) PASS: when 'CrossZone' has been specified and set to true
+
+#
+# Select all Elastic Load Balancing Resources from incoming template (payload)
+#
+let elb_cross_zone_load_balancing_resources = Resources.*[ Type == 'AWS::ElasticLoadBalancing::LoadBalancer'
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "ELB_CROSS_ZONE_LOAD_BALANCING_ENABLED"
+]
+
+rule ELB_CROSS_ZONE_LOAD_BALANCING_ENABLED when %elb_cross_zone_load_balancing_resources !empty {
+    %elb_cross_zone_load_balancing_resources.Properties {
+        CrossZone exists
+        CrossZone == true
+        <<
+            Violation: This rule will check to see if cross-zone load balancing is enabled for the Classic Load Balancer.
+            Fix: Set the Classic Load Balancer CrossZone property to the true.
+        >>
+    }
+}

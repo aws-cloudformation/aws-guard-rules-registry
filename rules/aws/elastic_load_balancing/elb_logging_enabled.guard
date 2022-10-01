@@ -1,2 +1,47 @@
-## Config Rule Name : elb-logging-enabled
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/elb-logging-enabled.html"
+#
+#####################################
+##           Gherkin               ##
+#####################################
+#
+# Rule Identifier:
+#   ELB_LOGGING_ENABLED
+#
+# Description:
+#   This rule checks whether Classic Load Balancers have logging enabled.
+#
+# Reports on:
+#   AWS::ElasticLoadBalancing::LoadBalancer
+#
+# Evaluates:
+#   AWS CloudFormation
+#
+# Rule Parameters:
+#   None
+#
+# Scenarios:
+# a) SKIP: when there are no Elastic Load Balancing Resources
+# b) SKIP: when metadata has rule suppression for ELB_LOGGING_ENABLED
+# c) FAIL: when 'AccessLoggingPolicy' has not been specified
+# d) FAIL: when 'AccessLoggingPolicy' has been specified and 'Enabled' in 'AccessLoggingPolicy' has been set to false
+# e) PASS: when 'AccessLoggingPolicy' has been specified and 'Enabled' in 'AccessLoggingPolicy' has been set to true
+
+#
+# Select all Elastic Load Balancing Resources from incoming template (payload)
+#
+let elb_logging_enabled_resources = Resources.*[ Type == 'AWS::ElasticLoadBalancing::LoadBalancer'
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "ELB_LOGGING_ENABLED"
+]
+
+rule ELB_LOGGING_ENABLED when %elb_logging_enabled_resources !empty {
+    %elb_logging_enabled_resources.Properties {
+        AccessLoggingPolicy exists
+        AccessLoggingPolicy {
+            Enabled == true
+            <<
+                Violation: This rule checks whether Classic Load Balancers have logging enabled.
+                Fix: Set the Classic Load Balancer 'AccessLoggingPolicy.Enabled' property to true and 'S3BucketName' to an S3 bucket you own that has been configured to receive ELB logs.
+            >>
+        }
+    }
+}

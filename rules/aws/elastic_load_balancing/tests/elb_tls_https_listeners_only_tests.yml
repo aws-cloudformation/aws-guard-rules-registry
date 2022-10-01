@@ -1,0 +1,93 @@
+###
+# ELB_TLS_HTTPS_LISTENERS_ONLY tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      ELB_TLS_HTTPS_LISTENERS_ONLY: SKIP
+
+- name: Scenario a) No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      ELB_TLS_HTTPS_LISTENERS_ONLY: SKIP
+
+- name: Scenario b) Rule suppressed, SKIP
+  input:
+    Resources:
+      Elb:
+        Type: AWS::ElasticLoadBalancing::LoadBalancer
+        Metadata:
+          guard:
+            SuppressedRules:
+              - "ELB_TLS_HTTPS_LISTENERS_ONLY"
+  expectations:
+    rules:
+      ELB_TLS_HTTPS_LISTENERS_ONLY: SKIP
+
+- name: Scenario c) 'Protocol' on 'Listeners' is not set to 'HTTPS' or 'SSL' (single listener), FAIL
+  input:
+    Resources:
+      Elb:
+        Type: AWS::ElasticLoadBalancing::LoadBalancer
+        Properties:
+          Listeners:
+            - Protocol: HTTP
+  expectations:
+    rules:
+      ELB_TLS_HTTPS_LISTENERS_ONLY: FAIL
+
+- name: Scenario c) 'Protocol' on 'Listeners' is not set to 'HTTPS' or 'SSL' (multiple listeners), FAIL
+  input:
+    Resources:
+      Elb:
+        Type: AWS::ElasticLoadBalancing::LoadBalancer
+        Properties:
+          Listeners:
+            - Protocol: SSL
+            - Protocol: HTTP
+  expectations:
+    rules:
+      ELB_TLS_HTTPS_LISTENERS_ONLY: FAIL
+
+- name: Scenario c) 'Protocol' on 'Listeners' is not set to 'HTTPS' or 'SSL' (multiple listeners), FAIL
+  input:
+    Resources:
+      Elb:
+        Type: AWS::ElasticLoadBalancing::LoadBalancer
+        Properties:
+          Listeners:
+            - Protocol: SSL
+            - Protocol: HTTPS
+            - Protocol: HTTP
+  expectations:
+    rules:
+      ELB_TLS_HTTPS_LISTENERS_ONLY: FAIL
+
+- name: Scenario d) 'Protocol' on all 'Listeners' is set to 'HTTPS' or 'SSL' (single), PASS
+  input:
+    Resources:
+      Elb:
+        Type: AWS::ElasticLoadBalancing::LoadBalancer
+        Properties:
+          Listeners:
+            - Protocol: HTTPS
+  expectations:
+    rules:
+      ELB_TLS_HTTPS_LISTENERS_ONLY: PASS
+
+- name: Scenario d) 'Protocol' on all 'Listeners' is set to 'HTTPS' or 'SSL' (multiple), PASS
+  input:
+    Resources:
+      Elb:
+        Type: AWS::ElasticLoadBalancing::LoadBalancer
+        Properties:
+          Listeners:
+            - Protocol: HTTPS
+            - Protocol: SSL
+  expectations:
+    rules:
+      ELB_TLS_HTTPS_LISTENERS_ONLY: PASS
