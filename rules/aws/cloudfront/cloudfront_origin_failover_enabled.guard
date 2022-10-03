@@ -1,0 +1,52 @@
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#    CLOUDFRONT_ORIGIN_FAILOVER_ENABLED
+#
+# Description:
+#  Checks if Amazon CloudFront Distribution is configured with an Origin Group that contains two Origin Group Members.
+#
+# Reports on:
+#    AWS::CloudFront::Distribution
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
+# a) SKIP: when there are no CloudFront Distribution Resources
+# b) SKIP: when metadata has rule suppression for CLOUDFRONT_ORIGIN_FAILOVER_ENABLED
+# c) FAIL: when CloudFront Distribution Resources do not include an Origin Group configuration
+# d) FAIL: when CloudFront Distribution Resources include an Origin Group configuration without any Origin Groups configured
+# e) FAIL: when CloudFront Distribution Resources include Origin Groups with < 2 Origin Group Members
+# f) PASS: when CloudFront Distribution Resources include Origin Groups with 2 Origin Group Members
+
+#
+# Select all CloudFront Distribution Resources from incoming template (payload)
+#
+let cloudfront_origin_failover_enabled_resources = Resources.*[ Type == 'AWS::CloudFront::Distribution'
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "CLOUDFRONT_ORIGIN_FAILOVER_ENABLED"
+]
+
+rule CLOUDFRONT_ORIGIN_FAILOVER_ENABLED when %cloudfront_origin_failover_enabled_resources !empty {
+  %cloudfront_origin_failover_enabled_resources.Properties.DistributionConfig {
+    # Scenario c)
+    OriginGroups exists
+    # Scenario d)
+    OriginGroups.Quantity >= 1
+    OriginGroups.Items.* {
+        # Scenarios e) and f)
+        Members.Quantity == 2
+        <<
+          Violation: CloudFront Distributions are configured with origin failover
+          Fix: Set the SslSupportMethod to 'sni-only' in the CloudFront Distribution DistributionConfig.ViewerCertificate configuration.
+        >>
+    }
+
+  }
+}

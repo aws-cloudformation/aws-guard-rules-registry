@@ -1,0 +1,79 @@
+###
+# CLOUDFRONT_SNI_ENABLED tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      CLOUDFRONT_SNI_ENABLED: SKIP
+
+- name: Scenario a) No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      CLOUDFRONT_SNI_ENABLED: SKIP
+
+- name: Scenario b) Rule suppressed, SKIP
+  input:
+    Resources:
+      CloudFrontDistribution:
+        Type: AWS::CloudFront::Distribution
+        Metadata:
+          guard:
+            SuppressedRules:
+              - "CLOUDFRONT_SNI_ENABLED"
+  expectations:
+    rules:
+      CLOUDFRONT_SNI_ENABLED: SKIP
+
+- name: Scenario c) 'ViewerCertificate' is missing on the CloudFront Distribution, FAIL
+  input:
+    Resources:
+      CloudFrontDistribution:
+        Type: AWS::CloudFront::Distribution
+        Properties:
+          DistributionConfig: {}
+  expectations:
+    rules:
+      CLOUDFRONT_SNI_ENABLED: FAIL
+
+- name: Scenario d) 'ViewerCertificate' Config provided with CloudFrontDefaultCertificate set to True, FAIL
+  input:
+    Resources:
+      CloudFrontDistribution:
+        Type: AWS::CloudFront::Distribution
+        Properties:
+          DistributionConfig:
+            ViewerCertificate:
+              CloudFrontDefaultCertificate: True
+  expectations:
+    rules:
+      CLOUDFRONT_SNI_ENABLED: FAIL
+
+- name: Scenario e) 'DistributionConfig.ViewerCertificate.SslSupportMethod' is set to 'vip', FAIL
+  input:
+    Resources:
+      CloudFrontDistribution:
+        Type: AWS::CloudFront::Distribution
+        Properties:
+          DistributionConfig:
+            ViewerCertificate:
+              SslSupportMethod: vip
+  expectations:
+    rules:
+      CLOUDFRONT_SNI_ENABLED: FAIL
+
+- name: Scenario f) 'DistributionConfig.ViewerCertificate.SslSupportMethod' is set to 'sni-only', PASS
+  input:
+    Resources:
+      CloudFrontDistribution:
+        Type: AWS::CloudFront::Distribution
+        Properties:
+          DistributionConfig:
+            ViewerCertificate:
+              SslSupportMethod: sni-only
+  expectations:
+    rules:
+      CLOUDFRONT_SNI_ENABLED: PASS

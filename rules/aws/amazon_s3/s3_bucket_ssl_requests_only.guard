@@ -31,8 +31,20 @@ let s3_buckets_policies_ssl_requests_only = Resources.*[ Type == 'AWS::S3::Bucke
   Metadata.guard.SuppressedRules.* != "S3_BUCKET_SSL_REQUESTS_ONLY"
 ]
 
+# Select secure S3 Bucket Policy resources from incoming template
+let ssl_secure_bucket_policies = %s3_buckets_policies_ssl_requests_only[
+  Properties.PolicyDocument {
+    some Statement[*] {
+      Effect == 'Deny'
+      Condition {
+        Bool.'aws:SecureTransport' == false
+      }
+    }
+  }
+]
+
 rule S3_BUCKET_SSL_REQUESTS_ONLY when %s3_buckets_policies_ssl_requests_only !empty {
-  some %s3_buckets_policies_ssl_requests_only.Properties.PolicyDocument.Statement.* == {"Action":"s3:*","Effect":"Deny","Principal":"*","Resource":"*","Condition":{"Bool":{"aws:SecureTransport":false}}}
+  %ssl_secure_bucket_policies !empty
   <<
     Violation: Bucket policies must feature a statement to enforce TLS usage.
     Fix: Set a bucket policy statement to '"Action":"s3:*","Effect":"Deny","Principal":"*","Resource":"*","Condition":{"Bool":{"aws:SecureTransport":false}}' .

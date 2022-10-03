@@ -99,7 +99,7 @@ def main(directory, version):
 
 if __name__ == '__main__':
   parser = argparse.ArgumentParser(description='Guard Rules Registry Build')
-  parser.add_argument("-d","--directory", required=False,default=os.getcwd(),help="Directory to download the audio to")
+  parser.add_argument("-d","--directory", required=False,default=os.getcwd(),help="Directory of the project rules")
   parser.add_argument("-r","--release", required=True,default="1.0.0",help="The release version for all rules file")
   args = parser.parse_args()
   directory = args.directory

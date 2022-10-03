@@ -1,0 +1,61 @@
+###
+# ELB_CROSS_ZONE_LOAD_BALANCING_ENABLED tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      ELB_CROSS_ZONE_LOAD_BALANCING_ENABLED: SKIP
+
+- name: Scenario a) No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      ELB_CROSS_ZONE_LOAD_BALANCING_ENABLED: SKIP
+
+- name: Scenario b) Rule suppressed, SKIP
+  input:
+    Resources:
+      Elb:
+        Type: AWS::ElasticLoadBalancing::LoadBalancer
+        Metadata:
+          guard:
+            SuppressedRules:
+              - "ELB_CROSS_ZONE_LOAD_BALANCING_ENABLED"
+  expectations:
+    rules:
+      ELB_CROSS_ZONE_LOAD_BALANCING_ENABLED: SKIP
+
+- name: Scenario c) 'CrossZone' has not been specified, FAIL
+  input:
+    Resources:
+      Elb:
+        Type: AWS::ElasticLoadBalancing::LoadBalancer
+        Properties: {}
+  expectations:
+    rules:
+      ELB_CROSS_ZONE_LOAD_BALANCING_ENABLED: FAIL
+
+- name: Scenario d) 'CrossZone' has been specified and set to false, FAIL
+  input:
+    Resources:
+      Elb:
+        Type: AWS::ElasticLoadBalancing::LoadBalancer
+        Properties:
+          CrossZone: false
+  expectations:
+    rules:
+      ELB_CROSS_ZONE_LOAD_BALANCING_ENABLED: FAIL
+
+- name: Scenario e) 'CrossZone' has been specified and set to true, PASS
+  input:
+    Resources:
+      Elb:
+        Type: AWS::ElasticLoadBalancing::LoadBalancer
+        Properties:
+          CrossZone: true
+  expectations:
+    rules:
+      ELB_CROSS_ZONE_LOAD_BALANCING_ENABLED: PASS

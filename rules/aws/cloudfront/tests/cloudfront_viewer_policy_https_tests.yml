@@ -1,0 +1,145 @@
+###
+# CLOUDFRONT_VIEWER_POLICY_HTTPS tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      CLOUDFRONT_VIEWER_POLICY_HTTPS: SKIP
+
+- name: Scenario a) No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      CLOUDFRONT_VIEWER_POLICY_HTTPS: SKIP
+
+- name: Scenario b) Rule suppressed, SKIP
+  input:
+    Resources:
+      CloudFrontDistribution:
+        Type: AWS::CloudFront::Distribution
+        Metadata:
+          guard:
+            SuppressedRules:
+              - "CLOUDFRONT_VIEWER_POLICY_HTTPS"
+  expectations:
+    rules:
+      CLOUDFRONT_VIEWER_POLICY_HTTPS: SKIP
+
+- name: Scenario c) 'CacheBehaviors' has not been provided, SKIP
+  input:
+    Resources:
+      CloudFrontDistribution:
+        Type: AWS::CloudFront::Distribution
+        Properties:
+          DistributionConfig: {}
+  expectations:
+    rules:
+      CLOUDFRONT_VIEWER_POLICY_HTTPS: SKIP
+
+- name: Scenario c) 'CacheBehaviors' has been provided as an empty list, SKIP
+  input:
+    Resources:
+      CloudFrontDistribution:
+        Type: AWS::CloudFront::Distribution
+        Properties:
+          DistributionConfig:
+            CacheBehaviors: []
+  expectations:
+    rules:
+      CLOUDFRONT_VIEWER_POLICY_HTTPS: SKIP
+
+- name: Scenario d) 'DefaultCacheBehavior.ViewerProtocolPolicy' is set to 'allow-all', FAIL
+  input:
+    Resources:
+      CloudFrontDistribution:
+        Type: AWS::CloudFront::Distribution
+        Properties:
+          DistributionConfig:
+            DefaultCacheBehavior:
+              ViewerProtocolPolicy: allow-all
+  expectations:
+    rules:
+      CLOUDFRONT_VIEWER_POLICY_HTTPS: FAIL
+
+- name: Scenario e) 'CacheBehaviors.*.ViewerProtocolPolicy' is set to 'allow-all' (single), FAIL
+  input:
+    Resources:
+      CloudFrontDistribution:
+        Type: AWS::CloudFront::Distribution
+        Properties:
+          DistributionConfig:
+            CacheBehaviors:
+              - ViewerProtocolPolicy: allow-all
+  expectations:
+    rules:
+      CLOUDFRONT_VIEWER_POLICY_HTTPS: FAIL
+
+- name: Scenario e) 'CacheBehaviors.*.ViewerProtocolPolicy' is set to 'allow-all' (multiple), FAIL
+  input:
+    Resources:
+      CloudFrontDistribution:
+        Type: AWS::CloudFront::Distribution
+        Properties:
+          DistributionConfig:
+            CacheBehaviors:
+              - ViewerProtocolPolicy: redirect-to-https
+              - ViewerProtocolPolicy: https-only
+              - ViewerProtocolPolicy: allow-all
+  expectations:
+    rules:
+      CLOUDFRONT_VIEWER_POLICY_HTTPS: FAIL
+
+- name: Scenario f) 'DefaultCacheBehavior.ViewerProtocolPolicy' is set to 'redirect-to-https', PASS
+  input:
+    Resources:
+      CloudFrontDistribution:
+        Type: AWS::CloudFront::Distribution
+        Properties:
+          DistributionConfig:
+            DefaultCacheBehavior:
+              ViewerProtocolPolicy: redirect-to-https
+  expectations:
+    rules:
+      CLOUDFRONT_VIEWER_POLICY_HTTPS: PASS
+
+- name: Scenario f) 'DefaultCacheBehavior.ViewerProtocolPolicy' is set to 'https-only', PASS
+  input:
+    Resources:
+      CloudFrontDistribution:
+        Type: AWS::CloudFront::Distribution
+        Properties:
+          DistributionConfig:
+            DefaultCacheBehavior:
+              ViewerProtocolPolicy: https-only
+  expectations:
+    rules:
+      CLOUDFRONT_VIEWER_POLICY_HTTPS: PASS
+
+- name: Scenario g) 'CacheBehaviors.*.ViewerProtocolPolicy' is set to 'redirect-to-https', PASS
+  input:
+    Resources:
+      CloudFrontDistribution:
+        Type: AWS::CloudFront::Distribution
+        Properties:
+          DistributionConfig:
+            CacheBehaviors:
+              - ViewerProtocolPolicy: redirect-to-https
+  expectations:
+    rules:
+      CLOUDFRONT_VIEWER_POLICY_HTTPS: PASS
+
+- name: Scenario g) 'CacheBehaviors.*.ViewerProtocolPolicy' is set to 'https-only', PASS
+  input:
+    Resources:
+      CloudFrontDistribution:
+        Type: AWS::CloudFront::Distribution
+        Properties:
+          DistributionConfig:
+            CacheBehaviors:
+              - ViewerProtocolPolicy: https-only
+  expectations:
+    rules:
+      CLOUDFRONT_VIEWER_POLICY_HTTPS: PASS

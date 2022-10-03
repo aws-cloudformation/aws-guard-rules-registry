@@ -1,0 +1,89 @@
+###
+# ELB_DELETION_PROTECTION_ENABLED tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      ELB_DELETION_PROTECTION_ENABLED: SKIP
+
+- name: Scenario a) No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      ELB_DELETION_PROTECTION_ENABLED: SKIP
+
+- name: Scenario b) Rule suppressed, SKIP
+  input:
+    Resources:
+      ElbV2:
+        Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+        Metadata:
+          guard:
+            SuppressedRules:
+              - "ELB_DELETION_PROTECTION_ENABLED"
+  expectations:
+    rules:
+      ELB_DELETION_PROTECTION_ENABLED: SKIP
+
+- name: Scenario c) 'LoadBalancerAttributes' have not been provided, FAIL
+  input:
+    Resources:
+      ElbV2:
+        Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+        Properties: {}
+  expectations:
+    rules:
+      ELB_DELETION_PROTECTION_ENABLED: FAIL
+
+- name: Scenario d) 'LoadBalancerAttributes' have been provided without the 'deletion_protection.enabled' attribute (empty list), FAIL
+  input:
+    Resources:
+      ElbV2:
+        Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+        Properties:
+          LoadBalancerAttributes: []
+  expectations:
+    rules:
+      ELB_DELETION_PROTECTION_ENABLED: FAIL
+
+- name: Scenario d) 'LoadBalancerAttributes' have been provided without the 'deletion_protection.enabled' attribute, FAIL
+  input:
+    Resources:
+      ElbV2:
+        Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+        Properties:
+          LoadBalancerAttributes:
+            - Key: access_logs.s3.enabled
+              Value: true
+  expectations:
+    rules:
+      ELB_DELETION_PROTECTION_ENABLED: FAIL
+
+- name: Scenario e) 'LoadBalancerAttributes' have been provided with the 'deletion_protection.enabled' attribute set to 'false', FAIL
+  input:
+    Resources:
+      ElbV2:
+        Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+        Properties:
+          LoadBalancerAttributes:
+            - Key: deletion_protection.enabled
+              Value: false
+  expectations:
+    rules:
+      ELB_DELETION_PROTECTION_ENABLED: FAIL
+
+- name: Scenario f) 'LoadBalancerAttributes' have been provided with the 'deletion_protection.enabled' attribute set to 'true', PASS
+  input:
+    Resources:
+      ElbV2:
+        Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+        Properties:
+          LoadBalancerAttributes:
+            - Key: deletion_protection.enabled
+              Value: true
+  expectations:
+    rules:
+      ELB_DELETION_PROTECTION_ENABLED: PASS

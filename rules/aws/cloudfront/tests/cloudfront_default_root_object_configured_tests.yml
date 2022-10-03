@@ -1,0 +1,64 @@
+###
+# CLOUDFRONT_DEFAULT_ROOT_OBJECT_CONFIGURED tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      CLOUDFRONT_DEFAULT_ROOT_OBJECT_CONFIGURED: SKIP
+
+- name: Scenario a) No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      CLOUDFRONT_DEFAULT_ROOT_OBJECT_CONFIGURED: SKIP
+
+- name: Scenario b) Rule suppressed, SKIP
+  input:
+    Resources:
+      CloudFrontDistribution:
+        Type: AWS::CloudFront::Distribution
+        Metadata:
+          guard:
+            SuppressedRules:
+              - "CLOUDFRONT_DEFAULT_ROOT_OBJECT_CONFIGURED"
+  expectations:
+    rules:
+      CLOUDFRONT_DEFAULT_ROOT_OBJECT_CONFIGURED: SKIP
+
+- name: Scenario c) Missing 'DistributionConfig.DefaultRootObject' Config, FAIL
+  input:
+    Resources:
+      CloudFrontDistribution:
+        Type: AWS::CloudFront::Distribution
+        Properties:
+          DistributionConfig: {}
+  expectations:
+    rules:
+      CLOUDFRONT_DEFAULT_ROOT_OBJECT_CONFIGURED: FAIL
+
+- name: Scenario d) 'DistributionConfig.DefaultRootObject' is an empty string, FAIL
+  input:
+    Resources:
+      CloudFrontDistribution:
+        Type: AWS::CloudFront::Distribution
+        Properties:
+          DistributionConfig:
+            DefaultRootObject: ""
+  expectations:
+    rules:
+      CLOUDFRONT_DEFAULT_ROOT_OBJECT_CONFIGURED: FAIL
+
+- name: Scenario e) 'DistributionConfig.DefaultRootObject' has been provided as a non-empty string, PASS
+  input:
+    Resources:
+      CloudFrontDistribution:
+        Type: AWS::CloudFront::Distribution
+        Properties:
+          DistributionConfig:
+            DefaultRootObject: index.html
+  expectations:
+    rules:
+      CLOUDFRONT_DEFAULT_ROOT_OBJECT_CONFIGURED: PASS

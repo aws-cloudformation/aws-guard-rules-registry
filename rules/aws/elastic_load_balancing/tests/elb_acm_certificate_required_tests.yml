@@ -1,0 +1,97 @@
+###
+# ELB_ACM_CERTIFICATE_REQUIRED tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      ELB_ACM_CERTIFICATE_REQUIRED: SKIP
+
+- name: Scenario a) No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      ELB_ACM_CERTIFICATE_REQUIRED: SKIP
+
+- name: Scenario b) Rule suppressed, SKIP
+  input:
+    Resources:
+      Elb:
+        Type: AWS::ElasticLoadBalancing::LoadBalancer
+        Metadata:
+          guard:
+            SuppressedRules:
+              - "ELB_ACM_CERTIFICATE_REQUIRED"
+  expectations:
+    rules:
+      ELB_ACM_CERTIFICATE_REQUIRED: SKIP
+
+- name: Scenario c) there are no HTTPS or SSL 'Listeners' (HTTP), SKIP
+  input:
+    Resources:
+      Elb:
+        Type: AWS::ElasticLoadBalancing::LoadBalancer
+        Properties:
+          Listeners:
+            - Protocol: HTTP
+  expectations:
+    rules:
+      ELB_ACM_CERTIFICATE_REQUIRED: SKIP
+
+- name: Scenario c) there are no HTTPS or SSL 'Listeners' (multiple), SKIP
+  input:
+    Resources:
+      Elb:
+        Type: AWS::ElasticLoadBalancing::LoadBalancer
+        Properties:
+          Listeners:
+            - Protocol: HTTP
+            - Protocol: TCP
+  expectations:
+    rules:
+      ELB_ACM_CERTIFICATE_REQUIRED: SKIP
+
+
+- name: Scenario e) 'SSLCertificateId' matches an ACM certificate ARN for all 'Listeners' (HTTPS), PASS
+  input:
+    Resources:
+      Elb:
+        Type: AWS::ElasticLoadBalancing::LoadBalancer
+        Properties:
+          Listeners:
+            - Protocol: HTTPS
+              SSLCertificateId: arn:aws:acm:us-west-2:123456789012:certificate/12345678-12ab-34cd-56ef-12345678
+  expectations:
+    rules:
+      ELB_ACM_CERTIFICATE_REQUIRED: PASS
+
+
+- name: Scenario e) 'SSLCertificateId' matches an ACM certificate ARN for all 'Listeners' (SSL), PASS
+  input:
+    Resources:
+      Elb:
+        Type: AWS::ElasticLoadBalancing::LoadBalancer
+        Properties:
+          Listeners:
+            - Protocol: SSL
+              SSLCertificateId: arn:aws:acm:us-west-2:123456789012:certificate/12345678-12ab-34cd-56ef-12345678
+  expectations:
+    rules:
+      ELB_ACM_CERTIFICATE_REQUIRED: PASS
+
+- name: Scenario e) 'SSLCertificateId' matches an ACM certificate ARN for all 'Listeners' (HTTPS & SSL), PASS
+  input:
+    Resources:
+      Elb:
+        Type: AWS::ElasticLoadBalancing::LoadBalancer
+        Properties:
+          Listeners:
+            - Protocol: HTTPS
+              SSLCertificateId: arn:aws:acm:us-west-2:123456789012:certificate/12345678-12ab-34cd-56ef-12345678
+            - Protocol: SSL
+              SSLCertificateId: arn:aws:acm:us-west-2:123456789012:certificate/12345678-12ab-34cd-56ef-12345678
+  expectations:
+    rules:
+      ELB_ACM_CERTIFICATE_REQUIRED: PASS

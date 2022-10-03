@@ -1,0 +1,81 @@
+###
+# ELBV2_ACM_CERTIFICATE_REQUIRED tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      ELBV2_ACM_CERTIFICATE_REQUIRED: SKIP
+
+- name: Scenario a) No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      ELBV2_ACM_CERTIFICATE_REQUIRED: SKIP
+
+- name: Scenario b) Rule suppressed, SKIP
+  input:
+    Resources:
+      ElbV2Listener:
+        Type: AWS::ElasticLoadBalancingV2::Listener
+        Metadata:
+          guard:
+            SuppressedRules:
+              - "ELBV2_ACM_CERTIFICATE_REQUIRED"
+  expectations:
+    rules:
+      ELBV2_ACM_CERTIFICATE_REQUIRED: SKIP
+
+- name: Scenario c) there are no HTTPS or TLS Listeners (TCP), SKIP
+  input:
+    Resources:
+      ElbV2Listener:
+        Type: AWS::ElasticLoadBalancingV2::Listener
+        Properties:
+          Protocol: TCP
+  expectations:
+    rules:
+      ELBV2_ACM_CERTIFICATE_REQUIRED: SKIP
+
+- name: Scenario c) there are no HTTPS or TLS Listeners, SKIP
+  input:
+    Resources:
+      ElbV2Listener:
+        Type: AWS::ElasticLoadBalancingV2::Listener
+        Properties:
+          Protocol: TCP_UDP
+      OtherElbV2Listener:
+        Type: AWS::ElasticLoadBalancingV2::Listener
+        Properties:
+          Protocol: TCP
+  expectations:
+    rules:
+      ELBV2_ACM_CERTIFICATE_REQUIRED: SKIP
+
+- name: Scenario d) Certificate in 'Certificates' is an ACM certificate for HTTPS or TLS Listeners (HTTPS listener), PASS
+  input:
+    Resources:
+      ElbV2Listener:
+        Type: AWS::ElasticLoadBalancingV2::Listener
+        Properties:
+          Protocol: HTTPS
+          Certificates:
+           - CertificateArn: arn:aws:acm:us-west-2:123456789012:certificate/12345678-12ab-34cd-56ef-12345678
+  expectations:
+    rules:
+      ELBV2_ACM_CERTIFICATE_REQUIRED: PASS
+
+- name: Scenario d) Certificate in 'Certificates' is an ACM certificate for HTTPS or TLS Listeners (TLS listener), PASS
+  input:
+    Resources:
+      ElbV2Listener:
+        Type: AWS::ElasticLoadBalancingV2::Listener
+        Properties:
+          Protocol: TLS
+          Certificates:
+           - CertificateArn: arn:aws:acm:us-west-2:123456789012:certificate/12345678-12ab-34cd-56ef-12345678
+  expectations:
+    rules:
+      ELBV2_ACM_CERTIFICATE_REQUIRED: PASS

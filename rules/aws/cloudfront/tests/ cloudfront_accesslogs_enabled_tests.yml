@@ -1,0 +1,64 @@
+###
+# CLOUDFRONT_ACCESSLOGS_ENABLED tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      CLOUDFRONT_ACCESSLOGS_ENABLED: SKIP
+
+- name: Scenario a) No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      CLOUDFRONT_ACCESSLOGS_ENABLED: SKIP
+
+- name: Scenario b) Rule suppressed, SKIP
+  input:
+    Resources:
+      CloudFrontDistribution:
+        Type: AWS::CloudFront::Distribution
+        Metadata:
+          guard:
+            SuppressedRules:
+              - "CLOUDFRONT_ACCESSLOGS_ENABLED"
+  expectations:
+    rules:
+      CLOUDFRONT_ACCESSLOGS_ENABLED: SKIP
+
+- name: Scenario c) Missing Distribution Config, FAIL
+  input:
+    Resources:
+      CloudFrontDistribution:
+        Type: AWS::CloudFront::Distribution
+        Properties: {}
+  expectations:
+    rules:
+      CLOUDFRONT_ACCESSLOGS_ENABLED: FAIL
+
+- name: Scenario c) Missing Logging Configuration, FAIL
+  input:
+    Resources:
+      CloudFrontDistribution:
+        Type: AWS::CloudFront::Distribution
+        Properties:
+          DistributionConfig: {}
+  expectations:
+    rules:
+      CLOUDFRONT_ACCESSLOGS_ENABLED: FAIL
+
+- name: Scenario d) Logging Configuration provided, PASS
+  input:
+    Resources:
+      CloudFrontDistribution:
+        Type: AWS::CloudFront::Distribution
+        Properties:
+          DistributionConfig:
+            Logging: {}
+  expectations:
+    rules:
+      CLOUDFRONT_ACCESSLOGS_ENABLED: PASS
+
+

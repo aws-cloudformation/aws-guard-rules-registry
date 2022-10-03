@@ -1,5 +1,3 @@
-## Config Rule Name : alb-http-to-https-redirection-check
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/alb-http-to-https-redirection-check.html"
 
 # Rule Intent: Checks if HTTP to HTTPS redirection is configured on all HTTP listeners of Application Load Balancers.
 

@@ -1,0 +1,116 @@
+###
+# ALB_HTTP_DROP_INVALID_HEADER_ENABLED tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      ALB_HTTP_DROP_INVALID_HEADER_ENABLED: SKIP
+
+- name: Scenario a) No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      ALB_HTTP_DROP_INVALID_HEADER_ENABLED: SKIP
+
+- name: Scenario a) There are no Elastic Load Balancing V2 Resources of type 'application', SKIP
+  input:
+    Resources:
+      ElbV2Network:
+        Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+        Properties:
+          Type: network
+  expectations:
+    rules:
+      ALB_HTTP_DROP_INVALID_HEADER_ENABLED: SKIP
+
+- name: Scenario a) There are no Elastic Load Balancing V2 Resources of type 'application', SKIP
+  input:
+    Resources:
+      ElbV2Network:
+        Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+        Properties:
+          Type: gateway
+  expectations:
+    rules:
+      ALB_HTTP_DROP_INVALID_HEADER_ENABLED: SKIP
+
+- name: Scenario b) Rule suppressed, SKIP
+  input:
+    Resources:
+      ElbV2:
+        Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+        Metadata:
+          guard:
+            SuppressedRules:
+              - "ALB_HTTP_DROP_INVALID_HEADER_ENABLED"
+  expectations:
+    rules:
+      ALB_HTTP_DROP_INVALID_HEADER_ENABLED: SKIP
+
+- name: Scenario c) 'LoadBalancerAttributes' have not been provided, FAIL
+  input:
+    Resources:
+      ElbV2:
+        Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+        Properties:
+          Type: application
+  expectations:
+    rules:
+      ALB_HTTP_DROP_INVALID_HEADER_ENABLED: FAIL
+
+- name: Scenario d) 'LoadBalancerAttributes' have been provided without the 'routing.http.drop_invalid_header_fields.enabled' attribute (empty list), FAIL
+  input:
+    Resources:
+      ElbV2:
+        Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+        Properties:
+          Type: application
+          LoadBalancerAttributes: []
+  expectations:
+    rules:
+      ALB_HTTP_DROP_INVALID_HEADER_ENABLED: FAIL
+
+- name: Scenario d) 'LoadBalancerAttributes' have been provided without the 'routing.http.drop_invalid_header_fields.enabled' attribute, FAIL
+  input:
+    Resources:
+      ElbV2:
+        Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+        Properties:
+          Type: application
+          LoadBalancerAttributes:
+            - Key: access_logs.s3.enabled
+              Value: true
+  expectations:
+    rules:
+      ALB_HTTP_DROP_INVALID_HEADER_ENABLED: FAIL
+
+- name: Scenario e) 'LoadBalancerAttributes' have been provided with the 'routing.http.drop_invalid_header_fields.enabled' attribute set to 'false', FAIL
+  input:
+    Resources:
+      ElbV2:
+        Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+        Properties:
+          Type: application
+          LoadBalancerAttributes:
+            - Key: routing.http.drop_invalid_header_fields.enabled
+              Value: false
+  expectations:
+    rules:
+      ALB_HTTP_DROP_INVALID_HEADER_ENABLED: FAIL
+
+- name: Scenario f) 'LoadBalancerAttributes' have been provided with the 'routing.http.drop_invalid_header_fields.enabled' attribute set to 'true', PASS
+  input:
+    Resources:
+      ElbV2:
+        Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+        Properties:
+          Type: application
+          LoadBalancerAttributes:
+            - Key: routing.http.drop_invalid_header_fields.enabled
+              Value: true
+  expectations:
+    rules:
+      ALB_HTTP_DROP_INVALID_HEADER_ENABLED: PASS

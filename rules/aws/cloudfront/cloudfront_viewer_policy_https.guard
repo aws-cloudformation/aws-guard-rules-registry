@@ -1,0 +1,62 @@
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#    CLOUDFRONT_VIEWER_POLICY_HTTPS
+#
+# Description:
+#  Checks whether your Amazon CloudFront distributions use HTTPS (directly or via a redirection).
+#
+# Reports on:
+#    AWS::CloudFront::Distribution
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
+# a) SKIP: when there are no CloudFront Distribution Resources
+# b) SKIP: when metadata has rule suppression for CLOUDFRONT_VIEWER_POLICY_HTTPS
+# c) SKIP: when no CloudFront Distribution Cache Behaviors or Default Cache Behaviors are provided
+# d) FAIL: when CloudFront Distribution Default Cache Behavior Viewer Protocol Policies are configured to allow all (HTTP & HTTPS)
+# e) FAIL: when one or more CloudFront Distribution Cache Behavior Viewer Protocol Policies are configured to allow all (HTTP & HTTPS)
+# f) PASS: when CloudFront Distribution Default Cache Behavior Viewer Protocol Policies are configured with HTTPS (directly or via a redirection)
+# g) PASS: when all CloudFront Distribution Cache Behavior Viewer Protocol Policies are configured with HTTPS (directly or via a redirection)
+
+#
+# Select all CloudFront Distribution Resources from incoming template (payload)
+#
+let cloudfront_viewer_policy_https_resources = Resources.*[ Type == 'AWS::CloudFront::Distribution'
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "CLOUDFRONT_VIEWER_POLICY_HTTPS"
+]
+
+rule CLOUDFRONT_VIEWER_POLICY_HTTPS when %cloudfront_viewer_policy_https_resources !empty {
+  %cloudfront_viewer_policy_https_resources.Properties.DistributionConfig {
+
+    when DefaultCacheBehavior exists {
+        # Scenario c)
+        DefaultCacheBehavior.ViewerProtocolPolicy != "allow-all"
+        DefaultCacheBehavior.ViewerProtocolPolicy in ["redirect-to-https", "https-only"]
+        # Scenario e)
+    }
+
+    when CacheBehaviors exists
+         CacheBehaviors not empty {
+      CacheBehaviors.*{
+          # Scenario d)
+          ViewerProtocolPolicy != "allow-all"
+          # Scenario f)
+          ViewerProtocolPolicy in ["redirect-to-https", "https-only"]
+          <<
+            Violation: Amazon CloudFront distributions must use HTTPS (directly or via a redirection).
+            Fix: Set the ViewerProtocolPolicy in DefaultCacheBehavior or CacheBehaviors to one of "redirect-to-https" or "https-only".
+          >>
+      }
+    }
+
+  }
+}
