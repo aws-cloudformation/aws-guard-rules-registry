@@ -1,0 +1,52 @@
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#    CLOUDFRONT_ORIGIN_ACCESS_IDENTITY_DEPRECATED
+#
+# Description:
+#  Checks if Amazon CloudFront distributions use the deprecated Origin Access Identity (OAI).
+#
+# Reports on:
+#    AWS::CloudFront::Distribution
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
+# a) SKIP: when there are no CloudFront Distribution Resources
+# b) SKIP: when metadata has rule suppression for CLOUDFRONT_ORIGIN_ACCESS_IDENTITY_ENABLED
+# c) FAIL: when CloudFront Distribution Resources have a Legacy S3 Origin configuration with Origin Access Identity (OAI)
+# d) FAIL: when CloudFront Distribution Resources have an Origin configured with an Origin Access Identity (OAI)
+# e) PASS: when CloudFront Distribution Resources do not have an OAI configured
+
+#
+# Select all CloudFront Distribution Resources from incoming template (payload)
+#
+let cloudfront_distribution_resources = Resources.*[ Type == 'AWS::CloudFront::Distribution'
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "CLOUDFRONT_ORIGIN_ACCESS_IDENTITY_DEPRECATED"
+]
+
+rule CLOUDFRONT_ORIGIN_ACCESS_IDENTITY_DEPRECATED when %cloudfront_distribution_resources !empty {
+  let legacy_violations = %cloudfront_distribution_resources[
+    Properties.DistributionConfig.S3Origin.OriginAccessIdentity exists
+  ]
+  let violations = %cloudfront_distribution_resources.Properties.DistributionConfig.Origins.[
+    S3OriginConfig.OriginAccessIdentity exists
+  ]
+  %legacy_violations empty
+  <<
+    Violation: CloudFront Distributions should use Origin Access Control instead of Origin Access Identity (OAI).
+    Fix: Replace the S3Origin.OriginAccessIdentity property with Origins[].OriginAccessControlId for CloudFront Distribution Origins backed by S3.
+  >>
+  %violations empty
+  <<
+    Violation: CloudFront Distributions should use Origin Access Control instead of Origin Access Identity (OAI).
+    Fix: Replace the S3OriginConfig.OriginAccessIdentity property with OriginAccessControlId for CloudFront Distribution Origins backed by S3.
+  >>
+}
