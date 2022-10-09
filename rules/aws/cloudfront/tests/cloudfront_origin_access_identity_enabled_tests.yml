@@ -142,3 +142,33 @@
   expectations:
     rules:
       CLOUDFRONT_ORIGIN_ACCESS_IDENTITY_ENABLED: PASS
+
+- name: Scenario g) 'Origins' has a configured S3 origin (global endpoint) with an OAC configuration, PASS
+  input:
+    Resources:
+      CloudFrontDistribution:
+        Type: AWS::CloudFront::Distribution
+        Properties:
+          DistributionConfig:
+            Origins:
+              - DomainName: mybucket.s3.amazonaws.com
+                Id: myS3Origin
+                OriginAccessControlId: oac-id
+  expectations:
+    rules:
+      CLOUDFRONT_ORIGIN_ACCESS_IDENTITY_ENABLED: PASS
+
+- name: Scenario f) 'Origins' has a configured S3 origin (regional endpoint) with an OAI configuration, PASS
+  input:
+    Resources:
+      CloudFrontDistribution:
+        Type: AWS::CloudFront::Distribution
+        Properties:
+          DistributionConfig:
+            Origins:
+              - DomainName: mybucket.s3.ap-southeast-2.amazonaws.com
+                Id: myS3Origin
+                OriginAccessControlId: oac-id
+  expectations:
+    rules:
+      CLOUDFRONT_ORIGIN_ACCESS_IDENTITY_ENABLED: PASS
