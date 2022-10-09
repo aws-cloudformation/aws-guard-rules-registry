@@ -34,7 +34,7 @@ let cloudfront_origin_access_identity_enabled_resources = Resources.*[ Type == '
 ]
 
 rule CLOUDFRONT_ORIGIN_ACCESS_IDENTITY_ENABLED when %cloudfront_origin_access_identity_enabled_resources !empty {
-  let violations = %cloudfront_origin_access_identity_enabled_resources.Properties.DistributionConfig.Origins.[
+  let violations = %cloudfront_origin_access_identity_enabled_resources.Properties.DistributionConfig.Origins.*[
     DomainName == /[a-z0-9\.-]{3,63}\.s3\.amazonaws\.com/
     S3OriginConfig.OriginAccessIdentity !exists or
     S3OriginConfig.OriginAccessIdentity == ""
