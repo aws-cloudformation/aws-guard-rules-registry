@@ -37,7 +37,7 @@ rule IAM_POLICY_NO_STATEMENTS_WITH_ADMIN_ACCESS when %aws_iam_policies_no_statem
     some Properties.PolicyDocument.Statement[*] {
       some Action[*] == "*"
       Effect == "Allow"
-      Resource == "*"
+      some Resource in ["*"]
     }
   ]
   %violations empty

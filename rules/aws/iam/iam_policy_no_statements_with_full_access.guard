@@ -37,7 +37,7 @@ rule IAM_POLICY_NO_STATEMENTS_WITH_FULL_ACCESS when %aws_iam_managed_policies_no
     some Properties.PolicyDocument.Statement[*] {
       some Action[*] in ["*", /^[a-zA-Z0-9]*:\*$/]
       Effect == "Allow"
-      Resource == "*"
+      some Resource in ["*"]
     }
   ]
   %violations empty
