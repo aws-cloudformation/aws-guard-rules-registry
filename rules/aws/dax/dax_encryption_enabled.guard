@@ -1,0 +1,17 @@
+let dax_clusters = Resources.*[ Type == "AWS::DAX::Cluster" ]
+
+rule aws_dax_cluster_encryption_at_rest when %dax_clusters !empty {
+	%dax_clusters {
+		Properties {
+			SSESpecification exists <<DAX cluster does not have SSESpecification configured>>
+			when SSESpecification exists {
+				SSESpecification {
+					SSEEnabled exists <<SSEEnabled is not set>>
+					when SSEEnabled exists {
+						SSEEnabled == true <<DAX cluster has SSE disabled>>
+					}
+				}
+			}
+		}
+	}
+}

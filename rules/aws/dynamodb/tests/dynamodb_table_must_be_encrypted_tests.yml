@@ -1,19 +1,19 @@
 ###
-# DYNAMODB_TABLE_MUST_BE_ENCRYPTED test
+# DYNAMODB_TABLE_ENCRYPTED_KMS  test
 ###
 ---
 - name: Empty, SKIP
   input: {}
   expectations:
     rules:
-      DYNAMODB_TABLE_MUST_BE_ENCRYPTED: SKIP
+      DYNAMODB_TABLE_ENCRYPTED_KMS : SKIP
 
 - name: No resources, SKIP
   input:
     Resources: {}
   expectations:
     rules:
-      DYNAMODB_TABLE_MUST_BE_ENCRYPTED: SKIP
+      DYNAMODB_TABLE_ENCRYPTED_KMS : SKIP
 
 - name: DDB with SSE set to true, PASS
   input:
@@ -39,7 +39,7 @@
             SSEEnabled: true
   expectations:
     rules:
-      DYNAMODB_TABLE_MUST_BE_ENCRYPTED: PASS
+      DYNAMODB_TABLE_ENCRYPTED_KMS : PASS
 
 - name: DDB with SSE set to false, FAIL
   input:
@@ -65,7 +65,7 @@
             SSEEnabled: false
   expectations:
     rules:
-      DYNAMODB_TABLE_MUST_BE_ENCRYPTED: FAIL
+      DYNAMODB_TABLE_ENCRYPTED_KMS : FAIL
 
 - name: DDB with missing SSESpecification property, FAIL
   input:
@@ -89,4 +89,32 @@
               AttributeType: S
   expectations:
     rules:
-      DYNAMODB_TABLE_MUST_BE_ENCRYPTED: FAIL
+      DYNAMODB_TABLE_ENCRYPTED_KMS : FAIL
+
+- name: DDB with missing SSESpecification property but rule suppressed, SKIP
+  input:
+    Resources:
+      Exampletable:
+        Type: AWS::DynamoDB::Table
+        Metadata:
+          guard:
+            SuppressedRules:
+            - DYNAMODB_TABLE_ENCRYPTED_KMS
+        Properties:
+          KeySchema:
+            - AttributeName: Id
+              KeyType: HASH
+          AttributeDefinitions:
+            - AttributeName: Id
+              AttributeType: S
+            - AttributeName: dummy
+              AttributeType: S
+            - AttributeName: name
+              AttributeType: S
+            - AttributeName: owner
+              AttributeType: S
+            - AttributeName: createdAt
+              AttributeType: S
+  expectations:
+    rules:
+      DYNAMODB_TABLE_ENCRYPTED_KMS : SKIP

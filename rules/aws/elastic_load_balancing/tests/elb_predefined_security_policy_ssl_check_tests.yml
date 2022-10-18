@@ -1,0 +1,237 @@
+###
+# ELB_PREDEFINED_SECURITY_POLICY_SSL_CHECK tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      ELB_PREDEFINED_SECURITY_POLICY_SSL_CHECK: SKIP
+
+- name: Scenario a) No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      ELB_PREDEFINED_SECURITY_POLICY_SSL_CHECK: SKIP
+
+- name: Scenario b) Rule suppressed, SKIP
+  input:
+    Resources:
+      Elb:
+        Type: AWS::ElasticLoadBalancing::LoadBalancer
+        Metadata:
+          guard:
+            SuppressedRules:
+              - "ELB_PREDEFINED_SECURITY_POLICY_SSL_CHECK"
+  expectations:
+    rules:
+      ELB_PREDEFINED_SECURITY_POLICY_SSL_CHECK: SKIP
+
+- name: Scenario c) there are no HTTPS or SSL 'Listeners' (HTTP), SKIP
+  input:
+    Resources:
+      Elb:
+        Type: AWS::ElasticLoadBalancing::LoadBalancer
+        Properties:
+          Listeners:
+            - Protocol: HTTP
+  expectations:
+    rules:
+      ELB_PREDEFINED_SECURITY_POLICY_SSL_CHECK: SKIP
+
+- name: Scenario c) there are no HTTPS or SSL 'Listeners' (multiple), SKIP
+  input:
+    Resources:
+      Elb:
+        Type: AWS::ElasticLoadBalancing::LoadBalancer
+        Properties:
+          Listeners:
+            - Protocol: HTTP
+            - Protocol: TCP
+  expectations:
+    rules:
+      ELB_PREDEFINED_SECURITY_POLICY_SSL_CHECK: SKIP
+
+- name: Scenario d) there are no SSL Negotiation Policies, FAIL
+  input:
+    Resources:
+      Elb:
+        Type: AWS::ElasticLoadBalancing::LoadBalancer
+        Properties:
+          Listeners:
+            - Protocol: HTTPS
+          Policies:
+            - PolicyName: My-Cookie-Policy
+              PolicyType: LBCookieStickinessPolicyType
+  expectations:
+    rules:
+      ELB_PREDEFINED_SECURITY_POLICY_SSL_CHECK: FAIL
+
+- name: Scenario e) an 'SSLNegotiationPolicyType' does not have a 'Reference-Security-Policy' set to a value of 'ELBSecurityPolicy-TLS-1-2-2017-01', FAIL
+  input:
+    Resources:
+      Elb:
+        Type: AWS::ElasticLoadBalancing::LoadBalancer
+        Properties:
+          Listeners:
+            - Protocol: HTTPS
+          Policies:
+          - PolicyName: My-SSLNegotiation-Policy
+            PolicyType: SSLNegotiationPolicyType
+            Attributes:
+            - Name: Reference-Security-Policy
+              Value: ELBSecurityPolicy-2016-08
+  expectations:
+    rules:
+      ELB_PREDEFINED_SECURITY_POLICY_SSL_CHECK: FAIL
+
+- name: Scenario e) an 'SSLNegotiationPolicyType' does not have a 'Reference-Security-Policy' set to a value of 'ELBSecurityPolicy-TLS-1-2-2017-01', FAIL
+  input:
+    Resources:
+      Elb:
+        Type: AWS::ElasticLoadBalancing::LoadBalancer
+        Properties:
+          Listeners:
+            - Protocol: HTTPS
+          Policies:
+          - PolicyName: My-SSLNegotiation-Policy
+            PolicyType: SSLNegotiationPolicyType
+            Attributes:
+            - Name: Protocol-TLSv1
+              Value: true
+  expectations:
+    rules:
+      ELB_PREDEFINED_SECURITY_POLICY_SSL_CHECK: FAIL
+
+- name: Scenario f) 'Reference-Security-Policy' set to a value of 'ELBSecurityPolicy-TLS-1-2-2017-01' and a Listener on the LoadBalancer Resource does not reference the secure policy (missing PolicyNames), FAIL
+  input:
+    Resources:
+      Elb:
+        Type: AWS::ElasticLoadBalancing::LoadBalancer
+        Properties:
+          Policies:
+          - PolicyName: My-Good-SSLNegotiation-Policy
+            PolicyType: SSLNegotiationPolicyType
+            Attributes:
+            - Name: Reference-Security-Policy
+              Value: ELBSecurityPolicy-TLS-1-2-2017-01
+          Listeners:
+          - InstancePort: '80'
+            InstanceProtocol: HTTP
+            LoadBalancerPort: '443'
+            Protocol: HTTPS
+  expectations:
+    rules:
+      ELB_PREDEFINED_SECURITY_POLICY_SSL_CHECK: FAIL
+
+- name: Scenario f) 'Reference-Security-Policy' set to a value of 'ELBSecurityPolicy-TLS-1-2-2017-01' and a Listener on the LoadBalancer Resource does not reference the secure policy (PolicyNames empty []), FAIL
+  input:
+    Resources:
+      Elb:
+        Type: AWS::ElasticLoadBalancing::LoadBalancer
+        Properties:
+          Policies:
+          - PolicyName: My-Good-SSLNegotiation-Policy
+            PolicyType: SSLNegotiationPolicyType
+            Attributes:
+            - Name: Reference-Security-Policy
+              Value: ELBSecurityPolicy-TLS-1-2-2017-01
+          - PolicyName: My-Bad-SSLNegotiation-Policy
+            PolicyType: SSLNegotiationPolicyType
+            Attributes:
+            - Name: Reference-Security-Policy
+              Value: ELBSecurityPolicy-2016-08
+          Listeners:
+          - InstancePort: '80'
+            InstanceProtocol: HTTP
+            LoadBalancerPort: '443'
+            Protocol: HTTPS
+            PolicyNames: []
+  expectations:
+    rules:
+      ELB_PREDEFINED_SECURITY_POLICY_SSL_CHECK: FAIL
+
+- name: Scenario f) 'Reference-Security-Policy' set to a value of 'ELBSecurityPolicy-TLS-1-2-2017-01' and a Listener on the LoadBalancer Resource does not reference the secure policy (ref bad policy), FAIL
+  input:
+    Resources:
+      Elb:
+        Type: AWS::ElasticLoadBalancing::LoadBalancer
+        Properties:
+          Policies:
+          - PolicyName: My-Good-SSLNegotiation-Policy
+            PolicyType: SSLNegotiationPolicyType
+            Attributes:
+            - Name: Reference-Security-Policy
+              Value: ELBSecurityPolicy-TLS-1-2-2017-01
+          - PolicyName: My-Bad-SSLNegotiation-Policy
+            PolicyType: SSLNegotiationPolicyType
+            Attributes:
+            - Name: Reference-Security-Policy
+              Value: ELBSecurityPolicy-2016-08
+          Listeners:
+          - InstancePort: '80'
+            InstanceProtocol: HTTP
+            LoadBalancerPort: '443'
+            Protocol: HTTPS
+            PolicyNames:
+            - My-Bad-SSLNegotiation-Policy
+  expectations:
+    rules:
+      ELB_PREDEFINED_SECURITY_POLICY_SSL_CHECK: FAIL
+
+- name: Scenario g) 'Reference-Security-Policy' set to a value of 'ELBSecurityPolicy-TLS-1-2-2017-01' and all Listeners on the LoadBalancer Resource reference the secure policy, PASS
+  input:
+    Resources:
+      Elb:
+        Type: AWS::ElasticLoadBalancing::LoadBalancer
+        Properties:
+          Policies:
+          - PolicyName: My-Good-SSLNegotiation-Policy
+            PolicyType: SSLNegotiationPolicyType
+            Attributes:
+            - Name: Reference-Security-Policy
+              Value: ELBSecurityPolicy-TLS-1-2-2017-01
+          - PolicyName: My-Bad-SSLNegotiation-Policy
+            PolicyType: SSLNegotiationPolicyType
+            Attributes:
+            - Name: Reference-Security-Policy
+              Value: ELBSecurityPolicy-2016-08
+          Listeners:
+          - InstancePort: '80'
+            InstanceProtocol: HTTP
+            LoadBalancerPort: '443'
+            Protocol: HTTPS
+            PolicyNames:
+            - My-Good-SSLNegotiation-Policy
+  expectations:
+    rules:
+      ELB_PREDEFINED_SECURITY_POLICY_SSL_CHECK: PASS
+
+- name: Scenario g) 'Reference-Security-Policy' set to a value of 'ELBSecurityPolicy-TLS-1-2-2017-01' and all Listeners on the LoadBalancer Resource reference the secure policy, PASS
+  input:
+    Resources:
+      Elb:
+        Type: AWS::ElasticLoadBalancing::LoadBalancer
+        Properties:
+          Policies:
+          - PolicyName: My-Good-SSLNegotiation-Policy
+            PolicyType: SSLNegotiationPolicyType
+            Attributes:
+            - Name: Reference-Security-Policy
+              Value: ELBSecurityPolicy-TLS-1-2-2017-01
+          - PolicyName: My-Bad-SSLNegotiation-Policy
+            PolicyType: SSLNegotiationPolicyType
+            Attributes:
+            - Name: Reference-Security-Policy
+              Value: ELBSecurityPolicy-2016-08
+          Listeners:
+          - InstancePort: '80'
+            InstanceProtocol: HTTP
+            LoadBalancerPort: '443'
+            Protocol: SSL
+            PolicyNames:
+            - My-Good-SSLNegotiation-Policy
+  expectations:
+    rules:
+      ELB_PREDEFINED_SECURITY_POLICY_SSL_CHECK: PASS

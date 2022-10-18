@@ -1,2 +1,35 @@
 ## Config Rule Name : sns-encrypted-kms
 ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/sns-encrypted-kms.html"
+
+###
+# AWS::SNS::Topic.guard rules
+###
+
+let aws_sns_topic_resources = Resources.*[ Type == 'AWS::SNS::Topic' ]
+
+let aws_sns_topic_policy_resources = Resources.*[ Type == 'AWS::SNS::TopicPolicy' ]
+
+let secure_topic_policies = %aws_sns_topic_policy_resources[
+  Properties.PolicyDocument {
+    some Statement[*] {
+      Effect == 'Deny'
+      Condition {
+        Bool.'aws:SecureTransport' == false
+        NumericLessThan.'s3:TlsVersion' == 1.2
+      }
+    }
+  }
+]
+
+# Rule Intent: SNS topics must be encrypted with KMS
+# Expectations:
+# a) SKIP: when there are no SNS Topics present
+# b) PASS: when SNS topics are present, they are encrypted with KMS
+# c) FAIL: when SNS topics are present, they are not encrypted with KMS
+rule aws_sns_topics_must_be_encrypted_using_kms when %aws_sns_topic_resources !empty {
+    # Ensure SNS topics are encrypted with KMS
+    %aws_sns_topic_resources.Properties{
+        KmsMasterKeyId exists <<SNS Topic - must be encrypted using KMS>>
+        KmsMasterKeyId not in ["alias/aws/sns"] <<SNS Topic - Customer managed KMS Key should be provided for Topic encryption>>
+    }
+}

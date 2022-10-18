@@ -1,2 +1,15 @@
 ## Config Rule Name : sagemaker-notebook-no-direct-internet-access
 ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/sagemaker-notebook-no-direct-internet-access.html"
+
+let sagemaker_notebookinstances = Resources.*[ Type == "AWS::SageMaker::NotebookInstance" ]
+
+rule aws_sagemaker_instance_direct_internet_access when %sagemaker_notebookinstances !empty {
+	%sagemaker_notebookinstances {
+		Properties {
+			DirectInternetAccess exists <<DirectInternetAccess is enabled>>
+			when DirectInternetAccess exists {
+				DirectInternetAccess == "Disabled" <<DirectInternetAccess is enabled>>
+			}
+		}
+	}
+}

@@ -1,2 +1,45 @@
 ## Config Rule Name : dynamodb-table-encrypted-kms
 ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/dynamodb-table-encrypted-kms.html"
+
+#####################################
+# Rule Identifier:
+#    DYNAMODB_TABLE_ENCRYPTED_KMS
+#
+# Description:
+#   ALL DynamoDB Tables must have SEE with a Customer managed CMK
+#
+# Reports on:
+#    AWS::DynamoDB::Table
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
+# a) SKIP: when there are no DynamoDB Tables present
+# b) PASS: when all DynamoDB Tables are encrypted with Customer managed CMK
+# c) FAIL: when all DynamoDB Tables are not are encrypted with Customer managed CMK
+# d) SKIP: when metada has rule suppression for DYNAMODB_TABLE_ENCRYPTED_KMS
+
+let aws_dynamodb_table_resources_kms_encrypted = Resources.*[ Type == 'AWS::DynamoDB::Table'
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "DYNAMODB_TABLE_ENCRYPTED_KMS"
+]
+
+let aws_dynamodb_table_resources_allowed_algorithms = [ 'KMS' ]
+
+
+rule DYNAMODB_TABLE_ENCRYPTED_KMS when %aws_dynamodb_table_resources_kms_encrypted !empty {
+    %aws_dynamodb_table_resources_kms_encrypted.Properties.SSESpecification exists
+    %aws_dynamodb_table_resources_kms_encrypted.Properties.SSESpecification{
+        SSEEnabled == true
+        KMSMasterKeyId exists
+        SSEType == %aws_dynamodb_table_resources_allowed_algorithms
+    }
+    <<
+      Violation:  ALL DynamoDB Tables must have SEE with a Customer managed CMK
+      Fix: Set SSEEnabled to true and have KMSMasterKeyId value
+    >>
+}

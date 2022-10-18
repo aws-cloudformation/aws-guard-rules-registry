@@ -1,2 +1,17 @@
 ## Config Rule Name : elasticache-redis-cluster-automatic-backup-check
 ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/elasticache-redis-cluster-automatic-backup-check.html"
+
+let replication_groups = Resources.*[Type == "AWS::ElastiCache::ReplicationGroup"]
+
+rule aws_elasticache_replicationgroup_backups_enabled when %replication_groups !empty {
+	%replication_groups {
+		Properties {
+			when Engine == "redis" {
+				SnapshotRetentionLimit exists <<Automatic backup is not configured>>
+				when SnapshotRetentionLimit exists {
+					SnapshotRetentionLimit > 0 <<Automatic backup is disabled>>
+				}
+			}
+		}
+	}
+}

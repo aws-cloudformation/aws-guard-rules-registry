@@ -1,2 +1,43 @@
-## Config Rule Name : cmk-backing-key-rotation-enabled
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/cmk-backing-key-rotation-enabled.html"
+#
+# Rule Identifier:
+#    CMK_BACKING_KEY_ROTATION_ENABLED
+#
+# Description:
+#   Key rotation should be enabled for KMS
+#
+# Reports on:
+#    AWS::KMS::Key
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
+# a) SKIP: when there are no KMS CMKs
+# b) FAIL: when key rotation is not set for all KMS CMKs
+# c) PASS: when key rotation is set on all KMS CMKs
+# d) SKIP: when metada has rule suppression for CMK_BACKING_KEY_ROTATION_ENABLED
+
+#
+# Select all KMS Key resources from incoming template (payload)
+#
+
+let aws_kms_key_resources = Resources.*[ Type == "AWS::KMS::Key"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "CMK_BACKING_KEY_ROTATION_ENABLED"
+]
+
+
+rule CMK_BACKING_KEY_ROTATION_ENABLED when %aws_kms_key_resources !empty {
+     # capture key rotation property from the resource
+     %aws_kms_key_resources.Properties
+     {
+        EnableKeyRotation == true
+        <<
+            Violation: Key rotation should be enabled for KMS.
+            Fix: Set the EnableKeyRotation parameter to true.
+        >>
+     }
+}

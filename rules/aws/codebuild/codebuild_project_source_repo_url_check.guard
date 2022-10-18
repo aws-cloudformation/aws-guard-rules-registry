@@ -1,2 +1,18 @@
     ## Config Rule Name : codebuild-project-source-repo-url-check
     ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/codebuild-project-source-repo-url-check.html"
+# Intent: Checks whether the GitHub or Bitbucket source repository URL contains either personal access tokens or user name and password.
+
+let codebuild_sourcecredentials = Resources.*[
+	Type == "AWS::CodeBuild::SourceCredential"
+]
+
+rule CODEBUILD_PROJECT_SOURCE-REPO_URL_CHECK when %codebuild_sourcecredentials !empty {
+	%codebuild_sourcecredentials {
+		Properties {
+			when ServerType in ["BITBUCKET","GITHUB","GITHUB_ENTERPRISE"] {
+				AuthType == "OAUTH" <<OAuth credentials not used>>
+			}
+		}
+	}
+}
+

@@ -1,0 +1,25 @@
+---
+- input:
+    Resources:
+      BasicNotebookInstance:
+        Type: "AWS::SageMaker::NotebookInstance"
+        Properties:
+          InstanceType: "ml.t2.large"
+          RoleArn: !GetAtt ExecutionRole.Arn
+          SubnetId: subnet-abcd1234
+          KmsKeyId: arn:aws:kms:blah
+  expectations:
+    rules:
+      aws_sagemaker_instance_storage_encryption: PASS
+
+- input:
+    Resources:
+      BasicNotebookInstance:
+        Type: "AWS::SageMaker::NotebookInstance"
+        Properties:
+          InstanceType: "ml.t2.large"
+          RoleArn: !GetAtt ExecutionRole.Arn
+          RootAccess: Enabled
+  expectations:
+    rules:
+      aws_sagemaker_instance_storage_encryption: FAIL

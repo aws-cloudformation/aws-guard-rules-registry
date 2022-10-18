@@ -1,0 +1,282 @@
+- input:
+    Resources:
+      MySNSTopic:
+        Type: AWS::SNS::Topic
+        Properties:
+          KmsMasterKeyId:
+            Fn::GetAtt:
+              - myTestBucketKey
+              - Arn
+          Subscription:
+            - Endpoint:
+                Fn::GetAtt:
+                  - "MyQueue1"
+                  - "Arn"
+              Protocol: "sqs"
+            - Endpoint:
+                Fn::GetAtt:
+                  - "MyQueue2"
+                  - "Arn"
+              Protocol: "sqs"
+          TopicName: "SampleTopic"
+      MySNSTopicPolicy:
+        Type: AWS::SNS::TopicPolicy
+        Properties:
+          Topics:
+            - Ref: MySNSTopic
+          PolicyDocument:
+            Version: "2008-10-17"
+            Id: Policy1415489375392
+            Statement:
+              - Sid: deny-unless-tls
+                Effect: Deny
+                Principal:
+                  AWS: "*"
+                Action:
+                  - sns:Publish
+                Resource: arn:aws:sns:us-east-2:111122223333:MySNSTopic
+                Condition:
+                  Bool:
+                    aws:SecureTransport: false
+                  NumericLessThan:
+                    s3:TlsVersion: 1.2
+  expectations:
+    rules:
+      aws_sns_topics_must_be_encrypted_using_kms: PASS
+
+- input:
+    Resources:
+      MySNSTopic:
+        Type: AWS::SNS::Topic
+        Properties:
+          KmsMasterKeyId:
+            Fn::GetAtt:
+              - myTestBucketKey
+              - Arn
+          Subscription:
+            - Endpoint:
+                Fn::GetAtt:
+                  - "MyQueue1"
+                  - "Arn"
+              Protocol: "sqs"
+            - Endpoint:
+                Fn::GetAtt:
+                  - "MyQueue2"
+                  - "Arn"
+              Protocol: "sqs"
+          TopicName: "SampleTopic"
+      MySecondSNSTopic:
+        Type: AWS::SNS::Topic
+        Properties:
+          KmsMasterKeyId:
+            Fn::GetAtt:
+              - myTestBucketKey
+              - Arn
+          Subscription:
+            - Endpoint:
+                Fn::GetAtt:
+                  - "MyQueue1"
+                  - "Arn"
+              Protocol: "sqs"
+            - Endpoint:
+                Fn::GetAtt:
+                  - "MyQueue2"
+                  - "Arn"
+              Protocol: "sqs"
+          TopicName: "SampleTopic"
+      MySNSTopicPolicy:
+        Type: AWS::SNS::TopicPolicy
+        Properties:
+          Topics:
+            - Ref: MySNSTopic
+            - Ref: MySecondSNSTopic
+          PolicyDocument:
+            Version: "2008-10-17"
+            Id: Policy1415489375392
+            Statement:
+              - Sid: deny-unless-tls
+                Effect: Deny
+                Principal:
+                  AWS: "*"
+                Action:
+                  - sns:Publish
+                Resource: arn:aws:sns:us-east-2:111122223333:MySNSTopic
+                Condition:
+                  Bool:
+                    aws:SecureTransport: false
+                  NumericLessThan:
+                    s3:TlsVersion: 1.2
+  expectations:
+    rules:
+      aws_sns_topics_must_be_encrypted_using_kms: PASS
+
+- input:
+    Resources:
+      MySNSTopic:
+        Type: AWS::SNS::Topic
+        Properties:
+          KmsMasterKeyId:
+            Fn::GetAtt:
+              - myTestBucketKey
+              - Arn
+          Subscription:
+            - Endpoint:
+                Fn::GetAtt:
+                  - "MyQueue1"
+                  - "Arn"
+              Protocol: "sqs"
+            - Endpoint:
+                Fn::GetAtt:
+                  - "MyQueue2"
+                  - "Arn"
+              Protocol: "sqs"
+          TopicName: "SampleTopic"
+      MySecondSNSTopic:
+        Type: AWS::SNS::Topic
+        Properties:
+          KmsMasterKeyId:
+            Fn::GetAtt:
+              - myTestBucketKey
+              - Arn
+          Subscription:
+            - Endpoint:
+                Fn::GetAtt:
+                  - "MyQueue1"
+                  - "Arn"
+              Protocol: "sqs"
+            - Endpoint:
+                Fn::GetAtt:
+                  - "MyQueue2"
+                  - "Arn"
+              Protocol: "sqs"
+          TopicName: "SampleTopic"
+      MySNSTopicPolicy:
+        Type: AWS::SNS::TopicPolicy
+        Properties:
+          Topics:
+            - Ref: MySNSTopic
+          PolicyDocument:
+            Version: "2008-10-17"
+            Id: Policy1415489375392
+            Statement:
+              - Sid: deny-unless-tls
+                Effect: Deny
+                Principal:
+                  AWS: "*"
+                Action:
+                  - sns:Publish
+                Resource: arn:aws:sns:us-east-2:111122223333:MySNSTopic
+                Condition:
+                  Bool:
+                    aws:SecureTransport: false
+                  NumericLessThan:
+                    s3:TlsVersion: 1.2
+      MySecondSNSTopicPolicy:
+        Type: AWS::SNS::TopicPolicy
+        Properties:
+          Topics:
+            - Ref: MySecondSNSTopic
+          PolicyDocument:
+            Version: "2008-10-17"
+            Id: Policy1415489375392
+            Statement:
+              - Sid: deny-unless-tls
+                Effect: Deny
+                Principal:
+                  AWS: "*"
+                Action:
+                  - sns:Publish
+                Resource: arn:aws:sns:us-east-2:111122223333:MySNSTopic
+                Condition:
+                  Bool:
+                    aws:SecureTransport: false
+                  NumericLessThan:
+                    s3:TlsVersion: 1.2
+  expectations:
+    rules:
+      aws_sns_topics_must_be_encrypted_using_kms: PASS
+
+- input:
+    Resources:
+      MySNSTopic:
+        Type: AWS::SNS::Topic
+        Properties:
+          Subscription:
+            - Endpoint:
+                Fn::GetAtt:
+                  - "MyQueue1"
+                  - "Arn"
+              Protocol: "sqs"
+            - Endpoint:
+                Fn::GetAtt:
+                  - "MyQueue2"
+                  - "Arn"
+              Protocol: "sqs"
+          TopicName: "SampleTopic"
+      MySNSTopicPolicy:
+        Type: AWS::SNS::TopicPolicy
+        Properties:
+          Topics:
+            - Ref: MySNSTopic
+          PolicyDocument:
+            Version: "2008-10-17"
+            Id: Policy1415489375392
+            Statement:
+              - Sid: deny-unless-tls
+                Effect: Deny
+                Principal:
+                  AWS: "*"
+                Action:
+                  - sns:Publish
+                Resource: arn:aws:sns:us-east-2:111122223333:MySNSTopic
+                Condition:
+                  Bool:
+                    aws:SecureTransport: false
+                  NumericLessThan:
+                    s3:TlsVersion: 1.2
+  expectations:
+    rules:
+      aws_sns_topics_must_be_encrypted_using_kms: FAIL
+
+- input:
+    Resources:
+      MySNSTopic:
+        Type: AWS::SNS::Topic
+        Properties:
+          KmsMasterKeyId: "alias/aws/sns"
+          Subscription:
+            - Endpoint:
+                Fn::GetAtt:
+                  - "MyQueue1"
+                  - "Arn"
+              Protocol: "sqs"
+            - Endpoint:
+                Fn::GetAtt:
+                  - "MyQueue2"
+                  - "Arn"
+              Protocol: "sqs"
+          TopicName: "SampleTopic"
+      MySNSTopicPolicy:
+        Type: AWS::SNS::TopicPolicy
+        Properties:
+          Topics:
+            - Ref: MySNSTopic
+          PolicyDocument:
+            Version: "2008-10-17"
+            Id: Policy1415489375392
+            Statement:
+              - Sid: deny-unless-tls
+                Effect: Deny
+                Principal:
+                  AWS: "*"
+                Action:
+                  - sns:Publish
+                Resource: arn:aws:sns:us-east-2:111122223333:MySNSTopic
+                Condition:
+                  Bool:
+                    aws:SecureTransport: false
+                  NumericLessThan:
+                    s3:TlsVersion: 1.2
+  expectations:
+    rules:
+      aws_sns_topics_must_be_encrypted_using_kms: FAIL

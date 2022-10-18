@@ -1,2 +1,71 @@
-## Config Rule Name : elb-predefined-security-policy-ssl-check
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/elb-predefined-security-policy-ssl-check.html"
+#
+#####################################
+##           Gherkin               ##
+#####################################
+#
+# Rule Identifier:
+#   ELB_PREDEFINED_SECURITY_POLICY_SSL_CHECK
+#
+# Description:
+#   This rule checks whether your Classic Load Balancer HTTPS/SSL listeners use the predefined policy ELBSecurityPolicy-TLS-1-2-2017-01.
+#
+# Reports on:
+#   AWS::ElasticLoadBalancing::LoadBalancer
+#
+# Evaluates:
+#   AWS CloudFormation
+#
+# Rule Parameters:
+#   None
+#
+# Scenarios:
+# a) SKIP: when there are no Elastic Load Balancing Resources
+# b) SKIP: when metadata has rule suppression for ELB_PREDEFINED_SECURITY_POLICY_SSL_CHECK
+# c) SKIP: when there are no HTTPS or SSL 'Listeners'
+# d) FAIL: when there are no SSL Negotiation Policies
+# e) FAIL: when there are SSL Negotiation Policies and the policies do not have a 'Reference-Security-Policy' set to a value of 'ELBSecurityPolicy-TLS-1-2-2017-01'
+# f) FAIL: when there is a 'Reference-Security-Policy' set to a value of 'ELBSecurityPolicy-TLS-1-2-2017-01' and a Listener on the LoadBalancer Resource does not reference the secure policy
+# g) PASS: when there is a 'Reference-Security-Policy' set to a value of 'ELBSecurityPolicy-TLS-1-2-2017-01' and all Listeners on the LoadBalancer Resource reference the secure policy
+
+#
+# Select all Elastic Load Balancing Resources from incoming template (payload)
+#
+let elb_predefined_security_policy_ssl_check_resources = Resources.*[ Type == 'AWS::ElasticLoadBalancing::LoadBalancer'
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "ELB_PREDEFINED_SECURITY_POLICY_SSL_CHECK"
+]
+
+rule ELB_PREDEFINED_SECURITY_POLICY_SSL_CHECK when %elb_predefined_security_policy_ssl_check_resources !empty {
+    %elb_predefined_security_policy_ssl_check_resources.Properties {
+        let https_ssl_listeners = Listeners.*[
+            Protocol in ['HTTPS', 'SSL']
+        ]
+
+        when %https_ssl_listeners not empty {
+            let secure_policies = some Policies.*[
+                PolicyType == 'SSLNegotiationPolicyType'
+                some Attributes[*] {
+                    Name == 'Reference-Security-Policy'
+                    Value == 'ELBSecurityPolicy-TLS-1-2-2017-01'
+                }
+            ].PolicyName
+
+            # Scenarios d) and e)
+            %secure_policies !empty
+
+            %https_ssl_listeners {
+                # Scenarios f) and g)
+                PolicyNames exists
+                when PolicyNames exists {
+                    PolicyNames not empty
+                    some %secure_policies in PolicyNames
+                    <<
+                        Violation: Classic Load Balancers HTTPS/SSL listeners must use the predefined policy ELBSecurityPolicy-TLS-1-2-2017-01.
+                        Fix: Set a Classic Load Balancer Policy of type 'SSLNegotiationPolicyType' with attribute Name 'Reference-Security-Policy' and Value 'ELBSecurityPolicy-TLS-1-2-2017-01', and reference this policy in each Listener.
+                    >>
+                }
+            }
+        }
+
+    }
+}

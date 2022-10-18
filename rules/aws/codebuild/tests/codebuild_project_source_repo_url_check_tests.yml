@@ -1,0 +1,42 @@
+############
+# CODEBUILD_PROJECT_SOURCE-REPO_URL_CHECK
+#############
+---
+- input:
+    Resources:
+      Credential:
+        Type: AWS::CodeBuild::SourceCredential
+        Properties:
+          Token: '{{resolve:secretsmanager:bitbucket:SecretString:token}}'
+          ServerType: BITBUCKET
+          Username: '{{resolve:secretsmanager:bitbucket:SecretString:username}}'
+          AuthType: OAUTH
+  expectations:
+    rules:
+      CODEBUILD_PROJECT_SOURCE-REPO_URL_CHECK: PASS
+
+- input:
+    Resources:
+      Credential:
+        Type: AWS::CodeBuild::SourceCredential
+        Properties:
+          Token: '{{resolve:secretsmanager:bitbucket:SecretString:token}}'
+          ServerType: BITBUCKET
+          Username: '{{resolve:secretsmanager:bitbucket:SecretString:username}}'
+          AuthType: BASIC_AUTH
+  expectations:
+    rules:
+      CODEBUILD_PROJECT_SOURCE-REPO_URL_CHECK: FAIL
+
+- input:
+    Resources:
+      Credential:
+        Type: AWS::CodeBuild::SourceCredential
+        Properties:
+          Token: '{{resolve:secretsmanager:bitbucket:SecretString:token}}'
+          ServerType: BITBUCKET
+          Username: '{{resolve:secretsmanager:bitbucket:SecretString:username}}'
+          AuthType: PERSONAL_ACCESS_TOKEN
+  expectations:
+    rules:
+      CODEBUILD_PROJECT_SOURCE-REPO_URL_CHECK: FAIL

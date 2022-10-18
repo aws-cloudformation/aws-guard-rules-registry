@@ -1,0 +1,249 @@
+- input:
+    Resources:
+      FileSystem:
+        Type: AWS::FSx::FileSystem
+        Properties:
+          FileSystemType: "LUSTRE"
+          FileSystemTypeVersion: "2.12"
+          StorageCapacity: 1200
+          SubnetIds: [!ImportValue MySubnet01]
+          SecurityGroupIds: [!ImportValue LustreIngressSecurityGroupId]
+          LustreConfiguration:
+            DeploymentType: PERSISTENT_1
+            AutomaticBackupRetentionDays: 30
+  expectations:
+    rules:
+      aws_fsx_filesystem_automated_backups_enabled: PASS
+
+- input:
+    Resources:
+      FileSystem:
+        Type: AWS::FSx::FileSystem
+        Properties:
+          FileSystemType: "LUSTRE"
+          FileSystemTypeVersion: "2.12"
+          StorageCapacity: 1200
+          SubnetIds: [!ImportValue MySubnet01]
+          SecurityGroupIds: [!ImportValue LustreIngressSecurityGroupId]
+          LustreConfiguration:
+            DeploymentType: PERSISTENT_2
+            AutomaticBackupRetentionDays: 30
+  expectations:
+    rules:
+      aws_fsx_filesystem_automated_backups_enabled: PASS
+
+- input:
+    Resources:
+      FileSystem:
+        Type: AWS::FSx::FileSystem
+        Properties:
+          FileSystemType: "LUSTRE"
+          FileSystemTypeVersion: "2.12"
+          StorageCapacity: 1200
+          SubnetIds: [!ImportValue MySubnet01]
+          SecurityGroupIds: [!ImportValue LustreIngressSecurityGroupId]
+          LustreConfiguration:
+            DeploymentType: PERSISTENT_1
+            AutomaticBackupRetentionDays: 0
+  expectations:
+    rules:
+      aws_fsx_filesystem_automated_backups_enabled: FAIL
+
+- input:
+    Resources:
+      FileSystem:
+        Type: AWS::FSx::FileSystem
+        Properties:
+          FileSystemType: "LUSTRE"
+          FileSystemTypeVersion: "2.12"
+          StorageCapacity: 1200
+          SubnetIds: [!ImportValue MySubnet01]
+          SecurityGroupIds: [!ImportValue LustreIngressSecurityGroupId]
+          LustreConfiguration:
+            DeploymentType: PERSISTENT_2
+            AutomaticBackupRetentionDays: 0
+  expectations:
+    rules:
+      aws_fsx_filesystem_automated_backups_enabled: FAIL
+
+- input:
+    Resources:
+      FileSystem:
+        Type: AWS::FSx::FileSystem
+        Properties:
+          FileSystemType: "LUSTRE"
+          FileSystemTypeVersion: "2.12"
+          StorageCapacity: 1200
+          SubnetIds: [!ImportValue MySubnet01]
+          SecurityGroupIds: [!ImportValue LustreIngressSecurityGroupId]
+          LustreConfiguration:
+            DeploymentType: PERSISTENT_1
+  expectations:
+    rules:
+      aws_fsx_filesystem_automated_backups_enabled: FAIL
+
+- input:
+    Resources:
+      FileSystem:
+        Type: AWS::FSx::FileSystem
+        Properties:
+          FileSystemType: "LUSTRE"
+          FileSystemTypeVersion: "2.12"
+          StorageCapacity: 1200
+          SubnetIds: [!ImportValue MySubnet01]
+          SecurityGroupIds: [!ImportValue LustreIngressSecurityGroupId]
+          LustreConfiguration:
+            DeploymentType: PERSISTENT_2
+  expectations:
+    rules:
+      aws_fsx_filesystem_automated_backups_enabled: FAIL
+
+- input:
+    Resources:
+      FileSystem:
+        Type: AWS::FSx::FileSystem
+        Properties:
+          FileSystemType: "ONTAP"
+          FileSystemTypeVersion: "2.12"
+          StorageCapacity: 1200
+          SubnetIds: [!ImportValue MySubnet01]
+          SecurityGroupIds: [!ImportValue LustreIngressSecurityGroupId]
+          OntapConfiguration:
+            DeploymentType: MULTI_AZ_1
+            AutomaticBackupRetentionDays: 30
+  expectations:
+    rules:
+      aws_fsx_filesystem_automated_backups_enabled: PASS
+
+- input:
+    Resources:
+      FileSystem:
+        Type: AWS::FSx::FileSystem
+        Properties:
+          FileSystemType: "ONTAP"
+          FileSystemTypeVersion: "2.12"
+          StorageCapacity: 1200
+          SubnetIds: [!ImportValue MySubnet01]
+          SecurityGroupIds: [!ImportValue LustreIngressSecurityGroupId]
+          OntapConfiguration:
+            DeploymentType: MULTI_AZ_1
+            AutomaticBackupRetentionDays: 0
+  expectations:
+    rules:
+      aws_fsx_filesystem_automated_backups_enabled: FAIL
+
+- input:
+    Resources:
+      FileSystem:
+        Type: AWS::FSx::FileSystem
+        Properties:
+          FileSystemType: "ONTAP"
+          FileSystemTypeVersion: "2.12"
+          StorageCapacity: 1200
+          SubnetIds: [!ImportValue MySubnet01]
+          SecurityGroupIds: [!ImportValue LustreIngressSecurityGroupId]
+          OntapConfiguration:
+            DeploymentType: MULTI_AZ_1
+  expectations:
+    rules:
+      aws_fsx_filesystem_automated_backups_enabled: FAIL
+
+- input:
+    Resources:
+      FileSystem:
+        Type: AWS::FSx::FileSystem
+        Properties:
+          FileSystemType: "OPENZFS"
+          FileSystemTypeVersion: "2.12"
+          StorageCapacity: 1200
+          SubnetIds: [!ImportValue MySubnet01]
+          SecurityGroupIds: [!ImportValue LustreIngressSecurityGroupId]
+          OpenZFSConfiguration:
+            AutomaticBackupRetentionDays: 30
+            DeploymentType: SINGLE_AZ_1
+  expectations:
+    rules:
+      aws_fsx_filesystem_automated_backups_enabled: PASS
+
+- input:
+    Resources:
+      FileSystem:
+        Type: AWS::FSx::FileSystem
+        Properties:
+          FileSystemType: "OPENZFS"
+          FileSystemTypeVersion: "2.12"
+          StorageCapacity: 1200
+          SubnetIds: [!ImportValue MySubnet01]
+          SecurityGroupIds: [!ImportValue LustreIngressSecurityGroupId]
+          OpenZFSConfiguration:
+            AutomaticBackupRetentionDays: 0
+            DeploymentType: SINGLE_AZ_1
+  expectations:
+    rules:
+      aws_fsx_filesystem_automated_backups_enabled: FAIL
+
+- input:
+    Resources:
+      FileSystem:
+        Type: AWS::FSx::FileSystem
+        Properties:
+          FileSystemType: "OPENZFS"
+          FileSystemTypeVersion: "2.12"
+          StorageCapacity: 1200
+          SubnetIds: [!ImportValue MySubnet01]
+          SecurityGroupIds: [!ImportValue LustreIngressSecurityGroupId]
+          OpenZFSConfiguration:
+            DeploymentType: SINGLE_AZ_1
+  expectations:
+    rules:
+      aws_fsx_filesystem_automated_backups_enabled: FAIL
+
+- input:
+    Resources:
+      FileSystem:
+        Type: AWS::FSx::FileSystem
+        Properties:
+          FileSystemType: "WINDOWS"
+          FileSystemTypeVersion: "2.12"
+          StorageCapacity: 1200
+          SubnetIds: [!ImportValue MySubnet01]
+          SecurityGroupIds: [!ImportValue LustreIngressSecurityGroupId]
+          WindowsConfiguration:
+            AutomaticBackupRetentionDays: 30
+            DeploymentType: MULTI_AZ_1
+  expectations:
+    rules:
+      aws_fsx_filesystem_automated_backups_enabled: PASS
+
+- input:
+    Resources:
+      FileSystem:
+        Type: AWS::FSx::FileSystem
+        Properties:
+          FileSystemType: "WINDOWS"
+          FileSystemTypeVersion: "2.12"
+          StorageCapacity: 1200
+          SubnetIds: [!ImportValue MySubnet01]
+          SecurityGroupIds: [!ImportValue LustreIngressSecurityGroupId]
+          WindowsConfiguration:
+            AutomaticBackupRetentionDays: 0
+            DeploymentType: MULTI_AZ_1
+  expectations:
+    rules:
+      aws_fsx_filesystem_automated_backups_enabled: FAIL
+
+- input:
+    Resources:
+      FileSystem:
+        Type: AWS::FSx::FileSystem
+        Properties:
+          FileSystemType: "WINDOWS"
+          FileSystemTypeVersion: "2.12"
+          StorageCapacity: 1200
+          SubnetIds: [!ImportValue MySubnet01]
+          SecurityGroupIds: [!ImportValue LustreIngressSecurityGroupId]
+          WindowsConfiguration:
+            DeploymentType: MULTI_AZ_1
+  expectations:
+    rules:
+      aws_fsx_filesystem_automated_backups_enabled: FAIL

@@ -1,0 +1,54 @@
+- input:
+    Resources:
+      myReplicationGroup:
+        Type: 'AWS::ElastiCache::ReplicationGroup'
+        Properties:
+          ReplicationGroupDescription: my description
+          NumCacheClusters: 2
+          Engine: redis
+          CacheNodeType: cache.m3.medium
+          AutomaticFailoverEnabled: 'true'
+          CacheSubnetGroupName: subnetgroup
+          EngineVersion: 2.8.6
+          PreferredMaintenanceWindow: 'wed:09:25-wed:22:30'
+          SnapshotRetentionLimit: 15
+          SnapshotWindow: '03:30-05:30'
+  expectations:
+    rules:
+      aws_elasticache_replicationgroup_backups_enabled: PASS
+
+- input:
+    Resources:
+      myReplicationGroup:
+        Type: 'AWS::ElastiCache::ReplicationGroup'
+        Properties:
+          ReplicationGroupDescription: my description
+          NumCacheClusters: 2
+          Engine: redis
+          CacheNodeType: cache.m3.medium
+          AutomaticFailoverEnabled: 'true'
+          CacheSubnetGroupName: subnetgroup
+          EngineVersion: 2.8.6
+          PreferredMaintenanceWindow: 'wed:09:25-wed:22:30'
+          SnapshotRetentionLimit: 0
+          SnapshotWindow: '03:30-05:30'
+  expectations:
+    rules:
+      aws_elasticache_replicationgroup_backups_enabled: FAIL
+
+- input:
+    Resources:
+      myReplicationGroup:
+        Type: 'AWS::ElastiCache::ReplicationGroup'
+        Properties:
+          ReplicationGroupDescription: my description
+          NumCacheClusters: 2
+          Engine: redis
+          CacheNodeType: cache.m3.medium
+          AutomaticFailoverEnabled: 'true'
+          CacheSubnetGroupName: subnetgroup
+          EngineVersion: 2.8.6
+          PreferredMaintenanceWindow: 'wed:09:25-wed:22:30'
+  expectations:
+    rules:
+      aws_elasticache_replicationgroup_backups_enabled: FAIL

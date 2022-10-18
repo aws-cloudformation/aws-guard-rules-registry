@@ -1,2 +1,41 @@
-    ## Config Rule Name : autoscaling-launch-config-public-ip-disabled
-    ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/AUTOSCALING_LAUNCH_CONFIG_PUBLIC_IP_DISABLED.html"
+#####################################
+# Rule Identifier:
+#    AUTOSCALING_LAUNCH_CONFIG_PUBLIC_IP_DISABLED
+#
+# Description:
+#   Checks the AutoScaling::LaunchConfiguration if it has a public IP being set.
+#
+# Reports on:
+#    AWS::AutoScaling::LaunchConfiguration
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
+# a) SKIP: when there are no AutoScaling::LaunchConfiguration resource present
+# b) PASS: when all AutoScaling::LaunchConfiguration resources AssociatePublicIpAddress property is set to false
+# c) FAIL: when all AutoScaling::LaunchConfiguration resources AssociatePublicIpAddress property does not exist
+# d) FAIL: when all AutoScaling::LaunchConfiguration resources have AssociatePublicIpAddress set to true
+# e) SKIP: when metada has rule suppression for AUTOSCALING_LAUNCH_CONFIG_PUBLIC_IP_DISABLED
+
+#
+# Select all S3 resources from incoming template (payload)
+#
+let launch_configurations_no_pub_ip = Resources.*[ Type == 'AWS::AutoScaling::LaunchConfiguration'
+ Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "AUTOSCALING_LAUNCH_CONFIG_PUBLIC_IP_DISABLED"
+]
+
+rule AUTOSCALING_LAUNCH_CONFIG_PUBLIC_IP_DISABLED when %launch_configurations_no_pub_ip !empty {
+    %launch_configurations_no_pub_ip.Properties {
+        AssociatePublicIpAddress exists
+        AssociatePublicIpAddress == false
+        <<
+            Violation: Public IP addressed associated with launch configuration.
+            Fix: Explicitly set the AssociatePublicIpAddress attribute to false.
+        >>
+    }
+}

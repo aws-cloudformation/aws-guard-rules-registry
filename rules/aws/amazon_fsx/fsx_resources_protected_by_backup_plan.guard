@@ -1,2 +1,52 @@
 ## Config Rule Name : fsx-resources-protected-by-backup-plan
 ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/fsx-resources-protected-by-backup-plan.html"
+
+let fsx_filesystems = Resources.*[ Type == "AWS::FSx::FileSystem" ]
+
+rule aws_fsx_filesystem_automated_backups_enabled when %fsx_filesystems !empty {
+	%fsx_filesystems {
+		Properties {
+			when FileSystemType == "LUSTRE" {
+				LustreConfiguration exists <<LustreConfiguration is not configured>>
+				when LustreConfiguration exists {
+					LustreConfiguration {
+						when DeploymentType exists
+						DeploymentType IN [ "PERSISTENT_1", "PERSISTENT_2" ] {
+							AutomaticBackupRetentionDays exists <<AutomaticBackupRetentionDays is not configured>>
+							when AutomaticBackupRetentionDays exists {
+								AutomaticBackupRetentionDays > 0 <<Automated backups are disabled>>
+							}
+						}
+					}
+				}
+			}
+
+			when FileSystemType == "ONTAP" {
+				OntapConfiguration {
+					AutomaticBackupRetentionDays exists <<AutomaticBackupRetentionDays is not configured>>
+					when AutomaticBackupRetentionDays exists {
+						AutomaticBackupRetentionDays > 0 <<Automated backups are disabled>>
+					}
+				}
+			}
+
+			when FileSystemType == "OPENZFS" {
+				OpenZFSConfiguration {
+					AutomaticBackupRetentionDays exists <<AutomaticBackupRetentionDays is not configured>>
+					when AutomaticBackupRetentionDays exists {
+						AutomaticBackupRetentionDays > 0 <<Automated backups are disabled>>
+					}
+				}
+			}
+
+			when FileSystemType == "WINDOWS" {
+				WindowsConfiguration {
+					AutomaticBackupRetentionDays exists <<AutomaticBackupRetentionDays is not configured>>
+					when AutomaticBackupRetentionDays exists {
+						AutomaticBackupRetentionDays > 0 <<Automated backups are disabled>>
+					}
+				}
+			}
+		}
+	}
+}

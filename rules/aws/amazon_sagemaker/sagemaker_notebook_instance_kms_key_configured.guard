@@ -1,2 +1,12 @@
 ## Config Rule Name : sagemaker-notebook-instance-kms-key-configured
 ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/sagemaker-notebook-instance-kms-key-configured.html"
+
+let sagemaker_notebookinstances = Resources.*[ Type == "AWS::SageMaker::NotebookInstance" ]
+
+rule aws_sagemaker_instance_storage_encryption when %sagemaker_notebookinstances !empty {
+	%sagemaker_notebookinstances {
+		Properties {
+			KmsKeyId exists <<Encryption is disabled>>
+		}
+	}
+}

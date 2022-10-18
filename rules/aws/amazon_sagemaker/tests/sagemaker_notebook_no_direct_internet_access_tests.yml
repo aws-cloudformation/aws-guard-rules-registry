@@ -1,0 +1,36 @@
+---
+- input:
+    Resources:
+      BasicNotebookInstance:
+        Type: "AWS::SageMaker::NotebookInstance"
+        Properties:
+          InstanceType: "ml.t2.large"
+          RoleArn: !GetAtt ExecutionRole.Arn
+          SubnetId: subnet-abcd1234
+          DirectInternetAccess: Disabled
+  expectations:
+    rules:
+      aws_sagemaker_instance_direct_internet_access: PASS
+
+- input:
+    Resources:
+      BasicNotebookInstance:
+        Type: "AWS::SageMaker::NotebookInstance"
+        Properties:
+          InstanceType: "ml.t2.large"
+          RoleArn: !GetAtt ExecutionRole.Arn
+          DirectInternetAccess: Enabled
+  expectations:
+    rules:
+      aws_sagemaker_instance_direct_internet_access: FAIL
+
+- input:
+    Resources:
+      BasicNotebookInstance:
+        Type: "AWS::SageMaker::NotebookInstance"
+        Properties:
+          InstanceType: "ml.t2.large"
+          RoleArn: !GetAtt ExecutionRole.Arn
+  expectations:
+    rules:
+      aws_sagemaker_instance_direct_internet_access: FAIL
