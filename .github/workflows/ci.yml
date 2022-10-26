@@ -25,6 +25,8 @@ jobs:
       if: ${{ failure() }}
       shell: bash
       run: |
+        curl --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/aws-cloudformation/cloudformation-guard/main/install-guard.sh | sh
+        export PATH=${PATH}:~/.guard/bin
         cfn-guard test -d ./rules/ | grep "FAIL Rules:" -B 2 -A 1
   buildRuleSet:
     runs-on: ubuntu-latest
