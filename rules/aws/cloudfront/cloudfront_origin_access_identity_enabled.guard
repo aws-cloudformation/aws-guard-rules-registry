@@ -24,6 +24,7 @@
 # d) FAIL: when CloudFront Distribution Resources have an S3 Origin configured without an Origin Access Identity (OAI)
 # e) PASS: when CloudFront Distribution Resources do not have an S3 Origin configured
 # f) PASS: when CloudFront Distribution Resources have an S3 Origin configured with an Origin Access Identity (OAI)
+# g) PASS: when CloudFront Distribution Resources have an S3 Origin configured with a Origin Access Control
 
 #
 # Select all CloudFront Distribution Resources from incoming template (payload)
@@ -36,8 +37,8 @@ let cloudfront_origin_access_identity_enabled_resources = Resources.*[ Type == '
 rule CLOUDFRONT_ORIGIN_ACCESS_IDENTITY_ENABLED when %cloudfront_origin_access_identity_enabled_resources !empty {
   let violations = %cloudfront_origin_access_identity_enabled_resources.Properties.DistributionConfig.Origins.[
     DomainName == /[a-z0-9\.-]{3,63}\.s3\.amazonaws\.com/
-    S3OriginConfig.OriginAccessIdentity !exists or
-    S3OriginConfig.OriginAccessIdentity == ""
+    S3OriginConfig.OriginAccessIdentity !exists or S3OriginConfig.OriginAccessIdentity == ""
+    OriginAccessControlId !exists or OriginAccessControlId == ""
   ]
   %violations empty
   <<

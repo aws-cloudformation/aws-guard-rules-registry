@@ -1,0 +1,13 @@
+{
+  "owner": "Guard Community",
+  "ruleSetName": "community-deprectaions",
+  "version": "0.0.1",
+  "description": "AWS Guard rule set to track deprecations",
+  "contact": "aws-guard-rules-registry@amazon.com",
+  "mappings": [
+    {
+      "guardFilePath": "rules/aws/cloudfront/cloudfront_origin_access_identity_deprecated.guard",
+      "controls": []
+    }
+  ]
+}
