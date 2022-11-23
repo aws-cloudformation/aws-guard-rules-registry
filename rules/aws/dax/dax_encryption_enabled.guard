@@ -1,17 +1,38 @@
-let dax_clusters = Resources.*[ Type == "AWS::DAX::Cluster" ]
+#
+# Rule Identifier:
+#    DAX_ENCRYPTION_ENABLED
+#
+# Description:
+#  Checks whether the GitHub or Bitbucket source repository URL contains either personal access tokens or user name and password.
+#
+# Reports on:
+#    AWS::CodeBuild::Project"
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
+# a) SKIP: when there are no AWS::DAX::Cluster resources
+# b) PASS: when SSESpecification exist with the attribute SSEEnabled set to true
+# c) FAIL: when SSESpecification does not exist or SSEEnabled not set to true
+# d) SKIP: when metada has rule suppression for DAX_ENCRYPTION_ENABLED
 
-rule aws_dax_cluster_encryption_at_rest when %dax_clusters !empty {
-	%dax_clusters {
-		Properties {
-			SSESpecification exists <<DAX cluster does not have SSESpecification configured>>
-			when SSESpecification exists {
-				SSESpecification {
-					SSEEnabled exists <<SSEEnabled is not set>>
-					when SSEEnabled exists {
-						SSEEnabled == true <<DAX cluster has SSE disabled>>
-					}
-				}
-			}
-		}
-	}
+#
+# Select all dax cluster resources from incoming template (payload)
+#
+
+let dax_clusters_encryption = Resources.*[ Type == "AWS::DAX::Cluster"
+	Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "DAX_ENCRYPTION_ENABLED"
+]
+
+rule DAX_ENCRYPTION_ENABLED when %dax_clusters_encryption !empty {
+	%dax_clusters_encryption.Properties.SSESpecification.SSEEnabled == true
+	<<
+		Violation: DAX cluster not leveraging encryption at rest
+		Fix: Set the SSESpecification property with SSEEnabled to true
+	>>
 }

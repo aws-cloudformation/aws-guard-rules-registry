@@ -1,4 +1,22 @@
-- input:
+###
+# FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN: SKIP
+
+- name: Deployment Type PERSISTENT_1 and AutomaticBackupRetentionDays set greater than 0, PASS
+  input:
     Resources:
       FileSystem:
         Type: AWS::FSx::FileSystem
@@ -13,9 +31,10 @@
             AutomaticBackupRetentionDays: 30
   expectations:
     rules:
-      aws_fsx_filesystem_automated_backups_enabled: PASS
+      FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN: PASS
 
-- input:
+- name: Deployment Type PERSISTENT_2 and AutomaticBackupRetentionDays set greater than 0, PASS
+  input:
     Resources:
       FileSystem:
         Type: AWS::FSx::FileSystem
@@ -30,9 +49,10 @@
             AutomaticBackupRetentionDays: 30
   expectations:
     rules:
-      aws_fsx_filesystem_automated_backups_enabled: PASS
+      FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN: PASS
 
-- input:
+- Name: Deployment Type PERSISTENT_1 and AutomaticBackupRetentionDays set at 0, FAIL
+  input:
     Resources:
       FileSystem:
         Type: AWS::FSx::FileSystem
@@ -47,9 +67,10 @@
             AutomaticBackupRetentionDays: 0
   expectations:
     rules:
-      aws_fsx_filesystem_automated_backups_enabled: FAIL
+      FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN: FAIL
 
-- input:
+- name: Deployment Type PERSISTENT_2 and AutomaticBackupRetentionDays set greater than 0, PASS
+  input:
     Resources:
       FileSystem:
         Type: AWS::FSx::FileSystem
@@ -64,9 +85,10 @@
             AutomaticBackupRetentionDays: 0
   expectations:
     rules:
-      aws_fsx_filesystem_automated_backups_enabled: FAIL
+      FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN: FAIL
 
-- input:
+- name: Deployment Type PERSISTENT_1 and AutomaticBackupRetentionDays not set, FAIL
+  input:
     Resources:
       FileSystem:
         Type: AWS::FSx::FileSystem
@@ -80,9 +102,10 @@
             DeploymentType: PERSISTENT_1
   expectations:
     rules:
-      aws_fsx_filesystem_automated_backups_enabled: FAIL
+      FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN: FAIL
 
-- input:
+- name: Deployment Type PERSISTENT_2 and AutomaticBackupRetentionDays not set, FAIL
+  input:
     Resources:
       FileSystem:
         Type: AWS::FSx::FileSystem
@@ -96,9 +119,10 @@
             DeploymentType: PERSISTENT_2
   expectations:
     rules:
-      aws_fsx_filesystem_automated_backups_enabled: FAIL
+      FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN: FAIL
 
-- input:
+- name: AutomaticBackupRetentionDays set greater than 0, PASS
+  input:
     Resources:
       FileSystem:
         Type: AWS::FSx::FileSystem
@@ -113,9 +137,10 @@
             AutomaticBackupRetentionDays: 30
   expectations:
     rules:
-      aws_fsx_filesystem_automated_backups_enabled: PASS
+      FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN: PASS
 
-- input:
+- name: AutomaticBackupRetentionDays set to 0, FAIL
+  input:
     Resources:
       FileSystem:
         Type: AWS::FSx::FileSystem
@@ -130,9 +155,10 @@
             AutomaticBackupRetentionDays: 0
   expectations:
     rules:
-      aws_fsx_filesystem_automated_backups_enabled: FAIL
+      FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN: FAIL
 
-- input:
+- name: AutomaticBackupRetentionDays not set, FAIL
+  input:
     Resources:
       FileSystem:
         Type: AWS::FSx::FileSystem
@@ -146,9 +172,10 @@
             DeploymentType: MULTI_AZ_1
   expectations:
     rules:
-      aws_fsx_filesystem_automated_backups_enabled: FAIL
+      FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN: FAIL
 
-- input:
+- name: Deployment type SINGLE_AZ_1 and AutomaticBackupRetentionDays set to value greater than 0, PASS
+  input:
     Resources:
       FileSystem:
         Type: AWS::FSx::FileSystem
@@ -163,9 +190,10 @@
             DeploymentType: SINGLE_AZ_1
   expectations:
     rules:
-      aws_fsx_filesystem_automated_backups_enabled: PASS
+      FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN: PASS
 
-- input:
+- name: Deployment type SINGLE_AZ_1 and AutomaticBackupRetentionDays set to 0, FAIL
+  input:
     Resources:
       FileSystem:
         Type: AWS::FSx::FileSystem
@@ -180,9 +208,10 @@
             DeploymentType: SINGLE_AZ_1
   expectations:
     rules:
-      aws_fsx_filesystem_automated_backups_enabled: FAIL
+      FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN: FAIL
 
-- input:
+- name: Deployment type SINGLE_AZ_1 and AutomaticBackupRetentionDays value not set, FAIL
+  input:
     Resources:
       FileSystem:
         Type: AWS::FSx::FileSystem
@@ -196,9 +225,10 @@
             DeploymentType: SINGLE_AZ_1
   expectations:
     rules:
-      aws_fsx_filesystem_automated_backups_enabled: FAIL
+      FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN: FAIL
 
-- input:
+- name: Deployment type MULTI_AZ_1 and AutomaticBackupRetentionDays set to value greater than 0, PASS
+  input:
     Resources:
       FileSystem:
         Type: AWS::FSx::FileSystem
@@ -213,9 +243,10 @@
             DeploymentType: MULTI_AZ_1
   expectations:
     rules:
-      aws_fsx_filesystem_automated_backups_enabled: PASS
+      FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN: PASS
 
-- input:
+- name: Deployment type MULTI_AZ_1 and AutomaticBackupRetentionDays set to 0, FAIL
+  input:
     Resources:
       FileSystem:
         Type: AWS::FSx::FileSystem
@@ -230,9 +261,10 @@
             DeploymentType: MULTI_AZ_1
   expectations:
     rules:
-      aws_fsx_filesystem_automated_backups_enabled: FAIL
+      FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN: FAIL
 
-- input:
+- name: Deployment type MULTI_AZ_1 and AutomaticBackupRetentionDays value not set, FAIL
+  input:
     Resources:
       FileSystem:
         Type: AWS::FSx::FileSystem
@@ -246,4 +278,25 @@
             DeploymentType: MULTI_AZ_1
   expectations:
     rules:
-      aws_fsx_filesystem_automated_backups_enabled: FAIL
+      FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN: FAIL
+
+- name: Deployment type MULTI_AZ_1 and AutomaticBackupRetentionDays value not set but rule suppressed, SKIP
+  input:
+    Resources:
+      FileSystem:
+        Type: AWS::FSx::FileSystem
+        Metadata:
+          guard:
+            SuppressedRules:
+            - FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN
+        Properties:
+          FileSystemType: "WINDOWS"
+          FileSystemTypeVersion: "2.12"
+          StorageCapacity: 1200
+          SubnetIds: [!ImportValue MySubnet01]
+          SecurityGroupIds: [!ImportValue LustreIngressSecurityGroupId]
+          WindowsConfiguration:
+            DeploymentType: MULTI_AZ_1
+  expectations:
+    rules:
+      FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN: SKIP

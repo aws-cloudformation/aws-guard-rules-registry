@@ -1,8 +1,24 @@
 ############
-# CODEBUILD_PROJECT_SOURCE-REPO_URL_CHECK
+# CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK
 #############
+
+
 ---
-- input:
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK: SKIP
+
+- name: OAUTH used, PASS
+  input:
     Resources:
       Credential:
         Type: AWS::CodeBuild::SourceCredential
@@ -13,9 +29,10 @@
           AuthType: OAUTH
   expectations:
     rules:
-      CODEBUILD_PROJECT_SOURCE-REPO_URL_CHECK: PASS
+      CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK: PASS
 
-- input:
+- name: Basic auth used, FAIL
+  input:
     Resources:
       Credential:
         Type: AWS::CodeBuild::SourceCredential
@@ -26,9 +43,10 @@
           AuthType: BASIC_AUTH
   expectations:
     rules:
-      CODEBUILD_PROJECT_SOURCE-REPO_URL_CHECK: FAIL
+      CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK: FAIL
 
-- input:
+- name: Personal access token used, FAIL
+  input:
     Resources:
       Credential:
         Type: AWS::CodeBuild::SourceCredential
@@ -39,4 +57,22 @@
           AuthType: PERSONAL_ACCESS_TOKEN
   expectations:
     rules:
-      CODEBUILD_PROJECT_SOURCE-REPO_URL_CHECK: FAIL
+      CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK: FAIL
+
+- name: rule suppressed, SKIP
+  input:
+    Resources:
+      Credential:
+        Type: AWS::CodeBuild::SourceCredential
+        Metadata:
+          guard:
+            SuppressedRules:
+            - "CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK"
+        Properties:
+          Token: '{{resolve:secretsmanager:bitbucket:SecretString:token}}'
+          ServerType: BITBUCKET
+          Username: '{{resolve:secretsmanager:bitbucket:SecretString:username}}'
+          AuthType: PERSONAL_ACCESS_TOKEN
+  expectations:
+    rules:
+      CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK: SKIP

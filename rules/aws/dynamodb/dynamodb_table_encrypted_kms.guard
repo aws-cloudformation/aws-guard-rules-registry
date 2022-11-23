@@ -6,7 +6,7 @@
 #    DYNAMODB_TABLE_ENCRYPTED_KMS
 #
 # Description:
-#   ALL DynamoDB Tables must have SEE with a Customer managed CMK
+#   Checks if Amazon DynamoDB table is encrypted with AWS Key Management Service (KMS).
 #
 # Reports on:
 #    AWS::DynamoDB::Table
@@ -19,8 +19,8 @@
 #
 # Scenarios:
 # a) SKIP: when there are no DynamoDB Tables present
-# b) PASS: when all DynamoDB Tables are encrypted with Customer managed CMK
-# c) FAIL: when all DynamoDB Tables are not are encrypted with Customer managed CMK
+# b) PASS: when all DynamoDB Tables are encrypted with KMS
+# c) FAIL: when all DynamoDB Tables are not are encrypted with KMS
 # d) SKIP: when metada has rule suppression for DYNAMODB_TABLE_ENCRYPTED_KMS
 
 let aws_dynamodb_table_resources_kms_encrypted = Resources.*[ Type == 'AWS::DynamoDB::Table'
@@ -39,7 +39,7 @@ rule DYNAMODB_TABLE_ENCRYPTED_KMS when %aws_dynamodb_table_resources_kms_encrypt
         SSEType == %aws_dynamodb_table_resources_allowed_algorithms
     }
     <<
-      Violation:  ALL DynamoDB Tables must have SEE with a Customer managed CMK
+      Violation:  ALL DynamoDB Tables must have SSE with KMS
       Fix: Set SSEEnabled to true and have KMSMasterKeyId value
     >>
 }

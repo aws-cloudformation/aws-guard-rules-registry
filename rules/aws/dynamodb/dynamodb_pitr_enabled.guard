@@ -11,7 +11,10 @@
 #
 # Select all DynamoDB Table resources from incoming template (payload)
 #
-let aws_dynamodb_table_resources = Resources.*[ Type == 'AWS::DynamoDB::Table' ]
+let aws_dynamodb_table_resources = Resources.*[ Type == 'AWS::DynamoDB::Table'
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "DYNAMODB_PITR_ENABLED"
+]
 
 
 rule DYNAMODB_PITR_ENABLED when %aws_dynamodb_table_resources !empty {

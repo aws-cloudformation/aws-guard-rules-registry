@@ -1,7 +1,8 @@
 ###
 # CMK_BACKING_KEY_ROTATION_ENABLED tests
 ###
-- input:
+- name: EnableKeyRotation is set to true, PASS
+  input:
     Resources:
       myKMSKey:
         Type: AWS::KMS::Key
@@ -54,7 +55,8 @@
     rules:
       CMK_BACKING_KEY_ROTATION_ENABLED: PASS
 
-- input:
+- name: EnableKeyRotation does not exist, FAIL
+  input:
     Resources:
       myKMSKey:
         Type: AWS::KMS::Key
@@ -91,7 +93,8 @@
     rules:
       CMK_BACKING_KEY_ROTATION_ENABLED: FAIL
 
-- input:
+- name: EnableKeyRotation is set to false, FAIL
+  input:
     Resources:
       myKMSKey:
         Type: AWS::KMS::Key

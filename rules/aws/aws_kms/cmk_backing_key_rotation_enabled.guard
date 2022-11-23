@@ -24,20 +24,16 @@
 # Select all KMS Key resources from incoming template (payload)
 #
 
-let aws_kms_key_resources = Resources.*[ Type == "AWS::KMS::Key"
+let aws_kms_key_resources_cmk = Resources.*[ Type == "AWS::KMS::Key"
   Metadata.guard.SuppressedRules not exists or
   Metadata.guard.SuppressedRules.* != "CMK_BACKING_KEY_ROTATION_ENABLED"
 ]
 
 
-rule CMK_BACKING_KEY_ROTATION_ENABLED when %aws_kms_key_resources !empty {
-     # capture key rotation property from the resource
-     %aws_kms_key_resources.Properties
-     {
-        EnableKeyRotation == true
-        <<
-            Violation: Key rotation should be enabled for KMS.
-            Fix: Set the EnableKeyRotation parameter to true.
-        >>
-     }
+rule CMK_BACKING_KEY_ROTATION_ENABLED when %aws_kms_key_resources_cmk !empty {
+     %aws_kms_key_resources_cmk.Properties.EnableKeyRotation == true
+      <<
+        Violation: Key rotation should be enabled for KMS.
+        Fix: Set the EnableKeyRotation parameter to true.
+      >>
 }

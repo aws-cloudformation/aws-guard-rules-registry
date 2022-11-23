@@ -1,5 +1,22 @@
+###
+# SAGEMAKER_NOTEBOOK_NO_DIRECT_INTERNET_ACCESS tests
+###
 ---
-- input:
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      SAGEMAKER_NOTEBOOK_INSTANCE_KMS_KEY_CONFIGURED: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      SAGEMAKER_NOTEBOOK_INSTANCE_KMS_KEY_CONFIGURED: SKIP
+
+- name: DirectInternetAccess set to Disabled, PASS
+  input:
     Resources:
       BasicNotebookInstance:
         Type: "AWS::SageMaker::NotebookInstance"
@@ -10,9 +27,10 @@
           DirectInternetAccess: Disabled
   expectations:
     rules:
-      aws_sagemaker_instance_direct_internet_access: PASS
+      SAGEMAKER_NOTEBOOK_NO_DIRECT_INTERNET_ACCESS: PASS
 
-- input:
+- name: DirectInternetAccess set to Enabled, FAIL
+  input:
     Resources:
       BasicNotebookInstance:
         Type: "AWS::SageMaker::NotebookInstance"
@@ -22,9 +40,10 @@
           DirectInternetAccess: Enabled
   expectations:
     rules:
-      aws_sagemaker_instance_direct_internet_access: FAIL
+      SAGEMAKER_NOTEBOOK_NO_DIRECT_INTERNET_ACCESS: FAIL
 
-- input:
+- name: DirectInternetAccess not specified, FAIL
+  input:
     Resources:
       BasicNotebookInstance:
         Type: "AWS::SageMaker::NotebookInstance"
@@ -33,4 +52,21 @@
           RoleArn: !GetAtt ExecutionRole.Arn
   expectations:
     rules:
-      aws_sagemaker_instance_direct_internet_access: FAIL
+      SAGEMAKER_NOTEBOOK_NO_DIRECT_INTERNET_ACCESS: FAIL
+
+- name: DirectInternetAccess set to Enabled but rule suppressed, SKIP
+  input:
+    Resources:
+      BasicNotebookInstance:
+        Type: "AWS::SageMaker::NotebookInstance"
+        Metadata:
+          guard:
+            SuppressedRules:
+            - SAGEMAKER_NOTEBOOK_NO_DIRECT_INTERNET_ACCESS
+        Properties:
+          InstanceType: "ml.t2.large"
+          RoleArn: !GetAtt ExecutionRole.Arn
+          DirectInternetAccess: Enabled
+  expectations:
+    rules:
+      SAGEMAKER_NOTEBOOK_NO_DIRECT_INTERNET_ACCESS: FAIL

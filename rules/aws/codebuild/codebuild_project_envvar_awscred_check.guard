@@ -1,8 +1,33 @@
-    ## Config Rule Name : codebuild-project-envvar-awscred-check
-    ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/codebuild-project-envvar-awscred-check.html"
+#
+# Rule Identifier:
+#    CODEBUILD_PROJECT_ENVVAR_AWSCRED_CHECK
+#
+# Description:
+#   Checks whether the project contains environment variables AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY
+#
+# Reports on:
+#    AWS::CodeBuild::Project
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
+# a) SKIP: when there are no AWS::CodeBuild::Project resources
+# b) PASS: when environment variables AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY is not present
+# c) FAIL: environment variables AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY is present
+# d) SKIP: when metada has rule suppression for CODEBUILD_PROJECT_ENVVAR_AWSCRED_CHECK
 
-let codebuild_projects = Resources.*[ Type == "AWS::CodeBuild::Project" ]
-let disallowed_names = ["AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "PASSWORD", "password"]
+#
+# Select all Code Build resources from incoming template (payload)
+#
+let codebuild_projects = Resources.*[ Type == "AWS::CodeBuild::Project"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "CODEBUILD_PROJECT_ENVVAR_AWSCRED_CHECK"
+]
+let disallowed_names = ["AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY"]
 
 rule CODEBUILD_PROJECT_ENVVAR_AWSCRED_CHECK when %codebuild_projects !empty {
 	%codebuild_projects {
@@ -18,7 +43,11 @@ rule CODEBUILD_PROJECT_ENVVAR_AWSCRED_CHECK when %codebuild_projects !empty {
 							Type != "PLAINTEXT" OR
 							Type == "PLAINTEXT"
 							when Type == "PLAINTEXT" {
-								Name NOT IN %disallowed_names  <<Clear text credentials are used.>>
+								Name NOT IN %disallowed_names
+								<<
+									Violation: AWS Credential check in env var
+									Fix: Remove sensitive credentials ("AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY") from codebuild project envvar
+								>>
 							}
 						}
 					}

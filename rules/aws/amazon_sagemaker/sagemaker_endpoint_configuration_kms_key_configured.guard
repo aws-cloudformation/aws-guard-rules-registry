@@ -15,9 +15,9 @@
 #    NA
 #
 # Scenarios:
-# a) SKIP: when EMR cluster resource not present
-# b) PASS: when all EMR cluster resources KerberosAttributes property is set
-# c) FAIL: when all EMR cluster resources KerberosAttributes property does not exist
+# a) SKIP: when Sagemaker EndpointConfig resource not present
+# b) PASS: when all Sagemaker EndpointConfig resources KmsKeyId property is set
+# c) FAIL: when all Sagemaker EndpointConfig resources KmsKeyId property does not exist
 # d) SKIP: when metada has rule suppression for SAGEMAKER_ENDPOINT_CONFIGURATION_KMS_KEY_CONFIGURED
 
 #

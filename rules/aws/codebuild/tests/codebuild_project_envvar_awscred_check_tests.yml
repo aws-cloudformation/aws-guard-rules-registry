@@ -1,5 +1,22 @@
+###
+# CODEBUILD_PROJECT_ENVVAR_AWSCRED_CHECK tests
+###
 ---
-- input:
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      CODEBUILD_PROJECT_ENVVAR_AWSCRED_CHECK: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      CODEBUILD_PROJECT_ENVVAR_AWSCRED_CHECK: SKIP
+
+- name: no envar set with sensitive info, PASS
+  input:
     Resources:
       MyCodeBuildProject:
         Type: AWS::CodeBuild::Project
@@ -50,9 +67,10 @@
               - Arn
   expectations:
     rules:
-      aws_codebuild_project_env_variables_plaintext_creds: PASS
+      CODEBUILD_PROJECT_ENVVAR_AWSCRED_CHECK: PASS
 
-- input:
+- name: no sensitive text in environment vars, PASS
+  input:
     Resources:
       MyCodeBuildProject:
         Type: AWS::CodeBuild::Project
@@ -99,9 +117,10 @@
               - Arn
   expectations:
     rules:
-      aws_codebuild_project_env_variables_plaintext_creds: PASS
+      CODEBUILD_PROJECT_ENVVAR_AWSCRED_CHECK: PASS
 
-- input:
+- name: AWS_ACCESS_KEY_ID listed in environment vars, FAIL
+  input:
     Resources:
       MyCodeBuildProject:
         Type: AWS::CodeBuild::Project
@@ -152,9 +171,10 @@
               - Arn
   expectations:
     rules:
-      aws_codebuild_project_env_variables_plaintext_creds: FAIL
+      CODEBUILD_PROJECT_ENVVAR_AWSCRED_CHECK: FAIL
 
-- input:
+- name: AWS_SECRET_ACCESS_KEY listed in environment vars, FAIL
+  input:
     Resources:
       MyCodeBuildProject:
         Type: AWS::CodeBuild::Project
@@ -205,12 +225,17 @@
               - Arn
   expectations:
     rules:
-      aws_codebuild_project_env_variables_plaintext_creds: FAIL
+      CODEBUILD_PROJECT_ENVVAR_AWSCRED_CHECK: FAIL
 
-- input:
+- name: rule is suppressed, SKIP
+  input:
     Resources:
       MyCodeBuildProject:
         Type: AWS::CodeBuild::Project
+        Metadata:
+          guard:
+            SuppressedRules:
+            - "CODEBUILD_PROJECT_ENVVAR_AWSCRED_CHECK"
         Properties:
           Artifacts:
             Type: CODEPIPELINE
@@ -221,7 +246,7 @@
             PrivilegedMode: false
             Type: LINUX_CONTAINER
             EnvironmentVariables:
-            - Name: PASSWORD
+            - Name: AWS_SECRET_ACCESS_KEY
               Type: PLAINTEXT
               Value: Tests
           ServiceRole:
@@ -258,57 +283,4 @@
               - Arn
   expectations:
     rules:
-      aws_codebuild_project_env_variables_plaintext_creds: FAIL
-
-- input:
-    Resources:
-      MyCodeBuildProject:
-        Type: AWS::CodeBuild::Project
-        Properties:
-          Artifacts:
-            Type: CODEPIPELINE
-          Environment:
-            ComputeType: BUILD_GENERAL1_SMALL
-            Image: aws/codebuild/standard:5.0
-            ImagePullCredentialsType: CODEBUILD
-            PrivilegedMode: false
-            Type: LINUX_CONTAINER
-            EnvironmentVariables:
-            - Name: password
-              Type: PLAINTEXT
-              Value: Tests
-          ServiceRole:
-            Fn::GetAtt:
-              - MyPipelineBuildSynthRole
-              - Arn
-          Source:
-            BuildSpec: |-
-              {
-                "version": "0.2",
-                "phases": {
-                  "pre_build": {
-                    "commands": [
-                      "cd cdk",
-                      "git clone https://github.com/aws-samples/cloudfront-authorization-at-edge.git ../cloudfront-authorization-at-edge && npm install -g pnpm && pnpm set verify-store-integrity false && pnpm install"
-                    ]
-                  },
-                  "build": {
-                    "commands": [
-                      "pnpm run builddeps",
-                      "npx cdk synth"
-                    ]
-                  }
-                },
-                "artifacts": {
-                  "base-directory": "cdk/cdk.out",
-                  "files": "**/*"
-                }
-              }
-            Type: CODEPIPELINE
-          EncryptionKey:
-            Fn::GetAtt:
-              - MyPipelineArtefactEncryptionKey
-              - Arn
-  expectations:
-    rules:
-      aws_codebuild_project_env_variables_plaintext_creds: FAIL
+      CODEBUILD_PROJECT_ENVVAR_AWSCRED_CHECK: FAIL
