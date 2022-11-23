@@ -42,7 +42,7 @@
     rules:
       SAGEMAKER_NOTEBOOK_INSTANCE_KMS_KEY_CONFIGURED: FAIL
 
-- name: KMS key not present, FAIL
+- name: KMS key not present but rule suppressed, SKIP
   input:
     Resources:
       BasicNotebookInstance:
@@ -57,4 +57,4 @@
           RootAccess: Enabled
   expectations:
     rules:
-      SAGEMAKER_NOTEBOOK_INSTANCE_KMS_KEY_CONFIGURED: FAIL
+      SAGEMAKER_NOTEBOOK_INSTANCE_KMS_KEY_CONFIGURED: SKIP

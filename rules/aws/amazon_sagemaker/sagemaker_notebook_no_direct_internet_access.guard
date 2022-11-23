@@ -33,7 +33,7 @@ let sagemaker_notebookinstances_directaccess = Resources.*[ Type == "AWS::SageMa
 
 rule SAGEMAKER_NOTEBOOK_NO_DIRECT_INTERNET_ACCESS when %sagemaker_notebookinstances_directaccess !empty {
 	%sagemaker_notebookinstances_directaccess.Properties.DirectInternetAccess exists
-	%sagemaker_notebookinstances_directaccess.Properties.DirectInternetAccess.DirectInternetAccess == "Disabled"
+	%sagemaker_notebookinstances_directaccess.Properties.DirectInternetAccess == "Disabled"
 	<<
 		Violation: Amazon SageMaker Notebook instance should not have direct internet access
 		Fix: Set the property DirectInternetAccess to "Disabled" and provide a value for SubnetId property

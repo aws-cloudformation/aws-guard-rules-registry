@@ -283,4 +283,4 @@
               - Arn
   expectations:
     rules:
-      CODEBUILD_PROJECT_ENVVAR_AWSCRED_CHECK: FAIL
+      CODEBUILD_PROJECT_ENVVAR_AWSCRED_CHECK: SKIP

@@ -69,4 +69,4 @@
           DirectInternetAccess: Enabled
   expectations:
     rules:
-      SAGEMAKER_NOTEBOOK_NO_DIRECT_INTERNET_ACCESS: FAIL
+      SAGEMAKER_NOTEBOOK_NO_DIRECT_INTERNET_ACCESS: SKIP

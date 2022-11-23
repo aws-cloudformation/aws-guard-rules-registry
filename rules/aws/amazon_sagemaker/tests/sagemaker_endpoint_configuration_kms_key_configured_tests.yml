@@ -61,15 +61,15 @@
     Resources:
       Endpoint:
         Type: "AWS::SageMaker::Endpoint"
-        Metadata:
-          guard:
-            SuppressedRules:
-            - SAGEMAKER_ENDPOINT_CONFIGURATION_KMS_KEY_CONFIGURED
         Properties:
           EndpointConfigName:
             !GetAtt EndpointConfig.EndpointConfigName
       EndpointConfig:
         Type: "AWS::SageMaker::EndpointConfig"
+        Metadata:
+          guard:
+            SuppressedRules:
+            - SAGEMAKER_ENDPOINT_CONFIGURATION_KMS_KEY_CONFIGURED
         Properties:
           ProductionVariants:
           - InitialInstanceCount: 1

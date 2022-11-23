@@ -23,8 +23,8 @@ let fsx_filesystems_backup_plan = Resources.*[ Type == "AWS::FSx::FileSystem"
   Metadata.guard.SuppressedRules.* != "FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN"
 ]
 
-rule FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN when %fsx_filesystems !empty {
-	%fsx_filesystems {
+rule FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN when %fsx_filesystems_backup_plan !empty {
+	%fsx_filesystems_backup_plan {
 		Properties {
 			when FileSystemType == "LUSTRE" {
 				LustreConfiguration exists
