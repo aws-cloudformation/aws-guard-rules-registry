@@ -54,7 +54,33 @@
     rules:
       ELBV2_ACM_CERTIFICATE_REQUIRED: SKIP
 
-- name: Scenario d) Certificate in 'Certificates' is an ACM certificate for HTTPS or TLS Listeners (HTTPS listener), PASS
+- name: Scenario d) Certificate in 'Certificates' is not an ACM certificate for HTTPS or TLS Listeners (HTTPS listener), FAIL
+  input:
+    Resources:
+      ElbV2Listener:
+        Type: AWS::ElasticLoadBalancingV2::Listener
+        Properties:
+          Protocol: HTTPS
+          Certificates:
+           - CertificateArn: arn:aws:iam::123456789012:server-certificate/example-certificate
+  expectations:
+    rules:
+      ELBV2_ACM_CERTIFICATE_REQUIRED: FAIL
+
+- name: Scenario d) Certificate in 'Certificates' is not an ACM certificate for HTTPS or TLS Listeners (TLS listener), FAIL
+  input:
+    Resources:
+      ElbV2Listener:
+        Type: AWS::ElasticLoadBalancingV2::Listener
+        Properties:
+          Protocol: TLS
+          Certificates:
+           - CertificateArn: arn:aws:iam::123456789012:server-certificate/example-certificate
+  expectations:
+    rules:
+      ELBV2_ACM_CERTIFICATE_REQUIRED: FAIL
+
+- name: Scenario e) Certificate in 'Certificates' is an ACM certificate for HTTPS or TLS Listeners (HTTPS listener), PASS
   input:
     Resources:
       ElbV2Listener:
@@ -67,7 +93,23 @@
     rules:
       ELBV2_ACM_CERTIFICATE_REQUIRED: PASS
 
-- name: Scenario d) Certificate in 'Certificates' is an ACM certificate for HTTPS or TLS Listeners (TLS listener), PASS
+- name: Scenario e) Certificate in 'Certificates' is an ACM certificate for HTTPS or TLS Listeners (HTTPS listener), PASS
+  input:
+    Resources:
+      ACMCertificate:
+        Type: AWS::CertificateManager::Certificate
+      ElbV2Listener:
+        Type: AWS::ElasticLoadBalancingV2::Listener
+        Properties:
+          Protocol: HTTPS
+          Certificates:
+           - CertificateArn:
+              Ref: ACMCertificate
+  expectations:
+    rules:
+      ELBV2_ACM_CERTIFICATE_REQUIRED: PASS
+
+- name: Scenario e) Certificate in 'Certificates' is an ACM certificate for HTTPS or TLS Listeners (TLS listener), PASS
   input:
     Resources:
       ElbV2Listener:
@@ -76,6 +118,22 @@
           Protocol: TLS
           Certificates:
            - CertificateArn: arn:aws:acm:us-west-2:123456789012:certificate/12345678-12ab-34cd-56ef-12345678
+  expectations:
+    rules:
+      ELBV2_ACM_CERTIFICATE_REQUIRED: PASS
+
+- name: Scenario e) Certificate in 'Certificates' is an ACM certificate for HTTPS or TLS Listeners (TLS listener), PASS
+  input:
+    Resources:
+      ACMCertificate:
+        Type: AWS::CertificateManager::Certificate
+      ElbV2Listener:
+        Type: AWS::ElasticLoadBalancingV2::Listener
+        Properties:
+          Protocol: TLS
+          Certificates:
+           - CertificateArn:
+              Ref: ACMCertificate
   expectations:
     rules:
       ELBV2_ACM_CERTIFICATE_REQUIRED: PASS

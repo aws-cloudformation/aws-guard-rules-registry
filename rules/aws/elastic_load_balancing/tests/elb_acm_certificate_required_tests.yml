@@ -53,6 +53,31 @@
     rules:
       ELB_ACM_CERTIFICATE_REQUIRED: SKIP
 
+- name: Scenario d) 'SSLCertificateId' does not match an ACM certificate ARN for all 'Listeners' (HTTPS), PASS
+  input:
+    Resources:
+      Elb:
+        Type: AWS::ElasticLoadBalancing::LoadBalancer
+        Properties:
+          Listeners:
+            - Protocol: HTTPS
+              SSLCertificateId: arn:aws:iam::123456789012:server-certificate/example-certificate
+  expectations:
+    rules:
+      ELB_ACM_CERTIFICATE_REQUIRED: FAIL
+
+- name: Scenario d) 'SSLCertificateId' does not match an ACM certificate ARN for all 'Listeners' (SSL), PASS
+  input:
+    Resources:
+      Elb:
+        Type: AWS::ElasticLoadBalancing::LoadBalancer
+        Properties:
+          Listeners:
+            - Protocol: SSL
+              SSLCertificateId: arn:aws:iam::123456789012:server-certificate/example-certificate
+  expectations:
+    rules:
+      ELB_ACM_CERTIFICATE_REQUIRED: FAIL
 
 - name: Scenario e) 'SSLCertificateId' matches an ACM certificate ARN for all 'Listeners' (HTTPS), PASS
   input:
@@ -67,6 +92,21 @@
     rules:
       ELB_ACM_CERTIFICATE_REQUIRED: PASS
 
+- name: Scenario e) 'SSLCertificateId' matches an ACM certificate ARN for all 'Listeners' (HTTPS), PASS
+  input:
+    Resources:
+      ACMCertificate:
+        Type: AWS::CertificateManager::Certificate
+      Elb:
+        Type: AWS::ElasticLoadBalancing::LoadBalancer
+        Properties:
+          Listeners:
+            - Protocol: HTTPS
+              SSLCertificateId:
+                Ref: ACMCertificate
+  expectations:
+    rules:
+      ELB_ACM_CERTIFICATE_REQUIRED: PASS
 
 - name: Scenario e) 'SSLCertificateId' matches an ACM certificate ARN for all 'Listeners' (SSL), PASS
   input:
@@ -81,6 +121,22 @@
     rules:
       ELB_ACM_CERTIFICATE_REQUIRED: PASS
 
+- name: Scenario e) 'SSLCertificateId' matches an ACM certificate ARN for all 'Listeners' (SSL), PASS
+  input:
+    Resources:
+      ACMCertificate:
+        Type: AWS::CertificateManager::Certificate
+      Elb:
+        Type: AWS::ElasticLoadBalancing::LoadBalancer
+        Properties:
+          Listeners:
+            - Protocol: HTTPS
+              SSLCertificateId:
+                Ref: ACMCertificate
+  expectations:
+    rules:
+      ELB_ACM_CERTIFICATE_REQUIRED: PASS
+
 - name: Scenario e) 'SSLCertificateId' matches an ACM certificate ARN for all 'Listeners' (HTTPS & SSL), PASS
   input:
     Resources:
@@ -90,6 +146,43 @@
           Listeners:
             - Protocol: HTTPS
               SSLCertificateId: arn:aws:acm:us-west-2:123456789012:certificate/12345678-12ab-34cd-56ef-12345678
+            - Protocol: SSL
+              SSLCertificateId: arn:aws:acm:us-west-2:123456789012:certificate/12345678-12ab-34cd-56ef-12345678
+  expectations:
+    rules:
+      ELB_ACM_CERTIFICATE_REQUIRED: PASS
+
+- name: Scenario e) 'SSLCertificateId' matches an ACM certificate ARN for all 'Listeners' (HTTPS & SSL), PASS
+  input:
+    Resources:
+      ACMCertificate:
+        Type: AWS::CertificateManager::Certificate
+      Elb:
+        Type: AWS::ElasticLoadBalancing::LoadBalancer
+        Properties:
+          Listeners:
+            - Protocol: HTTPS
+              SSLCertificateId:
+                Ref: ACMCertificate
+            - Protocol: SSL
+              SSLCertificateId:
+                Ref: ACMCertificate
+  expectations:
+    rules:
+      ELB_ACM_CERTIFICATE_REQUIRED: PASS
+
+- name: Scenario e) 'SSLCertificateId' matches an ACM certificate ARN for all 'Listeners' (HTTPS & SSL), PASS
+  input:
+    Resources:
+      ACMCertificate:
+        Type: AWS::CertificateManager::Certificate
+      Elb:
+        Type: AWS::ElasticLoadBalancing::LoadBalancer
+        Properties:
+          Listeners:
+            - Protocol: HTTPS
+              SSLCertificateId:
+                Ref: ACMCertificate
             - Protocol: SSL
               SSLCertificateId: arn:aws:acm:us-west-2:123456789012:certificate/12345678-12ab-34cd-56ef-12345678
   expectations:

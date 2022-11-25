@@ -31,6 +31,7 @@
 # Select all Elastic Load Balancing Resources from incoming template (payload)
 #
 let elbv2_acm_certificate_required_resources = Resources.*[ Type == 'AWS::ElasticLoadBalancingV2::Listener'
+  # Scenario c)
   Properties.Protocol == 'HTTPS' or
   Properties.Protocol == 'TLS'
   Metadata.guard.SuppressedRules not exists or
@@ -38,14 +39,30 @@ let elbv2_acm_certificate_required_resources = Resources.*[ Type == 'AWS::Elasti
 ]
 
 rule ELBV2_ACM_CERTIFICATE_REQUIRED when %elbv2_acm_certificate_required_resources !empty {
+    let doc = this 
     %elbv2_acm_certificate_required_resources.Properties {
-        # Scenarios c) and d)
+        # Scenarios d) and e)
+        Certificates exists
+        Certificates is_list
+        Certificates not empty
+
         Certificates[*] {
-            CertificateArn  exists
-            <<
-                Violation: ELBv2 Listeners need to use HTTPS/SSL certificates provided by AWS Certificate Manager (ACM).
-                Fix: Set the ELBV2 Certificates.*.CertificateArn property to the ARN of an ACM Certificate.
-            >>
+            CertificateArn exists
+            CertificateArn == /arn:aws[a-z0-9\-]*:acm:[a-z0-9\-]+:\d{12}:certificate\/[\w\-]{1,64}/ or 
+            CertificateArn {
+                Ref {
+                    let resource_logical_name = this
+                    let referenced_resource = %doc.Resources[ keys == %resource_logical_name ]
+                    %referenced_resource not empty
+                    %referenced_resource {
+                        Type == "AWS::CertificateManager::Certificate"
+                        <<
+                            Violation: ELBv2 Listeners need to use HTTPS/SSL certificates provided by AWS Certificate Manager (ACM).
+                            Fix: Set the ELBV2 Certificates.*.CertificateArn property to the ARN of an ACM Certificate.
+                        >>
+                    }
+                }
+            }
         }
     }
 }
