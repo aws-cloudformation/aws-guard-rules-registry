@@ -36,7 +36,7 @@
         Properties:
           DistributionConfig:
             S3Origin:
-                DNSName: my-bucket.s3.ap-southeast-2.amazonaws.com
+              DNSName: my-bucket.s3.ap-southeast-2.amazonaws.com
   expectations:
     rules:
       CLOUDFRONT_ORIGIN_ACCESS_IDENTITY_ENABLED: FAIL
@@ -55,6 +55,25 @@
     rules:
       CLOUDFRONT_ORIGIN_ACCESS_IDENTITY_ENABLED: FAIL
 
+- name: Scenario d) 'Origins' has an S3 origin (global endpoint) configured without an 'S3OriginConfig.OriginAccessIdentity', FAIL
+  input:
+    Resources:
+      OriginBucket:
+        Type: AWS::S3::Bucket
+      CloudFrontDistribution:
+        Type: AWS::CloudFront::Distribution
+        Properties:
+          DistributionConfig:
+            Origins:
+              - DomainName:
+                  Fn::GetAtt:
+                    - OriginBucket
+                    - DomainName
+                Id: myS3Origin
+  expectations:
+    rules:
+      CLOUDFRONT_ORIGIN_ACCESS_IDENTITY_ENABLED: FAIL
+
 - name: Scenario d) 'Origins' has an S3 origin (regional endpoint) configured without an 'S3OriginConfig.OriginAccessIdentity', FAIL
   input:
     Resources:
@@ -65,6 +84,25 @@
             Origins:
               - DomainName: mybucket.s3.ap-southeast-2.amazonaws.com
                 Id: myRegionalEndpointS3Origin
+  expectations:
+    rules:
+      CLOUDFRONT_ORIGIN_ACCESS_IDENTITY_ENABLED: FAIL
+
+- name: Scenario d) 'Origins' has an S3 origin (regional endpoint) configured without an 'S3OriginConfig.OriginAccessIdentity', FAIL
+  input:
+    Resources:
+      OriginBucket:
+        Type: AWS::S3::Bucket
+      CloudFrontDistribution:
+        Type: AWS::CloudFront::Distribution
+        Properties:
+          DistributionConfig:
+            Origins:
+              - DomainName:
+                  Fn::GetAtt:
+                    - OriginBucket
+                    - RegionalDomainName
+                Id: myS3Origin
   expectations:
     rules:
       CLOUDFRONT_ORIGIN_ACCESS_IDENTITY_ENABLED: FAIL
@@ -127,6 +165,27 @@
     rules:
       CLOUDFRONT_ORIGIN_ACCESS_IDENTITY_ENABLED: PASS
 
+- name: Scenario f) 'Origins' has a configured S3 origin (global endpoint) with an OAI configuration, PASS
+  input:
+    Resources:
+      OriginBucket:
+        Type: AWS::S3::Bucket
+      CloudFrontDistribution:
+        Type: AWS::CloudFront::Distribution
+        Properties:
+          DistributionConfig:
+            Origins:
+              - DomainName:
+                  Fn::GetAtt:
+                    - OriginBucket
+                    - DomainName
+                Id: myS3Origin
+                S3OriginConfig:
+                  OriginAccessIdentity: origin-access-identity/cloudfront/E127EXAMPLE51Z
+  expectations:
+    rules:
+      CLOUDFRONT_ORIGIN_ACCESS_IDENTITY_ENABLED: PASS
+
 - name: Scenario f) 'Origins' has a configured S3 origin (regional endpoint) with an OAI configuration, PASS
   input:
     Resources:
@@ -136,6 +195,27 @@
           DistributionConfig:
             Origins:
               - DomainName: mybucket.s3.ap-southeast-2.amazonaws.com
+                Id: myS3Origin
+                S3OriginConfig:
+                  OriginAccessIdentity: origin-access-identity/cloudfront/E127EXAMPLE51Z
+  expectations:
+    rules:
+      CLOUDFRONT_ORIGIN_ACCESS_IDENTITY_ENABLED: PASS
+
+- name: Scenario f) 'Origins' has a configured S3 origin (regional endpoint) with an OAI configuration, PASS
+  input:
+    Resources:
+      OriginBucket:
+        Type: AWS::S3::Bucket
+      CloudFrontDistribution:
+        Type: AWS::CloudFront::Distribution
+        Properties:
+          DistributionConfig:
+            Origins:
+              - DomainName:
+                  Fn::GetAtt:
+                    - OriginBucket
+                    - RegionalDomainName
                 Id: myS3Origin
                 S3OriginConfig:
                   OriginAccessIdentity: origin-access-identity/cloudfront/E127EXAMPLE51Z
