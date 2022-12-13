@@ -34,14 +34,42 @@ let cloudfront_origin_access_identity_enabled_resources = Resources.*[ Type == '
 ]
 
 rule CLOUDFRONT_ORIGIN_ACCESS_IDENTITY_ENABLED when %cloudfront_origin_access_identity_enabled_resources !empty {
-  let violations = %cloudfront_origin_access_identity_enabled_resources.Properties.DistributionConfig.Origins.[
-    DomainName == /[a-z0-9\.-]{3,63}\.s3\.amazonaws\.com/
-    S3OriginConfig.OriginAccessIdentity !exists or
-    S3OriginConfig.OriginAccessIdentity == ""
-  ]
-  %violations empty
-  <<
-    Violation: CloudFront Distributions backed by S3 must be configured with an Origin Access Identity (OAI).
-    Fix: Set the S3OriginConfig.OriginAccessIdentity property for CloudFront Distribution Origins backed by S3.
-  >>
+  let doc = this  
+  %cloudfront_origin_access_identity_enabled_resources.Properties.DistributionConfig {
+    S3Origin not exists
+
+    when Origins exists
+         Origins is_list
+         Origins not empty {
+
+      Origins [
+        DomainName == /(.*)\.s3(-external-\d|[-\.][a-z]*-[a-z]*-[0-9])?\.amazonaws\.com(\.cn)?$/ or
+        DomainName {
+          'Fn::GetAtt' {
+              this is_list
+              this[1] == "DomainName" or
+              this[1] == "RegionalDomainName"
+              
+              let resource_logical_name = this[0]
+              let referenced_resource = %doc.Resources[ keys == %resource_logical_name ]            
+              
+              %referenced_resource not empty
+              %referenced_resource {
+                  Type == "AWS::S3::Bucket"    
+              }
+          }
+        }
+      ] {
+        S3OriginConfig.OriginAccessIdentity exists
+        S3OriginConfig.OriginAccessIdentity != ""
+        
+        S3OriginConfig.OriginAccessIdentity is_string or 
+        S3OriginConfig.OriginAccessIdentity is_struct
+        <<
+          Violation: CloudFront Distributions backed by S3 must be configured with an Origin Access Identity (OAI).
+          Fix: Set the S3OriginConfig.OriginAccessIdentity property for CloudFront Distribution Origins backed by S3.
+        >>
+      }
+    }
+  } 
 }
