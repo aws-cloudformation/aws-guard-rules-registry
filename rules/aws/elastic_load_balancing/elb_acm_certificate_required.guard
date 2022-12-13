@@ -35,21 +35,12 @@ let elb_acm_certificate_required_resources = Resources.*[ Type == 'AWS::ElasticL
   Metadata.guard.SuppressedRules.* != "ELB_ACM_CERTIFICATE_REQUIRED"
 ]
 
-rule ELB_ACM_CERTIFICATE_REQUIRED when %elb_acm_certificate_required_resources !empty {
-    %elb_acm_certificate_required_resources.Properties {
-        let https_ssl_listeners = Listeners.[
-            Protocol in ['HTTPS', 'SSL']
-        ]
+let https_ssl_listeners = %elb_acm_certificate_required_resources.Properties.Listeners.* [Protocols  in ['HTTPS', 'SSL'] ]
 
-        when %https_ssl_listeners not empty {
-            %https_ssl_listeners {
-                # Scenarios c) and d)
-                SSLCertificateId exists
-                <<
-                    Violation: Classic Load Balancer Listeners need to use HTTPS/SSL certificates provided by AWS Certificate Manager (ACM).
-                    Fix: Set the Classic Load Balancer Listeners.*.SSLCertificateId property to the ARN of an ACM Certificate.
-                >>
-            }
-        }
-    }
+rule ELB_ACM_CERTIFICATE_REQUIRED when %https_ssl_listeners !empty {
+    %https_ssl_listeners.SSLCertificateId exists
+    <<
+      Violation: Classic Load Balancer Listeners need to use HTTPS/SSL certificates provided by AWS Certificate Manager (ACM).
+      Fix: Set the Classic Load Balancer Listeners.*.SSLCertificateId property to the ARN of an ACM Certificate.
+    >>
 }

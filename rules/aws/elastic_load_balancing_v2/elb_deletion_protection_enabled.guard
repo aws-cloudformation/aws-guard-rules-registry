@@ -37,7 +37,6 @@ let elb_deletion_protection_enabled_resources = Resources.*[ Type == 'AWS::Elast
 rule ELB_DELETION_PROTECTION_ENABLED when %elb_deletion_protection_enabled_resources !empty {
     %elb_deletion_protection_enabled_resources {
         Properties {
-        # Scenario c)
         LoadBalancerAttributes exists
         when LoadBalancerAttributes exists {
             some LoadBalancerAttributes[*] {
@@ -47,7 +46,7 @@ rule ELB_DELETION_PROTECTION_ENABLED when %elb_deletion_protection_enabled_resou
         }
         <<
             Violation: AWS Application Load Balancers (ALB) must be configured with deletion protection.
-            Fix: Set the 'LoadBalancerAttribute' 'deletion_protection.enabled' to 'true'
+            Fix: Set the LoadBalancerAttribute deletion_protection.enabled to true
         >>
     }
 }

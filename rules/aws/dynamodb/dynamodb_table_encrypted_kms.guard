@@ -1,6 +1,3 @@
-## Config Rule Name : dynamodb-table-encrypted-kms
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/dynamodb-table-encrypted-kms.html"
-
 #####################################
 # Rule Identifier:
 #    DYNAMODB_TABLE_ENCRYPTED_KMS
@@ -30,16 +27,13 @@ let aws_dynamodb_table_resources_kms_encrypted = Resources.*[ Type == 'AWS::Dyna
 
 let aws_dynamodb_table_resources_allowed_algorithms = [ 'KMS' ]
 
-
 rule DYNAMODB_TABLE_ENCRYPTED_KMS when %aws_dynamodb_table_resources_kms_encrypted !empty {
-    %aws_dynamodb_table_resources_kms_encrypted.Properties.SSESpecification exists
-    %aws_dynamodb_table_resources_kms_encrypted.Properties.SSESpecification{
-        SSEEnabled == true
-        KMSMasterKeyId exists
-        SSEType == %aws_dynamodb_table_resources_allowed_algorithms
-    }
-    <<
-      Violation:  ALL DynamoDB Tables must have SSE with KMS
-      Fix: Set SSEEnabled to true and have KMSMasterKeyId value
-    >>
+  %aws_dynamodb_table_resources_kms_encrypted.Properties.SSESpecification exists
+  %aws_dynamodb_table_resources_kms_encrypted.Properties.SSESpecification.SSEEnabled == true
+  %aws_dynamodb_table_resources_kms_encrypted.Properties.SSESpecification.KMSMasterKeyId exists
+  %aws_dynamodb_table_resources_kms_encrypted.Properties.SSESpecification.SSEType == %aws_dynamodb_table_resources_allowed_algorithms
+  <<
+    Violation: All DynamoDB Tables must have SSE with KMS
+    Fix: Set SSEEnabled to true and have KMSMasterKeyId value
+  >>
 }
