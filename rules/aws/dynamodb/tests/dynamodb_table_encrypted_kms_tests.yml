@@ -15,7 +15,7 @@
     rules:
       DYNAMODB_TABLE_ENCRYPTED_KMS : SKIP
 
-- name: DDB with SSE set to true, PASS
+- name: DDB with SSE set to true with KMS value and SSEType set to KMS, PASS
   input:
     Resources:
       Exampletable:
@@ -37,6 +37,8 @@
               AttributeType: S
           SSESpecification:
             SSEEnabled: true
+            KMSMasterKeyId: !Ref pKmsArn
+            SSEType: "KMS"
   expectations:
     rules:
       DYNAMODB_TABLE_ENCRYPTED_KMS : PASS
