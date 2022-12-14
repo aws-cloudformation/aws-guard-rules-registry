@@ -1,0 +1,96 @@
+###
+# ELASTICACHE_REDIS_CLUSTER_AUTOMATIC_BACKUP_CHECK test
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      ELASTICACHE_REDIS_CLUSTER_AUTOMATIC_BACKUP_CHECK: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      ELASTICACHE_REDIS_CLUSTER_AUTOMATIC_BACKUP_CHECK: SKIP
+
+- name: redis engine type and snapshotretentionlimit greater than 0, PASS
+  input:
+    Resources:
+      myReplicationGroup:
+        Type: 'AWS::ElastiCache::ReplicationGroup'
+        Properties:
+          ReplicationGroupDescription: my description
+          NumCacheClusters: 2
+          Engine: redis
+          CacheNodeType: cache.m3.medium
+          AutomaticFailoverEnabled: 'true'
+          CacheSubnetGroupName: subnetgroup
+          EngineVersion: 2.8.6
+          PreferredMaintenanceWindow: 'wed:09:25-wed:22:30'
+          SnapshotRetentionLimit: 15
+          SnapshotWindow: '03:30-05:30'
+  expectations:
+    rules:
+      ELASTICACHE_REDIS_CLUSTER_AUTOMATIC_BACKUP_CHECK: PASS
+
+- name: engine type redis but snapshotretentionlimit set to 0
+  input:
+    Resources:
+      myReplicationGroup:
+        Type: 'AWS::ElastiCache::ReplicationGroup'
+        Properties:
+          ReplicationGroupDescription: my description
+          NumCacheClusters: 2
+          Engine: redis
+          CacheNodeType: cache.m3.medium
+          AutomaticFailoverEnabled: 'true'
+          CacheSubnetGroupName: subnetgroup
+          EngineVersion: 2.8.6
+          PreferredMaintenanceWindow: 'wed:09:25-wed:22:30'
+          SnapshotRetentionLimit: 0
+          SnapshotWindow: '03:30-05:30'
+  expectations:
+    rules:
+      ELASTICACHE_REDIS_CLUSTER_AUTOMATIC_BACKUP_CHECK: FAIL
+
+- name: engine type redis but snapshotretentionlimit not set
+  input:
+    Resources:
+      myReplicationGroup:
+        Type: 'AWS::ElastiCache::ReplicationGroup'
+        Properties:
+          ReplicationGroupDescription: my description
+          NumCacheClusters: 2
+          Engine: redis
+          CacheNodeType: cache.m3.medium
+          AutomaticFailoverEnabled: 'true'
+          CacheSubnetGroupName: subnetgroup
+          EngineVersion: 2.8.6
+          PreferredMaintenanceWindow: 'wed:09:25-wed:22:30'
+  expectations:
+    rules:
+      ELASTICACHE_REDIS_CLUSTER_AUTOMATIC_BACKUP_CHECK: FAIL
+
+- name: rule suppressed, SKIP
+  input:
+    Resources:
+      myReplicationGroup:
+        Type: 'AWS::ElastiCache::ReplicationGroup'
+        Metadata:
+          guard:
+            SuppressedRules:
+            - ELASTICACHE_REDIS_CLUSTER_AUTOMATIC_BACKUP_CHECK
+        Properties:
+          ReplicationGroupDescription: my description
+          NumCacheClusters: 2
+          Engine: redis
+          CacheNodeType: cache.m3.medium
+          AutomaticFailoverEnabled: 'true'
+          CacheSubnetGroupName: subnetgroup
+          EngineVersion: 2.8.6
+          PreferredMaintenanceWindow: 'wed:09:25-wed:22:30'
+  expectations:
+    rules:
+      ELASTICACHE_REDIS_CLUSTER_AUTOMATIC_BACKUP_CHECK: SKIP

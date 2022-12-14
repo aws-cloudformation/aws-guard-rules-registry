@@ -1,2 +1,39 @@
-## Config Rule Name : sns-encrypted-kms
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/sns-encrypted-kms.html"
+#####################################
+# Rule Identifier:
+#    SNS_ENCRYPTED_KMS
+#
+# Description:
+#   Checks if Amazon SNS topic is encrypted with AWS Key Management Service (AWS KMS)
+#
+# Reports on:
+#    AWS::SNS::Topic
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
+# a) SKIP: when there are no SNS Topics present
+# b) PASS: when SNS topics are present, they are encrypted with KMS
+# c) FAIL: when SNS topics are present, they are not encrypted with KMS
+# d) SKIP: when metada has rule suppression for SNS_ENCRYPTED_KMS
+
+#
+# Select all AWS::SNS::Topic resources from incoming template (payload)
+#
+
+let aws_sns_topic_resources_kms = Resources.*[ Type == 'AWS::SNS::Topic'
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "SNS_ENCRYPTED_KMS"
+]
+
+
+rule SNS_ENCRYPTED_KMS when %aws_sns_topic_resources_kms !empty {
+  %aws_sns_topic_resources_kms.Properties.KmsMasterKeyId exists
+  <<
+		Violation: Key Management Service (KMS) key needs to be configured for SNS Topic
+		Fix: Set the property KmsMasterKeyId.
+	>>
+}

@@ -1,0 +1,78 @@
+############
+# CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK
+#############
+
+
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK: SKIP
+
+- name: OAUTH used, PASS
+  input:
+    Resources:
+      Credential:
+        Type: AWS::CodeBuild::SourceCredential
+        Properties:
+          Token: '{{resolve:secretsmanager:bitbucket:SecretString:token}}'
+          ServerType: BITBUCKET
+          Username: '{{resolve:secretsmanager:bitbucket:SecretString:username}}'
+          AuthType: OAUTH
+  expectations:
+    rules:
+      CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK: PASS
+
+- name: Basic auth used, FAIL
+  input:
+    Resources:
+      Credential:
+        Type: AWS::CodeBuild::SourceCredential
+        Properties:
+          Token: '{{resolve:secretsmanager:bitbucket:SecretString:token}}'
+          ServerType: BITBUCKET
+          Username: '{{resolve:secretsmanager:bitbucket:SecretString:username}}'
+          AuthType: BASIC_AUTH
+  expectations:
+    rules:
+      CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK: FAIL
+
+- name: Personal access token used, FAIL
+  input:
+    Resources:
+      Credential:
+        Type: AWS::CodeBuild::SourceCredential
+        Properties:
+          Token: '{{resolve:secretsmanager:bitbucket:SecretString:token}}'
+          ServerType: BITBUCKET
+          Username: '{{resolve:secretsmanager:bitbucket:SecretString:username}}'
+          AuthType: PERSONAL_ACCESS_TOKEN
+  expectations:
+    rules:
+      CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK: FAIL
+
+- name: rule suppressed, SKIP
+  input:
+    Resources:
+      Credential:
+        Type: AWS::CodeBuild::SourceCredential
+        Metadata:
+          guard:
+            SuppressedRules:
+            - "CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK"
+        Properties:
+          Token: '{{resolve:secretsmanager:bitbucket:SecretString:token}}'
+          ServerType: BITBUCKET
+          Username: '{{resolve:secretsmanager:bitbucket:SecretString:username}}'
+          AuthType: PERSONAL_ACCESS_TOKEN
+  expectations:
+    rules:
+      CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK: SKIP

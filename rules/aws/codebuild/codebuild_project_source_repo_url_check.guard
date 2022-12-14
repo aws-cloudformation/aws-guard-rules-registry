@@ -1,2 +1,44 @@
-    ## Config Rule Name : codebuild-project-source-repo-url-check
-    ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/codebuild-project-source-repo-url-check.html"
+#
+# Rule Identifier:
+#    CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK
+#
+# Description:
+#  Checks whether the GitHub or Bitbucket source repository URL contains either personal access tokens or user name and password.
+#
+# Reports on:
+#    AWS::CodeBuild::Project
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
+# a) SKIP: when there are no AWS::CodeBuild::SourceCredential resources
+# b) PASS: when environment variables AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY is not present
+# c) FAIL: environment variables AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY is present
+# d) SKIP: when metada has rule suppression for CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK
+
+#
+# Select all Code Build Source Credentials resources from incoming template (payload)
+#
+let codebuild_sourcecredentials = Resources.*[Type == "AWS::CodeBuild::SourceCredential"
+	Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK"
+]
+
+rule CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK when %codebuild_sourcecredentials !empty {
+	%codebuild_sourcecredentials {
+		Properties {
+			when ServerType in ["BITBUCKET","GITHUB","GITHUB_ENTERPRISE"] {
+				AuthType == "OAUTH"
+				<<
+					Violation: GitHub or Bitbucket source repository URL contains either personal access tokens or user name and password.
+					Fix: Remove sensitive credentials replacing AuthType with "OAUTH"
+				>>
+			}
+		}
+	}
+}
+
