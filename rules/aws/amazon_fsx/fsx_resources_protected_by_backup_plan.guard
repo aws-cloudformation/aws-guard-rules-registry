@@ -14,9 +14,9 @@
 #
 # Scenarios:
 # a) SKIP: when no FSx File Systems resources are present
-# b) PASS: when all FSx File Systems resources have LustreConfiguration set with AutomatedBackupRetentionDays
+# b) SKIP: when metadata includes the suppression for rule FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN
 # c) FAIL: when any FSx File Systems resources do not have LustreConfiguration set with AutomatedBackupRetentionDays
-# d) SKIP: when metadata includes the suppression for rule FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN
+# d) PASS: when all FSx File Systems resources have LustreConfiguration set with AutomatedBackupRetentionDays
 
 let fsx_filesystems_backup_plan = Resources.*[ Type == "AWS::FSx::FileSystem"
   Metadata.guard.SuppressedRules not exists or
@@ -24,67 +24,60 @@ let fsx_filesystems_backup_plan = Resources.*[ Type == "AWS::FSx::FileSystem"
 ]
 
 rule FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN when %fsx_filesystems_backup_plan !empty {
-	%fsx_filesystems_backup_plan {
-		Properties {
+	%fsx_filesystems_backup_plan.Properties {
 			when FileSystemType == "LUSTRE" {
 				LustreConfiguration exists
 				<<
-      		Violation: FSx File Systems are protected by a backup plan
-      		Fix: Set the LustreConfiguration
-    		>>
-				when LustreConfiguration exists {
-					LustreConfiguration {
-						when DeploymentType exists
-						DeploymentType IN [ "PERSISTENT_1", "PERSISTENT_2" ] {
-							AutomaticBackupRetentionDays exists
-							<<
-      					Violation: FSx File Systems are protected by a backup plan
-      					Fix: AutomaticBackupRetentionDays should be set
-    					>>
-							when AutomaticBackupRetentionDays exists {
-								AutomaticBackupRetentionDays > 0 <<Automated backups are disabled>>
-								<<
-      						Violation: FSx File Systems are protected by a backup plan
-      						Fix: Set the AutomaticBackupRetentionDays property to value greater than 0
-    						>>
-							}
-						}
+					Violation: FSx File Systems are protected by a backup plan
+					Fix: Set the LustreConfiguration
+				>>
+
+				LustreConfiguration {
+					when DeploymentType exists
+						 DeploymentType IN [ "PERSISTENT_1", "PERSISTENT_2" ] {
+
+						AutomaticBackupRetentionDays exists
+						<<
+							Violation: FSx File Systems are protected by a backup plan
+							Fix: AutomaticBackupRetentionDays should be set
+						>>
+						AutomaticBackupRetentionDays > 0 
+						<<
+							Violation: FSx File Systems are protected by a backup plan
+							Fix: Set the AutomaticBackupRetentionDays property to value greater than 0
+						>>
+
 					}
 				}
 			}
 
 			when FileSystemType == "ONTAP" {
 				OntapConfiguration {
-					AutomaticBackupRetentionDays exists <<AutomaticBackupRetentionDays is not configured>>
+					AutomaticBackupRetentionDays exists 
 					<<
 						Violation: FSx File Systems are protected by a backup plan
 						Fix: AutomaticBackupRetentionDays should be set
-    			>>
-
-					when AutomaticBackupRetentionDays exists {
-						AutomaticBackupRetentionDays > 0
-						<<
-							Violation: FSx File Systems are protected by a backup plan
-							Fix: Set the AutomaticBackupRetentionDays property to value greater than 0
-    				>>
-					}
+					>>
+					AutomaticBackupRetentionDays > 0
+					<<
+						Violation: FSx File Systems are protected by a backup plan
+						Fix: Set the AutomaticBackupRetentionDays property to value greater than 0
+					>>
 				}
 			}
 
 			when FileSystemType == "OPENZFS" {
 				OpenZFSConfiguration {
-					AutomaticBackupRetentionDays exists <<AutomaticBackupRetentionDays is not configured>>
+					AutomaticBackupRetentionDays exists
 					<<
 						Violation: FSx File Systems are protected by a backup plan
 						Fix: Set the AutomaticBackupRetentionDays property
-    			>>
-					when AutomaticBackupRetentionDays exists {
-						AutomaticBackupRetentionDays > 0 <<Automated backups are disabled>>
-						<<
-							Violation: FSx File Systems are protected by a backup plan
-							Fix: Set the AutomaticBackupRetentionDays property to value greater than 0
     				>>
-					}
+					AutomaticBackupRetentionDays > 0
+					<<
+						Violation: FSx File Systems are protected by a backup plan
+						Fix: Set the AutomaticBackupRetentionDays property to value greater than 0
+					>>
 				}
 			}
 
@@ -94,16 +87,13 @@ rule FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN when %fsx_filesystems_backup_plan !e
 					<<
 						Violation: FSx File Systems are protected by a backup plan
 						Fix: Set the AutomaticBackupRetentionDays property
-    			>>
-					when AutomaticBackupRetentionDays exists {
-						AutomaticBackupRetentionDays > 0
-						<<
-							Violation: FSx File Systems are protected by a backup plan
-							Fix: Set the AutomaticBackupRetentionDays property to value greater than 0
     				>>
-					}
+					AutomaticBackupRetentionDays > 0
+					<<
+						Violation: FSx File Systems are protected by a backup plan
+						Fix: Set the AutomaticBackupRetentionDays property to value greater than 0
+					>>
 				}
 			}
-		}
 	}
 }
