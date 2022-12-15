@@ -1,2 +1,69 @@
-    ## Config Rule Name : ecs-task-definition-user-for-host-mode-check
-    ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/ECS_TASK_DEFINITION_USER_FOR_HOST_MODE_CHECK.html"
+#
+#####################################
+##           Gherkin               ##
+#####################################
+#
+# Rule Identifier:
+#   ECS_TASK_DEFINITION_USER_FOR_HOST_MODE_CHECK
+#
+# Description:
+#  Checks if an Amazon Elastic Container Service (Amazon ECS) task definition with host networking mode has 'privileged' or 'user' container definitions.
+#
+# Reports on:
+#  AWS::ECS::TaskDefinition
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
+# a) SKIP: when there are no Autoscaling Group resources present
+# b) SKIP: when metada has rule suppression for ECS_TASK_DEFINITION_USER_FOR_HOST_MODE_CHECK
+# c) SKIP: 'ContainerDefinitions' property is not present
+# d) SKIP: 'NetworkMode' property is either not present or set to a value other than 'host'
+# e) FAIL: Entry in 'ContainerDefinitions' has 'User' not present or set to a root user value and 'Privileged' not present or set to 'false' 
+# f) PASS: All entires in 'ContainerDefinitions' have either 'User' set to a non-root user value or 'Privileged' set to 'true'
+
+#
+# Select all ECS Task Definition Resources from incoming template
+#
+let ecs_task_definition_user_for_host_mode_check_resources = Resources.*[ Type == "AWS::ECS::TaskDefinition"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "ECS_TASK_DEFINITION_USER_FOR_HOST_MODE_CHECK"
+]
+
+rule ECS_TASK_DEFINITION_USER_FOR_HOST_MODE_CHECK when %ecs_task_definition_user_for_host_mode_check_resources !empty {
+    %ecs_task_definition_user_for_host_mode_check_resources[
+        Properties {
+            ContainerDefinitions exists
+            ContainerDefinitions is_list
+            ContainerDefinitions not empty
+
+            NetworkMode exists
+            NetworkMode is_string
+            NetworkMode == "host" 
+        }
+     ] {      
+        Properties.ContainerDefinitions[*] {
+            when User exists
+                 User in [ 0 , "0" , "root" , /^0:.*$/ , /^root:.*$/ ] {
+                    Privileged exists
+                    Privileged == true
+                    <<
+                        Violation: Amazon ECS task definitions using host networking mode must have container definitions that explicitly opt-in to privileged mode, where the container definition user is a root user.
+                        Fix: In 'ContainerDefinitions', where 'User' has been set to a root user value, expliclty opt-in to privileged mode by setting 'Privileged' to 'true'
+                    >>
+            }
+            when User not exists {
+                Privileged exists
+                Privileged == true
+                <<
+                    Violation: Amazon ECS task definitions using host networking mode must have container definitions that explicitly opt-in to privileged mode, where the container definition user is a root user.
+                    Fix: In 'ContainerDefinitions', where 'User' has been set to a root user value, expliclty opt-in to privileged mode by setting 'Privileged' to 'true'
+                >>        
+            }            
+        }       
+    }
+}
