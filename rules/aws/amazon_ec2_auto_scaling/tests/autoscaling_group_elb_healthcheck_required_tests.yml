@@ -1,0 +1,137 @@
+###
+# AUTOSCALING_GROUP_ELB_HEALTHCHECK_REQUIRED tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      AUTOSCALING_GROUP_ELB_HEALTHCHECK_REQUIRED: SKIP
+
+- name: Scenario a) No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      AUTOSCALING_GROUP_ELB_HEALTHCHECK_REQUIRED: SKIP
+
+- name: Scenario b) Rule suppressed, SKIP
+  input:
+    Resources:
+      AutoScalingGroup:
+        Type: AWS::AutoScaling::AutoScalingGroup
+        Metadata:
+          guard:
+            SuppressedRules:
+              - "AUTOSCALING_GROUP_ELB_HEALTHCHECK_REQUIRED"
+  expectations:
+    rules:
+      AUTOSCALING_GROUP_ELB_HEALTHCHECK_REQUIRED: SKIP
+
+- name: Scenario c) 'LoadBalancerNames' or 'TargetGroupARNs' are not present, SKIP
+  input:
+    Resources:
+      AutoScalingGroup:
+        Type: AWS::AutoScaling::AutoScalingGroup
+        Properties: {}
+  expectations:
+    rules:
+      AUTOSCALING_GROUP_ELB_HEALTHCHECK_REQUIRED: SKIP
+
+- name: Scenario c) 'LoadBalancerNames' or 'TargetGroupARNs' are not present, SKIP
+  input:
+    Resources:
+      AutoScalingGroup:
+        Type: AWS::AutoScaling::AutoScalingGroup
+        Properties:
+          LoadBalancerNames: []
+  expectations:
+    rules:
+      AUTOSCALING_GROUP_ELB_HEALTHCHECK_REQUIRED: SKIP
+
+- name: Scenario c) 'LoadBalancerNames' or 'TargetGroupARNs' are not present, SKIP
+  input:
+    Resources:
+      AutoScalingGroup:
+        Type: AWS::AutoScaling::AutoScalingGroup
+        Properties:
+          TargetGroupARNs: []
+  expectations:
+    rules:
+      AUTOSCALING_GROUP_ELB_HEALTHCHECK_REQUIRED: SKIP
+
+- name: Scenario d) 'HealthCheckType' is not present, FAIL
+  input:
+    Resources:
+      AutoScalingGroup:
+        Type: AWS::AutoScaling::AutoScalingGroup
+        Properties:
+          LoadBalancerNames:
+          - TestELB
+  expectations:
+    rules:
+      AUTOSCALING_GROUP_ELB_HEALTHCHECK_REQUIRED: FAIL
+
+- name: Scenario d) 'HealthCheckType' is not present, FAIL
+  input:
+    Resources:
+      AutoScalingGroup:
+        Type: AWS::AutoScaling::AutoScalingGroup
+        Properties:
+          TargetGroupARNs:
+          - arn:aws:elasticloadbalancing:ap-southeast-2:123456789012:targetgroup/LBTargetGroup/1abc2345d6e78910
+  expectations:
+    rules:
+      AUTOSCALING_GROUP_ELB_HEALTHCHECK_REQUIRED: FAIL
+
+- name: Scenario e) 'HealthCheckType' is present and set to a value other than 'ELB', FAIL
+  input:
+    Resources:
+      AutoScalingGroup:
+        Type: AWS::AutoScaling::AutoScalingGroup
+        Properties:
+          LoadBalancerNames:
+          - TestELB
+          HealthCheckType: EC2
+  expectations:
+    rules:
+      AUTOSCALING_GROUP_ELB_HEALTHCHECK_REQUIRED: FAIL
+
+- name: Scenario e) 'HealthCheckType' is present and set to a value other than 'ELB', FAIL
+  input:
+    Resources:
+      AutoScalingGroup:
+        Type: AWS::AutoScaling::AutoScalingGroup
+        Properties:
+          TargetGroupARNs:
+          - arn:aws:elasticloadbalancing:ap-southeast-2:123456789012:targetgroup/LBTargetGroup/1abc2345d6e78910
+          HealthCheckType: EC2
+  expectations:
+    rules:
+      AUTOSCALING_GROUP_ELB_HEALTHCHECK_REQUIRED: FAIL
+
+- name: Scenario f) 'HealthCheckType' is present and set 'ELB', PASS
+  input:
+    Resources:
+      AutoScalingGroup:
+        Type: AWS::AutoScaling::AutoScalingGroup
+        Properties:
+          LoadBalancerNames:
+          - TestELB
+          HealthCheckType: ELB
+  expectations:
+    rules:
+      AUTOSCALING_GROUP_ELB_HEALTHCHECK_REQUIRED: PASS
+
+- name: Scenario f) 'HealthCheckType' is present and set 'ELB', PASS
+  input:
+    Resources:
+      AutoScalingGroup:
+        Type: AWS::AutoScaling::AutoScalingGroup
+        Properties:
+          TargetGroupARNs:
+          - arn:aws:elasticloadbalancing:ap-southeast-2:123456789012:targetgroup/LBTargetGroup/1abc2345d6e78910
+          HealthCheckType: ELB
+  expectations:
+    rules:
+      AUTOSCALING_GROUP_ELB_HEALTHCHECK_REQUIRED: PASS
