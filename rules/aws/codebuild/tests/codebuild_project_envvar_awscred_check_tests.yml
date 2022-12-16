@@ -38,28 +38,18 @@
               - MyPipelineBuildSynthRole
               - Arn
           Source:
-            BuildSpec: |-
-              {
-                "version": "0.2",
-                "phases": {
-                  "pre_build": {
-                    "commands": [
-                      "cd cdk",
-                      "git clone https://github.com/aws-samples/cloudfront-authorization-at-edge.git ../cloudfront-authorization-at-edge && npm install -g pnpm && pnpm set verify-store-integrity false && pnpm install"
-                    ]
-                  },
-                  "build": {
-                    "commands": [
-                      "pnpm run builddeps",
-                      "npx cdk synth"
-                    ]
-                  }
-                },
-                "artifacts": {
-                  "base-directory": "cdk/cdk.out",
-                  "files": "**/*"
-                }
-              }
+        BuildSpec: |
+          version: 0.2
+          phases:
+            install:
+              commands:
+                - npm install
+            build:
+              commands:
+                - npm test
+          artifacts:
+            files:
+              - '**/*'
             Type: CODEPIPELINE
           EncryptionKey:
             Fn::GetAtt:
