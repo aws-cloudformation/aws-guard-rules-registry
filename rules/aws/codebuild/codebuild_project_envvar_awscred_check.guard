@@ -33,24 +33,16 @@ rule CODEBUILD_PROJECT_ENVVAR_AWSCRED_CHECK when %codebuild_projects !empty {
 	%codebuild_projects {
 		Properties {
 			Environment !exists OR
-			Environment exists
-			when Environment exists {
-				Environment {
-					EnvironmentVariables !exists OR
-					EnvironmentVariables exists
-					when EnvironmentVariables exists {
-						EnvironmentVariables.* {
-							Type != "PLAINTEXT" OR
-							Type == "PLAINTEXT"
-							when Type == "PLAINTEXT" {
-								Name NOT IN %disallowed_names
-								<<
-									Violation: AWS Credential check in env var
-									Fix: Remove sensitive credentials ("AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY") from codebuild project envvar
-								>>
-							}
-						}
-					}
+			Environment {
+				EnvironmentVariables !exists OR
+				EnvironmentVariables [
+					Type == "PLAINTEXT"
+				] { 
+					Name NOT IN %disallowed_names
+						<<
+							Violation: AWS CodeBuild Projects are not configured with environment variables that contain credentials in PLAINTEXT 
+							Fix: Remove environment variables that contain credentials in PLAINTEXT ("AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY")
+						>>
 				}
 			}
 		}
