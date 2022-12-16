@@ -31,7 +31,7 @@ rule ELASTICACHE_REDIS_CLUSTER_AUTOMATIC_BACKUP_CHECK when %replication_groups_a
 	%replication_groups_automatedbackup.Properties.Engine != "redis" or
 	%replication_groups_automatedbackup.Properties.SnapshotRetentionLimit > 0
 	<<
-		Violation: Automatic backup for ElastiCache Replication Group is disabled
-		Fix: Set SnapshotRetentionLimit.SnapshotRetentionLimit to value greater than zero
+		Violation: Amazon ElastiCache Replication Groups are configured with automatic backups
+		Fix: Set SnapshotRetentionLimit to value greater than zero
 	>>
 }
