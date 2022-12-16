@@ -36,7 +36,7 @@ rule AUTOSCALING_LAUNCH_CONFIG_PUBLIC_IP_DISABLED when %launch_configurations_no
         AssociatePublicIpAddress exists
         AssociatePublicIpAddress == false
         <<
-            Violation: Public IP addressed associated with launch configuration.
+            Violation: Amazon EC2 Auto Scaling launch configurations are configured to not associate public IP addresses
             Fix: Explicitly set the AssociatePublicIpAddress attribute to false.
         >>
     }
