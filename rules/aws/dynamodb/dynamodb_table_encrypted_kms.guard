@@ -32,8 +32,8 @@ rule DYNAMODB_TABLE_ENCRYPTED_KMS when %aws_dynamodb_table_resources_kms_encrypt
   %aws_dynamodb_table_resources_kms_encrypted.Properties.SSESpecification.SSEEnabled == true
   %aws_dynamodb_table_resources_kms_encrypted.Properties.SSESpecification.KMSMasterKeyId exists
   %aws_dynamodb_table_resources_kms_encrypted.Properties.SSESpecification.SSEType == %aws_dynamodb_table_resources_allowed_algorithms
-  <<
-    Violation: All DynamoDB Tables must have SSE with KMS
-    Fix: Set SSEEnabled to true and have KMSMasterKeyId value
-  >>
+      <<
+        Violation: Amazon DynamoDB tables are configured with SSE and a KMS key
+        Fix: Set SSEEnabled to true and set KMSMasterKeyId to the ID of a KMS key
+      >>
 }
