@@ -1,0 +1,57 @@
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#   OPENSEARCH_DATA_NODE_FAULT_TOLERANCE
+#
+# Description:
+#   OpenSearchService domains are configured with at least three data nodes and zone awareness enabled.
+#
+# Reports on:
+#   AWS::OpenSearchService::Domain
+#
+# Evaluates:
+#   AWS CloudFormation
+#
+# Rule Parameters:
+#   NA
+#
+# Scenarios:
+# a) SKIP: when there are no OpenSearchService Domain Resources 
+# b) SKIP: when metadata has rule suppression for OPENSEARCH_DATA_NODE_FAULT_TOLERANCE
+# c) FAIL: when OpenSearchService Domain Resources are missing ClusterConfig.ZoneAwarenessEnabled or ClusterConfig.InstanceCount
+# d) FAIL: when OpenSearchService Domain Resources have ClusterConfig.ZoneAwarenessEnabled set to a value other than true 
+# e) FAIL: when OpenSearchService Domain Resources have ClusterConfig.InstanceCount set to an integer value less than three (<3) 
+# f) PASS: when OpenSearchService Domain Resources have ClusterConfig.ZoneAwarenessEnabled set to true and 
+#          ClusterConfig.InstanceCount set to an integer value greater than or equal to three (>= 3) 
+
+#
+# Select all OpenSearchService domains from incoming template
+#
+let opensearch_data_node_fault_tolerance = Resources.*[ Type == "AWS::OpenSearchService::Domain"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "OPENSEARCH_DATA_NODE_FAULT_TOLERANCE"
+]
+
+rule OPENSEARCH_DATA_NODE_FAULT_TOLERANCE when %opensearch_data_node_fault_tolerance !empty {
+    %opensearch_data_node_fault_tolerance.Properties { 
+        ClusterConfig exists
+        ClusterConfig is_struct
+
+        ClusterConfig {
+            ZoneAwarenessEnabled exists
+            ZoneAwarenessEnabled == true
+                <<
+                    Violation: OpenSearchService domains are configured with at least three data nodes and zone awareness enabled
+                    Fix: In ClusterConfig, set ZoneAwarenessEnabled to true and InstanceCount to an integer value greater than 3.
+                >>
+            InstanceCount exists
+            InstanceCount >= 3
+                <<
+                    Violation: OpenSearchService domains are configured with at least three data nodes and zone awareness enabled
+                    Fix: In ClusterConfig, set ZoneAwarenessEnabled to true and InstanceCount to an integer value greater than 3.
+                >>
+        }
+    }
+}

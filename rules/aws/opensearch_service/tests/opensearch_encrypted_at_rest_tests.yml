@@ -1,0 +1,68 @@
+###
+# OPENSEARCH_ENCRYPTED_AT_REST tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      OPENSEARCH_ENCRYPTED_AT_REST: SKIP
+
+- name: Scenario a) No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      OPENSEARCH_ENCRYPTED_AT_REST: SKIP
+
+- name: Scenario b) Rule fails when OpenSearchService domain has server side encryption property missing but rule suppressed, SKIP
+  input:
+    Resources:
+      OpenSearchDomain:
+        Type: AWS::OpenSearchService::Domain
+        Metadata:
+          guard:
+            SuppressedRules:
+              - OPENSEARCH_ENCRYPTED_AT_REST
+        Properties:
+          DomainName: test
+  expectations:
+    rules:
+      OPENSEARCH_ENCRYPTED_AT_REST: SKIP
+
+- name: Scenario c) Rule fails when OpenSearchService domain has server side encryption property missing, FAIL
+  input:
+    Resources:
+      OpenSearchDomain:
+        Type: AWS::OpenSearchService::Domain
+        Properties:
+          DomainName: test
+  expectations:
+    rules:
+      OPENSEARCH_ENCRYPTED_AT_REST: FAIL
+      
+- name: Scenario d) Rule fails when OpenSearchService domain has server side encryption property is set to false, FAIL
+  input:
+    Resources:
+      OpenSearchDomain:
+        Type: AWS::OpenSearchService::Domain
+        Properties:
+          DomainName: test
+          EncryptionAtRestOptions:
+            Enabled: false
+  expectations:
+    rules:
+      OPENSEARCH_ENCRYPTED_AT_REST: FAIL
+
+- name: Scenario e) Rule passes when OpenSearchService domain has server side encryption property is set to true, PASS
+  input:
+    Resources:
+      OpenSearchDomain:
+        Type: AWS::OpenSearchService::Domain
+        Properties:
+          DomainName: test
+          EncryptionAtRestOptions:
+            Enabled: true
+  expectations:
+    rules:
+      OPENSEARCH_ENCRYPTED_AT_REST: PASS

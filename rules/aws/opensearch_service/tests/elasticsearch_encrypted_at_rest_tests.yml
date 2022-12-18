@@ -1,0 +1,68 @@
+###
+# ELASTICSEARCH_ENCRYPTED_AT_REST tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      ELASTICSEARCH_ENCRYPTED_AT_REST: SKIP
+
+- name: Scenario a) No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      ELASTICSEARCH_ENCRYPTED_AT_REST: SKIP
+
+- name: Scenario b) Rule fails when ElasticSearch domain has server side encryption property missing but rule suppressed, SKIP
+  input:
+    Resources:
+      ElasticsearchDomain:
+        Type: AWS::Elasticsearch::Domain
+        Metadata:
+          guard:
+            SuppressedRules:
+              - ELASTICSEARCH_ENCRYPTED_AT_REST
+        Properties:
+          DomainName: test
+  expectations:
+    rules:
+      ELASTICSEARCH_ENCRYPTED_AT_REST: SKIP
+
+- name: Scenario c) Rule fails when ElasticSearch domain has server side encryption property missing, FAIL
+  input:
+    Resources:
+      ElasticsearchDomain:
+        Type: AWS::Elasticsearch::Domain
+        Properties:
+          DomainName: test
+  expectations:
+    rules:
+      ELASTICSEARCH_ENCRYPTED_AT_REST: FAIL
+      
+- name: Scenario d) Rule fails when ElasticSearch domain has server side encryption property is set to false, FAIL
+  input:
+    Resources:
+      ElasticsearchDomain:
+        Type: AWS::Elasticsearch::Domain
+        Properties:
+          DomainName: test
+          EncryptionAtRestOptions:
+            Enabled: false
+  expectations:
+    rules:
+      ELASTICSEARCH_ENCRYPTED_AT_REST: FAIL
+
+- name: Scenario e) Rule passes when ElasticSearch domain has server side encryption property is set to true, PASS
+  input:
+    Resources:
+      ElasticsearchDomain:
+        Type: AWS::Elasticsearch::Domain
+        Properties:
+          DomainName: test
+          EncryptionAtRestOptions:
+            Enabled: true
+  expectations:
+    rules:
+      ELASTICSEARCH_ENCRYPTED_AT_REST: PASS

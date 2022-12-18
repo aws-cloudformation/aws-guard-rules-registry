@@ -1,0 +1,49 @@
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#   OPENSEARCH_ACCESS_CONTROL_ENABLED
+#
+# Description:
+#   OpenSearchService domains are are configured with fine-grained access control enabled
+#
+# Reports on:
+#   AWS::OpenSearchService::Domain
+#
+# Evaluates:
+#   AWS CloudFormation
+#
+# Rule Parameters:
+#   NA
+#
+# Scenarios:
+# a) SKIP: when there are no OpenSearchService Domain Resources 
+# b) SKIP: when metadata has rule suppression for OPENSEARCH_ACCESS_CONTROL_ENABLED
+# c) FAIL: when OpenSearchService Domain Resources are missing AdvancedSecurityOptions.Enabled
+# d) FAIL: when OpenSearchService Domain Resources have AdvancedSecurityOptions.Enabled set to a value other than true
+# e) PASS: when OpenSearchService Domain Resources have AdvancedSecurityOptions.Enabled set to true
+
+#
+# Select all OpenSearchService domains from incoming template
+#
+let opensearch_access_control_enabled = Resources.*[ Type == "AWS::OpenSearchService::Domain"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "OPENSEARCH_ACCESS_CONTROL_ENABLED"
+]
+
+rule OPENSEARCH_ACCESS_CONTROL_ENABLED when %opensearch_access_control_enabled !empty {
+    %opensearch_access_control_enabled.Properties { 
+        AdvancedSecurityOptions exists
+        AdvancedSecurityOptions is_struct
+
+        AdvancedSecurityOptions {
+            Enabled exists
+            Enabled == true
+                <<
+                    Violation: OpenSearchService domains are are configured with fine-grained access control enabled
+                    Fix: In AdvancedSecurityOptions, set the Enabled property to true
+                >>
+        }
+    }
+}

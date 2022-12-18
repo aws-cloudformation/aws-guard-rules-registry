@@ -1,0 +1,173 @@
+###
+# OPENSEARCH_AUDIT_LOGGING_ENABLED tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      OPENSEARCH_AUDIT_LOGGING_ENABLED: SKIP
+
+- name: Scenario a) No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      OPENSEARCH_AUDIT_LOGGING_ENABLED: SKIP
+
+- name: Scenario b) Rule suppressed, SKIP
+  input:
+    Resources:
+      OpenSearchDomain:
+        Type: "AWS::OpenSearchService::Domain"
+        Metadata:
+          guard:
+            SuppressedRules:
+              - "OPENSEARCH_AUDIT_LOGGING_ENABLED"
+  expectations:
+    rules:
+      OPENSEARCH_AUDIT_LOGGING_ENABLED: SKIP
+
+- name: Scenario c) OpenSearchService Domain resources are missing LogPublishingOptions.AUDIT_LOGS.Enabled or LogPublishingOptions.AUDIT_LOGS.CloudWatchLogsLogGroupArn, FAIL
+  input:
+    Resources:
+      OpenSearchDomain:
+        Type: "AWS::OpenSearchService::Domain"
+        Properties: {}
+  expectations:
+    rules:
+      OPENSEARCH_AUDIT_LOGGING_ENABLED: FAIL   
+
+- name: Scenario c) OpenSearchService Domain resources are missing LogPublishingOptions.AUDIT_LOGS.Enabled or LogPublishingOptions.AUDIT_LOGS.CloudWatchLogsLogGroupArn, FAIL
+  input:
+    Resources:
+      OpenSearchDomain:
+        Type: "AWS::OpenSearchService::Domain"
+        Properties:
+          LogPublishingOptions: {}
+  expectations:
+    rules:
+      OPENSEARCH_AUDIT_LOGGING_ENABLED: FAIL   
+
+- name: Scenario c) OpenSearchService Domain resources are missing LogPublishingOptions.AUDIT_LOGS.Enabled or LogPublishingOptions.AUDIT_LOGS.CloudWatchLogsLogGroupArn, FAIL
+  input:
+    Resources:
+      OpenSearchDomain:
+        Type: "AWS::OpenSearchService::Domain"
+        Properties:
+          LogPublishingOptions:
+            AUDIT_LOGS: {}
+  expectations:
+    rules:
+      OPENSEARCH_AUDIT_LOGGING_ENABLED: FAIL   
+
+- name: Scenario c) OpenSearchService Domain resources are missing LogPublishingOptions.AUDIT_LOGS.Enabled or LogPublishingOptions.AUDIT_LOGS.CloudWatchLogsLogGroupArn, FAIL
+  input:
+    Resources:
+      OpenSearchDomain:
+        Type: "AWS::OpenSearchService::Domain"
+        Properties:
+          LogPublishingOptions:
+            AUDIT_LOGS: 
+              Enabled: true
+  expectations:
+    rules:
+      OPENSEARCH_AUDIT_LOGGING_ENABLED: FAIL   
+
+- name: Scenario c) OpenSearchService Domain resources are missing LogPublishingOptions.AUDIT_LOGS.Enabled or LogPublishingOptions.AUDIT_LOGS.CloudWatchLogsLogGroupArn, FAIL
+  input:
+    Resources:
+      OpenSearchDomain:
+        Type: "AWS::OpenSearchService::Domain"
+        Properties:
+          LogPublishingOptions:
+            AUDIT_LOGS: 
+              CloudWatchLogsLogGroupArn: "arn:aws:logs:us-east-1:123456789012:log-group:/aws/opensearchservice/domains/es-audit-logs"
+  expectations:
+    rules:
+      OPENSEARCH_AUDIT_LOGGING_ENABLED: FAIL
+
+- name: Scenario d) OpenSearchService Domain resources have LogPublishingOptions.AUDIT_LOGS.Enabled set to a value other than true, FAIL
+  input:
+    Resources:
+      OpenSearchDomain:
+        Type: "AWS::OpenSearchService::Domain"
+        Properties:
+          LogPublishingOptions:
+            AUDIT_LOGS: 
+              Enabled: false
+  expectations:
+    rules:
+      OPENSEARCH_AUDIT_LOGGING_ENABLED: FAIL
+
+- name: Scenario d) OpenSearchService Domain resources have LogPublishingOptions.AUDIT_LOGS.Enabled set to a value other than true, FAIL
+  input:
+    Resources:
+      OpenSearchDomain:
+        Type: "AWS::OpenSearchService::Domain"
+        Properties:
+          LogPublishingOptions:
+            AUDIT_LOGS: 
+              Enabled: "false"
+  expectations:
+    rules:
+      OPENSEARCH_AUDIT_LOGGING_ENABLED: FAIL
+
+- name: Scenario e) OpenSearchService Domain resources have LogPublishingOptions.AUDIT_LOGS.CloudWatchLogsLogGroupArn set to a value other than a string or struct, FAIL
+  input:
+    Resources:
+      OpenSearchDomain:
+        Type: "AWS::OpenSearchService::Domain"
+        Properties:
+          LogPublishingOptions:
+            AUDIT_LOGS: 
+              Enabled: true
+              CloudWatchLogsLogGroupArn: 123
+  expectations:
+    rules:
+      OPENSEARCH_AUDIT_LOGGING_ENABLED: FAIL
+
+- name: Scenario e) OpenSearchService Domain resources have LogPublishingOptions.AUDIT_LOGS.CloudWatchLogsLogGroupArn set to a value other than a string or struct, FAIL
+  input:
+    Resources:
+      OpenSearchDomain:
+        Type: "AWS::OpenSearchService::Domain"
+        Properties:
+          LogPublishingOptions:
+            AUDIT_LOGS: 
+              Enabled: true
+              CloudWatchLogsLogGroupArn: []
+  expectations:
+    rules:
+      OPENSEARCH_AUDIT_LOGGING_ENABLED: FAIL
+
+- name: Scenario f) OpenSearchService Domain resources have LogPublishingOptions.AUDIT_LOGS.Enabled set to true and LogPublishingOptions.AUDIT_LOGS.CloudWatchLogsLogGroupArn set to a string or struct value, PASS
+  input:
+    Resources:
+      OpenSearchDomain:
+        Type: "AWS::OpenSearchService::Domain"
+        Properties:
+          LogPublishingOptions:
+            AUDIT_LOGS: 
+              Enabled: true
+              CloudWatchLogsLogGroupArn: "arn:aws:logs:us-east-1:123456789012:log-group:/aws/opensearchservice/domains/es-audit-logs"
+  expectations:
+    rules:
+      OPENSEARCH_AUDIT_LOGGING_ENABLED: PASS
+
+- name: Scenario g) OpenSearchService Domain resources have LogPublishingOptions.AUDIT_LOGS.Enabled set to true and LogPublishingOptions.AUDIT_LOGS.CloudWatchLogsLogGroupArn set to a string or struct value, PASS
+  input:
+    Resources:
+      LogGroup:
+        Type: "AWS::Logs::LogGroup"
+      OpenSearchDomain:
+        Type: "AWS::OpenSearchService::Domain"
+        Properties:
+          LogPublishingOptions:
+            AUDIT_LOGS: 
+              Enabled: true
+              CloudWatchLogsLogGroupArn:
+                Fn::GetAtt: [LogGroup, Arn]
+  expectations:
+    rules:
+      OPENSEARCH_AUDIT_LOGGING_ENABLED: PASS      

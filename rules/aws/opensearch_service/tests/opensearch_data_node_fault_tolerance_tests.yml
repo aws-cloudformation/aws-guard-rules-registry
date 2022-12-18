@@ -1,0 +1,127 @@
+###
+# OPENSEARCH_DATA_NODE_FAULT_TOLERANCE tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      OPENSEARCH_DATA_NODE_FAULT_TOLERANCE: SKIP
+
+- name: Scenario a) No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      OPENSEARCH_DATA_NODE_FAULT_TOLERANCE: SKIP
+
+- name: Scenario b) Rule suppressed, SKIP
+  input:
+    Resources:
+      OpenSearchDomain:
+        Type: "AWS::OpenSearchService::Domain"
+        Metadata:
+          guard:
+            SuppressedRules:
+              - "OPENSEARCH_DATA_NODE_FAULT_TOLERANCE"
+  expectations:
+    rules:
+      OPENSEARCH_DATA_NODE_FAULT_TOLERANCE: SKIP
+
+- name: Scenario c) OpenSearchService Domain resources are missing ClusterConfig.ZoneAwarenessEnabled or ClusterConfig.InstanceCount, FAIL
+  input:
+    Resources:
+      OpenSearchDomain:
+        Type: "AWS::OpenSearchService::Domain"
+        Properties:
+          ClusterConfig: {}
+  expectations:
+    rules:
+      OPENSEARCH_DATA_NODE_FAULT_TOLERANCE: FAIL   
+
+- name: Scenario c) OpenSearchService Domain resources are missing ClusterConfig.ZoneAwarenessEnabled or ClusterConfig.InstanceCount, FAIL
+  input:
+    Resources:
+      OpenSearchDomain:
+        Type: "AWS::OpenSearchService::Domain"
+        Properties:
+          ClusterConfig:
+            ZoneAwarenessEnabled: true
+  expectations:
+    rules:
+      OPENSEARCH_DATA_NODE_FAULT_TOLERANCE: FAIL  
+
+- name: Scenario c) OpenSearchService Domain resources are missing ClusterConfig.ZoneAwarenessEnabled or ClusterConfig.InstanceCount, FAIL
+  input:
+    Resources:
+      OpenSearchDomain:
+        Type: "AWS::OpenSearchService::Domain"
+        Properties:
+          ClusterConfig:
+            InstanceCount: 3
+  expectations:
+    rules:
+      OPENSEARCH_DATA_NODE_FAULT_TOLERANCE: FAIL  
+
+- name: Scenario d) OpenSearchService Domain resources have ClusterConfig.ZoneAwarenessEnabled set to a value other than true, FAIL
+  input:
+    Resources:
+      OpenSearchDomain:
+        Type: "AWS::OpenSearchService::Domain"
+        Properties:
+          ClusterConfig:
+            ZoneAwarenessEnabled: false
+  expectations:
+    rules:
+      OPENSEARCH_DATA_NODE_FAULT_TOLERANCE: FAIL
+
+- name: Scenario d) OpenSearchService Domain resources have ClusterConfig.ZoneAwarenessEnabled set to a value other than true, FAIL
+  input:
+    Resources:
+      OpenSearchDomain:
+        Type: "AWS::OpenSearchService::Domain"
+        Properties:
+          ClusterConfig:
+            ZoneAwarenessEnabled: "false"
+  expectations:
+    rules:
+      OPENSEARCH_DATA_NODE_FAULT_TOLERANCE: FAIL
+
+- name: Scenario e) OpenSearchService Domain resources have ClusterConfig.InstanceCount set to an integer value less than three (<3), FAIL
+  input:
+    Resources:
+      OpenSearchDomain:
+        Type: "AWS::OpenSearchService::Domain"
+        Properties:
+          ClusterConfig:
+            ZoneAwarenessEnabled: true
+            InstanceCount: 2
+  expectations:
+    rules:
+      OPENSEARCH_DATA_NODE_FAULT_TOLERANCE: FAIL
+
+- name: Scenario e) OpenSearchService Domain resources have ClusterConfig.InstanceCount set to an integer value less than three (<3) , FAIL
+  input:
+    Resources:
+      OpenSearchDomain:
+        Type: "AWS::OpenSearchService::Domain"
+        Properties:
+          ClusterConfig:
+            ZoneAwarenessEnabled: true
+            InstanceCount: 1
+  expectations:
+    rules:
+      OPENSEARCH_DATA_NODE_FAULT_TOLERANCE: FAIL
+
+- name: Scenario f) OpenSearchService Domain resources have ClusterConfig.ZoneAwarenessEnabled set to true and ClusterConfig.InstanceCount set to an integer value greater than or equal to three (>= 3), PASS
+  input:
+    Resources:
+      OpenSearchDomain:
+        Type: "AWS::OpenSearchService::Domain"
+        Properties:
+          ClusterConfig:
+            ZoneAwarenessEnabled: true
+            InstanceCount: 3
+  expectations:
+    rules:
+      OPENSEARCH_DATA_NODE_FAULT_TOLERANCE: PASS

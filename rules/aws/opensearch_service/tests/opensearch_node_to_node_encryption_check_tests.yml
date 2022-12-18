@@ -1,0 +1,73 @@
+###
+# OPENSEARCH_NODE_TO_NODE_ENCRYPTION_CHECK tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      OPENSEARCH_NODE_TO_NODE_ENCRYPTION_CHECK: SKIP
+
+- name: Scenario a) No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      OPENSEARCH_NODE_TO_NODE_ENCRYPTION_CHECK: SKIP
+
+- name: Scenario b) Rule fails when OpenSearchService domain has Node-to-Node Encryption property missing but rule suppressed, SKIP
+  input:
+    Resources:
+      OpenSearchDomain:
+        Type: AWS::OpenSearchService::Domain
+        Metadata:
+          guard:
+            SuppressedRules:
+              - OPENSEARCH_NODE_TO_NODE_ENCRYPTION_CHECK
+        Properties:
+          DomainName: test
+  expectations:
+    rules:
+      OPENSEARCH_NODE_TO_NODE_ENCRYPTION_CHECK: SKIP
+
+- name: Scenario c) Rule fails when OpenSearchService domain has Node-to-Node Encryption property missing
+  input:
+    Resources:
+      OpenSearchDomain:
+        Type: AWS::OpenSearchService::Domain
+        Properties:
+          DomainName: test
+  expectations:
+    rules:
+      OPENSEARCH_NODE_TO_NODE_ENCRYPTION_CHECK: FAIL
+
+- name: Scenario d) Rule fails when OpenSearchService domain has Node-to-Node Encryption property is set to false
+  input:
+    Resources:
+      OpenSearchDomain:
+        Type: AWS::OpenSearchService::Domain
+        Properties:
+          DomainName: test
+          NodeToNodeEncryptionOptions:
+            Enabled: false
+  expectations:
+    rules:
+      OPENSEARCH_NODE_TO_NODE_ENCRYPTION_CHECK: FAIL
+
+- name: Scenario e) Rule passes when OpenSearchService domain has Node-to-Node Encryption property is set to true
+  input:
+    Resources:
+      OpenSearchDomain:
+        Type: AWS::OpenSearchService::Domain
+        Properties:
+          DomainName: test
+          NodeToNodeEncryptionOptions:
+            Enabled: true
+  expectations:
+    rules:
+      OPENSEARCH_NODE_TO_NODE_ENCRYPTION_CHECK: PASS
+
+
+
+
+

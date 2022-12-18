@@ -3,38 +3,38 @@
 ##           Gherkin               ##
 #####################################
 # Rule Identifier:
-#    ELASTICSEARCH_IN_VPC_ONLY
+#   ELASTICSEARCH_IN_VPC_ONLY
 #
 # Description:
 #   Elasticsearch domains must be in a VPC
 #
 # Reports on:
-#    AWS::Elasticsearch::Domain
+#   AWS::Elasticsearch::Domain
 #
 # Evaluates:
-#    AWS CloudFormation
+#   AWS CloudFormation
 #
 # Rule Parameters:
-#    NA
+#   NA
 #
 # Scenarios:
 # a) SKIP: when there is no elasticsearch domain present
-# b) FAIL: when elasticsearch domain does not have VPCOptions or Endpoint properties
+# b) SKIP: when metada has rule suppression for ELASTICSEARCH_IN_VPC_ONLY
 # c) PASS: when elasticsearch domain has VPCOptions or Endpoint properties
-# d) SKIP: when metada has rule suppression for ELASTICSEARCH_IN_VPC_ONLY
+# d) FAIL: when elasticsearch domain does not have VPCOptions or Endpoint properties
 
 #
 # Select all elasticsearch domains from incoming template
 #
-let elasticsearch_domains_vpc_required = Resources.*[ Type == 'AWS::Elasticsearch::Domain'
+let elasticsearch_domains_vpc_required = Resources.*[ Type == "AWS::Elasticsearch::Domain"
   Metadata.guard.SuppressedRules not exists or
   Metadata.guard.SuppressedRules.* != "ELASTICSEARCH_IN_VPC_ONLY"
 ]
 
 rule ELASTICSEARCH_IN_VPC_ONLY when %elasticsearch_domains_vpc_required !empty {
-  %elasticsearch_domains_vpc_required.Properties.VPCOptions EXISTS
-  <<
-    Violation: Elasticsearch domains must be in a VPC.
-    Fix: Provide VPCOptions object to enable opensearch to function in a VPC.
-  >>
+    %elasticsearch_domains_vpc_required.Properties.VPCOptions EXISTS
+        <<
+            Violation: Elasticsearch domains must be in a VPC.
+            Fix: Provide VPCOptions object to enable opensearch to function in a VPC.
+        >>
 }

@@ -1,0 +1,58 @@
+###
+# ELASTICSEARCH_IN_VPC_ONLY tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      ELASTICSEARCH_IN_VPC_ONLY: SKIP
+
+- name: Scenario a) No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      ELASTICSEARCH_IN_VPC_ONLY: SKIP
+
+- name: Scenario b) Rule fails when ElasticSearch domain does not have VPCOptions property but rule suppressed, SKIP
+  input:
+    Resources:
+      ElasticsearchDomain:
+        Type: AWS::Elasticsearch::Domain
+        Metadata:
+          guard:
+            SuppressedRules:
+              - ELASTICSEARCH_IN_VPC_ONLY
+        Properties:
+          DomainName: test
+  expectations:
+    rules:
+      ELASTICSEARCH_IN_VPC_ONLY: SKIP
+
+- name: Scenario c) Rule fails when ElasticSearch domain does not have VPCOptions property, FAIL
+  input:
+    Resources:
+      ElasticsearchDomain:
+        Type: AWS::Elasticsearch::Domain
+        Properties:
+          DomainName: test
+  expectations:
+    rules:
+      ELASTICSEARCH_IN_VPC_ONLY: FAIL
+
+- name: Scenario d) Rule passes when ElasticSearch domain has VPCOptions property, PASS
+  input:
+    Resources:
+      ElasticsearchDomain:
+        Type: AWS::Elasticsearch::Domain
+        Properties:
+          DomainName: test
+          VPCOptions:
+            SecurityGroupIds:
+              - sg-12345678
+            SubnetIds:
+              - subnet-12345678
+  expectations:
+    rules:
+      ELASTICSEARCH_IN_VPC_ONLY: PASS

@@ -1,0 +1,173 @@
+###
+# ELASTICSEARCH_APPLICATION_LOGGING_ENABLED tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      ELASTICSEARCH_APPLICATION_LOGGING_ENABLED: SKIP
+
+- name: Scenario a) No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      ELASTICSEARCH_APPLICATION_LOGGING_ENABLED: SKIP
+
+- name: Scenario b) Rule suppressed, SKIP
+  input:
+    Resources:
+      ElasticsearchDomain:
+        Type: "AWS::Elasticsearch::Domain"
+        Metadata:
+          guard:
+            SuppressedRules:
+              - "ELASTICSEARCH_APPLICATION_LOGGING_ENABLED"
+  expectations:
+    rules:
+      ELASTICSEARCH_APPLICATION_LOGGING_ENABLED: SKIP
+
+- name: Scenario c) ElasticSearch Domain resources are missing LogPublishingOptions.ES_APPLICATION_LOGS.Enabled or LogPublishingOptions.ES_APPLICATION_LOGS.CloudWatchLogsLogGroupArn, FAIL
+  input:
+    Resources:
+      ElasticsearchDomain:
+        Type: "AWS::Elasticsearch::Domain"
+        Properties: {}
+  expectations:
+    rules:
+      ELASTICSEARCH_APPLICATION_LOGGING_ENABLED: FAIL   
+
+- name: Scenario c) ElasticSearch Domain resources are missing LogPublishingOptions.ES_APPLICATION_LOGS.Enabled or LogPublishingOptions.ES_APPLICATION_LOGS.CloudWatchLogsLogGroupArn, FAIL
+  input:
+    Resources:
+      ElasticsearchDomain:
+        Type: "AWS::Elasticsearch::Domain"
+        Properties:
+          LogPublishingOptions: {}
+  expectations:
+    rules:
+      ELASTICSEARCH_APPLICATION_LOGGING_ENABLED: FAIL   
+
+- name: Scenario c) ElasticSearch Domain resources are missing LogPublishingOptions.ES_APPLICATION_LOGS.Enabled or LogPublishingOptions.ES_APPLICATION_LOGS.CloudWatchLogsLogGroupArn, FAIL
+  input:
+    Resources:
+      ElasticsearchDomain:
+        Type: "AWS::Elasticsearch::Domain"
+        Properties:
+          LogPublishingOptions:
+            ES_APPLICATION_LOGS: {}
+  expectations:
+    rules:
+      ELASTICSEARCH_APPLICATION_LOGGING_ENABLED: FAIL   
+
+- name: Scenario c) ElasticSearch Domain resources are missing LogPublishingOptions.ES_APPLICATION_LOGS.Enabled or LogPublishingOptions.ES_APPLICATION_LOGS.CloudWatchLogsLogGroupArn, FAIL
+  input:
+    Resources:
+      ElasticsearchDomain:
+        Type: "AWS::Elasticsearch::Domain"
+        Properties:
+          LogPublishingOptions:
+            ES_APPLICATION_LOGS: 
+              Enabled: true
+  expectations:
+    rules:
+      ELASTICSEARCH_APPLICATION_LOGGING_ENABLED: FAIL   
+
+- name: Scenario c) ElasticSearch Domain resources are missing LogPublishingOptions.ES_APPLICATION_LOGS.Enabled or LogPublishingOptions.ES_APPLICATION_LOGS.CloudWatchLogsLogGroupArn, FAIL
+  input:
+    Resources:
+      ElasticsearchDomain:
+        Type: "AWS::Elasticsearch::Domain"
+        Properties:
+          LogPublishingOptions:
+            ES_APPLICATION_LOGS: 
+              CloudWatchLogsLogGroupArn: "arn:aws:logs:us-east-1:123456789012:log-group:/aws/opensearchservice/domains/es-audit-logs"
+  expectations:
+    rules:
+      ELASTICSEARCH_APPLICATION_LOGGING_ENABLED: FAIL
+
+- name: Scenario d) ElasticSearch Domain resources have LogPublishingOptions.ES_APPLICATION_LOGS.Enabled set to a value other than true, FAIL
+  input:
+    Resources:
+      ElasticsearchDomain:
+        Type: "AWS::Elasticsearch::Domain"
+        Properties:
+          LogPublishingOptions:
+            ES_APPLICATION_LOGS: 
+              Enabled: false
+  expectations:
+    rules:
+      ELASTICSEARCH_APPLICATION_LOGGING_ENABLED: FAIL
+
+- name: Scenario d) ElasticSearch Domain resources have LogPublishingOptions.ES_APPLICATION_LOGS.Enabled set to a value other than true, FAIL
+  input:
+    Resources:
+      ElasticsearchDomain:
+        Type: "AWS::Elasticsearch::Domain"
+        Properties:
+          LogPublishingOptions:
+            ES_APPLICATION_LOGS: 
+              Enabled: "false"
+  expectations:
+    rules:
+      ELASTICSEARCH_APPLICATION_LOGGING_ENABLED: FAIL
+
+- name: Scenario e) ElasticSearch Domain resources have LogPublishingOptions.ES_APPLICATION_LOGS.CloudWatchLogsLogGroupArn set to a value other than a string or struct, FAIL
+  input:
+    Resources:
+      ElasticsearchDomain:
+        Type: "AWS::Elasticsearch::Domain"
+        Properties:
+          LogPublishingOptions:
+            ES_APPLICATION_LOGS: 
+              Enabled: true
+              CloudWatchLogsLogGroupArn: 123
+  expectations:
+    rules:
+      ELASTICSEARCH_APPLICATION_LOGGING_ENABLED: FAIL
+
+- name: Scenario e) ElasticSearch Domain resources have LogPublishingOptions.ES_APPLICATION_LOGS.CloudWatchLogsLogGroupArn set to a value other than a string or struct, FAIL
+  input:
+    Resources:
+      ElasticsearchDomain:
+        Type: "AWS::Elasticsearch::Domain"
+        Properties:
+          LogPublishingOptions:
+            ES_APPLICATION_LOGS: 
+              Enabled: true
+              CloudWatchLogsLogGroupArn: []
+  expectations:
+    rules:
+      ELASTICSEARCH_APPLICATION_LOGGING_ENABLED: FAIL
+
+- name: Scenario f) ElasticSearch Domain resources have LogPublishingOptions.ES_APPLICATION_LOGS.Enabled set to true and LogPublishingOptions.ES_APPLICATION_LOGS.CloudWatchLogsLogGroupArn set to a string or struct value, PASS
+  input:
+    Resources:
+      ElasticsearchDomain:
+        Type: "AWS::Elasticsearch::Domain"
+        Properties:
+          LogPublishingOptions:
+            ES_APPLICATION_LOGS: 
+              Enabled: true
+              CloudWatchLogsLogGroupArn: "arn:aws:logs:us-east-1:123456789012:log-group:/aws/opensearchservice/domains/es-audit-logs"
+  expectations:
+    rules:
+      ELASTICSEARCH_APPLICATION_LOGGING_ENABLED: PASS
+
+- name: Scenario g) ElasticSearch Domain resources have LogPublishingOptions.ES_APPLICATION_LOGS.Enabled set to true and LogPublishingOptions.ES_APPLICATION_LOGS.CloudWatchLogsLogGroupArn set to a string or struct value, PASS
+  input:
+    Resources:
+      LogGroup:
+        Type: "AWS::Logs::LogGroup"
+      ElasticsearchDomain:
+        Type: "AWS::Elasticsearch::Domain"
+        Properties:
+          LogPublishingOptions:
+            ES_APPLICATION_LOGS: 
+              Enabled: true
+              CloudWatchLogsLogGroupArn:
+                Fn::GetAtt: [LogGroup, Arn]
+  expectations:
+    rules:
+      ELASTICSEARCH_APPLICATION_LOGGING_ENABLED: PASS      
