@@ -1,2 +1,67 @@
-## Config Rule Name : elb-predefined-security-policy-ssl-check
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/elb-predefined-security-policy-ssl-check.html"
+#
+#####################################
+##           Gherkin               ##
+#####################################
+#
+# Rule Identifier:
+#   ELB_PREDEFINED_SECURITY_POLICY_SSL_CHECK
+#
+# Description:
+#   This rule checks whether Classic Load Balancers HTTPS/SSL listeners use the predefined security policy 'ELBSecurityPolicy-TLS-1-2-2017-01'.
+#
+# Reports on:
+#   AWS::ElasticLoadBalancing::LoadBalancer
+#
+# Evaluates:
+#   AWS CloudFormation
+#
+# Rule Parameters:
+#   None
+#
+# Scenarios:
+# a) SKIP: when there are no Elastic Load Balancing Resources
+# b) SKIP: when metadata has rule suppression for ELB_PREDEFINED_SECURITY_POLICY_SSL_CHECK
+# c) SKIP: when there are no HTTPS or SSL 'Listeners' configured
+# d) FAIL: when 'Policies' does not contain a policy with 'PolicyType' equal to 'SSLNegotiationPolicyType' and 'Reference-Security-Policy' with a value of
+#          'ELBSecurityPolicy-TLS-1-2-2017-01'
+# e) FAIL: when a 'HTTPS' or 'SSL' Listener on the load balancer resource does not reference a secure policy
+# f) PASS: when all 'HTTPS' and 'SSL' Listeners on the load balancer resource reference a secure policy
+
+#
+# Select all Elastic Load Balancing Resources from incoming template (payload)
+#
+let elb_predefined_security_policy_ssl_check = Resources.*[ Type == 'AWS::ElasticLoadBalancing::LoadBalancer'
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "ELB_PREDEFINED_SECURITY_POLICY_SSL_CHECK"
+]
+
+rule ELB_PREDEFINED_SECURITY_POLICY_SSL_CHECK when %elb_predefined_security_policy_ssl_check !empty {
+    %elb_predefined_security_policy_ssl_check.Properties {
+        let elb = this
+
+        Listeners[ Protocol in ["HTTPS", "SSL"] ] {
+            %elb.Policies exists
+            %elb.Policies is_list
+            %elb.Policies not empty
+
+            let secure_policies = %elb.Policies[
+                PolicyType == "SSLNegotiationPolicyType"
+                some Attributes[*] {
+                    Name == "Reference-Security-Policy"
+                    Value in [ "ELBSecurityPolicy-TLS-1-2-2017-01" ]
+                }
+            ].PolicyName
+
+            %secure_policies not empty
+
+            PolicyNames exists
+            PolicyNames is_list
+            PolicyNames not empty
+            some PolicyNames.* in %secure_policies
+                <<
+                    Violation: Classic Load Balancers HTTPS/SSL listeners use the predefined security policy 'ELBSecurityPolicy-TLS-1-2-2017-01'
+                    Fix: Configure Classic Load Balancer HTTPS/SSL listeners to use the predefined security policy 'ELBSecurityPolicy-TLS-1-2-2017-01'
+                >>
+        }
+    }
+}
