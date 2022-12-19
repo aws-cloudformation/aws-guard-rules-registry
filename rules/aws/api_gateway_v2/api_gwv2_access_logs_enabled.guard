@@ -1,0 +1,55 @@
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#   API_GWV2_ACCESS_LOGS_ENABLED
+#
+# Description:
+#   Amazon API Gateway V2 stages have access logging enabled.
+#
+# Reports on:
+#   AWS::ApiGateway::Stage
+#
+# Evaluates:
+#   AWS CloudFormation
+#
+# Rule Parameters:
+#   NA
+#
+# Scenarios:
+# a) SKIP: when there are no API GW Stage Methods present
+# b) SKIP: when metadata includes the suppression for rule API_GWV2_ACCESS_LOGS_ENABLED
+# c) FAIL: when an API Gateway V2 Stage Method is missing AccessLogSettings.DestinationArn or AccessLogSettings.Format
+# d) FAIL: when an API Gateway V2 Stage Method has AccessLogSettings.DestinationArn or AccessLogSettings.Format set to a value other than a string or struct
+# e) PASS: when an API Gateway V2 Stage Method have an AccessLogSettings configuration with DestinationArn and Format set to a string or struct
+
+let api_gwv2_access_logs_enabled = Resources.*[ Type == "AWS::ApiGatewayV2::Stage"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "API_GWV2_ACCESS_LOGS_ENABLED"
+]
+
+rule API_GWV2_ACCESS_LOGS_ENABLED when %api_gwv2_access_logs_enabled !empty {
+    %api_gwv2_access_logs_enabled.Properties {
+        AccessLogSettings exists
+        AccessLogSettings is_struct
+
+        AccessLogSettings {
+            DestinationArn exists
+            DestinationArn is_string or 
+            DestinationArn is_struct
+            <<
+                Violation: Amazon API Gateway V2 stages have access logging enabled
+                Fix: In AccessLogSettings, set DestinationArn to the ARN of an Amazon CloudWatch log group and Format to a single line log format configuration.
+            >>
+
+            Format exists
+            Format is_string or 
+            Format is_struct
+            <<
+                Violation: Amazon API Gateway V2 stages have access logging enabled
+                Fix: In AccessLogSettings, set DestinationArn to the ARN of an Amazon CloudWatch log group and Format to a single line log format configuration.
+            >>
+        }
+  }
+}

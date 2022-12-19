@@ -1,0 +1,119 @@
+###
+# API_GWV2_ACCESS_LOGS_ENABLED tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      API_GWV2_ACCESS_LOGS_ENABLED: SKIP
+
+- name: Scenario a) No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      API_GWV2_ACCESS_LOGS_ENABLED: SKIP
+
+- name: Scenario b) Rule suppressed, SKIP
+  input:
+    Resources:
+      ApiStage:
+        Type: AWS::ApiGatewayV2::Stage
+        Metadata:
+          guard:
+            SuppressedRules:
+              - "API_GWV2_ACCESS_LOGS_ENABLED"
+  expectations:
+    rules:
+      API_GWV2_ACCESS_LOGS_ENABLED: SKIP
+
+- name: Scenario c) API Gateway V2 Stage Method is missing AccessLogSettings.DestinationArn or AccessLogSettings.Format, FAIL
+  input:
+    Resources:
+      ApiStage:
+        Type: AWS::ApiGatewayV2::Stage
+        Properties: {}
+  expectations:
+    rules:
+      API_GWV2_ACCESS_LOGS_ENABLED: FAIL
+
+- name: Scenario c) API Gateway V2 Stage Method is missing AccessLogSettings.DestinationArn or AccessLogSettings.Format, FAIL
+  input:
+    Resources:
+      ApiStage:
+        Type: AWS::ApiGatewayV2::Stage
+        Properties:
+          AccessLogSettings: {}
+  expectations:
+    rules:
+      API_GWV2_ACCESS_LOGS_ENABLED: FAIL      
+
+- name: Scenario c) API Gateway V2 Stage Method is missing AccessLogSettings.DestinationArn or AccessLogSettings.Format, FAIL
+  input:
+    Resources:
+      ApiStage:
+        Type: AWS::ApiGatewayV2::Stage
+        Properties:
+          AccessLogSettings:
+            DestinationArn: arn:aws:logs:us-east-1:123456789012:log-group:example-log-group
+  expectations:
+    rules:
+      API_GWV2_ACCESS_LOGS_ENABLED: FAIL      
+
+- name: Scenario c) API Gateway V2 Stage Method is missing AccessLogSettings.DestinationArn or AccessLogSettings.Format, FAIL
+  input:
+    Resources:
+      ApiStage:
+        Type: AWS::ApiGatewayV2::Stage
+        Properties:
+          AccessLogSettings:
+            Format: >-
+              {"requestId":"$context.requestId", "ip": "$context.identity.sourceIp",
+              "user":"$context.identity.user","requestTime":"$context.requestTime"}
+  expectations:
+    rules:
+      API_GWV2_ACCESS_LOGS_ENABLED: FAIL      
+
+- name: Scenario d) API Gateway V2 Stage Method has AccessLogSettings.DestinationArn or AccessLogSettings.Format set to a value other than a string or struct, FAIL
+  input:
+    Resources:
+      ApiStage:
+        Type: AWS::ApiGatewayV2::Stage
+        Properties:
+          AccessLogSettings:
+            DestinationArn: arn:aws:logs:us-east-1:123456789012:log-group:example-log-group
+            Format: 123
+  expectations:
+    rules:
+      API_GWV2_ACCESS_LOGS_ENABLED: FAIL
+
+- name: Scenario d) API Gateway V2 Stage Method has AccessLogSettings.DestinationArn or AccessLogSettings.Format set to a value other than a string or struct, FAIL
+  input:
+    Resources:
+      ApiStage:
+        Type: AWS::ApiGatewayV2::Stage
+        Properties:
+          AccessLogSettings:
+            DestinationArn: 123
+            Format: >-
+              {"requestId":"$context.requestId", "ip": "$context.identity.sourceIp",
+              "user":"$context.identity.user","requestTime":"$context.requestTime"}
+  expectations:
+    rules:
+      API_GWV2_ACCESS_LOGS_ENABLED: FAIL
+
+- name: Scenario e) API Gateway V2 Stage Method have an AccessLogSettings configuration with DestinationArn and Format set to a string or struct, PASS
+  input:
+    Resources:
+      ApiStage:
+        Type: AWS::ApiGatewayV2::Stage
+        Properties:
+          AccessLogSettings:
+            DestinationArn: arn:aws:logs:us-east-1:123456789012:log-group:example-log-group
+            Format: >-
+              {"requestId":"$context.requestId", "ip": "$context.identity.sourceIp",
+              "user":"$context.identity.user","requestTime":"$context.requestTime"}
+  expectations:
+    rules:
+      API_GWV2_ACCESS_LOGS_ENABLED: PASS
