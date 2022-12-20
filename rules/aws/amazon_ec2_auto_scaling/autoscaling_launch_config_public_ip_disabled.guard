@@ -24,7 +24,7 @@
 # e) SKIP: when metada has rule suppression for AUTOSCALING_LAUNCH_CONFIG_PUBLIC_IP_DISABLED
 
 #
-# Select all S3 resources from incoming template (payload)
+# Select all AutoScaling Launch Configuration resources from incoming template (payload)
 #
 let launch_configurations_no_pub_ip = Resources.*[ Type == 'AWS::AutoScaling::LaunchConfiguration'
  Metadata.guard.SuppressedRules not exists or
