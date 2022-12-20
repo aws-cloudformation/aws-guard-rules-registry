@@ -24,7 +24,7 @@
 # d) SKIP: when metada has rule suppression for EMR_KERBEROS_ENABLED
 
 #
-# Select all S3 resources from incoming template (payload)
+# Select all EMR Cluster resources from incoming template (payload)
 #
 
 let emr_clusters_kerberos = Resources.*[ Type == "AWS::EMR::Cluster"
