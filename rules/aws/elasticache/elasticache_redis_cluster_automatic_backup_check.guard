@@ -1,6 +1,8 @@
-## Config Rule Name : elasticache-redis-cluster-automatic-backup-check
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/elasticache-redis-cluster-automatic-backup-check.html"
-
+#
+#####################################
+##           Gherkin               ##
+#####################################
+#
 # Rule Identifier:
 #    ELASTICACHE_REDIS_CLUSTER_AUTOMATIC_BACKUP_CHECK
 #

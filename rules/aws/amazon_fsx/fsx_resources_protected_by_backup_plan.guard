@@ -1,3 +1,8 @@
+#
+#####################################
+##           Gherkin               ##
+#####################################
+#
 # Rule Identifier:
 #    FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN
 #
@@ -41,7 +46,7 @@ rule FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN when %fsx_filesystems_backup_plan !e
 							Violation: FSx File Systems are protected by a backup plan
 							Fix: AutomaticBackupRetentionDays should be set
 						>>
-						AutomaticBackupRetentionDays > 0 
+						AutomaticBackupRetentionDays > 0
 						<<
 							Violation: FSx File Systems are protected by a backup plan
 							Fix: Set the AutomaticBackupRetentionDays property to value greater than 0
@@ -53,7 +58,7 @@ rule FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN when %fsx_filesystems_backup_plan !e
 
 			when FileSystemType == "ONTAP" {
 				OntapConfiguration {
-					AutomaticBackupRetentionDays exists 
+					AutomaticBackupRetentionDays exists
 					<<
 						Violation: FSx File Systems are protected by a backup plan
 						Fix: AutomaticBackupRetentionDays should be set

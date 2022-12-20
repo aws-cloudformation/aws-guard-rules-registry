@@ -1,7 +1,8 @@
-    ## Config Rule Name : emr-kerberos-enabled
-    ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/EMR_KERBEROS_ENABLED.html"
-
+#
 #####################################
+##           Gherkin               ##
+#####################################
+#
 # Rule Identifier:
 #    EMR_KERBEROS_ENABLED
 #

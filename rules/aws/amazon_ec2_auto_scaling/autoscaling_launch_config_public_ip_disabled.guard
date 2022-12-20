@@ -1,6 +1,8 @@
-    ## Config Rule Name : autoscaling-launch-config-public-ip-disabled
-    ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/AUTOSCALING_LAUNCH_CONFIG_PUBLIC_IP_DISABLED.html"
+#
 #####################################
+##           Gherkin               ##
+#####################################
+#
 # Rule Identifier:
 #    AUTOSCALING_LAUNCH_CONFIG_PUBLIC_IP_DISABLED
 #

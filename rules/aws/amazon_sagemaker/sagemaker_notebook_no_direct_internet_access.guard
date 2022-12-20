@@ -1,4 +1,8 @@
+#
 #####################################
+##           Gherkin               ##
+#####################################
+#
 # Rule Identifier:
 #    SAGEMAKER_NOTEBOOK_NO_DIRECT_INTERNET_ACCESS
 #

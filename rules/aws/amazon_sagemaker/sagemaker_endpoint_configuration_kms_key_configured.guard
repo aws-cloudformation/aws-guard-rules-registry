@@ -1,4 +1,8 @@
+#
 #####################################
+##           Gherkin               ##
+#####################################
+#
 # Rule Identifier:
 #    SAGEMAKER_ENDPOINT_CONFIGURATION_KMS_KEY_CONFIGURED
 #
