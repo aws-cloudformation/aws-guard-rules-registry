@@ -1,24 +1,42 @@
-## Config Rule Name : dynamodb-pitr-enabled
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/dynamodb-pitr-enabled.html"
-
-# Rule Intent: All DynamoDB Tables must have Point-In-Time-Recovery enabled
-
-# Expectations:
+#
+#####################################
+##           Gherkin               ##
+#####################################
+#
+# Rule Identifier:
+#  DYNAMODB_PITR_ENABLED
+#
+# Description:
+#  All DynamoDB Tables must have Point-In-Time-Recovery enabled.
+#
+# Reports on:
+#  AWS::DynamoDB::Table
+#
+# Evaluates:
+#  AWS CloudFormation
+#
+# Rule Parameters:
+#  NA
+#
+# Scenarios:
 # a) SKIP: when there are no DynamoDB Tables present
-# b) PASS: when all DynamoDB Tables have PITR enabled
-# c) FAIL: when all DynamoDB Tables have PITR disabled
+# b) SKIP: when metadata has rule suppression for DYNAMODB_PITR_ENABLED
+# c) FAIL: when any DynamoDB Table is missing a PITR configuration
+# d) FAIL: when any DynamoDB Table has PointInTimeRecoveryEnabled set to false
+# d) PASS: when all DynamoDB Tables have PITR enabled
 
 #
 # Select all DynamoDB Table resources from incoming template (payload)
 #
-let aws_dynamodb_table_resources = Resources.*[ Type == 'AWS::DynamoDB::Table' ]
+let dynamodb_pitr_enabled = Resources.*[ Type == "AWS::DynamoDB::Table" 
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "DYNAMODB_PITR_ENABLED"
+]
 
-
-rule DYNAMODB_PITR_ENABLED when %aws_dynamodb_table_resources !empty {
-    # Ensure ALL DynamoDB Tables have Point-In-Time-Recovery enabled
-    %aws_dynamodb_table_resources.Properties.PointInTimeRecoverySpecification.PointInTimeRecoveryEnabled == true
-  <<
-    Violation: All DynamoDB Tables must have Point-In-Time-Recovery enabled.
-    Fix: Set the dynamodb table property PointInTimeRecoverySpecification.PointInTimeRecoveryEnabled to true.
-  >>
+rule DYNAMODB_PITR_ENABLED when %dynamodb_pitr_enabled !empty {
+    %dynamodb_pitr_enabled.Properties.PointInTimeRecoverySpecification.PointInTimeRecoveryEnabled == true
+    <<
+      Violation: All DynamoDB Tables must have Point-In-Time-Recovery enabled.
+      Fix: Set the dynamodb table property PointInTimeRecoverySpecification.PointInTimeRecoveryEnabled to true.
+    >>
 }

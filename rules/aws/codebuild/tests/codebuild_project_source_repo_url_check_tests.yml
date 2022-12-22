@@ -1,8 +1,6 @@
-############
-# CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK
-#############
-
-
+###
+# CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK tests
+###
 ---
 - name: Empty, SKIP
   input: {}
@@ -10,69 +8,140 @@
     rules:
       CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK: SKIP
 
-- name: No resources, SKIP
+- name: Scenario a) No resources, SKIP
   input:
     Resources: {}
   expectations:
     rules:
       CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK: SKIP
 
-- name: OAUTH used, PASS
+- name: Scenario b) Source location contains credentials but rule is suppressed, SKIP
   input:
     Resources:
-      Credential:
-        Type: AWS::CodeBuild::SourceCredential
-        Properties:
-          Token: '{{resolve:secretsmanager:bitbucket:SecretString:token}}'
-          ServerType: BITBUCKET
-          Username: '{{resolve:secretsmanager:bitbucket:SecretString:username}}'
-          AuthType: OAUTH
-  expectations:
-    rules:
-      CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK: PASS
-
-- name: Basic auth used, FAIL
-  input:
-    Resources:
-      Credential:
-        Type: AWS::CodeBuild::SourceCredential
-        Properties:
-          Token: '{{resolve:secretsmanager:bitbucket:SecretString:token}}'
-          ServerType: BITBUCKET
-          Username: '{{resolve:secretsmanager:bitbucket:SecretString:username}}'
-          AuthType: BASIC_AUTH
-  expectations:
-    rules:
-      CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK: FAIL
-
-- name: Personal access token used, FAIL
-  input:
-    Resources:
-      Credential:
-        Type: AWS::CodeBuild::SourceCredential
-        Properties:
-          Token: '{{resolve:secretsmanager:bitbucket:SecretString:token}}'
-          ServerType: BITBUCKET
-          Username: '{{resolve:secretsmanager:bitbucket:SecretString:username}}'
-          AuthType: PERSONAL_ACCESS_TOKEN
-  expectations:
-    rules:
-      CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK: FAIL
-
-- name: rule suppressed, SKIP
-  input:
-    Resources:
-      Credential:
-        Type: AWS::CodeBuild::SourceCredential
+      MyCodeBuildProject:
+        Type: AWS::CodeBuild::Project
         Metadata:
           guard:
             SuppressedRules:
             - "CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK"
         Properties:
-          Token: '{{resolve:secretsmanager:bitbucket:SecretString:token}}'
-          ServerType: BITBUCKET
-          Username: '{{resolve:secretsmanager:bitbucket:SecretString:username}}'
-          AuthType: PERSONAL_ACCESS_TOKEN
+          Source:
+            Type: GITHUB
+            Location: https://access-token@github.com/username/repo.git
   expectations:
     rules:
       CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK: SKIP
+
+- name: Scenario c) Primary source location contains credentials, FAIL
+  input:
+    Resources:
+      MyCodeBuildProject:
+        Type: AWS::CodeBuild::Project
+        Properties:
+          Source:
+            Type: GITHUB
+            Location: https://access-token@github.com/username/repo.git
+  expectations:
+    rules:
+      CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK: FAIL
+
+- name: Scenario c) Primary source location contains credentials, FAIL
+  input:
+    Resources:
+      MyCodeBuildProject:
+        Type: AWS::CodeBuild::Project
+        Properties:
+          Source:
+            Type: BITBUCKET
+            Location: https://username:password@bitbucket.org/user/repo.git
+  expectations:
+    rules:
+      CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK: FAIL
+
+- name: Scenario d) Secondary source location contains credentials, FAIL
+  input:
+    Resources:
+      MyCodeBuildProject:
+        Type: AWS::CodeBuild::Project
+        Properties:
+          Source:
+            Type: NO_SOURCE
+          SecondarySources:
+          - Type: GITHUB
+            Location: https://access-token@github.com/username/repo.git
+  expectations:
+    rules:
+      CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK: FAIL
+
+- name: Scenario d) Secondary source location contains credentials, FAIL
+  input:
+    Resources:
+      MyCodeBuildProject:
+        Type: AWS::CodeBuild::Project
+        Properties:
+          Source:
+            Type: NO_SOURCE
+          SecondarySources:
+          - Type: BITBUCKET
+            Location: https://username:password@bitbucket.org/user/repo.git
+  expectations:
+    rules:
+      CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK: FAIL
+
+- name: Scenario e) No CodeBuild Project primary or secondary source locations include credentials, PASS
+  input:
+    Resources:
+      MyCodeBuildProject:
+        Type: AWS::CodeBuild::Project
+        Properties:
+          Source:
+            Type: GITHUB
+            Location: https://github.com/username/repo.git
+  expectations:
+    rules:
+      CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK: PASS
+
+- name: Scenario e) No CodeBuild Project primary or secondary source locations include credentials, PASS
+  input:
+    Resources:
+      MyCodeBuildProject:
+        Type: AWS::CodeBuild::Project
+        Properties:
+          Source:
+            Type: GITHUB
+            Location: https://github.com/username/repo.git
+          SecondarySources:
+          - Type: GITHUB
+            Location: https://github.com/username/repo.git
+  expectations:
+    rules:
+      CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK: PASS
+
+- name: Scenario e) No CodeBuild Project primary or secondary source locations include credentials, PASS
+  input:
+    Resources:
+      MyCodeBuildProject:
+        Type: AWS::CodeBuild::Project
+        Properties:
+          Source:
+            Type: BITBUCKET
+            Location: https://bitbucket.org/user/repo.git
+  expectations:
+    rules:
+      CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK: PASS
+
+- name: Scenario e) No CodeBuild Project primary or secondary source locations include credentials, PASS
+  input:
+    Resources:
+      MyCodeBuildProject:
+        Type: AWS::CodeBuild::Project
+        Properties:
+          Source:
+            Type: BITBUCKET
+            Location: https://bitbucket.org/user/repo.git
+          SecondarySources:
+          - Type: BITBUCKET
+            Location: https://bitbucket.org/user/repo.git
+  expectations:
+    rules:
+      CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK: PASS

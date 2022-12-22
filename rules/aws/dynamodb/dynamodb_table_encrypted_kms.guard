@@ -1,4 +1,8 @@
+#
 #####################################
+##           Gherkin               ##
+#####################################
+#
 # Rule Identifier:
 #    DYNAMODB_TABLE_ENCRYPTED_KMS
 #
@@ -16,24 +20,24 @@
 #
 # Scenarios:
 # a) SKIP: when there are no DynamoDB Tables present
-# b) PASS: when all DynamoDB Tables are encrypted with KMS
+# b) SKIP: when metadata has rule suppression for DYNAMODB_TABLE_ENCRYPTED_KMS
 # c) FAIL: when all DynamoDB Tables are not are encrypted with KMS
-# d) SKIP: when metada has rule suppression for DYNAMODB_TABLE_ENCRYPTED_KMS
+# d) PASS: when all DynamoDB Tables are encrypted with KMS
 
-let aws_dynamodb_table_resources_kms_encrypted = Resources.*[ Type == 'AWS::DynamoDB::Table'
+let dynamodb_table_encrypted_kms = Resources.*[ Type == "AWS::DynamoDB::Table"
   Metadata.guard.SuppressedRules not exists or
   Metadata.guard.SuppressedRules.* != "DYNAMODB_TABLE_ENCRYPTED_KMS"
 ]
 
-let aws_dynamodb_table_resources_allowed_algorithms = [ 'KMS' ]
+let DYNAMODB_TABLE_ENCRYPTED_KMS_ALLOWED_ALGORITHMS = [ "KMS" ]
 
-rule DYNAMODB_TABLE_ENCRYPTED_KMS when %aws_dynamodb_table_resources_kms_encrypted !empty {
-  %aws_dynamodb_table_resources_kms_encrypted.Properties.SSESpecification exists
-  %aws_dynamodb_table_resources_kms_encrypted.Properties.SSESpecification.SSEEnabled == true
-  %aws_dynamodb_table_resources_kms_encrypted.Properties.SSESpecification.KMSMasterKeyId exists
-  %aws_dynamodb_table_resources_kms_encrypted.Properties.SSESpecification.SSEType == %aws_dynamodb_table_resources_allowed_algorithms
+rule DYNAMODB_TABLE_ENCRYPTED_KMS when %dynamodb_table_encrypted_kms !empty {
+  %dynamodb_table_encrypted_kms.Properties.SSESpecification exists
+  %dynamodb_table_encrypted_kms.Properties.SSESpecification.SSEEnabled == true
+  %dynamodb_table_encrypted_kms.Properties.SSESpecification.KMSMasterKeyId exists
+  %dynamodb_table_encrypted_kms.Properties.SSESpecification.SSEType in %DYNAMODB_TABLE_ENCRYPTED_KMS_ALLOWED_ALGORITHMS
       <<
         Violation: Amazon DynamoDB tables are configured with SSE and a KMS key
-        Fix: Set SSEEnabled to true and set KMSMasterKeyId to the ID of a KMS key
+        Fix: In SSESpecification, set SSEEnabled to true and set KMSMasterKeyId to the ID of a KMS key
       >>
 }

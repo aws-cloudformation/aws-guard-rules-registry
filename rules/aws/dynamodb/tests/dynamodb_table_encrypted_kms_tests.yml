@@ -1,5 +1,5 @@
 ###
-# DYNAMODB_TABLE_ENCRYPTED_KMS  test
+# DYNAMODB_TABLE_ENCRYPTED_KMS tests
 ###
 ---
 - name: Empty, SKIP
@@ -8,92 +8,14 @@
     rules:
       DYNAMODB_TABLE_ENCRYPTED_KMS : SKIP
 
-- name: No resources, SKIP
+- name: Scenario a) No resources, SKIP
   input:
     Resources: {}
   expectations:
     rules:
       DYNAMODB_TABLE_ENCRYPTED_KMS : SKIP
 
-- name: DDB with SSE set to true with KMS value and SSEType set to KMS, PASS
-  input:
-    Resources:
-      Exampletable:
-        Type: AWS::DynamoDB::Table
-        Properties:
-          KeySchema:
-            - AttributeName: Id
-              KeyType: HASH
-          AttributeDefinitions:
-            - AttributeName: Id
-              AttributeType: S
-            - AttributeName: dummy
-              AttributeType: S
-            - AttributeName: name
-              AttributeType: S
-            - AttributeName: owner
-              AttributeType: S
-            - AttributeName: createdAt
-              AttributeType: S
-          SSESpecification:
-            SSEEnabled: true
-            KMSMasterKeyId: !Ref pKmsArn
-            SSEType: "KMS"
-  expectations:
-    rules:
-      DYNAMODB_TABLE_ENCRYPTED_KMS : PASS
-
-- name: DDB with SSE set to false, FAIL
-  input:
-    Resources:
-      Exampletable:
-        Type: AWS::DynamoDB::Table
-        Properties:
-          KeySchema:
-            - AttributeName: Id
-              KeyType: HASH
-          AttributeDefinitions:
-            - AttributeName: Id
-              AttributeType: S
-            - AttributeName: dummy
-              AttributeType: S
-            - AttributeName: name
-              AttributeType: S
-            - AttributeName: owner
-              AttributeType: S
-            - AttributeName: createdAt
-              AttributeType: S
-          SSESpecification:
-            SSEEnabled: false
-  expectations:
-    rules:
-      DYNAMODB_TABLE_ENCRYPTED_KMS : FAIL
-
-- name: DDB with missing SSESpecification property, FAIL
-  input:
-    Resources:
-      Exampletable:
-        Type: AWS::DynamoDB::Table
-        Properties:
-          KeySchema:
-            - AttributeName: Id
-              KeyType: HASH
-          AttributeDefinitions:
-            - AttributeName: Id
-              AttributeType: S
-            - AttributeName: dummy
-              AttributeType: S
-            - AttributeName: name
-              AttributeType: S
-            - AttributeName: owner
-              AttributeType: S
-            - AttributeName: createdAt
-              AttributeType: S
-  expectations:
-    rules:
-      DYNAMODB_TABLE_ENCRYPTED_KMS : FAIL
-
-- name: DDB with missing SSESpecification property but rule suppressed, SKIP
+- name: Scenario b) DynamoDB Table with missing SSESpecification property but rule suppressed, SKIP
   input:
     Resources:
       Exampletable:
@@ -120,3 +42,81 @@
   expectations:
     rules:
       DYNAMODB_TABLE_ENCRYPTED_KMS : SKIP
+
+- name: Scenario c) DynamoDB Table with missing SSESpecification property, FAIL
+  input:
+    Resources:
+      Exampletable:
+        Type: AWS::DynamoDB::Table
+        Properties:
+          KeySchema:
+            - AttributeName: Id
+              KeyType: HASH
+          AttributeDefinitions:
+            - AttributeName: Id
+              AttributeType: S
+            - AttributeName: dummy
+              AttributeType: S
+            - AttributeName: name
+              AttributeType: S
+            - AttributeName: owner
+              AttributeType: S
+            - AttributeName: createdAt
+              AttributeType: S
+  expectations:
+    rules:
+      DYNAMODB_TABLE_ENCRYPTED_KMS : FAIL
+
+- name: Scenario c) DynamoDB Table with SSEEnabled set to false, FAIL
+  input:
+    Resources:
+      Exampletable:
+        Type: AWS::DynamoDB::Table
+        Properties:
+          KeySchema:
+            - AttributeName: Id
+              KeyType: HASH
+          AttributeDefinitions:
+            - AttributeName: Id
+              AttributeType: S
+            - AttributeName: dummy
+              AttributeType: S
+            - AttributeName: name
+              AttributeType: S
+            - AttributeName: owner
+              AttributeType: S
+            - AttributeName: createdAt
+              AttributeType: S
+          SSESpecification:
+            SSEEnabled: false
+  expectations:
+    rules:
+      DYNAMODB_TABLE_ENCRYPTED_KMS : FAIL
+
+- name: Scenario d) DDB with SSEEnabled set to true with a KMSMasterKeyId provided and SSEType set to KMS, PASS
+  input:
+    Resources:
+      Exampletable:
+        Type: AWS::DynamoDB::Table
+        Properties:
+          KeySchema:
+            - AttributeName: Id
+              KeyType: HASH
+          AttributeDefinitions:
+            - AttributeName: Id
+              AttributeType: S
+            - AttributeName: dummy
+              AttributeType: S
+            - AttributeName: name
+              AttributeType: S
+            - AttributeName: owner
+              AttributeType: S
+            - AttributeName: createdAt
+              AttributeType: S
+          SSESpecification:
+            SSEEnabled: true
+            KMSMasterKeyId: !Ref pKmsArn
+            SSEType: "KMS"
+  expectations:
+    rules:
+      DYNAMODB_TABLE_ENCRYPTED_KMS : PASS

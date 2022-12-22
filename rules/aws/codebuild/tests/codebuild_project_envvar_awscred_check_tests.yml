@@ -8,196 +8,14 @@
     rules:
       CODEBUILD_PROJECT_ENVVAR_AWSCRED_CHECK: SKIP
 
-- name: No resources, SKIP
+- name: Scenario a) No resources, SKIP
   input:
     Resources: {}
   expectations:
     rules:
       CODEBUILD_PROJECT_ENVVAR_AWSCRED_CHECK: SKIP
 
-- name: no envar set with sensitive info, PASS
-  input:
-    Resources:
-      MyCodeBuildProject:
-        Type: AWS::CodeBuild::Project
-        Properties:
-          Artifacts:
-            Type: CODEPIPELINE
-          Environment:
-            ComputeType: BUILD_GENERAL1_SMALL
-            Image: aws/codebuild/standard:5.0
-            ImagePullCredentialsType: CODEBUILD
-            PrivilegedMode: false
-            Type: LINUX_CONTAINER
-            EnvironmentVariables:
-            - Name: MyEnvVar
-              Type: PLAINTEXT
-              Value: Tests
-          ServiceRole:
-            Fn::GetAtt:
-              - MyPipelineBuildSynthRole
-              - Arn
-          Source:
-        BuildSpec: |
-          version: 0.2
-          phases:
-            install:
-              commands:
-                - npm install
-            build:
-              commands:
-                - npm test
-          artifacts:
-            files:
-              - '**/*'
-            Type: CODEPIPELINE
-          EncryptionKey:
-            Fn::GetAtt:
-              - MyPipelineArtefactEncryptionKey
-              - Arn
-  expectations:
-    rules:
-      CODEBUILD_PROJECT_ENVVAR_AWSCRED_CHECK: PASS
-
-- name: no sensitive text in environment vars, PASS
-  input:
-    Resources:
-      MyCodeBuildProject:
-        Type: AWS::CodeBuild::Project
-        Properties:
-          Artifacts:
-            Type: CODEPIPELINE
-          Environment:
-            ComputeType: BUILD_GENERAL1_SMALL
-            Image: aws/codebuild/standard:5.0
-            ImagePullCredentialsType: CODEBUILD
-            PrivilegedMode: false
-            Type: LINUX_CONTAINER
-          ServiceRole:
-            Fn::GetAtt:
-              - MyPipelineBuildSynthRole
-              - Arn
-          Source:
-        BuildSpec: |
-          version: 0.2
-          phases:
-            install:
-              commands:
-                - npm install
-            build:
-              commands:
-                - npm test
-          artifacts:
-            files:
-              - '**/*'
-            Type: CODEPIPELINE
-          EncryptionKey:
-            Fn::GetAtt:
-              - MyPipelineArtefactEncryptionKey
-              - Arn
-  expectations:
-    rules:
-      CODEBUILD_PROJECT_ENVVAR_AWSCRED_CHECK: PASS
-
-- name: AWS_ACCESS_KEY_ID listed in environment vars, FAIL
-  input:
-    Resources:
-      MyCodeBuildProject:
-        Type: AWS::CodeBuild::Project
-        Properties:
-          Artifacts:
-            Type: CODEPIPELINE
-          Environment:
-            ComputeType: BUILD_GENERAL1_SMALL
-            Image: aws/codebuild/standard:5.0
-            ImagePullCredentialsType: CODEBUILD
-            PrivilegedMode: false
-            Type: LINUX_CONTAINER
-            EnvironmentVariables:
-            - Name: AWS_ACCESS_KEY_ID
-              Type: PLAINTEXT
-              Value: Tests
-          ServiceRole:
-            Fn::GetAtt:
-              - MyPipelineBuildSynthRole
-              - Arn
-          Source:
-        BuildSpec: |
-          version: 0.2
-          phases:
-            install:
-              commands:
-                - npm install
-            build:
-              commands:
-                - npm test
-          artifacts:
-            files:
-              - '**/*'
-            Type: CODEPIPELINE
-          EncryptionKey:
-            Fn::GetAtt:
-              - MyPipelineArtefactEncryptionKey
-              - Arn
-  expectations:
-    rules:
-      CODEBUILD_PROJECT_ENVVAR_AWSCRED_CHECK: FAIL
-
-- name: AWS_SECRET_ACCESS_KEY listed in environment vars, FAIL
-  input:
-    Resources:
-      MyCodeBuildProject:
-        Type: AWS::CodeBuild::Project
-        Properties:
-          Artifacts:
-            Type: CODEPIPELINE
-          Environment:
-            ComputeType: BUILD_GENERAL1_SMALL
-            Image: aws/codebuild/standard:5.0
-            ImagePullCredentialsType: CODEBUILD
-            PrivilegedMode: false
-            Type: LINUX_CONTAINER
-            EnvironmentVariables:
-            - Name: AWS_SECRET_ACCESS_KEY
-              Type: PLAINTEXT
-              Value: Tests
-          ServiceRole:
-            Fn::GetAtt:
-              - MyPipelineBuildSynthRole
-              - Arn
-          Source:
-            BuildSpec: |-
-              {
-                "version": "0.2",
-                "phases": {
-                  "pre_build": {
-                    "commands": [
-                      "cd cdk",
-                      "git clone https://github.com/aws-samples/cloudfront-authorization-at-edge.git ../cloudfront-authorization-at-edge && npm install -g pnpm && pnpm set verify-store-integrity false && pnpm install"
-                    ]
-                  },
-                  "build": {
-                    "commands": [
-                      "pnpm run builddeps",
-                      "npx cdk synth"
-                    ]
-                  }
-                },
-                "artifacts": {
-                  "base-directory": "cdk/cdk.out",
-                  "files": "**/*"
-                }
-              }
-            Type: CODEPIPELINE
-          EncryptionKey:
-            Fn::GetAtt:
-              - MyPipelineArtefactEncryptionKey
-              - Arn
-  expectations:
-    rules:
-      CODEBUILD_PROJECT_ENVVAR_AWSCRED_CHECK: FAIL
-
-- name: rule is suppressed, SKIP
+- name: Scenario b) Environment variables contain credentials but rule is suppressed, SKIP
   input:
     Resources:
       MyCodeBuildProject:
@@ -224,28 +42,18 @@
               - MyPipelineBuildSynthRole
               - Arn
           Source:
-            BuildSpec: |-
-              {
-                "version": "0.2",
-                "phases": {
-                  "pre_build": {
-                    "commands": [
-                      "cd cdk",
-                      "git clone https://github.com/aws-samples/cloudfront-authorization-at-edge.git ../cloudfront-authorization-at-edge && npm install -g pnpm && pnpm set verify-store-integrity false && pnpm install"
-                    ]
-                  },
-                  "build": {
-                    "commands": [
-                      "pnpm run builddeps",
-                      "npx cdk synth"
-                    ]
-                  }
-                },
-                "artifacts": {
-                  "base-directory": "cdk/cdk.out",
-                  "files": "**/*"
-                }
-              }
+            BuildSpec: |
+              version: 0.2
+              phases:
+                install:
+                  commands:
+                    - npm install
+                build:
+                  commands:
+                    - npm test
+              artifacts:
+                files:
+                  - '**/*'
             Type: CODEPIPELINE
           EncryptionKey:
             Fn::GetAtt:
@@ -254,3 +62,175 @@
   expectations:
     rules:
       CODEBUILD_PROJECT_ENVVAR_AWSCRED_CHECK: SKIP
+
+- name: Scenario c) Environment variable with name AWS_ACCESS_KEY_ID is present, FAIL
+  input:
+    Resources:
+      MyCodeBuildProject:
+        Type: AWS::CodeBuild::Project
+        Properties:
+          Artifacts:
+            Type: CODEPIPELINE
+          Environment:
+            ComputeType: BUILD_GENERAL1_SMALL
+            Image: aws/codebuild/standard:5.0
+            ImagePullCredentialsType: CODEBUILD
+            PrivilegedMode: false
+            Type: LINUX_CONTAINER
+            EnvironmentVariables:
+            - Name: AWS_ACCESS_KEY_ID
+              Type: PLAINTEXT
+              Value: Tests
+          ServiceRole:
+            Fn::GetAtt:
+              - MyPipelineBuildSynthRole
+              - Arn
+          Source:
+            BuildSpec: |
+              version: 0.2
+              phases:
+                install:
+                  commands:
+                    - npm install
+                build:
+                  commands:
+                    - npm test
+              artifacts:
+                files:
+                  - '**/*'
+            Type: CODEPIPELINE
+          EncryptionKey:
+            Fn::GetAtt:
+              - MyPipelineArtefactEncryptionKey
+              - Arn
+  expectations:
+    rules:
+      CODEBUILD_PROJECT_ENVVAR_AWSCRED_CHECK: FAIL
+
+- name: Scenario c) Environment variable with name AWS_SECRET_ACCESS_KEY is present, FAIL
+  input:
+    Resources:
+      MyCodeBuildProject:
+        Type: AWS::CodeBuild::Project
+        Properties:
+          Artifacts:
+            Type: CODEPIPELINE
+          Environment:
+            ComputeType: BUILD_GENERAL1_SMALL
+            Image: aws/codebuild/standard:5.0
+            ImagePullCredentialsType: CODEBUILD
+            PrivilegedMode: false
+            Type: LINUX_CONTAINER
+            EnvironmentVariables:
+            - Name: AWS_SECRET_ACCESS_KEY
+              Type: PLAINTEXT
+              Value: Tests
+          ServiceRole:
+            Fn::GetAtt:
+              - MyPipelineBuildSynthRole
+              - Arn
+          Source:
+            BuildSpec: |
+              version: 0.2
+              phases:
+                install:
+                  commands:
+                    - npm install
+                build:
+                  commands:
+                    - npm test
+              artifacts:
+                files:
+                  - '**/*'
+            Type: CODEPIPELINE
+          EncryptionKey:
+            Fn::GetAtt:
+              - MyPipelineArtefactEncryptionKey
+              - Arn
+  expectations:
+    rules:
+      CODEBUILD_PROJECT_ENVVAR_AWSCRED_CHECK: FAIL
+
+- name: Scenario d) No environment variables are present, PASS
+  input:
+    Resources:
+      MyCodeBuildProject:
+        Type: AWS::CodeBuild::Project
+        Properties:
+          Artifacts:
+            Type: CODEPIPELINE
+          Environment:
+            ComputeType: BUILD_GENERAL1_SMALL
+            Image: aws/codebuild/standard:5.0
+            ImagePullCredentialsType: CODEBUILD
+            PrivilegedMode: false
+            Type: LINUX_CONTAINER
+          ServiceRole:
+            Fn::GetAtt:
+              - MyPipelineBuildSynthRole
+              - Arn
+          Source:
+            BuildSpec: |
+              version: 0.2
+              phases:
+                install:
+                  commands:
+                    - npm install
+                build:
+                  commands:
+                    - npm test
+              artifacts:
+                files:
+                  - '**/*'
+            Type: CODEPIPELINE
+          EncryptionKey:
+            Fn::GetAtt:
+              - MyPipelineArtefactEncryptionKey
+              - Arn
+  expectations:
+    rules:
+      CODEBUILD_PROJECT_ENVVAR_AWSCRED_CHECK: PASS
+
+- name: Scenario d) Environment variables with names other than AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY are present, PASS
+  input:
+    Resources:
+      MyCodeBuildProject:
+        Type: AWS::CodeBuild::Project
+        Properties:
+          Artifacts:
+            Type: CODEPIPELINE
+          Environment:
+            ComputeType: BUILD_GENERAL1_SMALL
+            Image: aws/codebuild/standard:5.0
+            ImagePullCredentialsType: CODEBUILD
+            PrivilegedMode: false
+            Type: LINUX_CONTAINER
+            EnvironmentVariables:
+            - Name: MyEnvVar
+              Type: PLAINTEXT
+              Value: Tests
+          ServiceRole:
+            Fn::GetAtt:
+              - MyPipelineBuildSynthRole
+              - Arn
+          Source:
+            BuildSpec: |
+              version: 0.2
+              phases:
+                install:
+                  commands:
+                    - npm install
+                build:
+                  commands:
+                    - npm test
+              artifacts:
+                files:
+                  - '**/*'
+            Type: CODEPIPELINE
+          EncryptionKey:
+            Fn::GetAtt:
+              - MyPipelineArtefactEncryptionKey
+              - Arn
+  expectations:
+    rules:
+      CODEBUILD_PROJECT_ENVVAR_AWSCRED_CHECK: PASS

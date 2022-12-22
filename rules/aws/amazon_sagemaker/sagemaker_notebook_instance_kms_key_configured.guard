@@ -7,7 +7,7 @@
 #    SAGEMAKER_NOTEBOOK_INSTANCE_KMS_KEY_CONFIGURED
 #
 # Description:
-#   Checks whether AWS Key Management Service (KMS) key is configured for an Amazon SageMaker endpoint configuration.
+#   Checks whether AWS Key Management Service (KMS) key is configured for an Amazon SageMaker notebook instance.
 #
 # Reports on:
 #    AWS::SageMaker::NotebookInstance
@@ -20,23 +20,23 @@
 #
 # Scenarios:
 # a) SKIP: when Sagemaker Notebook Instance resource not present
-# b) PASS: when all Sagemaker Notebook Instance resources KmsKeyId property is set
+# b) SKIP: when metada has rule suppression for SAGEMAKER_NOTEBOOK_INSTANCE_KMS_KEY_CONFIGURED
 # c) FAIL: when all Sagemaker Notebook Instance resources KmsKeyId property does not exist
-# d) SKIP: when metada has rule suppression for SAGEMAKER_NOTEBOOK_INSTANCE_KMS_KEY_CONFIGURED
+# d) PASS: when all Sagemaker Notebook Instance resources KmsKeyId property is set
 
 #
 # Select all AWS::SageMaker::NotebookInstance resources from incoming template (payload)
 #
 
-let sagemaker_notebookinstances_kms_configured = Resources.*[ Type == "AWS::SageMaker::NotebookInstance"
+let sagemaker_notebook_instance_kms_key_configured = Resources.*[ Type == "AWS::SageMaker::NotebookInstance"
   Metadata.guard.SuppressedRules not exists or
   Metadata.guard.SuppressedRules.* != "SAGEMAKER_NOTEBOOK_INSTANCE_KMS_KEY_CONFIGURED"
 ]
 
-rule SAGEMAKER_NOTEBOOK_INSTANCE_KMS_KEY_CONFIGURED when %sagemaker_notebookinstances_kms_configured !empty {
-	%sagemaker_notebookinstances_kms_configured.Properties.KmsKeyId exists
+rule SAGEMAKER_NOTEBOOK_INSTANCE_KMS_KEY_CONFIGURED when %sagemaker_notebook_instance_kms_key_configured !empty {
+	%sagemaker_notebook_instance_kms_key_configured.Properties.KmsKeyId exists
 	<<
-		Violation: Key Management Service (KMS) key needs to be configured for Amazon SageMaker Notebook instance
-		Fix: Set the property KmsKeyId.
+		Violation: Amazon SageMaker Notebook instances are configured with a Key Management Service (KMS) key 
+		Fix: Set the KmsKeyId property
 	>>
 }

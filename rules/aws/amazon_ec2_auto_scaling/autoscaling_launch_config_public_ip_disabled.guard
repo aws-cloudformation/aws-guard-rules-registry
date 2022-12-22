@@ -7,7 +7,7 @@
 #    AUTOSCALING_LAUNCH_CONFIG_PUBLIC_IP_DISABLED
 #
 # Description:
-#   Checks the AutoScaling::LaunchConfiguration if it has a public IP being set.
+#   Checks that Amazon EC2 Auto Scaling launch configurations are configured to not associate public IP addresses
 #
 # Reports on:
 #    AWS::AutoScaling::LaunchConfiguration
@@ -20,21 +20,21 @@
 #
 # Scenarios:
 # a) SKIP: when there are no AutoScaling::LaunchConfiguration resource present
-# b) PASS: when all AutoScaling::LaunchConfiguration resources AssociatePublicIpAddress property is set to false
+# b) SKIP: when metada has rule suppression for AUTOSCALING_LAUNCH_CONFIG_PUBLIC_IP_DISABLED
 # c) FAIL: when all AutoScaling::LaunchConfiguration resources AssociatePublicIpAddress property does not exist
 # d) FAIL: when all AutoScaling::LaunchConfiguration resources have AssociatePublicIpAddress set to true
-# e) SKIP: when metada has rule suppression for AUTOSCALING_LAUNCH_CONFIG_PUBLIC_IP_DISABLED
+# e) PASS: when all AutoScaling::LaunchConfiguration resources AssociatePublicIpAddress property is set to false
 
 #
 # Select all AutoScaling Launch Configuration resources from incoming template (payload)
 #
-let launch_configurations_no_pub_ip = Resources.*[ Type == 'AWS::AutoScaling::LaunchConfiguration'
- Metadata.guard.SuppressedRules not exists or
+let autoscaling_launch_config_public_ip_disabled = Resources.*[ Type == "AWS::AutoScaling::LaunchConfiguration"
+  Metadata.guard.SuppressedRules not exists or
   Metadata.guard.SuppressedRules.* != "AUTOSCALING_LAUNCH_CONFIG_PUBLIC_IP_DISABLED"
 ]
 
-rule AUTOSCALING_LAUNCH_CONFIG_PUBLIC_IP_DISABLED when %launch_configurations_no_pub_ip !empty {
-    %launch_configurations_no_pub_ip.Properties {
+rule AUTOSCALING_LAUNCH_CONFIG_PUBLIC_IP_DISABLED when %autoscaling_launch_config_public_ip_disabled !empty {
+    %autoscaling_launch_config_public_ip_disabled.Properties {
         AssociatePublicIpAddress exists
         AssociatePublicIpAddress == false
         <<

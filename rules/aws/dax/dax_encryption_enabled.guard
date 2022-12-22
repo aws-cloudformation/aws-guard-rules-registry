@@ -20,9 +20,9 @@
 #
 # Scenarios:
 # a) SKIP: when there are no AWS::DAX::Cluster resources
-# b) PASS: when SSESpecification exist with the attribute SSEEnabled set to true
+# b) SKIP: when metada has rule suppression for DAX_ENCRYPTION_ENABLED
 # c) FAIL: when SSESpecification does not exist or SSEEnabled not set to true
-# d) SKIP: when metada has rule suppression for DAX_ENCRYPTION_ENABLED
+# d) PASS: when SSESpecification exist with the attribute SSEEnabled set to true
 
 #
 # Select all dax cluster resources from incoming template (payload)
@@ -36,7 +36,7 @@ let dax_clusters_encryption = Resources.*[ Type == "AWS::DAX::Cluster"
 rule DAX_ENCRYPTION_ENABLED when %dax_clusters_encryption !empty {
 	%dax_clusters_encryption.Properties.SSESpecification.SSEEnabled == true
 	<<
-		Violation: DAX cluster not leveraging encryption at rest
-		Fix: Set the SSESpecification property with SSEEnabled to true
+		Violation: Amazon DAX clusters are configured with encryption at rest
+		Fix: In SSESpecification, set the SSEEnabled property to true
 	>>
 }

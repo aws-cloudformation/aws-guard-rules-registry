@@ -20,23 +20,23 @@
 #
 # Scenarios:
 # a) SKIP: when EMR cluster resource not present
-# b) PASS: when all EMR cluster resources KerberosAttributes property is set
+# b) SKIP: when metada has rule suppression for EMR_KERBEROS_ENABLED
 # c) FAIL: when all EMR cluster resources KerberosAttributes property does not exist
-# d) SKIP: when metada has rule suppression for EMR_KERBEROS_ENABLED
+# d) PASS: when all EMR cluster resources KerberosAttributes property is set
 
 #
 # Select all EMR Cluster resources from incoming template (payload)
 #
 
-let emr_clusters_kerberos = Resources.*[ Type == "AWS::EMR::Cluster"
+let emr_kerberos_enabled = Resources.*[ Type == "AWS::EMR::Cluster"
   Metadata.guard.SuppressedRules not exists or
   Metadata.guard.SuppressedRules.* != "EMR_KERBEROS_ENABLED"
 ]
 
-rule EMR_KERBEROS_ENABLED when %emr_clusters_kerberos !empty {
-	%emr_clusters_kerberos.Properties.KerberosAttributes exists
+rule EMR_KERBEROS_ENABLED when %emr_kerberos_enabled !empty {
+	%emr_kerberos_enabled.Properties.KerberosAttributes exists
 	<<
-		Violation: kerberos is not configured
-		Fix: Set the property KerberosAttributes.
-    >>
+		Violation: EMR Clusters have Kerberos configured
+		Fix: Set the KerberosAttributes property
+	>>
 }

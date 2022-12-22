@@ -1,4 +1,8 @@
 #
+#####################################
+##           Gherkin               ##
+#####################################
+#
 # Rule Identifier:
 #    CODEBUILD_PROJECT_ENVVAR_AWSCRED_CHECK
 #
@@ -16,34 +20,32 @@
 #
 # Scenarios:
 # a) SKIP: when there are no AWS::CodeBuild::Project resources
-# b) PASS: when environment variables AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY is not present
-# c) FAIL: environment variables AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY is present
-# d) SKIP: when metada has rule suppression for CODEBUILD_PROJECT_ENVVAR_AWSCRED_CHECK
+# b) SKIP: when metada has rule suppression for CODEBUILD_PROJECT_ENVVAR_AWSCRED_CHECK
+# c) FAIL: environment variables AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY are present
+# d) PASS: when environment variables AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY are not present
 
 #
 # Select all Code Build resources from incoming template (payload)
 #
-let codebuild_projects = Resources.*[ Type == "AWS::CodeBuild::Project"
+let codebuild_project_envvar_awscred_check = Resources.*[ Type == "AWS::CodeBuild::Project"
   Metadata.guard.SuppressedRules not exists or
   Metadata.guard.SuppressedRules.* != "CODEBUILD_PROJECT_ENVVAR_AWSCRED_CHECK"
 ]
 let disallowed_names = ["AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY"]
 
-rule CODEBUILD_PROJECT_ENVVAR_AWSCRED_CHECK when %codebuild_projects !empty {
-	%codebuild_projects {
-		Properties {
-			Environment !exists OR
-			Environment {
-				EnvironmentVariables !exists OR
-				EnvironmentVariables [
-					Type == "PLAINTEXT"
-				] { 
-					Name NOT IN %disallowed_names
-						<<
-							Violation: AWS CodeBuild Projects are not configured with environment variables that contain credentials in PLAINTEXT 
-							Fix: Remove environment variables that contain credentials in PLAINTEXT ("AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY")
-						>>
-				}
+rule CODEBUILD_PROJECT_ENVVAR_AWSCRED_CHECK when %codebuild_project_envvar_awscred_check !empty {
+	%codebuild_project_envvar_awscred_check.Properties {
+		Environment !exists OR
+		Environment {
+			EnvironmentVariables !exists OR
+			EnvironmentVariables [
+				Type == "PLAINTEXT"
+			] { 
+				Name NOT IN %disallowed_names
+					<<
+						Violation: AWS CodeBuild Projects are not configured with environment variables that contain credentials in PLAINTEXT 
+						Fix: Remove environment variables that contain credentials in PLAINTEXT ("AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY")
+					>>
 			}
 		}
 	}

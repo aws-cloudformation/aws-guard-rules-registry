@@ -1,4 +1,8 @@
 #
+#####################################
+##           Gherkin               ##
+#####################################
+#
 # Rule Identifier:
 #    CMK_BACKING_KEY_ROTATION_ENABLED
 #
@@ -16,24 +20,25 @@
 #
 # Scenarios:
 # a) SKIP: when there are no KMS CMKs
-# b) FAIL: when key rotation is not set for all KMS CMKs
-# c) PASS: when key rotation is set on all KMS CMKs
-# d) SKIP: when metada has rule suppression for CMK_BACKING_KEY_ROTATION_ENABLED
+# b) SKIP: when metada has rule suppression for CMK_BACKING_KEY_ROTATION_ENABLED
+# c) FAIL: when EnableKeyRotation is missing for any KMS CMKs
+# d) FAIL: when EnableKeyRotation is set to false for any KMS CMKs
+# e) PASS: when EnableKeyRotation is set to true on all KMS CMKs
 
 #
 # Select all KMS Key resources from incoming template (payload)
 #
 
-let aws_kms_key_resources_cmk = Resources.*[ Type == "AWS::KMS::Key"
+let cmk_backing_key_rotation_enabled = Resources.*[ Type == "AWS::KMS::Key"
   Metadata.guard.SuppressedRules not exists or
   Metadata.guard.SuppressedRules.* != "CMK_BACKING_KEY_ROTATION_ENABLED"
 ]
 
 
-rule CMK_BACKING_KEY_ROTATION_ENABLED when %aws_kms_key_resources_cmk !empty {
-     %aws_kms_key_resources_cmk.Properties.EnableKeyRotation == true
+rule CMK_BACKING_KEY_ROTATION_ENABLED when %cmk_backing_key_rotation_enabled !empty {
+     %cmk_backing_key_rotation_enabled.Properties.EnableKeyRotation == true
       <<
-        Violation: Key rotation should be enabled for KMS.
-        Fix: Set the EnableKeyRotation parameter to true.
+        Violation: Key rotation should be enabled for KMS keys.
+        Fix: Set the EnableKeyRotation property to true.
       >>
 }

@@ -6,14 +6,14 @@
   input: {}
   expectations:
     rules:
-      SAGEMAKER_NOTEBOOK_INSTANCE_KMS_KEY_CONFIGURED: SKIP
+      SAGEMAKER_NOTEBOOK_NO_DIRECT_INTERNET_ACCESS: SKIP
 
 - name: No resources, SKIP
   input:
     Resources: {}
   expectations:
     rules:
-      SAGEMAKER_NOTEBOOK_INSTANCE_KMS_KEY_CONFIGURED: SKIP
+      SAGEMAKER_NOTEBOOK_NO_DIRECT_INTERNET_ACCESS: SKIP
 
 - name: DirectInternetAccess set to Disabled, PASS
   input:

@@ -1,4 +1,8 @@
+#
 #####################################
+##           Gherkin               ##
+#####################################
+#
 # Rule Identifier:
 #    SNS_ENCRYPTED_KMS
 #
@@ -16,24 +20,24 @@
 #
 # Scenarios:
 # a) SKIP: when there are no SNS Topics present
-# b) PASS: when SNS topics are present, they are encrypted with KMS
+# b) SKIP: when metada has rule suppression for SNS_ENCRYPTED_KMS
 # c) FAIL: when SNS topics are present, they are not encrypted with KMS
-# d) SKIP: when metada has rule suppression for SNS_ENCRYPTED_KMS
+# d) PASS: when SNS topics are present, they are encrypted with KMS
 
 #
 # Select all AWS::SNS::Topic resources from incoming template (payload)
 #
 
-let aws_sns_topic_resources_kms = Resources.*[ Type == 'AWS::SNS::Topic'
+let sns_encrypted_kms = Resources.*[ Type == "AWS::SNS::Topic"
   Metadata.guard.SuppressedRules not exists or
   Metadata.guard.SuppressedRules.* != "SNS_ENCRYPTED_KMS"
 ]
 
 
-rule SNS_ENCRYPTED_KMS when %aws_sns_topic_resources_kms !empty {
-  %aws_sns_topic_resources_kms.Properties.KmsMasterKeyId exists
-  <<
-		Violation: Key Management Service (KMS) key needs to be configured for SNS Topic
-		Fix: Set the property KmsMasterKeyId.
+rule SNS_ENCRYPTED_KMS when %sns_encrypted_kms !empty {
+  %sns_encrypted_kms.Properties.KmsMasterKeyId exists
+	<<
+		Violation: Amazon SNS Topics are configured with a Key Management Service (KMS) key 
+		Fix: Set the KmsMasterKeyId property
 	>>
 }

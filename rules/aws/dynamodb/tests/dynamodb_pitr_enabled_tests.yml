@@ -8,18 +8,22 @@
     rules:
       DYNAMODB_PITR_ENABLED: SKIP
 
-- name: No resources, SKIP
+- name: Scenario a) No resources, SKIP
   input:
     Resources: {}
   expectations:
     rules:
       DYNAMODB_PITR_ENABLED: SKIP
 
-- name: DDB with PITR set to true, PASS
+- name: Scenario b) DynamoDB Table with PITR disabled but rule is suppressed, SKIP
   input:
     Resources:
       Exampletable:
         Type: AWS::DynamoDB::Table
+        Metadata:
+          guard:
+            SuppressedRules:
+            - "DYNAMODB_PITR_ENABLED"
         Properties:
           KeySchema:
             - AttributeName: Id
@@ -39,9 +43,33 @@
             PointInTimeRecoveryEnabled: true
   expectations:
     rules:
-      DYNAMODB_PITR_ENABLED: PASS
-- name: DDB with PITR set to false, FAIL
+      DYNAMODB_PITR_ENABLED: SKIP
 
+- name: Scenario c) DynamoDB Table with a missing PITR configuration, FAIL
+  input:
+    Resources:
+      Exampletable:
+        Type: AWS::DynamoDB::Table
+        Properties:
+          KeySchema:
+            - AttributeName: Id
+              KeyType: HASH
+          AttributeDefinitions:
+            - AttributeName: Id
+              AttributeType: S
+            - AttributeName: dummy
+              AttributeType: S
+            - AttributeName: name
+              AttributeType: S
+            - AttributeName: owner
+              AttributeType: S
+            - AttributeName: createdAt
+              AttributeType: S
+  expectations:
+    rules:
+      DYNAMODB_PITR_ENABLED: FAIL
+
+- name: Scenario d) DynamoDB Table with PointInTimeRecoveryEnabled set to false, FAIL
   input:
     Resources:
       Exampletable:
@@ -67,7 +95,7 @@
     rules:
       DYNAMODB_PITR_ENABLED: FAIL
 
-- name: DDB with missing PITR property, FAIL
+- name: Scenario e) DynamoDB Table with PointInTimeRecoveryEnabled set to true, PASS
   input:
     Resources:
       Exampletable:
@@ -87,6 +115,9 @@
               AttributeType: S
             - AttributeName: createdAt
               AttributeType: S
+          PointInTimeRecoverySpecification:
+            PointInTimeRecoveryEnabled: true
   expectations:
     rules:
-      DYNAMODB_PITR_ENABLED: FAIL
+      DYNAMODB_PITR_ENABLED: PASS
+      

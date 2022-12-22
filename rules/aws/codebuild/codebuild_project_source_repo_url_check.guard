@@ -1,12 +1,16 @@
 #
+#####################################
+##           Gherkin               ##
+#####################################
+#
 # Rule Identifier:
-#    CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK
+#  CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK
 #
 # Description:
 #  Checks whether the GitHub or Bitbucket source repository URL contains either personal access tokens or user name and password.
 #
 # Reports on:
-#    AWS::CodeBuild::Project
+#  AWS::CodeBuild::Project
 #
 # Evaluates:
 #    AWS CloudFormation
@@ -15,28 +19,75 @@
 #    NA
 #
 # Scenarios:
-# a) SKIP: when there are no AWS::CodeBuild::SourceCredential resources
-# b) PASS: when environment variables AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY is not present
-# c) FAIL: environment variables AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY is present
-# d) SKIP: when metada has rule suppression for CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK
+# a) SKIP: when there are no AWS::CodeBuild::Project resources
+# b) SKIP: when metadata has rule suppression for CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK
+# c) FAIL: when a CodeBuild Project primary source location includes credentials
+# d) FAIL: when any CodeBuild Project secondary source locations include a credential
+# e) PASS: when no CodeBuild Project primary or secondary source locations include credentials
 
 #
 # Select all Code Build Source Credentials resources from incoming template (payload)
 #
-let codebuild_sourcecredentials = Resources.*[Type == "AWS::CodeBuild::SourceCredential"
+let codebuild_project_source_repo_url_check = Resources.*[Type == "AWS::CodeBuild::Project"
 	Metadata.guard.SuppressedRules not exists or
   Metadata.guard.SuppressedRules.* != "CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK"
 ]
 
-rule CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK when %codebuild_sourcecredentials !empty {
-	%codebuild_sourcecredentials {
+let CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK_GITHUB_PATTERN = /^(http(s)?)(:\/\/github\.com\/)([^\/]+)\/([\w\.-]+)(\.git)?$/
+let CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK_BITBUCKET_PATTERN = /^https?:\/\/bitbucket\.org/
+
+rule CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK when %codebuild_project_source_repo_url_check !empty {
+	%codebuild_project_source_repo_url_check[
+        Properties.Source.Type == "GITHUB" 
+	] {
 		Properties {
-			when ServerType in ["BITBUCKET","GITHUB","GITHUB_ENTERPRISE"] {
-				AuthType == "OAUTH"
+			Source.Location exists
+			Source.Location == %CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK_GITHUB_PATTERN
+			<<
+				Violation: GitHub or Bitbucket source repository URL contains either personal access tokens or user name and password.
+				Fix: Remove credentials from source locations
+			>>		
+		}
+	}
+	%codebuild_project_source_repo_url_check[
+        Properties.Source.Type == "BITBUCKET" 
+	] {
+		Properties {
+			Source.Location exists
+			Source.Location == %CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK_BITBUCKET_PATTERN
+			<<
+				Violation: GitHub or Bitbucket source repository URL contains either personal access tokens or user name and password.
+				Fix: Remove credentials from source locations
+			>>		
+		}
+	}
+
+	%codebuild_project_source_repo_url_check[
+        Properties.SecondarySources exists
+        Properties.SecondarySources is_list
+        Properties.SecondarySources not empty
+	] {
+		Properties { 
+			SecondarySources[
+				Type == "GITHUB"
+			] {
+				Location exists
+				Location == %CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK_GITHUB_PATTERN
 				<<
 					Violation: GitHub or Bitbucket source repository URL contains either personal access tokens or user name and password.
-					Fix: Remove sensitive credentials replacing AuthType with "OAUTH"
-				>>
+					Fix: Remove credentials from source locations
+				>>		
+			}
+
+			SecondarySources[
+				Type == "BITBUCKET"
+			] {
+				Location exists
+				Location == %CODEBUILD_PROJECT_SOURCE_REPO_URL_CHECK_BITBUCKET_PATTERN
+				<<
+					Violation: GitHub or Bitbucket source repository URL contains either personal access tokens or user name and password.
+					Fix: Remove credentials from source locations
+				>>		
 			}
 		}
 	}
