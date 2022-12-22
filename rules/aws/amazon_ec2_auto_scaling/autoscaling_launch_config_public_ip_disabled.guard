@@ -1,2 +1,45 @@
-    ## Config Rule Name : autoscaling-launch-config-public-ip-disabled
-    ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/AUTOSCALING_LAUNCH_CONFIG_PUBLIC_IP_DISABLED.html"
+#
+#####################################
+##           Gherkin               ##
+#####################################
+#
+# Rule Identifier:
+#    AUTOSCALING_LAUNCH_CONFIG_PUBLIC_IP_DISABLED
+#
+# Description:
+#   Checks that Amazon EC2 Auto Scaling launch configurations are configured to not associate public IP addresses
+#
+# Reports on:
+#    AWS::AutoScaling::LaunchConfiguration
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
+# a) SKIP: when there are no AutoScaling::LaunchConfiguration resource present
+# b) SKIP: when metada has rule suppression for AUTOSCALING_LAUNCH_CONFIG_PUBLIC_IP_DISABLED
+# c) FAIL: when all AutoScaling::LaunchConfiguration resources AssociatePublicIpAddress property does not exist
+# d) FAIL: when all AutoScaling::LaunchConfiguration resources have AssociatePublicIpAddress set to true
+# e) PASS: when all AutoScaling::LaunchConfiguration resources AssociatePublicIpAddress property is set to false
+
+#
+# Select all AutoScaling Launch Configuration resources from incoming template (payload)
+#
+let autoscaling_launch_config_public_ip_disabled = Resources.*[ Type == "AWS::AutoScaling::LaunchConfiguration"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "AUTOSCALING_LAUNCH_CONFIG_PUBLIC_IP_DISABLED"
+]
+
+rule AUTOSCALING_LAUNCH_CONFIG_PUBLIC_IP_DISABLED when %autoscaling_launch_config_public_ip_disabled !empty {
+    %autoscaling_launch_config_public_ip_disabled.Properties {
+        AssociatePublicIpAddress exists
+        AssociatePublicIpAddress == false
+        <<
+            Violation: Amazon EC2 Auto Scaling launch configurations are configured to not associate public IP addresses
+            Fix: Explicitly set the AssociatePublicIpAddress attribute to false.
+        >>
+    }
+}

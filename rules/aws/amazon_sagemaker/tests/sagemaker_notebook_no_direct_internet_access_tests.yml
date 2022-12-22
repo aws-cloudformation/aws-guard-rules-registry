@@ -1,0 +1,72 @@
+###
+# SAGEMAKER_NOTEBOOK_NO_DIRECT_INTERNET_ACCESS tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      SAGEMAKER_NOTEBOOK_NO_DIRECT_INTERNET_ACCESS: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      SAGEMAKER_NOTEBOOK_NO_DIRECT_INTERNET_ACCESS: SKIP
+
+- name: DirectInternetAccess set to Disabled, PASS
+  input:
+    Resources:
+      BasicNotebookInstance:
+        Type: "AWS::SageMaker::NotebookInstance"
+        Properties:
+          InstanceType: "ml.t2.large"
+          RoleArn: !GetAtt ExecutionRole.Arn
+          SubnetId: subnet-abcd1234
+          DirectInternetAccess: Disabled
+  expectations:
+    rules:
+      SAGEMAKER_NOTEBOOK_NO_DIRECT_INTERNET_ACCESS: PASS
+
+- name: DirectInternetAccess set to Enabled, FAIL
+  input:
+    Resources:
+      BasicNotebookInstance:
+        Type: "AWS::SageMaker::NotebookInstance"
+        Properties:
+          InstanceType: "ml.t2.large"
+          RoleArn: !GetAtt ExecutionRole.Arn
+          DirectInternetAccess: Enabled
+  expectations:
+    rules:
+      SAGEMAKER_NOTEBOOK_NO_DIRECT_INTERNET_ACCESS: FAIL
+
+- name: DirectInternetAccess not specified, FAIL
+  input:
+    Resources:
+      BasicNotebookInstance:
+        Type: "AWS::SageMaker::NotebookInstance"
+        Properties:
+          InstanceType: "ml.t2.large"
+          RoleArn: !GetAtt ExecutionRole.Arn
+  expectations:
+    rules:
+      SAGEMAKER_NOTEBOOK_NO_DIRECT_INTERNET_ACCESS: FAIL
+
+- name: DirectInternetAccess set to Enabled but rule suppressed, SKIP
+  input:
+    Resources:
+      BasicNotebookInstance:
+        Type: "AWS::SageMaker::NotebookInstance"
+        Metadata:
+          guard:
+            SuppressedRules:
+            - SAGEMAKER_NOTEBOOK_NO_DIRECT_INTERNET_ACCESS
+        Properties:
+          InstanceType: "ml.t2.large"
+          RoleArn: !GetAtt ExecutionRole.Arn
+          DirectInternetAccess: Enabled
+  expectations:
+    rules:
+      SAGEMAKER_NOTEBOOK_NO_DIRECT_INTERNET_ACCESS: SKIP

@@ -1,2 +1,44 @@
-## Config Rule Name : cmk-backing-key-rotation-enabled
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/cmk-backing-key-rotation-enabled.html"
+#
+#####################################
+##           Gherkin               ##
+#####################################
+#
+# Rule Identifier:
+#    CMK_BACKING_KEY_ROTATION_ENABLED
+#
+# Description:
+#   Key rotation should be enabled for KMS
+#
+# Reports on:
+#    AWS::KMS::Key
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
+# a) SKIP: when there are no KMS CMKs
+# b) SKIP: when metada has rule suppression for CMK_BACKING_KEY_ROTATION_ENABLED
+# c) FAIL: when EnableKeyRotation is missing for any KMS CMKs
+# d) FAIL: when EnableKeyRotation is set to false for any KMS CMKs
+# e) PASS: when EnableKeyRotation is set to true on all KMS CMKs
+
+#
+# Select all KMS Key resources from incoming template (payload)
+#
+
+let cmk_backing_key_rotation_enabled = Resources.*[ Type == "AWS::KMS::Key"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "CMK_BACKING_KEY_ROTATION_ENABLED"
+]
+
+
+rule CMK_BACKING_KEY_ROTATION_ENABLED when %cmk_backing_key_rotation_enabled !empty {
+     %cmk_backing_key_rotation_enabled.Properties.EnableKeyRotation == true
+      <<
+        Violation: Key rotation should be enabled for KMS keys.
+        Fix: Set the EnableKeyRotation property to true.
+      >>
+}

@@ -1,5 +1,5 @@
 ###
-# DYNAMODB_TABLE_MUST_BE_ENCRYPTED test
+# DYNAMODB_TABLE_MUST_BE_ENCRYPTED tests
 ###
 ---
 - name: Empty, SKIP
@@ -8,14 +8,42 @@
     rules:
       DYNAMODB_TABLE_MUST_BE_ENCRYPTED: SKIP
 
-- name: No resources, SKIP
+- name: Scenario a) No resources, SKIP
   input:
     Resources: {}
   expectations:
     rules:
       DYNAMODB_TABLE_MUST_BE_ENCRYPTED: SKIP
 
-- name: DDB with SSE set to true, PASS
+- name: Scenario b) DynamoDB Table with missing SSESpecification property but rule suppressed, SKIP
+  input:
+    Resources:
+      Exampletable:
+        Type: AWS::DynamoDB::Table
+        Metadata:
+          guard:
+            SuppressedRules:
+            - DYNAMODB_TABLE_MUST_BE_ENCRYPTED
+        Properties:
+          KeySchema:
+            - AttributeName: Id
+              KeyType: HASH
+          AttributeDefinitions:
+            - AttributeName: Id
+              AttributeType: S
+            - AttributeName: dummy
+              AttributeType: S
+            - AttributeName: name
+              AttributeType: S
+            - AttributeName: owner
+              AttributeType: S
+            - AttributeName: createdAt
+              AttributeType: S
+  expectations:
+    rules:
+      DYNAMODB_TABLE_MUST_BE_ENCRYPTED : SKIP
+
+- name: Scenario c) DynamoDB Table with missing SSESpecification property, FAIL
   input:
     Resources:
       Exampletable:
@@ -35,13 +63,11 @@
               AttributeType: S
             - AttributeName: createdAt
               AttributeType: S
-          SSESpecification:
-            SSEEnabled: true
   expectations:
     rules:
-      DYNAMODB_TABLE_MUST_BE_ENCRYPTED: PASS
+      DYNAMODB_TABLE_MUST_BE_ENCRYPTED: FAIL
 
-- name: DDB with SSE set to false, FAIL
+- name: Scenario d) DynamoDB Table with SSEEnabled set to false, FAIL
   input:
     Resources:
       Exampletable:
@@ -67,7 +93,7 @@
     rules:
       DYNAMODB_TABLE_MUST_BE_ENCRYPTED: FAIL
 
-- name: DDB with missing SSESpecification property, FAIL
+- name: Scenario e) DynamoDB Table with SSEEnabled set to true, PASS
   input:
     Resources:
       Exampletable:
@@ -87,6 +113,8 @@
               AttributeType: S
             - AttributeName: createdAt
               AttributeType: S
+          SSESpecification:
+            SSEEnabled: true
   expectations:
     rules:
-      DYNAMODB_TABLE_MUST_BE_ENCRYPTED: FAIL
+      DYNAMODB_TABLE_MUST_BE_ENCRYPTED: PASS

@@ -1,0 +1,92 @@
+###
+# DAX_ENCRYPTION_ENABLED tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      DAX_ENCRYPTION_ENABLED: SKIP
+
+- name: Scenario a) No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      DAX_ENCRYPTION_ENABLED: SKIP
+
+- name: Scenario b) SSESpecification not provided but rule suppressed, SKIP
+  input:
+    Resources:
+      daxCluster:
+        Type: AWS::DAX::Cluster
+        Metadata:
+          guard:
+            SuppressedRules:
+            - "DAX_ENCRYPTION_ENABLED"
+        Properties:
+          ClusterName: "MyDAXCluster"
+          NodeType: "dax.r3.large"
+          ReplicationFactor: 1
+          IAMRoleARN: "arn:aws:iam::111122223333:role/DaxAccess"
+          Description: "DAX cluster created with CloudFormation"
+          SubnetGroupName: !Ref subnetGroup
+          ClusterEndpointEncryptionType: TLS
+  expectations:
+    rules:
+      DAX_ENCRYPTION_ENABLED: SKIP
+
+- name: Scenario c) SSESpecification configuration missing, FAIL
+  input:
+    Resources:
+      daxCluster:
+        Type: AWS::DAX::Cluster
+        Properties:
+          ClusterName: "MyDAXCluster"
+          NodeType: "dax.r3.large"
+          ReplicationFactor: 1
+          IAMRoleARN: "arn:aws:iam::111122223333:role/DaxAccess"
+          Description: "DAX cluster created with CloudFormation"
+          SubnetGroupName: !Ref subnetGroup
+          ClusterEndpointEncryptionType: TLS
+  expectations:
+    rules:
+      DAX_ENCRYPTION_ENABLED: FAIL
+
+- name: Scenario c) SSESpecification configuration provided with SSEEnabled set to false, FAIL
+  input:
+    Resources:
+      daxCluster:
+        Type: AWS::DAX::Cluster
+        Properties:
+          ClusterName: "MyDAXCluster"
+          NodeType: "dax.r3.large"
+          ReplicationFactor: 1
+          IAMRoleARN: "arn:aws:iam::111122223333:role/DaxAccess"
+          Description: "DAX cluster created with CloudFormation"
+          SubnetGroupName: !Ref subnetGroup
+          ClusterEndpointEncryptionType: TLS
+          SSESpecification:
+            SSEEnabled: false
+  expectations:
+    rules:
+      DAX_ENCRYPTION_ENABLED: FAIL
+
+- name: Scenario c) SSESpecification configuration provided with SSEEnabled set to true, PASS
+  input:
+    Resources:
+      daxCluster:
+        Type: AWS::DAX::Cluster
+        Properties:
+          ClusterName: "MyDAXCluster"
+          NodeType: "dax.r3.large"
+          ReplicationFactor: 1
+          IAMRoleARN: "arn:aws:iam::111122223333:role/DaxAccess"
+          Description: "DAX cluster created with CloudFormation"
+          SubnetGroupName: !Ref subnetGroup
+          ClusterEndpointEncryptionType: TLS
+          SSESpecification:
+            SSEEnabled: true
+  expectations:
+    rules:
+      DAX_ENCRYPTION_ENABLED: PASS

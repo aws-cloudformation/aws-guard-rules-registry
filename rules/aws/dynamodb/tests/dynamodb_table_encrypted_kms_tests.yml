@@ -1,21 +1,21 @@
 ###
-# DYNAMODB_PITR_ENABLED test
+# DYNAMODB_TABLE_ENCRYPTED_KMS tests
 ###
 ---
 - name: Empty, SKIP
   input: {}
   expectations:
     rules:
-      DYNAMODB_PITR_ENABLED: SKIP
+      DYNAMODB_TABLE_ENCRYPTED_KMS : SKIP
 
 - name: Scenario a) No resources, SKIP
   input:
     Resources: {}
   expectations:
     rules:
-      DYNAMODB_PITR_ENABLED: SKIP
+      DYNAMODB_TABLE_ENCRYPTED_KMS : SKIP
 
-- name: Scenario b) DynamoDB Table with PITR disabled but rule is suppressed, SKIP
+- name: Scenario b) DynamoDB Table with missing SSESpecification property but rule suppressed, SKIP
   input:
     Resources:
       Exampletable:
@@ -23,7 +23,7 @@
         Metadata:
           guard:
             SuppressedRules:
-            - "DYNAMODB_PITR_ENABLED"
+            - DYNAMODB_TABLE_ENCRYPTED_KMS
         Properties:
           KeySchema:
             - AttributeName: Id
@@ -39,13 +39,11 @@
               AttributeType: S
             - AttributeName: createdAt
               AttributeType: S
-          PointInTimeRecoverySpecification:
-            PointInTimeRecoveryEnabled: true
   expectations:
     rules:
-      DYNAMODB_PITR_ENABLED: SKIP
+      DYNAMODB_TABLE_ENCRYPTED_KMS : SKIP
 
-- name: Scenario c) DynamoDB Table with a missing PITR configuration, FAIL
+- name: Scenario c) DynamoDB Table with missing SSESpecification property, FAIL
   input:
     Resources:
       Exampletable:
@@ -67,9 +65,9 @@
               AttributeType: S
   expectations:
     rules:
-      DYNAMODB_PITR_ENABLED: FAIL
+      DYNAMODB_TABLE_ENCRYPTED_KMS : FAIL
 
-- name: Scenario d) DynamoDB Table with PointInTimeRecoveryEnabled set to false, FAIL
+- name: Scenario c) DynamoDB Table with SSEEnabled set to false, FAIL
   input:
     Resources:
       Exampletable:
@@ -89,13 +87,13 @@
               AttributeType: S
             - AttributeName: createdAt
               AttributeType: S
-          PointInTimeRecoverySpecification:
-            PointInTimeRecoveryEnabled: false
+          SSESpecification:
+            SSEEnabled: false
   expectations:
     rules:
-      DYNAMODB_PITR_ENABLED: FAIL
+      DYNAMODB_TABLE_ENCRYPTED_KMS : FAIL
 
-- name: Scenario e) DynamoDB Table with PointInTimeRecoveryEnabled set to true, PASS
+- name: Scenario d) DDB with SSEEnabled set to true with a KMSMasterKeyId provided and SSEType set to KMS, PASS
   input:
     Resources:
       Exampletable:
@@ -115,9 +113,10 @@
               AttributeType: S
             - AttributeName: createdAt
               AttributeType: S
-          PointInTimeRecoverySpecification:
-            PointInTimeRecoveryEnabled: true
+          SSESpecification:
+            SSEEnabled: true
+            KMSMasterKeyId: !Ref pKmsArn
+            SSEType: "KMS"
   expectations:
     rules:
-      DYNAMODB_PITR_ENABLED: PASS
-      
+      DYNAMODB_TABLE_ENCRYPTED_KMS : PASS

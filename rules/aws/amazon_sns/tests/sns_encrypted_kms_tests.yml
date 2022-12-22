@@ -1,0 +1,220 @@
+###
+# SNS_ENCRYPTED_KMS tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      SNS_ENCRYPTED_KMS: SKIP
+
+- name: Scenario a) No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      SNS_ENCRYPTED_KMS: SKIP
+
+- name: Scenario b) KmsMasterKeyId not set but rule suppressed, SKIP
+  input:
+    Resources:
+      MySNSTopic:
+        Type: AWS::SNS::Topic
+        Metadata:
+          guard:
+            SuppressedRules:
+            - SNS_ENCRYPTED_KMS
+        Properties:
+          Subscription:
+            - Endpoint:
+                Fn::GetAtt:
+                  - "MyQueue1"
+                  - "Arn"
+              Protocol: "sqs"
+            - Endpoint:
+                Fn::GetAtt:
+                  - "MyQueue2"
+                  - "Arn"
+              Protocol: "sqs"
+          TopicName: "SampleTopic"
+      MySNSTopicPolicy:
+        Type: AWS::SNS::TopicPolicy
+        Properties:
+          Topics:
+            - Ref: MySNSTopic
+          PolicyDocument:
+            Version: "2008-10-17"
+            Id: Policy1415489375392
+            Statement:
+              - Sid: deny-unless-tls
+                Effect: Deny
+                Principal:
+                  AWS: "*"
+                Action:
+                  - sns:Publish
+                Resource: arn:aws:sns:us-east-2:111122223333:MySNSTopic
+                Condition:
+                  Bool:
+                    aws:SecureTransport: false
+                  NumericLessThan:
+                    s3:TlsVersion: 1.2
+  expectations:
+    rules:
+      SNS_ENCRYPTED_KMS: SKIP
+
+- name: Scenario c) KmsMasterKeyId not set, FAIL
+  input:
+    Resources:
+      MySNSTopic:
+        Type: AWS::SNS::Topic
+        Properties:
+          Subscription:
+            - Endpoint:
+                Fn::GetAtt:
+                  - "MyQueue1"
+                  - "Arn"
+              Protocol: "sqs"
+            - Endpoint:
+                Fn::GetAtt:
+                  - "MyQueue2"
+                  - "Arn"
+              Protocol: "sqs"
+          TopicName: "SampleTopic"
+      MySNSTopicPolicy:
+        Type: AWS::SNS::TopicPolicy
+        Properties:
+          Topics:
+            - Ref: MySNSTopic
+          PolicyDocument:
+            Version: "2008-10-17"
+            Id: Policy1415489375392
+            Statement:
+              - Sid: deny-unless-tls
+                Effect: Deny
+                Principal:
+                  AWS: "*"
+                Action:
+                  - sns:Publish
+                Resource: arn:aws:sns:us-east-2:111122223333:MySNSTopic
+                Condition:
+                  Bool:
+                    aws:SecureTransport: false
+                  NumericLessThan:
+                    s3:TlsVersion: 1.2
+  expectations:
+    rules:
+      SNS_ENCRYPTED_KMS: FAIL
+
+- name: Scenario d) KmsMasterKeyId set, PASS
+  input:
+    Resources:
+      MySNSTopic:
+        Type: AWS::SNS::Topic
+        Properties:
+          KmsMasterKeyId:
+            Fn::GetAtt:
+              - myTestBucketKey
+              - Arn
+          Subscription:
+            - Endpoint:
+                Fn::GetAtt:
+                  - "MyQueue1"
+                  - "Arn"
+              Protocol: "sqs"
+            - Endpoint:
+                Fn::GetAtt:
+                  - "MyQueue2"
+                  - "Arn"
+              Protocol: "sqs"
+          TopicName: "SampleTopic"
+      MySNSTopicPolicy:
+        Type: AWS::SNS::TopicPolicy
+        Properties:
+          Topics:
+            - Ref: MySNSTopic
+          PolicyDocument:
+            Version: "2008-10-17"
+            Id: Policy1415489375392
+            Statement:
+              - Sid: deny-unless-tls
+                Effect: Deny
+                Principal:
+                  AWS: "*"
+                Action:
+                  - sns:Publish
+                Resource: arn:aws:sns:us-east-2:111122223333:MySNSTopic
+                Condition:
+                  Bool:
+                    aws:SecureTransport: false
+                  NumericLessThan:
+                    s3:TlsVersion: 1.2
+  expectations:
+    rules:
+      SNS_ENCRYPTED_KMS: PASS
+
+- name: Scenario d) KmsMasterKeyId set many times, PASS
+  input:
+    Resources:
+      MySNSTopic:
+        Type: AWS::SNS::Topic
+        Properties:
+          KmsMasterKeyId:
+            Fn::GetAtt:
+              - myTestBucketKey
+              - Arn
+          Subscription:
+            - Endpoint:
+                Fn::GetAtt:
+                  - "MyQueue1"
+                  - "Arn"
+              Protocol: "sqs"
+            - Endpoint:
+                Fn::GetAtt:
+                  - "MyQueue2"
+                  - "Arn"
+              Protocol: "sqs"
+          TopicName: "SampleTopic"
+      MySecondSNSTopic:
+        Type: AWS::SNS::Topic
+        Properties:
+          KmsMasterKeyId:
+            Fn::GetAtt:
+              - myTestBucketKey
+              - Arn
+          Subscription:
+            - Endpoint:
+                Fn::GetAtt:
+                  - "MyQueue1"
+                  - "Arn"
+              Protocol: "sqs"
+            - Endpoint:
+                Fn::GetAtt:
+                  - "MyQueue2"
+                  - "Arn"
+              Protocol: "sqs"
+          TopicName: "SampleTopic"
+      MySNSTopicPolicy:
+        Type: AWS::SNS::TopicPolicy
+        Properties:
+          Topics:
+            - Ref: MySNSTopic
+            - Ref: MySecondSNSTopic
+          PolicyDocument:
+            Version: "2008-10-17"
+            Id: Policy1415489375392
+            Statement:
+              - Sid: deny-unless-tls
+                Effect: Deny
+                Principal:
+                  AWS: "*"
+                Action:
+                  - sns:Publish
+                Resource: arn:aws:sns:us-east-2:111122223333:MySNSTopic
+                Condition:
+                  Bool:
+                    aws:SecureTransport: false
+                  NumericLessThan:
+                    s3:TlsVersion: 1.2
+  expectations:
+    rules:
+      SNS_ENCRYPTED_KMS: PASS

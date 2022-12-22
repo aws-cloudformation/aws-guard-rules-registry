@@ -1,0 +1,60 @@
+###
+# SAGEMAKER_NOTEBOOK_INSTANCE_KMS_KEY_CONFIGURED tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      SAGEMAKER_NOTEBOOK_INSTANCE_KMS_KEY_CONFIGURED: SKIP
+
+- name: Scenario a) No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      SAGEMAKER_NOTEBOOK_INSTANCE_KMS_KEY_CONFIGURED: SKIP
+
+- name: Scenario b) KmsKeyId not present but rule suppressed, SKIP
+  input:
+    Resources:
+      BasicNotebookInstance:
+        Type: "AWS::SageMaker::NotebookInstance"
+        Metadata:
+          guard:
+            SuppressedRules:
+            - SAGEMAKER_NOTEBOOK_INSTANCE_KMS_KEY_CONFIGURED
+        Properties:
+          InstanceType: "ml.t2.large"
+          RoleArn: !GetAtt ExecutionRole.Arn
+          RootAccess: Enabled
+  expectations:
+    rules:
+      SAGEMAKER_NOTEBOOK_INSTANCE_KMS_KEY_CONFIGURED: SKIP
+
+- name: Scenario c) KmsKeyId not present, FAIL
+  input:
+    Resources:
+      BasicNotebookInstance:
+        Type: "AWS::SageMaker::NotebookInstance"
+        Properties:
+          InstanceType: "ml.t2.large"
+          RoleArn: !GetAtt ExecutionRole.Arn
+          RootAccess: Enabled
+  expectations:
+    rules:
+      SAGEMAKER_NOTEBOOK_INSTANCE_KMS_KEY_CONFIGURED: FAIL
+
+- name: KmsKeyId present, PASS
+  input:
+    Resources:
+      BasicNotebookInstance:
+        Type: "AWS::SageMaker::NotebookInstance"
+        Properties:
+          InstanceType: "ml.t2.large"
+          RoleArn: !GetAtt ExecutionRole.Arn
+          SubnetId: subnet-abcd1234
+          KmsKeyId: arn:aws:kms:us-east-1:123456789012:key/1234abcd-12ab-34cd-56ef-1234567890ab
+  expectations:
+    rules:
+      SAGEMAKER_NOTEBOOK_INSTANCE_KMS_KEY_CONFIGURED: PASS

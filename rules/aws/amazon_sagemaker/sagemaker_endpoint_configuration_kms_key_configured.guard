@@ -1,2 +1,41 @@
-## Config Rule Name : sagemaker-endpoint-configuration-kms-key-configured
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/sagemaker-endpoint-configuration-kms-key-configured.html"
+#
+#####################################
+##           Gherkin               ##
+#####################################
+#
+# Rule Identifier:
+#    SAGEMAKER_ENDPOINT_CONFIGURATION_KMS_KEY_CONFIGURED
+#
+# Description:
+#   Checks whether AWS Key Management Service (KMS) key is configured for an Amazon SageMaker endpoint configuration.
+#
+# Reports on:
+#    AWS::SageMaker::EndpointConfig
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
+# a) SKIP: when Sagemaker EndpointConfig resource not present
+# b) SKIP: when metada has rule suppression for SAGEMAKER_ENDPOINT_CONFIGURATION_KMS_KEY_CONFIGURED
+# c) FAIL: when all Sagemaker EndpointConfig resources KmsKeyId property does not exist
+# d) PASS: when all Sagemaker EndpointConfig resources KmsKeyId property is set
+
+#
+# Select all AWS::SageMaker::EndpointConfig resources from incoming template (payload)
+#
+let sagemaker_endpoint_configuration_kms_key_configured = Resources.*[ Type == "AWS::SageMaker::EndpointConfig"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "SAGEMAKER_ENDPOINT_CONFIGURATION_KMS_KEY_CONFIGURED"
+]
+
+rule SAGEMAKER_ENDPOINT_CONFIGURATION_KMS_KEY_CONFIGURED when %sagemaker_endpoint_configuration_kms_key_configured !empty {
+	%sagemaker_endpoint_configuration_kms_key_configured.Properties.KmsKeyId exists
+	<<
+		Violation: Amazon SageMaker endpoints are configured with a Key Management Service (KMS) key 
+		Fix: Set the KmsKeyId property
+	>>
+}

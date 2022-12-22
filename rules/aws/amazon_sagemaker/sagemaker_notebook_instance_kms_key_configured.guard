@@ -1,2 +1,42 @@
-## Config Rule Name : sagemaker-notebook-instance-kms-key-configured
-## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/sagemaker-notebook-instance-kms-key-configured.html"
+#
+#####################################
+##           Gherkin               ##
+#####################################
+#
+# Rule Identifier:
+#    SAGEMAKER_NOTEBOOK_INSTANCE_KMS_KEY_CONFIGURED
+#
+# Description:
+#   Checks whether AWS Key Management Service (KMS) key is configured for an Amazon SageMaker notebook instance.
+#
+# Reports on:
+#    AWS::SageMaker::NotebookInstance
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
+# a) SKIP: when Sagemaker Notebook Instance resource not present
+# b) SKIP: when metada has rule suppression for SAGEMAKER_NOTEBOOK_INSTANCE_KMS_KEY_CONFIGURED
+# c) FAIL: when all Sagemaker Notebook Instance resources KmsKeyId property does not exist
+# d) PASS: when all Sagemaker Notebook Instance resources KmsKeyId property is set
+
+#
+# Select all AWS::SageMaker::NotebookInstance resources from incoming template (payload)
+#
+
+let sagemaker_notebook_instance_kms_key_configured = Resources.*[ Type == "AWS::SageMaker::NotebookInstance"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "SAGEMAKER_NOTEBOOK_INSTANCE_KMS_KEY_CONFIGURED"
+]
+
+rule SAGEMAKER_NOTEBOOK_INSTANCE_KMS_KEY_CONFIGURED when %sagemaker_notebook_instance_kms_key_configured !empty {
+	%sagemaker_notebook_instance_kms_key_configured.Properties.KmsKeyId exists
+	<<
+		Violation: Amazon SageMaker Notebook instances are configured with a Key Management Service (KMS) key 
+		Fix: Set the KmsKeyId property
+	>>
+}

@@ -1,2 +1,42 @@
-    ## Config Rule Name : emr-kerberos-enabled
-    ## Config Rule URL: https://docs.aws.amazon.com/config/latest/developerguide/EMR_KERBEROS_ENABLED.html"
+#
+#####################################
+##           Gherkin               ##
+#####################################
+#
+# Rule Identifier:
+#    EMR_KERBEROS_ENABLED
+#
+# Description:
+#   Checks if Kerberos is set for EMR cluster.
+#
+# Reports on:
+#    AWS::EMR::Cluster
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
+# a) SKIP: when EMR cluster resource not present
+# b) SKIP: when metada has rule suppression for EMR_KERBEROS_ENABLED
+# c) FAIL: when all EMR cluster resources KerberosAttributes property does not exist
+# d) PASS: when all EMR cluster resources KerberosAttributes property is set
+
+#
+# Select all EMR Cluster resources from incoming template (payload)
+#
+
+let emr_kerberos_enabled = Resources.*[ Type == "AWS::EMR::Cluster"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "EMR_KERBEROS_ENABLED"
+]
+
+rule EMR_KERBEROS_ENABLED when %emr_kerberos_enabled !empty {
+	%emr_kerberos_enabled.Properties.KerberosAttributes exists
+	<<
+		Violation: EMR Clusters have Kerberos configured
+		Fix: Set the KerberosAttributes property
+	>>
+}

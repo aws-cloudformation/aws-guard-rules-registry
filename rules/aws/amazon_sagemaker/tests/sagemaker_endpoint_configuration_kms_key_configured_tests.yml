@@ -1,0 +1,84 @@
+###
+# SAGEMAKER_ENDPOINT_CONFIGURATION_KMS_KEY_CONFIGURED tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      SAGEMAKER_ENDPOINT_CONFIGURATION_KMS_KEY_CONFIGURED: SKIP
+
+- name: Scenario a) No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      SAGEMAKER_ENDPOINT_CONFIGURATION_KMS_KEY_CONFIGURED: SKIP
+
+- name: Scenario b) Missing KmsKeyId but rule suppressed, SKIP
+  input:
+    Resources:
+      Endpoint:
+        Type: "AWS::SageMaker::Endpoint"
+        Properties:
+          EndpointConfigName:
+            !GetAtt EndpointConfig.EndpointConfigName
+      EndpointConfig:
+        Type: "AWS::SageMaker::EndpointConfig"
+        Metadata:
+          guard:
+            SuppressedRules:
+            - SAGEMAKER_ENDPOINT_CONFIGURATION_KMS_KEY_CONFIGURED
+        Properties:
+          ProductionVariants:
+          - InitialInstanceCount: 1
+            InitialVariantWeight: 1.0
+            InstanceType: ml.t2.large
+            ModelName: !GetAtt Model.ModelName
+            VariantName: !GetAtt Model.ModelName
+  expectations:
+    rules:
+      SAGEMAKER_ENDPOINT_CONFIGURATION_KMS_KEY_CONFIGURED: SKIP
+
+- name: Scenario c) Missing KmsKeyId, FAIL
+  input: 
+    Resources:
+      Endpoint:
+        Type: "AWS::SageMaker::Endpoint"
+        Properties:
+          EndpointConfigName:
+            !GetAtt EndpointConfig.EndpointConfigName
+      EndpointConfig:
+        Type: "AWS::SageMaker::EndpointConfig"
+        Properties:
+          ProductionVariants:
+          - InitialInstanceCount: 1
+            InitialVariantWeight: 1.0
+            InstanceType: ml.t2.large
+            ModelName: !GetAtt Model.ModelName
+            VariantName: !GetAtt Model.ModelName
+  expectations:
+    rules:
+      SAGEMAKER_ENDPOINT_CONFIGURATION_KMS_KEY_CONFIGURED: FAIL
+
+- name: Scenario d) KmsKeyId has been provided, PASS
+  input: 
+    Resources:
+      Endpoint:
+        Type: "AWS::SageMaker::Endpoint"
+        Properties:
+          EndpointConfigName:
+            !GetAtt EndpointConfig.EndpointConfigName
+      EndpointConfig:
+        Type: "AWS::SageMaker::EndpointConfig"
+        Properties:
+          ProductionVariants:
+          - InitialInstanceCount: 1
+            InitialVariantWeight: 1.0
+            InstanceType: ml.t2.large
+            ModelName: !GetAtt Model.ModelName
+            VariantName: !GetAtt Model.ModelName
+          KmsKeyId: arn:aws:kms:us-east-1:123456789012:key/1234abcd-12ab-34cd-56ef-1234567890ab
+  expectations:
+    rules:
+      SAGEMAKER_ENDPOINT_CONFIGURATION_KMS_KEY_CONFIGURED: PASS

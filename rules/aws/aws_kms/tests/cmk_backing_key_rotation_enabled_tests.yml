@@ -1,0 +1,190 @@
+###
+# CMK_BACKING_KEY_ROTATION_ENABLED tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      CMK_BACKING_KEY_ROTATION_ENABLED: SKIP
+
+- name: Scenario a) No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      CMK_BACKING_KEY_ROTATION_ENABLED: SKIP
+
+- name: Scenario b) EnableKeyRotation has been set to false but rule suppressed, SKIP
+  input:
+    Resources:
+      myKMSKey:
+        Type: AWS::KMS::Key
+        Metadata:
+          guard:
+            SuppressedRules:
+              - "CMK_BACKING_KEY_ROTATION_ENABLED"
+        Properties:
+          EnableKeyRotation: false
+          KeyPolicy:
+            Statement:
+              - Action: kms:*
+                Effect: Allow
+                Principal:
+                  AWS:
+                    Fn::Join:
+                      - ""
+                      - - 'arn:'
+                        - Ref: AWS::Partition
+                        - :iam::123456789012:root
+                Resource: '*'
+              - Action:
+                  - kms:Decrypt
+                  - kms:DescribeKey
+                  - kms:Encrypt
+                  - kms:ReEncrypt*
+                  - kms:GenerateDataKey*
+                Effect: Allow
+                Principal:
+                  AWS:
+                    Fn::Join:
+                      - ""
+                      - - 'arn:'
+                        - Ref: AWS::Partition
+                        - :iam::123456789012:root
+                Resource: '*'
+            Version: "2012-10-17"
+  expectations:
+    rules:
+      CMK_BACKING_KEY_ROTATION_ENABLED: SKIP
+
+- name: Scenario c) EnableKeyRotation has not been set, FAIL
+  input:
+    Resources:
+      myKMSKey:
+        Type: AWS::KMS::Key
+        Properties:
+          KeyPolicy:
+            Statement:
+              - Action: kms:*
+                Effect: Allow
+                Principal:
+                  AWS:
+                    Fn::Join:
+                      - ""
+                      - - 'arn:'
+                        - Ref: AWS::Partition
+                        - :iam::123456789012:root
+                Resource: '*'
+              - Action:
+                  - kms:Decrypt
+                  - kms:DescribeKey
+                  - kms:Encrypt
+                  - kms:ReEncrypt*
+                  - kms:GenerateDataKey*
+                Effect: Allow
+                Principal:
+                  AWS:
+                    Fn::Join:
+                      - ""
+                      - - 'arn:'
+                        - Ref: AWS::Partition
+                        - :iam::123456789012:root
+                Resource: '*'
+            Version: "2012-10-17"
+  expectations:
+    rules:
+      CMK_BACKING_KEY_ROTATION_ENABLED: FAIL
+
+- name: Scenario d) EnableKeyRotation is set to false, FAIL
+  input:
+    Resources:
+      myKMSKey:
+        Type: AWS::KMS::Key
+        Properties:
+          EnableKeyRotation: false
+          KeyPolicy:
+            Statement:
+              - Action: kms:*
+                Effect: Allow
+                Principal:
+                  AWS:
+                    Fn::Join:
+                      - ""
+                      - - 'arn:'
+                        - Ref: AWS::Partition
+                        - :iam::123456789012:root
+                Resource: '*'
+              - Action:
+                  - kms:Decrypt
+                  - kms:DescribeKey
+                  - kms:Encrypt
+                  - kms:ReEncrypt*
+                  - kms:GenerateDataKey*
+                Effect: Allow
+                Principal:
+                  AWS:
+                    Fn::Join:
+                      - ""
+                      - - 'arn:'
+                        - Ref: AWS::Partition
+                        - :iam::123456789012:root
+                Resource: '*'
+            Version: "2012-10-17"
+  expectations:
+    rules:
+      CMK_BACKING_KEY_ROTATION_ENABLED: FAIL
+
+- name: Scenario e) EnableKeyRotation is set to true, PASS
+  input:
+    Resources:
+      myKMSKey:
+        Type: AWS::KMS::Key
+        Properties:
+          EnableKeyRotation: true
+          KeyPolicy:
+            Statement:
+              - Action: kms:*
+                Effect: Allow
+                Principal:
+                  AWS:
+                    Fn::Join:
+                      - ""
+                      - - 'arn:'
+                        - Ref: AWS::Partition
+                        - :iam::123456789012:root
+                Resource: '*'
+              - Action:
+                  - kms:Decrypt
+                  - kms:DescribeKey
+                  - kms:Encrypt
+                  - kms:ReEncrypt*
+                  - kms:GenerateDataKey*
+                Effect: Allow
+                Principal:
+                  AWS:
+                    Fn::Join:
+                      - ""
+                      - - 'arn:'
+                        - Ref: AWS::Partition
+                        - :iam::123456789012:root
+                Resource: '*'
+              - Action:
+                  - kms:Decrypt
+                  - kms:DescribeKey
+                  - kms:Encrypt
+                  - kms:ReEncrypt*
+                  - kms:GenerateDataKey*
+                Effect: Allow
+                Principal:
+                  AWS:
+                    Fn::Join:
+                      - ""
+                      - - 'arn:'
+                        - Ref: AWS::Partition
+                        - :iam::123456789012:root
+                Resource: '*'
+            Version: "2012-10-17"
+  expectations:
+    rules:
+      CMK_BACKING_KEY_ROTATION_ENABLED: PASS

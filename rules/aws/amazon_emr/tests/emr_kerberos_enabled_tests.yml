@@ -1,0 +1,146 @@
+
+###
+# EMR_KERBEROS_ENABLED tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      EMR_KERBEROS_ENABLED: SKIP
+
+- name: Scenario a) No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      EMR_KERBEROS_ENABLED: SKIP
+
+- name: Scenario b) KerberosAttributes not specified and rule is suppressed, SKIP
+  input:
+    Resources:
+      cluster:
+        Type: AWS::EMR::Cluster
+        Metadata:
+          guard:
+            SuppressedRules:
+            - EMR_KERBEROS_ENABLED
+        Properties:
+          CustomAmiId: !Ref CustomAmiId
+          Instances:
+            MasterInstanceGroup:
+              InstanceCount: 1
+              InstanceType: !Ref InstanceType
+              Market: ON_DEMAND
+              Name: cfnMaster
+            CoreInstanceGroup:
+              InstanceCount: 1
+              InstanceType: !Ref InstanceType
+              Market: ON_DEMAND
+              Name: cfnCore
+            TaskInstanceGroups:
+              - InstanceCount: 1
+                InstanceType: !Ref InstanceType
+                Market: ON_DEMAND
+                Name: cfnTask-1
+              - InstanceCount: 1
+                InstanceType: !Ref InstanceType
+                Market: ON_DEMAND
+                Name: cfnTask-2
+            TerminationProtected: !Ref TerminationProtected
+            Ec2SubnetId: !Ref SubnetId
+          Name: CFNtest
+          JobFlowRole: !Ref emrEc2InstanceProfile
+          ServiceRole: !Ref emrRole
+          ReleaseLabel: !Ref ReleaseLabel
+          VisibleToAllUsers: true
+          Tags:
+            - Key: key1
+              Value: value1
+  expectations:
+    rules:
+      EMR_KERBEROS_ENABLED: SKIP
+
+- name: Scenario c) KerberosAttributes not set, FAIL
+  input:
+    Resources:
+      cluster:
+        Type: AWS::EMR::Cluster
+        Properties:
+          CustomAmiId: !Ref CustomAmiId
+          Instances:
+            MasterInstanceGroup:
+              InstanceCount: 1
+              InstanceType: !Ref InstanceType
+              Market: ON_DEMAND
+              Name: cfnMaster
+            CoreInstanceGroup:
+              InstanceCount: 1
+              InstanceType: !Ref InstanceType
+              Market: ON_DEMAND
+              Name: cfnCore
+            TaskInstanceGroups:
+              - InstanceCount: 1
+                InstanceType: !Ref InstanceType
+                Market: ON_DEMAND
+                Name: cfnTask-1
+              - InstanceCount: 1
+                InstanceType: !Ref InstanceType
+                Market: ON_DEMAND
+                Name: cfnTask-2
+            TerminationProtected: !Ref TerminationProtected
+            Ec2SubnetId: !Ref SubnetId
+          Name: CFNtest
+          JobFlowRole: !Ref emrEc2InstanceProfile
+          ServiceRole: !Ref emrRole
+          ReleaseLabel: !Ref ReleaseLabel
+          VisibleToAllUsers: true
+          Tags:
+            - Key: key1
+              Value: value1
+  expectations:
+    rules:
+      EMR_KERBEROS_ENABLED: FAIL
+
+- name: Scenario d) KerberosAttributes set, PASS
+  input:
+    Resources:
+      cluster:
+        Type: AWS::EMR::Cluster
+        Properties:
+          CustomAmiId: !Ref CustomAmiId
+          KerberosAttributes:
+            KdcAdminPassword: abc1234
+          Instances:
+            MasterInstanceGroup:
+              InstanceCount: 1
+              InstanceType: !Ref InstanceType
+              Market: ON_DEMAND
+              Name: cfnMaster
+            CoreInstanceGroup:
+              InstanceCount: 1
+              InstanceType: !Ref InstanceType
+              Market: ON_DEMAND
+              Name: cfnCore
+            TaskInstanceGroups:
+              - InstanceCount: 1
+                InstanceType: !Ref InstanceType
+                Market: ON_DEMAND
+                Name: cfnTask-1
+              - InstanceCount: 1
+                InstanceType: !Ref InstanceType
+                Market: ON_DEMAND
+                Name: cfnTask-2
+            TerminationProtected: !Ref TerminationProtected
+            Ec2SubnetId: !Ref SubnetId
+          Name: CFNtest
+          JobFlowRole: !Ref emrEc2InstanceProfile
+          ServiceRole: !Ref emrRole
+          ReleaseLabel: !Ref ReleaseLabel
+          VisibleToAllUsers: true
+          Tags:
+            - Key: key1
+              Value: value1
+  expectations:
+    rules:
+      EMR_KERBEROS_ENABLED: PASS

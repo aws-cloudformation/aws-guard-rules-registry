@@ -1,21 +1,42 @@
-# Rule Intent: All DynamoDB Tables must have SEE enabled
-
-# Expectations:
+#
+#####################################
+##           Gherkin               ##
+#####################################
+#
+# Rule Identifier:
+#    DYNAMODB_TABLE_ENCRYPTED_KMS
+#
+# Description:
+#   All DynamoDB Tables must have SEE enabled
+#
+# Reports on:
+#    AWS::DynamoDB::Table
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# Scenarios:
 # a) SKIP: when there are no DynamoDB Tables present
-# b) PASS: when all DynamoDB Tables are encrypted
-# c) FAIL: when all DynamoDB Tables are not are encrypted
+# b) SKIP: when metadata has rule suppression for DYNAMODB_TABLE_ENCRYPTED_KMS
+# c) FAIL: when any DynamoDB Table does not have SSE enabled
+# d) PASS: when all DynamoDB Tables have SSE enabled
 
 #
 # Select all DynamoDB Table resources from incoming template (payload)
 #
-let aws_dynamodb_table_resources = Resources.*[ Type == 'AWS::DynamoDB::Table' ]
+let dynamodb_table_must_be_encrypted = Resources.*[ Type == 'AWS::DynamoDB::Table' 
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "DYNAMODB_TABLE_MUST_BE_ENCRYPTED"
+]
 
-
-rule DYNAMODB_TABLE_MUST_BE_ENCRYPTED when %aws_dynamodb_table_resources !empty {
-    %aws_dynamodb_table_resources.Properties.SSESpecification EXISTS
-    %aws_dynamodb_table_resources.Properties.SSESpecification.SSEEnabled == true
-    <<
-    DynamoDB Table properties must include SSESpecificationDynamoDB and set SSEEnabled parameter to true
-    >>
-
+rule DYNAMODB_TABLE_MUST_BE_ENCRYPTED when %dynamodb_table_must_be_encrypted !empty {
+    %dynamodb_table_must_be_encrypted.Properties.SSESpecification EXISTS
+    %dynamodb_table_must_be_encrypted.Properties.SSESpecification.SSEEnabled == true
+      <<
+        Violation: Amazon DynamoDB tables are configured with SSE 
+        Fix: In SSESpecification, set SSEEnabled to true
+      >>
 }

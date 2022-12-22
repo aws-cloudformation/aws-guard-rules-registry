@@ -1,0 +1,302 @@
+###
+# FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN: SKIP
+
+- name: Scenario a) No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN: SKIP
+
+- name: Scenario b) Deployment type MULTI_AZ_1 and AutomaticBackupRetentionDays value not set but rule suppressed, SKIP
+  input:
+    Resources:
+      FileSystem:
+        Type: AWS::FSx::FileSystem
+        Metadata:
+          guard:
+            SuppressedRules:
+            - FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN
+        Properties:
+          FileSystemType: "WINDOWS"
+          FileSystemTypeVersion: "2.12"
+          StorageCapacity: 1200
+          SubnetIds: [!ImportValue MySubnet01]
+          SecurityGroupIds: [!ImportValue LustreIngressSecurityGroupId]
+          WindowsConfiguration:
+            DeploymentType: MULTI_AZ_1
+  expectations:
+    rules:
+      FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN: SKIP
+
+- name: Scenario c) 'LUSTRE' file system with deployment type PERSISTENT_2 and AutomaticBackupRetentionDays not set, FAIL
+  input:
+    Resources:
+      FileSystem:
+        Type: AWS::FSx::FileSystem
+        Properties:
+          FileSystemType: "LUSTRE"
+          FileSystemTypeVersion: "2.12"
+          StorageCapacity: 1200
+          SubnetIds: [!ImportValue MySubnet01]
+          SecurityGroupIds: [!ImportValue LustreIngressSecurityGroupId]
+          LustreConfiguration:
+            DeploymentType: PERSISTENT_2
+  expectations:
+    rules:
+      FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN: FAIL
+
+- Name: Scenario c) 'LUSTRE' file system with deployment type PERSISTENT_2 and AutomaticBackupRetentionDays set at 0, FAIL
+  input:
+    Resources:
+      FileSystem:
+        Type: AWS::FSx::FileSystem
+        Properties:
+          FileSystemType: "LUSTRE"
+          FileSystemTypeVersion: "2.12"
+          StorageCapacity: 1200
+          SubnetIds: [!ImportValue MySubnet01]
+          SecurityGroupIds: [!ImportValue LustreIngressSecurityGroupId]
+          LustreConfiguration:
+            DeploymentType: PERSISTENT_2
+            AutomaticBackupRetentionDays: 0
+  expectations:
+    rules:
+      FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN: FAIL
+
+- name: Scenario c) 'LUSTRE' file system with deployment type PERSISTENT_1 and AutomaticBackupRetentionDays not set, FAIL
+  input:
+    Resources:
+      FileSystem:
+        Type: AWS::FSx::FileSystem
+        Properties:
+          FileSystemType: "LUSTRE"
+          FileSystemTypeVersion: "2.12"
+          StorageCapacity: 1200
+          SubnetIds: [!ImportValue MySubnet01]
+          SecurityGroupIds: [!ImportValue LustreIngressSecurityGroupId]
+          LustreConfiguration:
+            DeploymentType: PERSISTENT_1
+  expectations:
+    rules:
+      FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN: FAIL
+
+- Name: Scenario c) 'LUSTRE' file system with deployment type PERSISTENT_1 and AutomaticBackupRetentionDays set at 0, FAIL
+  input:
+    Resources:
+      FileSystem:
+        Type: AWS::FSx::FileSystem
+        Properties:
+          FileSystemType: "LUSTRE"
+          FileSystemTypeVersion: "2.12"
+          StorageCapacity: 1200
+          SubnetIds: [!ImportValue MySubnet01]
+          SecurityGroupIds: [!ImportValue LustreIngressSecurityGroupId]
+          LustreConfiguration:
+            DeploymentType: PERSISTENT_1
+            AutomaticBackupRetentionDays: 0
+  expectations:
+    rules:
+      FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN: FAIL
+
+- name: Scenario c) 'ONTAP' file system AutomaticBackupRetentionDays not set, FAIL
+  input:
+    Resources:
+      FileSystem:
+        Type: AWS::FSx::FileSystem
+        Properties:
+          FileSystemType: "ONTAP"
+          FileSystemTypeVersion: "2.12"
+          StorageCapacity: 1200
+          SubnetIds: [!ImportValue MySubnet01]
+          SecurityGroupIds: [!ImportValue LustreIngressSecurityGroupId]
+          OntapConfiguration:
+            DeploymentType: MULTI_AZ_1
+  expectations:
+    rules:
+      FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN: FAIL
+
+- name: Scenario c) 'ONTAP' file system with AutomaticBackupRetentionDays set to 0, FAIL
+  input:
+    Resources:
+      FileSystem:
+        Type: AWS::FSx::FileSystem
+        Properties:
+          FileSystemType: "ONTAP"
+          FileSystemTypeVersion: "2.12"
+          StorageCapacity: 1200
+          SubnetIds: [!ImportValue MySubnet01]
+          SecurityGroupIds: [!ImportValue LustreIngressSecurityGroupId]
+          OntapConfiguration:
+            DeploymentType: MULTI_AZ_1
+            AutomaticBackupRetentionDays: 0
+  expectations:
+    rules:
+      FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN: FAIL
+
+- name: Scenario c) 'OPENZFS' file system with deployment type SINGLE_AZ_1 and AutomaticBackupRetentionDays value not set, FAIL
+  input:
+    Resources:
+      FileSystem:
+        Type: AWS::FSx::FileSystem
+        Properties:
+          FileSystemType: "OPENZFS"
+          FileSystemTypeVersion: "2.12"
+          StorageCapacity: 1200
+          SubnetIds: [!ImportValue MySubnet01]
+          SecurityGroupIds: [!ImportValue LustreIngressSecurityGroupId]
+          OpenZFSConfiguration:
+            DeploymentType: SINGLE_AZ_1
+  expectations:
+    rules:
+      FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN: FAIL
+
+- name: Scenario c) 'OPENZFS' file system with deployment type SINGLE_AZ_1 and AutomaticBackupRetentionDays set to 0, FAIL
+  input:
+    Resources:
+      FileSystem:
+        Type: AWS::FSx::FileSystem
+        Properties:
+          FileSystemType: "OPENZFS"
+          FileSystemTypeVersion: "2.12"
+          StorageCapacity: 1200
+          SubnetIds: [!ImportValue MySubnet01]
+          SecurityGroupIds: [!ImportValue LustreIngressSecurityGroupId]
+          OpenZFSConfiguration:
+            AutomaticBackupRetentionDays: 0
+            DeploymentType: SINGLE_AZ_1
+  expectations:
+    rules:
+      FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN: FAIL
+
+- name: Scenario c) 'WINDOWS' file system with deployment type MULTI_AZ_1 and AutomaticBackupRetentionDays value not set, FAIL
+  input:
+    Resources:
+      FileSystem:
+        Type: AWS::FSx::FileSystem
+        Properties:
+          FileSystemType: "WINDOWS"
+          FileSystemTypeVersion: "2.12"
+          StorageCapacity: 1200
+          SubnetIds: [!ImportValue MySubnet01]
+          SecurityGroupIds: [!ImportValue LustreIngressSecurityGroupId]
+          WindowsConfiguration:
+            DeploymentType: MULTI_AZ_1
+  expectations:
+    rules:
+      FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN: FAIL
+
+- name: Scenario c) 'WINDOWS' file system with deployment type MULTI_AZ_1 and AutomaticBackupRetentionDays set to 0, FAIL
+  input:
+    Resources:
+      FileSystem:
+        Type: AWS::FSx::FileSystem
+        Properties:
+          FileSystemType: "WINDOWS"
+          FileSystemTypeVersion: "2.12"
+          StorageCapacity: 1200
+          SubnetIds: [!ImportValue MySubnet01]
+          SecurityGroupIds: [!ImportValue LustreIngressSecurityGroupId]
+          WindowsConfiguration:
+            AutomaticBackupRetentionDays: 0
+            DeploymentType: MULTI_AZ_1
+  expectations:
+    rules:
+      FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN: FAIL
+
+- name: Scenario d) 'LUSTRE' file system with deployment type PERSISTENT_1 and AutomaticBackupRetentionDays set greater than 0, PASS
+  input:
+    Resources:
+      FileSystem:
+        Type: AWS::FSx::FileSystem
+        Properties:
+          FileSystemType: "LUSTRE"
+          FileSystemTypeVersion: "2.12"
+          StorageCapacity: 1200
+          SubnetIds: [!ImportValue MySubnet01]
+          SecurityGroupIds: [!ImportValue LustreIngressSecurityGroupId]
+          LustreConfiguration:
+            DeploymentType: PERSISTENT_1
+            AutomaticBackupRetentionDays: 30
+  expectations:
+    rules:
+      FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN: PASS
+
+- name: Scenario d) 'LUSTRE' file system with deployment type PERSISTENT_2 and AutomaticBackupRetentionDays set greater than 0, PASS
+  input:
+    Resources:
+      FileSystem:
+        Type: AWS::FSx::FileSystem
+        Properties:
+          FileSystemType: "LUSTRE"
+          FileSystemTypeVersion: "2.12"
+          StorageCapacity: 1200
+          SubnetIds: [!ImportValue MySubnet01]
+          SecurityGroupIds: [!ImportValue LustreIngressSecurityGroupId]
+          LustreConfiguration:
+            DeploymentType: PERSISTENT_2
+            AutomaticBackupRetentionDays: 30
+  expectations:
+    rules:
+      FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN: PASS
+
+- name: Scenario d) 'ONTAP' File System with AutomaticBackupRetentionDays set greater than 0, PASS
+  input:
+    Resources:
+      FileSystem:
+        Type: AWS::FSx::FileSystem
+        Properties:
+          FileSystemType: "ONTAP"
+          FileSystemTypeVersion: "2.12"
+          StorageCapacity: 1200
+          SubnetIds: [!ImportValue MySubnet01]
+          SecurityGroupIds: [!ImportValue LustreIngressSecurityGroupId]
+          OntapConfiguration:
+            DeploymentType: MULTI_AZ_1
+            AutomaticBackupRetentionDays: 30
+  expectations:
+    rules:
+      FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN: PASS
+
+- name: Scenario d) 'OPENZFS' file system with deployment type SINGLE_AZ_1 and AutomaticBackupRetentionDays set to value greater than 0, PASS
+  input:
+    Resources:
+      FileSystem:
+        Type: AWS::FSx::FileSystem
+        Properties:
+          FileSystemType: "OPENZFS"
+          FileSystemTypeVersion: "2.12"
+          StorageCapacity: 1200
+          SubnetIds: [!ImportValue MySubnet01]
+          SecurityGroupIds: [!ImportValue LustreIngressSecurityGroupId]
+          OpenZFSConfiguration:
+            AutomaticBackupRetentionDays: 30
+            DeploymentType: SINGLE_AZ_1
+  expectations:
+    rules:
+      FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN: PASS
+
+- name: Scenario d) 'WINDOWS' file system with deployment type MULTI_AZ_1 and AutomaticBackupRetentionDays set to value greater than 0, PASS
+  input:
+    Resources:
+      FileSystem:
+        Type: AWS::FSx::FileSystem
+        Properties:
+          FileSystemType: "WINDOWS"
+          FileSystemTypeVersion: "2.12"
+          StorageCapacity: 1200
+          SubnetIds: [!ImportValue MySubnet01]
+          SecurityGroupIds: [!ImportValue LustreIngressSecurityGroupId]
+          WindowsConfiguration:
+            AutomaticBackupRetentionDays: 30
+            DeploymentType: MULTI_AZ_1
+  expectations:
+    rules:
+      FSX_RESOURCES_PROTECTED_BY_BACKUP_PLAN: PASS
