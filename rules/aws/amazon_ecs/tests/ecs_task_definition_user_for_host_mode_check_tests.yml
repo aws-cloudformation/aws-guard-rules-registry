@@ -1,0 +1,376 @@
+###
+# ECS_TASK_DEFINITION_USER_FOR_HOST_MODE_CHECK tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      ECS_TASK_DEFINITION_USER_FOR_HOST_MODE_CHECK: SKIP
+
+- name: Scenario a) No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      ECS_TASK_DEFINITION_USER_FOR_HOST_MODE_CHECK: SKIP
+
+- name: Scenario b) Rule suppressed, SKIP
+  input:
+    Resources:
+      TaskDefinition:
+        Type: AWS::ECS::TaskDefinition
+        Metadata:
+          guard:
+            SuppressedRules:
+              - "ECS_TASK_DEFINITION_USER_FOR_HOST_MODE_CHECK"
+  expectations:
+    rules:
+      ECS_TASK_DEFINITION_USER_FOR_HOST_MODE_CHECK: SKIP
+
+- name: Scenario c) 'ContainerDefinitions' property is not present, SKIP
+  input:
+    Resources:
+      TaskDefinition:
+        Type: AWS::ECS::TaskDefinition
+        Properties: {}
+  expectations:
+    rules:
+      ECS_TASK_DEFINITION_USER_FOR_HOST_MODE_CHECK: SKIP
+
+- name: Scenario c) 'ContainerDefinitions' property is not present, SKIP
+  input:
+    Resources:
+      TaskDefinition:
+        Type: AWS::ECS::TaskDefinition
+        Properties:
+          ContainerDefinitions: []
+  expectations:
+    rules:
+      ECS_TASK_DEFINITION_USER_FOR_HOST_MODE_CHECK: SKIP
+
+- name: Scenario d) 'NetworkMode' property is either not present or set to a value other than 'host', SKIP
+  input:
+    Resources:
+      TaskDefinition:
+        Type: AWS::ECS::TaskDefinition
+        Properties:
+          ContainerDefinitions:
+          - Name: ContainerA
+            User: testuser
+          - Name: ContainerB
+  expectations:
+    rules:
+      ECS_TASK_DEFINITION_USER_FOR_HOST_MODE_CHECK: SKIP
+
+- name: Scenario d) 'NetworkMode' property is either not present or set to a value other than 'host', SKIP
+  input:
+    Resources:
+      TaskDefinition:
+        Type: AWS::ECS::TaskDefinition
+        Properties:
+          NetworkMode: awsvpc
+          ContainerDefinitions:
+          - Name: ContainerA
+            User: testuser
+          - Name: ContainerB
+  expectations:
+    rules:
+      ECS_TASK_DEFINITION_USER_FOR_HOST_MODE_CHECK: SKIP
+
+- name: Scenario e) Entry in 'ContainerDefinitions' has 'User' set to a root user and 'Privileged' not set or set to 'false', FAIL
+  input:
+    Resources:
+      TaskDefinition:
+        Type: AWS::ECS::TaskDefinition
+        Properties:
+          NetworkMode: host
+          ContainerDefinitions:
+          - Name: ContainerA
+            User: root
+            Privileged: true
+          - Name: ContainerB
+            User: root
+  expectations:
+    rules:
+      ECS_TASK_DEFINITION_USER_FOR_HOST_MODE_CHECK: FAIL
+
+- name: Scenario e) Entry in 'ContainerDefinitions' has 'User' set to a root user and 'Privileged' not set or set to 'false', FAIL
+  input:
+    Resources:
+      TaskDefinition:
+        Type: AWS::ECS::TaskDefinition
+        Properties:
+          NetworkMode: host
+          ContainerDefinitions:
+          - Name: ContainerA
+            User: root
+            Privileged: true
+          - Name: ContainerB
+            User: 0:0
+  expectations:
+    rules:
+      ECS_TASK_DEFINITION_USER_FOR_HOST_MODE_CHECK: FAIL
+
+- name: Scenario e) Entry in 'ContainerDefinitions' has 'User' set to a root user and 'Privileged' not set or set to 'false', FAIL
+  input:
+    Resources:
+      TaskDefinition:
+        Type: AWS::ECS::TaskDefinition
+        Properties:
+          NetworkMode: host
+          ContainerDefinitions:
+          - Name: ContainerA
+            User: root
+            Privileged': true
+          - Name: ContainerB
+            User: root
+            Privileged: false
+  expectations:
+    rules:
+      ECS_TASK_DEFINITION_USER_FOR_HOST_MODE_CHECK: FAIL
+
+- name: Scenario e) Entry in 'ContainerDefinitions' has 'User' set to a root user and 'Privileged' not set or set to 'false', FAIL
+  input:
+    Resources:
+      TaskDefinition:
+        Type: AWS::ECS::TaskDefinition
+        Properties:
+          NetworkMode: host
+          ContainerDefinitions:
+          - Name: ContainerA
+            User: root
+            Privileged: true
+          - Name: ContainerB
+            User: 0:0
+            Privileged: false
+  expectations:
+    rules:
+      ECS_TASK_DEFINITION_USER_FOR_HOST_MODE_CHECK: FAIL
+
+- name: Scenario e) Entry in 'ContainerDefinitions' has 'User' set to a root user and 'Privileged' not set or set to 'false', FAIL
+  input:
+    Resources:
+      TaskDefinition:
+        Type: AWS::ECS::TaskDefinition
+        Properties:
+          NetworkMode: host
+          ContainerDefinitions:
+          - Name: ContainerA
+            User: root
+            Privileged: true
+          - Name: ContainerB
+            User: root:root
+            Privileged: false
+  expectations:
+    rules:
+      ECS_TASK_DEFINITION_USER_FOR_HOST_MODE_CHECK: FAIL
+
+- name: Scenario e) Entry in 'ContainerDefinitions' has 'User' set to a root user and 'Privileged' not set or set to 'false', FAIL
+  input:
+    Resources:
+      TaskDefinition:
+        Type: AWS::ECS::TaskDefinition
+        Properties:
+          NetworkMode: host
+          ContainerDefinitions:
+          - Name: ContainerA
+            User: root
+            Privileged: true
+          - Name: ContainerB
+            User: root:root
+  expectations:
+    rules:
+      ECS_TASK_DEFINITION_USER_FOR_HOST_MODE_CHECK: FAIL
+
+- name: Scenario e) Entry in 'ContainerDefinitions' has 'User' set to a root user and 'Privileged' not set or set to 'false', FAIL
+  input:
+    Resources:
+      TaskDefinition:
+        Type: AWS::ECS::TaskDefinition
+        Properties:
+          NetworkMode: host
+          ContainerDefinitions:
+          - Name: ContainerA
+            User: root
+            Privileged: true
+          - Name: ContainerB
+            User: root:abcd
+  expectations:
+    rules:
+      ECS_TASK_DEFINITION_USER_FOR_HOST_MODE_CHECK: FAIL
+
+- name: Scenario e) Entry in 'ContainerDefinitions' has 'User' set to a root user and 'Privileged' not set or set to 'false', FAIL
+  input:
+    Resources:
+      TaskDefinition:
+        Type: AWS::ECS::TaskDefinition
+        Properties:
+          NetworkMode: host
+          ContainerDefinitions:
+          - Name: ContainerA
+            User: root
+            Privileged: true
+          - Name: ContainerB
+            User: 0:abcd
+  expectations:
+    rules:
+      ECS_TASK_DEFINITION_USER_FOR_HOST_MODE_CHECK: FAIL
+
+- name: Scenario e) Entry in 'ContainerDefinitions' has 'User' not present and 'Privileged' not set or set, FAIL
+  input:
+    Resources:
+      TaskDefinition:
+        Type: AWS::ECS::TaskDefinition
+        Properties:
+          NetworkMode: host
+          ContainerDefinitions:
+          - Name: ContainerA
+            User: root
+            Privileged: true
+          - Name: ContainerB
+  expectations:
+    rules:
+      ECS_TASK_DEFINITION_USER_FOR_HOST_MODE_CHECK: FAIL
+
+- name: Scenario e) Entry in 'ContainerDefinitions' has 'User' not present and 'Privileged' set to 'false', FAIL
+  input:
+    Resources:
+      TaskDefinition:
+        Type: AWS::ECS::TaskDefinition
+        Properties:
+          NetworkMode: host
+          ContainerDefinitions:
+          - Name: ContainerA
+            User: root
+            Privileged: true
+          - Name: ContainerB
+            Privileged: false
+  expectations:
+    rules:
+      ECS_TASK_DEFINITION_USER_FOR_HOST_MODE_CHECK: FAIL
+
+- name: Scenario f) All entires in 'ContainerDefinitions' have either 'User' set to a non-root user value or 'Privileged' set to 'true', PASS
+  input:
+    Resources:
+      TaskDefinition:
+        Type: AWS::ECS::TaskDefinition
+        Properties:
+          NetworkMode: host
+          ContainerDefinitions:
+          - Name: ContainerA
+            User: root
+            Privileged: true
+          - Name: ContainerB
+            User: root
+            Privileged: true
+  expectations:
+    rules:
+      ECS_TASK_DEFINITION_USER_FOR_HOST_MODE_CHECK: PASS
+
+- name: Scenario f) All entires in 'ContainerDefinitions' have either 'User' set to a non-root user value or 'Privileged' set to 'true', PASS
+  input:
+    Resources:
+      TaskDefinition:
+        Type: AWS::ECS::TaskDefinition
+        Properties:
+          NetworkMode: host
+          ContainerDefinitions:
+          - Name: ContainerA
+            User: testuser
+          - Name: ContainerB
+            Privileged: true
+            User: root
+  expectations:
+    rules:
+      ECS_TASK_DEFINITION_USER_FOR_HOST_MODE_CHECK: PASS
+
+- name: Scenario f) All entires in 'ContainerDefinitions' have either 'User' set to a non-root user value or 'Privileged' set to 'true', PASS
+  input:
+    Resources:
+      TaskDefinition:
+        Type: AWS::ECS::TaskDefinition
+        Properties:
+          NetworkMode: host
+          ContainerDefinitions:
+          - Name: ContainerA
+            Privileged: false
+            User: testuser
+          - Name: ContainerB
+            Privileged: true
+            User: root
+  expectations:
+    rules:
+      ECS_TASK_DEFINITION_USER_FOR_HOST_MODE_CHECK: PASS
+
+- name: Scenario f) All entires in 'ContainerDefinitions' have either 'User' set to a non-root user value or 'Privileged' set to 'true', PASS
+  input:
+    Resources:
+      TaskDefinition:
+        Type: AWS::ECS::TaskDefinition
+        Properties:
+          NetworkMode: host
+          ContainerDefinitions:
+          - Name: ContainerA
+            User: testuser:root
+            Privileged: false
+          - Name: ContainerB
+            User: root
+            Privileged: true
+  expectations:
+    rules:
+      ECS_TASK_DEFINITION_USER_FOR_HOST_MODE_CHECK: PASS
+
+- name: Scenario f) All entires in 'ContainerDefinitions' have either 'User' set to a non-root user value or 'Privileged' set to 'true', PASS
+  input:
+    Resources:
+      TaskDefinition:
+        Type: AWS::ECS::TaskDefinition
+        Properties:
+          NetworkMode: host
+          ContainerDefinitions:
+          - Name: ContainerA
+            User: testuser:0
+            Privileged: false
+          - Name: ContainerB
+            User: root
+            Privileged: true
+  expectations:
+    rules:
+      ECS_TASK_DEFINITION_USER_FOR_HOST_MODE_CHECK: PASS
+
+- name: Scenario f) All entires in 'ContainerDefinitions' have either 'User' set to a non-root user value or 'Privileged' set to 'true', PASS
+  input:
+    Resources:
+      TaskDefinition:
+        Type: AWS::ECS::TaskDefinition
+        Properties:
+          NetworkMode: host
+          ContainerDefinitions:
+          - Name: ContainerA
+            User: 1000:root
+            Privileged: false
+          - Name: ContainerB
+            User: root
+            Privileged: true
+  expectations:
+    rules:
+      ECS_TASK_DEFINITION_USER_FOR_HOST_MODE_CHECK: PASS
+
+- name: Scenario f) All entires in 'ContainerDefinitions' have either 'User' set to a non-root user value or 'Privileged' set to 'true', PASS
+  input:
+    Resources:
+      TaskDefinition:
+        Type: AWS::ECS::TaskDefinition
+        Properties:
+          NetworkMode: host
+          ContainerDefinitions:
+          - Name: ContainerA
+            User: 1000:0
+            Privileged: false
+          - Name: ContainerB
+            User: root
+            Privileged: true
+  expectations:
+    rules:
+      ECS_TASK_DEFINITION_USER_FOR_HOST_MODE_CHECK: PASS
