@@ -1,0 +1,58 @@
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#   ELASTICSEARCH_HTTPS_REQUIRED
+#
+# Description:
+#   Elasticsearch domains are configured to require HTTPS with a minimum TLS version of TLSv1.2
+#
+# Reports on:
+#   AWS::Elasticsearch::Domain
+#
+# Evaluates:
+#   AWS CloudFormation
+#
+# Rule Parameters:
+#   NA
+#
+# Scenarios:
+# a) SKIP: when there are no Elasticsearch Domain Resources 
+# b) SKIP: when metadata has rule suppression for ELASTICSEARCH_HTTPS_REQUIRED
+# c) FAIL: when Elasticsearch Domain Resources are missing DomainEndpointOptions.EnforceHTTPS
+# d) FAIL: when Elasticsearch Domain Resources are missing DomainEndpointOptions.TLSSecurityPolicy
+# e) FAIL: when Elasticsearch Domain Resources have DomainEndpointOptions.EnforceHTTPS set to a value other than true 
+# f) FAIL: when Elasticsearch Domain Resources have DomainEndpointOptions.TLSSecurityPolicy set to a value other than 'Policy-Min-TLS-1-2-2019-07'
+# g) PASS: when Elasticsearch Domain Resources have DomainEndpointOptions.EnforceHTTPS set to true and 
+#          DomainEndpointOptions.TLSSecurityPolicy set to 'Policy-Min-TLS-1-2-2019-07'
+
+#
+# Select all Elasticsearch domains from incoming template
+#
+let elasticsearch_https_required = Resources.*[ Type == "AWS::Elasticsearch::Domain"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "ELASTICSEARCH_HTTPS_REQUIRED"
+]
+
+rule ELASTICSEARCH_HTTPS_REQUIRED when %elasticsearch_https_required !empty {
+    %elasticsearch_https_required.Properties { 
+        DomainEndpointOptions exists
+        DomainEndpointOptions is_struct
+
+        DomainEndpointOptions {
+            EnforceHTTPS exists
+            EnforceHTTPS == true
+                <<
+                    Violation: Elasticsearch domains are configured to require HTTPS with a minimum TLS version of TLSv1.2
+                    Fix: In DomainEndpointOptions, set EnforceHTTPS to true and TLSSecurityPolicy to 'Policy-Min-TLS-1-2-2019-07'
+                >>
+            TLSSecurityPolicy exists
+            TLSSecurityPolicy in [ "Policy-Min-TLS-1-2-2019-07" ]
+                <<
+                    Violation: Elasticsearch domains are configured to require HTTPS with a minimum TLS version of TLSv1.2
+                    Fix: In DomainEndpointOptions, set EnforceHTTPS to true and TLSSecurityPolicy to 'Policy-Min-TLS-1-2-2019-07'
+                >>
+        }
+    }
+}

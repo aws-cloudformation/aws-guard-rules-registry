@@ -1,0 +1,58 @@
+###
+# OPENSEARCH_IN_VPC_ONLY tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      OPENSEARCH_IN_VPC_ONLY: SKIP
+
+- name: Scenario a) No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      OPENSEARCH_IN_VPC_ONLY: SKIP
+
+- name: Scenario b) Rule fails when OpenSearchService domain does not have VPCOptions property but rule suppressed, SKIP
+  input:
+    Resources:
+      OpenSearchDomain:
+        Type: AWS::OpenSearchService::Domain
+        Metadata:
+          guard:
+            SuppressedRules:
+              - OPENSEARCH_IN_VPC_ONLY
+        Properties:
+          DomainName: test
+  expectations:
+    rules:
+      OPENSEARCH_IN_VPC_ONLY: SKIP
+
+- name: Scenario c) Rule fails when OpenSearchService domain does not have VPCOptions property, FAIL
+  input:
+    Resources:
+      OpenSearchDomain:
+        Type: AWS::OpenSearchService::Domain
+        Properties:
+          DomainName: test
+  expectations:
+    rules:
+      OPENSEARCH_IN_VPC_ONLY: FAIL
+
+- name: Scenario d) Rule passes when OpenSearchService domain has VPCOptions property, PASS
+  input:
+    Resources:
+      OpenSearchDomain:
+        Type: AWS::OpenSearchService::Domain
+        Properties:
+          DomainName: test
+          VPCOptions:
+            SecurityGroupIds:
+              - sg-12345678
+            SubnetIds:
+              - subnet-12345678
+  expectations:
+    rules:
+      OPENSEARCH_IN_VPC_ONLY: PASS

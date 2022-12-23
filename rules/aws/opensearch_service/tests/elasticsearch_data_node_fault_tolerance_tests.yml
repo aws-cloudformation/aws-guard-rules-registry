@@ -1,0 +1,127 @@
+###
+# ELASTICSEARCH_DATA_NODE_FAULT_TOLERANCE tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      ELASTICSEARCH_DATA_NODE_FAULT_TOLERANCE: SKIP
+
+- name: Scenario a) No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      ELASTICSEARCH_DATA_NODE_FAULT_TOLERANCE: SKIP
+
+- name: Scenario b) Rule suppressed, SKIP
+  input:
+    Resources:
+      ElasticsearchDomain:
+        Type: "AWS::Elasticsearch::Domain"
+        Metadata:
+          guard:
+            SuppressedRules:
+              - "ELASTICSEARCH_DATA_NODE_FAULT_TOLERANCE"
+  expectations:
+    rules:
+      ELASTICSEARCH_DATA_NODE_FAULT_TOLERANCE: SKIP
+
+- name: Scenario c) ElasticSearch Domain resources are missing ElasticsearchClusterConfig.ZoneAwarenessEnabled or ElasticsearchClusterConfig.InstanceCount, FAIL
+  input:
+    Resources:
+      ElasticsearchDomain:
+        Type: "AWS::Elasticsearch::Domain"
+        Properties:
+          ElasticsearchClusterConfig: {}
+  expectations:
+    rules:
+      ELASTICSEARCH_DATA_NODE_FAULT_TOLERANCE: FAIL   
+
+- name: Scenario c) ElasticSearch Domain resources are missing ElasticsearchClusterConfig.ZoneAwarenessEnabled or ElasticsearchClusterConfig.InstanceCount, FAIL
+  input:
+    Resources:
+      ElasticsearchDomain:
+        Type: "AWS::Elasticsearch::Domain"
+        Properties:
+          ElasticsearchClusterConfig:
+            ZoneAwarenessEnabled: true
+  expectations:
+    rules:
+      ELASTICSEARCH_DATA_NODE_FAULT_TOLERANCE: FAIL  
+
+- name: Scenario c) ElasticSearch Domain resources are missing ElasticsearchClusterConfig.ZoneAwarenessEnabled or ElasticsearchClusterConfig.InstanceCount, FAIL
+  input:
+    Resources:
+      ElasticsearchDomain:
+        Type: "AWS::Elasticsearch::Domain"
+        Properties:
+          ElasticsearchClusterConfig:
+            InstanceCount: 3
+  expectations:
+    rules:
+      ELASTICSEARCH_DATA_NODE_FAULT_TOLERANCE: FAIL  
+
+- name: Scenario d) ElasticSearch Domain resources have ElasticsearchClusterConfig.ZoneAwarenessEnabled set to a value other than true, FAIL
+  input:
+    Resources:
+      ElasticsearchDomain:
+        Type: "AWS::Elasticsearch::Domain"
+        Properties:
+          ElasticsearchClusterConfig:
+            ZoneAwarenessEnabled: false
+  expectations:
+    rules:
+      ELASTICSEARCH_DATA_NODE_FAULT_TOLERANCE: FAIL
+
+- name: Scenario d) ElasticSearch Domain resources have ElasticsearchClusterConfig.ZoneAwarenessEnabled set to a value other than true, FAIL
+  input:
+    Resources:
+      ElasticsearchDomain:
+        Type: "AWS::Elasticsearch::Domain"
+        Properties:
+          ElasticsearchClusterConfig:
+            ZoneAwarenessEnabled: "false"
+  expectations:
+    rules:
+      ELASTICSEARCH_DATA_NODE_FAULT_TOLERANCE: FAIL
+
+- name: Scenario e) ElasticSearch Domain resources have ElasticsearchClusterConfig.InstanceCount set to an integer value less than three (<3), FAIL
+  input:
+    Resources:
+      ElasticsearchDomain:
+        Type: "AWS::Elasticsearch::Domain"
+        Properties:
+          ElasticsearchClusterConfig:
+            ZoneAwarenessEnabled: true
+            InstanceCount: 2
+  expectations:
+    rules:
+      ELASTICSEARCH_DATA_NODE_FAULT_TOLERANCE: FAIL
+
+- name: Scenario e) ElasticSearch Domain resources have ElasticsearchClusterConfig.InstanceCount set to an integer value less than three (<3) , FAIL
+  input:
+    Resources:
+      ElasticsearchDomain:
+        Type: "AWS::Elasticsearch::Domain"
+        Properties:
+          ElasticsearchClusterConfig:
+            ZoneAwarenessEnabled: true
+            InstanceCount: 1
+  expectations:
+    rules:
+      ELASTICSEARCH_DATA_NODE_FAULT_TOLERANCE: FAIL
+
+- name: Scenario f) ElasticSearch Domain resources have ElasticsearchClusterConfig.ZoneAwarenessEnabled set to true and ElasticsearchClusterConfig.InstanceCount set to an integer value greater than or equal to three (>= 3), PASS
+  input:
+    Resources:
+      ElasticsearchDomain:
+        Type: "AWS::Elasticsearch::Domain"
+        Properties:
+          ElasticsearchClusterConfig:
+            ZoneAwarenessEnabled: true
+            InstanceCount: 3
+  expectations:
+    rules:
+      ELASTICSEARCH_DATA_NODE_FAULT_TOLERANCE: PASS

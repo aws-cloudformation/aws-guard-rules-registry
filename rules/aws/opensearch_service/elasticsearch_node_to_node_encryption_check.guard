@@ -3,40 +3,39 @@
 ##           Gherkin               ##
 #####################################
 # Rule Identifier:
-#    ELASTICSEARCH_NODE_TO_NODE_ENCRYPTION_CHECK
+#   ELASTICSEARCH_NODE_TO_NODE_ENCRYPTION_CHECK
 #
 # Description:
 #   Elasticsearch domains must enforce Node-to-Node Encryption
 #
 # Reports on:
-#    AWS::Elasticsearch::Domain
+#   AWS::Elasticsearch::Domain
 #
 # Evaluates:
-#    AWS CloudFormation
+#   AWS CloudFormation
 #
 # Rule Parameters:
-#    NA
+#   NA
 #
 # Scenarios:
 # a) SKIP: when there is no elasticsearch domain present
-# b) FAIL: when elasticsearch domain has Node-to-Node encryption set to false
-# c) PASS: when elasticsearch domain has Node-to-Node encryption set to true
-# d) FAIL: when elasticsearch domain has Node-to-Node encryption property missing
-# e) SKIP: when metada has rule suppression for ELASTICSEARCH_NODE_TO_NODE_ENCRYPTION_CHECK
+# b) SKIP: when metada has rule suppression for ELASTICSEARCH_NODE_TO_NODE_ENCRYPTION_CHECK
+# c) FAIL: when Elasticsearch domain has Node-to-Node encryption property missing
+# d) FAIL: when Elasticsearch domain has Node-to-Node encryption set to false
+# e) PASS: when Elasticsearch domain has Node-to-Node encryption set to true
 
 #
 # Select all elasticsearch domains from incoming template
 #
-
-let elasticsearch_domains_node2node_encrpytion = Resources.*[ Type == 'AWS::Elasticsearch::Domain'
+let elasticsearch_node_to_node_encryption_check = Resources.*[ Type == "AWS::Elasticsearch::Domain"
   Metadata.guard.SuppressedRules not exists or
   Metadata.guard.SuppressedRules.* != "ELASTICSEARCH_NODE_TO_NODE_ENCRYPTION_CHECK"
 ]
 
-rule ELASTICSEARCH_NODE_TO_NODE_ENCRYPTION_CHECK when %elasticsearch_domains_node2node_encrpytion !empty {
-  %elasticsearch_domains_node2node_encrpytion.Properties.NodeToNodeEncryptionOptions.Enabled == true
-  <<
-    Violation: Elasticsearch domains must enforce Node-to-Node Encryption.
-    Fix: Set the NodeToNodeEncryptionOptions.Enabled parameter to true.
-  >>
+rule ELASTICSEARCH_NODE_TO_NODE_ENCRYPTION_CHECK when %elasticsearch_node_to_node_encryption_check !empty {
+    %elasticsearch_node_to_node_encryption_check.Properties.NodeToNodeEncryptionOptions.Enabled == true
+        <<
+            Violation: Elasticsearch domains must enforce Node-to-Node Encryption.
+            Fix: Set the NodeToNodeEncryptionOptions.Enabled parameter to true.
+        >>
 }

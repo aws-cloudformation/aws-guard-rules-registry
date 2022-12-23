@@ -1,0 +1,40 @@
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#   OPENSEARCH_IN_VPC_ONLY
+#
+# Description:
+#   OpenSearchService domains must be in a VPC
+#
+# Reports on:
+#   AWS::OpenSearchService::Domain
+#
+# Evaluates:
+#   AWS CloudFormation
+#
+# Rule Parameters:
+#   NA
+#
+# Scenarios:
+# a) SKIP: when there is no OpenSearchService domain present
+# b) SKIP: when metadata has rule suppression for OPENSEARCH_IN_VPC_ONLY
+# c) PASS: when OpenSearchService domain has VPCOptions or Endpoint properties
+# d) FAIL: when OpenSearchService domain does not have VPCOptions or Endpoint properties
+
+#
+# Select all elasticsearch domains from incoming template
+#
+let opensearch_in_vpc_only = Resources.*[ Type == "AWS::OpenSearchService::Domain"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "OPENSEARCH_IN_VPC_ONLY"
+]
+
+rule OPENSEARCH_IN_VPC_ONLY when %opensearch_in_vpc_only !empty {
+    %opensearch_in_vpc_only.Properties.VPCOptions exists
+        <<
+            Violation: OpenSearchService domains must be in a VPC.
+            Fix: Provide VPCOptions object to enable opensearch to function in a VPC.
+        >>
+}

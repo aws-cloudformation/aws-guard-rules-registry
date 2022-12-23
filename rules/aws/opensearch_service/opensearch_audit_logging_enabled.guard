@@ -1,0 +1,63 @@
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#   OPENSEARCH_AUDIT_LOGGING_ENABLED
+#
+# Description:
+#   OpenSearchService domains are are configured to send audit logs to Amazon CloudWatch Logs
+#
+# Reports on:
+#   AWS::OpenSearchService::Domain
+#
+# Evaluates:
+#   AWS CloudFormation
+#
+# Rule Parameters:
+#   NA
+#
+# Scenarios:
+# a) SKIP: when there are no OpenSearchService Domain Resources 
+# b) SKIP: when metadata has rule suppression for OPENSEARCH_AUDIT_LOGGING_ENABLED
+# c) FAIL: when OpenSearchService Domain Resources are missing LogPublishingOptions.AUDIT_LOGS.Enabled or LogPublishingOptions.AUDIT_LOGS.CloudWatchLogsLogGroupArn
+# d) FAIL: when OpenSearchService Domain Resources have LogPublishingOptions.AUDIT_LOGS.Enabled set to a value other than true 
+# e) FAIL: when OpenSearchService Domain Resources have LogPublishingOptions.AUDIT_LOGS.CloudWatchLogsLogGroupArn set to a value other than a string or struct  
+# f) PASS: when OpenSearchService Domain Resources have LogPublishingOptions.AUDIT_LOGS.Enabled set to true and 
+#          LogPublishingOptions.AUDIT_LOGS.CloudWatchLogsLogGroupArn set to a string or struct value  
+
+#
+# Select all OpenSearchService domains from incoming template
+#
+let opensearch_audit_logging_enabled = Resources.*[ Type == "AWS::OpenSearchService::Domain"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "OPENSEARCH_AUDIT_LOGGING_ENABLED"
+]
+
+rule OPENSEARCH_AUDIT_LOGGING_ENABLED when %opensearch_audit_logging_enabled !empty {
+    %opensearch_audit_logging_enabled.Properties { 
+        LogPublishingOptions exists
+        LogPublishingOptions is_struct
+
+        LogPublishingOptions {
+            AUDIT_LOGS exists
+            AUDIT_LOGS is_struct
+
+            AUDIT_LOGS {
+                Enabled exists
+                Enabled == true
+                    <<
+                        Violation: OpenSearchService domains are are configured to send audit logs to Amazon CloudWatch Logs
+                        Fix: In LogPublishingOptions.AUDIT_LOGS, set Enabled to true and CloudWatchLogsLogGroupArn to the ARN of a Amazon CloudWatch Logs log group.
+                    >>
+                CloudWatchLogsLogGroupArn exists
+                CloudWatchLogsLogGroupArn is_string or
+                CloudWatchLogsLogGroupArn is_struct
+                    <<
+                        Violation: OpenSearchService domains are are configured to send audit logs to Amazon CloudWatch Logs
+                        Fix: In LogPublishingOptions.AUDIT_LOGS, set Enabled to true and CloudWatchLogsLogGroupArn to the ARN of a Amazon CloudWatch Logs log group.
+                    >>
+            }
+        }
+    }
+}

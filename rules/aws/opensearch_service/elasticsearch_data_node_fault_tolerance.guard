@@ -1,0 +1,57 @@
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#   ELASTICSEARCH_DATA_NODE_FAULT_TOLERANCE
+#
+# Description:
+#   Elasticsearch domains are configured with at least three data nodes and zone awareness enabled.
+#
+# Reports on:
+#   AWS::Elasticsearch::Domain
+#
+# Evaluates:
+#   AWS CloudFormation
+#
+# Rule Parameters:
+#   NA
+#
+# Scenarios:
+# a) SKIP: when there are no ElasticSearch Domain Resources 
+# b) SKIP: when metadata has rule suppression for ELASTICSEARCH_DATA_NODE_FAULT_TOLERANCE
+# c) FAIL: when ElasticSearch Domain Resources are missing ElasticsearchClusterConfig.ZoneAwarenessEnabled or ElasticsearchClusterConfig.InstanceCount
+# d) FAIL: when ElasticSearch Domain Resources have ElasticsearchClusterConfig.ZoneAwarenessEnabled set to a value other than true 
+# e) FAIL: when ElasticSearch Domain Resources have ElasticsearchClusterConfig.InstanceCount set to an integer value less than three (<3) 
+# f) PASS: when ElasticSearch Domain Resources have ElasticsearchClusterConfig.ZoneAwarenessEnabled set to true and 
+#          ElasticsearchClusterConfig.InstanceCount set to an integer value greater than or equal to three (>= 3) 
+
+#
+# Select all ElasticSearch domains from incoming template
+#
+let elasticsearch_data_node_fault_tolerance = Resources.*[ Type == "AWS::Elasticsearch::Domain"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "ELASTICSEARCH_DATA_NODE_FAULT_TOLERANCE"
+]
+
+rule ELASTICSEARCH_DATA_NODE_FAULT_TOLERANCE when %elasticsearch_data_node_fault_tolerance !empty {
+    %elasticsearch_data_node_fault_tolerance.Properties { 
+        ElasticsearchClusterConfig exists
+        ElasticsearchClusterConfig is_struct
+
+        ElasticsearchClusterConfig {
+            ZoneAwarenessEnabled exists
+            ZoneAwarenessEnabled == true
+                <<
+                    Violation: Elasticsearch domains are configured with at least three data nodes and zone awareness enabled
+                    Fix: In ElasticsearchClusterConfig, set ZoneAwarenessEnabled to true and InstanceCount to an integer value greater than 3.
+                >>
+            InstanceCount exists
+            InstanceCount >= 3
+                <<
+                    Violation: Elasticsearch domains are configured with at least three data nodes and zone awareness enabled
+                    Fix: In ElasticsearchClusterConfig, set ZoneAwarenessEnabled to true and InstanceCount to an integer value greater than 3.
+                >>
+        }
+    }
+}

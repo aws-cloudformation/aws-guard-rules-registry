@@ -1,0 +1,126 @@
+###
+# OPENSEARCH_HTTPS_REQUIRED tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      OPENSEARCH_HTTPS_REQUIRED: SKIP
+
+- name: Scenario a) No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      OPENSEARCH_HTTPS_REQUIRED: SKIP
+
+- name: Scenario b) Rule suppressed, SKIP
+  input:
+    Resources:
+      OpenSearchDomain:
+        Type: "AWS::OpenSearchService::Domain"
+        Metadata:
+          guard:
+            SuppressedRules:
+              - "OPENSEARCH_HTTPS_REQUIRED"
+  expectations:
+    rules:
+      OPENSEARCH_HTTPS_REQUIRED: SKIP
+
+- name: Scenario c) OpenSearchService Domain resources are missing DomainEndpointOptions.EnforceHTTPS, FAIL
+  input:
+    Resources:
+      OpenSearchDomain:
+        Type: "AWS::OpenSearchService::Domain"
+        Properties: {}
+  expectations:
+    rules:
+      OPENSEARCH_HTTPS_REQUIRED: FAIL   
+
+- name: Scenario c) OpenSearchService Domain resources are missing DomainEndpointOptions.EnforceHTTPS, FAIL
+  input:
+    Resources:
+      OpenSearchDomain:
+        Type: "AWS::OpenSearchService::Domain"
+        Properties: 
+          DomainEndpointOptions: {}
+  expectations:
+    rules:
+      OPENSEARCH_HTTPS_REQUIRED: FAIL   
+
+- name: Scenario c) OpenSearchService Domain resources are missing DomainEndpointOptions.EnforceHTTPS, FAIL
+  input:
+    Resources:
+      OpenSearchDomain:
+        Type: "AWS::OpenSearchService::Domain"
+        Properties:
+          DomainEndpointOptions:
+            TLSSecurityPolicy: 'Policy-Min-TLS-1-2-2019-07'
+  expectations:
+    rules:
+      OPENSEARCH_HTTPS_REQUIRED: FAIL   
+
+- name: Scenario d) OpenSearchService Domain resources are missing DomainEndpointOptions.TLSSecurityPolicy, FAIL
+  input:
+    Resources:
+      OpenSearchDomain:
+        Type: "AWS::OpenSearchService::Domain"
+        Properties:
+          DomainEndpointOptions:
+            EnforceHTTPS: true
+  expectations:
+    rules:
+      OPENSEARCH_HTTPS_REQUIRED: FAIL
+
+- name: Scenario e) OpenSearchService Domain resources have DomainEndpointOptions.EnforceHTTPS set to a value other than true, FAIL
+  input:
+    Resources:
+      OpenSearchDomain:
+        Type: "AWS::OpenSearchService::Domain"
+        Properties:
+          DomainEndpointOptions:
+            EnforceHTTPS: false
+            TLSSecurityPolicy: 'Policy-Min-TLS-1-2-2019-07'
+  expectations:
+    rules:
+      OPENSEARCH_HTTPS_REQUIRED: FAIL
+
+- name: Scenario e) OpenSearchService Domain resources have DomainEndpointOptions.EnforceHTTPS set to a value other than true, FAIL
+  input:
+    Resources:
+      OpenSearchDomain:
+        Type: "AWS::OpenSearchService::Domain"
+        Properties:
+          DomainEndpointOptions:
+            EnforceHTTPS: "false"
+            TLSSecurityPolicy: 'Policy-Min-TLS-1-2-2019-07'
+  expectations:
+    rules:
+      OPENSEARCH_HTTPS_REQUIRED: FAIL
+
+- name: Scenario f) OpenSearchService Domain resources have DomainEndpointOptions.TLSSecurityPolicy set to a value other than 'Policy-Min-TLS-1-2-2019-07', FAIL
+  input:
+    Resources:
+      OpenSearchDomain:
+        Type: "AWS::OpenSearchService::Domain"
+        Properties:
+          DomainEndpointOptions:
+            EnforceHTTPS: true
+            TLSSecurityPolicy: 'Policy-Min-TLS-1-0-2019-07'
+  expectations:
+    rules:
+      OPENSEARCH_HTTPS_REQUIRED: FAIL
+
+- name: Scenario g) OpenSearchService Domain resources have DomainEndpointOptions.EnforceHTTPS set to true and DomainEndpointOptions.TLSSecurityPolicy set to 'Policy-Min-TLS-1-2-2019-07', PASS
+  input:
+    Resources:
+      OpenSearchDomain:
+        Type: "AWS::OpenSearchService::Domain"
+        Properties:
+          DomainEndpointOptions:
+            EnforceHTTPS: true
+            TLSSecurityPolicy: 'Policy-Min-TLS-1-2-2019-07'
+  expectations:
+    rules:
+      OPENSEARCH_HTTPS_REQUIRED: PASS

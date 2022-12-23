@@ -1,0 +1,41 @@
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#   OPENSEARCH_NODE_TO_NODE_ENCRYPTION_CHECK
+#
+# Description:
+#   OpenSearchService domains must enforce Node-to-Node Encryption
+#
+# Reports on:
+#   AWS::OpenSearchService::Domain
+#
+# Evaluates:
+#   AWS CloudFormation
+#
+# Rule Parameters:
+#   NA
+#
+# Scenarios:
+# a) SKIP: when there is no elasticsearch domain present
+# b) SKIP: when metada has rule suppression for OPENSEARCH_NODE_TO_NODE_ENCRYPTION_CHECK
+# c) FAIL: when OpenSearchService domain has Node-to-Node encryption property missing
+# d) FAIL: when OpenSearchService domain has Node-to-Node encryption set to false
+# e) PASS: when OpenSearchService domain has Node-to-Node encryption set to true
+
+#
+# Select all elasticsearch domains from incoming template
+#
+let opensearch_node_to_node_encryption_check = Resources.*[ Type == "AWS::OpenSearchService::Domain"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "OPENSEARCH_NODE_TO_NODE_ENCRYPTION_CHECK"
+]
+
+rule OPENSEARCH_NODE_TO_NODE_ENCRYPTION_CHECK when %opensearch_node_to_node_encryption_check !empty {
+    %opensearch_node_to_node_encryption_check.Properties.NodeToNodeEncryptionOptions.Enabled == true
+        <<
+            Violation: OpenSearchService domains must enforce Node-to-Node Encryption.
+            Fix: Set the NodeToNodeEncryptionOptions.Enabled parameter to true.
+        >>
+}

@@ -1,0 +1,59 @@
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#   ELASTICSEARCH_PRIMARY_NODE_FAULT_TOLERANCE
+#
+# Description:
+#   Elasticsearch domains are configured with at least three dedicated primary nodes
+#
+# Reports on:
+#   AWS::Elasticsearch::Domain
+#
+# Evaluates:
+#   AWS CloudFormation
+#
+# Rule Parameters:
+#   NA
+#
+# Scenarios:
+# a) SKIP: when there are no ElasticSearch Domain Resources 
+# b) SKIP: when metadata has rule suppression for ELASTICSEARCH_PRIMARY_NODE_FAULT_TOLERANCE
+# c) FAIL: when ElasticSearch Domain Resources are missing ElasticsearchClusterConfig.DedicatedMasterEnabled
+# d) FAIL: when ElasticSearch Domain Resources have ElasticsearchClusterConfig.DedicatedMasterEnabled set to a value other than true 
+# e) FAIL: when ElasticSearch Domain Resources have ElasticsearchClusterConfig.DedicatedMasterCount set to an integer value less than three (<3) 
+# f) PASS: when ElasticSearch Domain Resources have ElasticsearchClusterConfig.DedicatedMasterEnabled set to true and 
+#          ElasticsearchClusterConfig.DedicatedMasterCount has not been provided
+# g) PASS: when ElasticSearch Domain Resources have ElasticsearchClusterConfig.DedicatedMasterEnabled set to true and 
+#          ElasticsearchClusterConfig.DedicatedMasterCount set to an integer value greater than or equal to three (>= 3) 
+
+#
+# Select all ElasticSearch domains from incoming template
+#
+let elasticsearch_primary_node_fault_tolerance = Resources.*[ Type == "AWS::Elasticsearch::Domain"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "ELASTICSEARCH_PRIMARY_NODE_FAULT_TOLERANCE"
+]
+
+rule ELASTICSEARCH_PRIMARY_NODE_FAULT_TOLERANCE when %elasticsearch_primary_node_fault_tolerance !empty {
+    %elasticsearch_primary_node_fault_tolerance.Properties { 
+        ElasticsearchClusterConfig exists
+        ElasticsearchClusterConfig is_struct
+
+        ElasticsearchClusterConfig {
+            DedicatedMasterEnabled exists
+            DedicatedMasterEnabled == true
+                <<
+                    Violation: Elasticsearch domains are configured with at least three dedicated primary nodes
+                    Fix: In ElasticsearchClusterConfig, set DedicatedMasterEnabled to true and DedicatedMasterCount to an integer value greater than 3.
+                >>
+            DedicatedMasterCount not exists or
+            DedicatedMasterCount >= 3
+                <<
+                    Violation: Elasticsearch domains are configured with at least three dedicated primary nodes
+                    Fix: In ElasticsearchClusterConfig, set DedicatedMasterEnabled to true and DedicatedMasterCount to an integer value greater than 3.
+                >>
+        }
+    }
+}

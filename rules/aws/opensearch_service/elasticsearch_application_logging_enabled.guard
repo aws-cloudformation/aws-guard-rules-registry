@@ -1,0 +1,63 @@
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#   ELASTICSEARCH_APPLICATION_LOGGING_ENABLED
+#
+# Description:
+#   Elasticsearch domains are are configured to send application logs to Amazon CloudWatch Logs
+#
+# Reports on:
+#   AWS::Elasticsearch::Domain
+#
+# Evaluates:
+#   AWS CloudFormation
+#
+# Rule Parameters:
+#   NA
+#
+# Scenarios:
+# a) SKIP: when there are no ElasticSearch Domain Resources 
+# b) SKIP: when metadata has rule suppression for ELASTICSEARCH_APPLICATION_LOGGING_ENABLED
+# c) FAIL: when ElasticSearch Domain Resources are missing LogPublishingOptions.ES_APPLICATION_LOGS.Enabled or LogPublishingOptions.ES_APPLICATION_LOGS.CloudWatchLogsLogGroupArn
+# d) FAIL: when ElasticSearch Domain Resources have LogPublishingOptions.ES_APPLICATION_LOGS.Enabled set to a value other than true 
+# e) FAIL: when ElasticSearch Domain Resources have LogPublishingOptions.ES_APPLICATION_LOGS.CloudWatchLogsLogGroupArn set to a value other than a string or struct  
+# f) PASS: when ElasticSearch Domain Resources have LogPublishingOptions.ES_APPLICATION_LOGS.Enabled set to true and 
+#          LogPublishingOptions.ES_APPLICATION_LOGS.CloudWatchLogsLogGroupArn set to a string or struct value  
+
+#
+# Select all ElasticSearch domains from incoming template
+#
+let elasticsearch_audit_logging_enabled = Resources.*[ Type == "AWS::Elasticsearch::Domain"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "ELASTICSEARCH_APPLICATION_LOGGING_ENABLED"
+]
+
+rule ELASTICSEARCH_APPLICATION_LOGGING_ENABLED when %elasticsearch_audit_logging_enabled !empty {
+    %elasticsearch_audit_logging_enabled.Properties { 
+        LogPublishingOptions exists
+        LogPublishingOptions is_struct
+
+        LogPublishingOptions {
+            ES_APPLICATION_LOGS exists
+            ES_APPLICATION_LOGS is_struct
+
+            ES_APPLICATION_LOGS {
+                Enabled exists
+                Enabled == true
+                    <<
+                        Violation: Elasticsearch domains are are configured to send application logs to Amazon CloudWatch Logs
+                        Fix: In LogPublishingOptions.ES_APPLICATION_LOGS, set Enabled to true and CloudWatchLogsLogGroupArn to the ARN of a Amazon CloudWatch Logs log group.
+                    >>
+                CloudWatchLogsLogGroupArn exists
+                CloudWatchLogsLogGroupArn is_string or
+                CloudWatchLogsLogGroupArn is_struct
+                    <<
+                        Violation: Elasticsearch domains are are configured to send application logs to Amazon CloudWatch Logs
+                        Fix: In LogPublishingOptions.ES_APPLICATION_LOGS, set Enabled to true and CloudWatchLogsLogGroupArn to the ARN of a Amazon CloudWatch Logs log group.
+                    >>
+            }
+        }
+    }
+}

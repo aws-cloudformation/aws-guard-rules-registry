@@ -1,0 +1,115 @@
+###
+# ELASTICSEARCH_PRIMARY_NODE_FAULT_TOLERANCE tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      ELASTICSEARCH_PRIMARY_NODE_FAULT_TOLERANCE: SKIP
+
+- name: Scenario a) No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      ELASTICSEARCH_PRIMARY_NODE_FAULT_TOLERANCE: SKIP
+
+- name: Scenario b) Rule suppressed, SKIP
+  input:
+    Resources:
+      ElasticsearchDomain:
+        Type: "AWS::Elasticsearch::Domain"
+        Metadata:
+          guard:
+            SuppressedRules:
+              - "ELASTICSEARCH_PRIMARY_NODE_FAULT_TOLERANCE"
+  expectations:
+    rules:
+      ELASTICSEARCH_PRIMARY_NODE_FAULT_TOLERANCE: SKIP
+
+- name: Scenario c) ElasticSearch Domain resources are missing ElasticsearchClusterConfig.DedicatedMasterEnabled, FAIL
+  input:
+    Resources:
+      ElasticsearchDomain:
+        Type: "AWS::Elasticsearch::Domain"
+        Properties:
+          ElasticsearchClusterConfig: {}
+  expectations:
+    rules:
+      ELASTICSEARCH_PRIMARY_NODE_FAULT_TOLERANCE: FAIL   
+
+- name: Scenario d) ElasticSearch Domain resources have ElasticsearchClusterConfig.DedicatedMasterEnabled set to a value other than true, FAIL
+  input:
+    Resources:
+      ElasticsearchDomain:
+        Type: "AWS::Elasticsearch::Domain"
+        Properties:
+          ElasticsearchClusterConfig:
+            DedicatedMasterEnabled: false
+  expectations:
+    rules:
+      ELASTICSEARCH_PRIMARY_NODE_FAULT_TOLERANCE: FAIL
+
+- name: Scenario d) ElasticSearch Domain resources have ElasticsearchClusterConfig.DedicatedMasterEnabled set to a value other than true, FAIL
+  input:
+    Resources:
+      ElasticsearchDomain:
+        Type: "AWS::Elasticsearch::Domain"
+        Properties:
+          ElasticsearchClusterConfig:
+            DedicatedMasterEnabled: "false"
+  expectations:
+    rules:
+      ELASTICSEARCH_PRIMARY_NODE_FAULT_TOLERANCE: FAIL
+
+- name: Scenario e) ElasticSearch Domain resources have ElasticsearchClusterConfig.DedicatedMasterCount set to an integer value less than three (< 3), FAIL
+  input:
+    Resources:
+      ElasticsearchDomain:
+        Type: "AWS::Elasticsearch::Domain"
+        Properties:
+          ElasticsearchClusterConfig:
+            DedicatedMasterEnabled: true
+            DedicatedMasterCount: 2
+  expectations:
+    rules:
+      ELASTICSEARCH_PRIMARY_NODE_FAULT_TOLERANCE: FAIL
+
+- name: Scenario e) ElasticSearch Domain resources have ElasticsearchClusterConfig.DedicatedMasterCount set to an integer value less than three (< 3), FAIL
+  input:
+    Resources:
+      ElasticsearchDomain:
+        Type: "AWS::Elasticsearch::Domain"
+        Properties:
+          ElasticsearchClusterConfig:
+            DedicatedMasterEnabled: true
+            DedicatedMasterCount: 1
+  expectations:
+    rules:
+      ELASTICSEARCH_PRIMARY_NODE_FAULT_TOLERANCE: FAIL
+
+- name: Scenario f) ElasticSearch Domain resources have ElasticsearchClusterConfig.DedicatedMasterEnabled set to true and  ElasticsearchClusterConfig.DedicatedMasterCount has not been provided, PASS
+  input:
+    Resources:
+      ElasticsearchDomain:
+        Type: "AWS::Elasticsearch::Domain"
+        Properties:
+          ElasticsearchClusterConfig:
+            DedicatedMasterEnabled: true
+  expectations:
+    rules:
+      ELASTICSEARCH_PRIMARY_NODE_FAULT_TOLERANCE: PASS
+
+- name: Scenario g) ElasticSearch Domain resources have ElasticsearchClusterConfig.DedicatedMasterEnabled set to true and ElasticsearchClusterConfig.DedicatedMasterCount set to an integer value greater than or equal to three (>= 3), PASS
+  input:
+    Resources:
+      ElasticsearchDomain:
+        Type: "AWS::Elasticsearch::Domain"
+        Properties:
+          ElasticsearchClusterConfig:
+            DedicatedMasterEnabled: true
+            DedicatedMasterCount: 3
+  expectations:
+    rules:
+      ELASTICSEARCH_PRIMARY_NODE_FAULT_TOLERANCE: PASS

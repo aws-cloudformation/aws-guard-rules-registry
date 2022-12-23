@@ -1,0 +1,126 @@
+###
+# ELASTICSEARCH_HTTPS_REQUIRED tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      ELASTICSEARCH_HTTPS_REQUIRED: SKIP
+
+- name: Scenario a) No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      ELASTICSEARCH_HTTPS_REQUIRED: SKIP
+
+- name: Scenario b) Rule suppressed, SKIP
+  input:
+    Resources:
+      ElasticsearchDomain:
+        Type: "AWS::Elasticsearch::Domain"
+        Metadata:
+          guard:
+            SuppressedRules:
+              - "ELASTICSEARCH_HTTPS_REQUIRED"
+  expectations:
+    rules:
+      ELASTICSEARCH_HTTPS_REQUIRED: SKIP
+
+- name: Scenario c) ElasticSearch Domain resources are missing DomainEndpointOptions.EnforceHTTPS, FAIL
+  input:
+    Resources:
+      ElasticsearchDomain:
+        Type: "AWS::Elasticsearch::Domain"
+        Properties: {}
+  expectations:
+    rules:
+      ELASTICSEARCH_HTTPS_REQUIRED: FAIL   
+
+- name: Scenario c) ElasticSearch Domain resources are missing DomainEndpointOptions.EnforceHTTPS, FAIL
+  input:
+    Resources:
+      ElasticsearchDomain:
+        Type: "AWS::Elasticsearch::Domain"
+        Properties: 
+          DomainEndpointOptions: {}
+  expectations:
+    rules:
+      ELASTICSEARCH_HTTPS_REQUIRED: FAIL   
+
+- name: Scenario c) ElasticSearch Domain resources are missing DomainEndpointOptions.EnforceHTTPS, FAIL
+  input:
+    Resources:
+      ElasticsearchDomain:
+        Type: "AWS::Elasticsearch::Domain"
+        Properties:
+          DomainEndpointOptions:
+            TLSSecurityPolicy: 'Policy-Min-TLS-1-2-2019-07'
+  expectations:
+    rules:
+      ELASTICSEARCH_HTTPS_REQUIRED: FAIL   
+
+- name: Scenario d) ElasticSearch Domain resources are missing DomainEndpointOptions.TLSSecurityPolicy, FAIL
+  input:
+    Resources:
+      ElasticsearchDomain:
+        Type: "AWS::Elasticsearch::Domain"
+        Properties:
+          DomainEndpointOptions:
+            EnforceHTTPS: true
+  expectations:
+    rules:
+      ELASTICSEARCH_HTTPS_REQUIRED: FAIL
+
+- name: Scenario e) ElasticSearch Domain resources have DomainEndpointOptions.EnforceHTTPS set to a value other than true, FAIL
+  input:
+    Resources:
+      ElasticsearchDomain:
+        Type: "AWS::Elasticsearch::Domain"
+        Properties:
+          DomainEndpointOptions:
+            EnforceHTTPS: false
+            TLSSecurityPolicy: 'Policy-Min-TLS-1-2-2019-07'
+  expectations:
+    rules:
+      ELASTICSEARCH_HTTPS_REQUIRED: FAIL
+
+- name: Scenario e) ElasticSearch Domain resources have DomainEndpointOptions.EnforceHTTPS set to a value other than true, FAIL
+  input:
+    Resources:
+      ElasticsearchDomain:
+        Type: "AWS::Elasticsearch::Domain"
+        Properties:
+          DomainEndpointOptions:
+            EnforceHTTPS: "false"
+            TLSSecurityPolicy: 'Policy-Min-TLS-1-2-2019-07'
+  expectations:
+    rules:
+      ELASTICSEARCH_HTTPS_REQUIRED: FAIL
+
+- name: Scenario f) ElasticSearch Domain resources have DomainEndpointOptions.TLSSecurityPolicy set to a value other than 'Policy-Min-TLS-1-2-2019-07', FAIL
+  input:
+    Resources:
+      ElasticsearchDomain:
+        Type: "AWS::Elasticsearch::Domain"
+        Properties:
+          DomainEndpointOptions:
+            EnforceHTTPS: true
+            TLSSecurityPolicy: 'Policy-Min-TLS-1-0-2019-07'
+  expectations:
+    rules:
+      ELASTICSEARCH_HTTPS_REQUIRED: FAIL
+
+- name: Scenario g) ElasticSearch Domain resources have DomainEndpointOptions.EnforceHTTPS set to true and DomainEndpointOptions.TLSSecurityPolicy set to 'Policy-Min-TLS-1-2-2019-07', PASS
+  input:
+    Resources:
+      ElasticsearchDomain:
+        Type: "AWS::Elasticsearch::Domain"
+        Properties:
+          DomainEndpointOptions:
+            EnforceHTTPS: true
+            TLSSecurityPolicy: 'Policy-Min-TLS-1-2-2019-07'
+  expectations:
+    rules:
+      ELASTICSEARCH_HTTPS_REQUIRED: PASS

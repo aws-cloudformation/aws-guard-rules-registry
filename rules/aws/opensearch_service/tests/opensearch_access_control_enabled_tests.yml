@@ -1,0 +1,77 @@
+###
+# OPENSEARCH_ACCESS_CONTROL_ENABLED tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      OPENSEARCH_ACCESS_CONTROL_ENABLED: SKIP
+
+- name: Scenario a) No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      OPENSEARCH_ACCESS_CONTROL_ENABLED: SKIP
+
+- name: Scenario b) Rule fails when OpenSearchService domain has advanced security options missing but rule suppressed, SKIP
+  input:
+    Resources:
+      OpenSearchDomain:
+        Type: AWS::OpenSearchService::Domain
+        Metadata:
+          guard:
+            SuppressedRules:
+              - OPENSEARCH_ACCESS_CONTROL_ENABLED
+        Properties:
+          DomainName: test
+  expectations:
+    rules:
+      OPENSEARCH_ACCESS_CONTROL_ENABLED: SKIP
+
+- name: Scenario c) OpenSearchService domain resources are missing AdvancedSecurityOptions.Enabled, FAIL
+  input:
+    Resources:
+      OpenSearchDomain:
+        Type: AWS::OpenSearchService::Domain
+        Properties: {}
+  expectations:
+    rules:
+      OPENSEARCH_ACCESS_CONTROL_ENABLED: FAIL
+      
+- name: Scenario d) OpenSearchService domain resources have AdvancedSecurityOptions.Enabled set to a value other than true, FAIL
+  input:
+    Resources:
+      OpenSearchDomain:
+        Type: AWS::OpenSearchService::Domain
+        Properties:
+          AdvancedSecurityOptions:
+            Enabled: false
+  expectations:
+    rules:
+      OPENSEARCH_ACCESS_CONTROL_ENABLED: FAIL
+
+- name: Scenario d) OpenSearchService domain resources have AdvancedSecurityOptions.Enabled set to a value other than true, FAIL
+  input:
+    Resources:
+      OpenSearchDomain:
+        Type: AWS::OpenSearchService::Domain
+        Properties:
+          AdvancedSecurityOptions:
+            Enabled: "false"
+  expectations:
+    rules:
+      OPENSEARCH_ACCESS_CONTROL_ENABLED: FAIL
+
+- name: Scenario e) OpenSearchService domain resources have AdvancedSecurityOptions.Enabled set to true, PASS
+  input:
+    Resources:
+      OpenSearchDomain:
+        Type: AWS::OpenSearchService::Domain
+        Properties:
+          AdvancedSecurityOptions:
+            Enabled: true
+  expectations:
+    rules:
+      OPENSEARCH_ACCESS_CONTROL_ENABLED: PASS
