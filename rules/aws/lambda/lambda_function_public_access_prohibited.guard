@@ -40,7 +40,7 @@ rule LAMBDA_FUNCTION_PUBLIC_ACCESS_PROHIBITED when %aws_lambda_permissions_publi
   %aws_lambda_permissions_public_access_prohibited {
     Type == 'AWS::Lambda::Permission'
     Properties {
-      Principal in [ /^\d{12}$/, "AWS::AccountId" ]
+      Principal in [ /^\d{12}$/, {"Ref":"AWS::AccountId"} ]
       OR Principal > 0
     }
   }
@@ -82,7 +82,7 @@ rule LAMBDA_FUNCTION_PUBLIC_ACCESS_PROHIBITED when %aws_lambda_permissions_publi
     Type == 'AWS::Lambda::LayerVersionPermission'
     Properties {
       OrganizationId !empty
-      OR Principal in [ /^\d{12}$/, "AWS::AccountId" ]
+      OR Principal in [ /^\d{12}$/, {"Ref":"AWS::AccountId"} ]
       OR Principal > 0
       <<
         Violation: All Lambda permission policies attached to Lambda resources must prohibit public access.
