@@ -90,7 +90,7 @@ AWS Guard Rules registry contains prebuilt managed rule sets compiled from rule 
 | Monetary Authority of Singapore (MAS) Technology Risk Management Guidelines (TRMG) January 2021 | mas-trmg | [Link](/mappings/rule_set_mas_trmg.json) |
 | National Bank of Cambodia’s (NBC) Technology Risk Management (TRM) Guidelines framework | nbc-trmg | [Link](/mappings/rule_set_nbc_trmg.json) |
 | UK National Cyber Security Centre (NCSC) Cyber Assessment Framework (CAF) controls | ncsc-cafv3 | [Link](/mappings/rule_set_ncsc_cafv3.json) |
-| K National Cyber Security Centre (NCSC) Cloud Security Principles | ncsc | [Link](/mappings/rule_set_ncsc.json) |
+| UK National Cyber Security Centre (NCSC) Cloud Security Principles | ncsc | [Link](/mappings/rule_set_ncsc.json) |
 | North American Electric Reliability Corporation Critical Infrastructure Protection Standards (NERC CIP) for BES Cyber System Information (BCSI), CIP-004-7 & CIP-011-3  | nerc | [Link](/mappings/rule_set_nerc.json) |
 | NIST 1800-25 | nist-1800-25 | [Link](/mappings/rule_set_nist_1800_25.json) |
 | NIST 800-171 | nist-800-171 | [Link](/mappings/rule_set_nist_800_171.json) |
