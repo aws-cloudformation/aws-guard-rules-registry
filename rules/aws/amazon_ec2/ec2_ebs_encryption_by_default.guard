@@ -33,7 +33,7 @@ let ec2_ebs_volumes_encrypted_by_default = Resources.*[ Type == 'AWS::EC2::Volum
 rule EC2_EBS_ENCRYPTION_BY_DEFAULT when %ec2_ebs_volumes_encrypted_by_default !empty {
     %ec2_ebs_volumes_encrypted_by_default.Properties.Encrypted == true 
 		<<
-			Violation: All EBS Volumes should be encryped 
+			Violation: All EBS Volumes should be encrypted 
 			Fix: Set Encrypted property to true
 		>>
 }
