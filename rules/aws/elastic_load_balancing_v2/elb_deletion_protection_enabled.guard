@@ -42,7 +42,8 @@ rule ELB_DELETION_PROTECTION_ENABLED when %elb_deletion_protection_enabled_resou
         
         some LoadBalancerAttributes[*] {
             Key == "deletion_protection.enabled"
-            Value == true
+            Value == true OR
+            Value == "true"
             <<
                 Violation: AWS Application Load Balancers (ALB) must be configured with deletion protection.
                 Fix: Set the 'LoadBalancerAttribute' 'deletion_protection.enabled' to 'true'
