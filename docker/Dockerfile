@@ -1,5 +1,5 @@
 
-FROM ubuntu:22.10
+FROM ubuntu:latest
 RUN apt-get update && \
   apt-get install -y \
   curl && \
