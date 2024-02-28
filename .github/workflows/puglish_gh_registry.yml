@@ -15,7 +15,7 @@ jobs:
 
       - run: |
           chmod +x ./mappings/build.py
-          python3 ./mappings/build.py -r $VERSION
+          python3 ./mappings/build.py -r ${{github.sha}}
         shell: bash
 
       - name: Log in to the Container registry
