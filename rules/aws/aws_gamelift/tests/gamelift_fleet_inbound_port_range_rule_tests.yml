@@ -1,0 +1,330 @@
+###
+# GAMELIFT_FLEET_INBOUND_PORT_RANGE_RULE tests
+###
+---
+- name: Empty
+  input: {}
+  expectations:
+    rules:
+      GAMELIFT_FLEET_INBOUND_PORT_RANGE_RULE: SKIP
+
+- name: No resources
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      GAMELIFT_FLEET_INBOUND_PORT_RANGE_RULE: SKIP
+
+- name: GameLift with no InBoundPermissions
+  input:
+    Resources:
+      FleetResource:
+        Type: AWS::GameLift::Fleet
+        Properties:
+          BuildId: !Ref BuildResource
+          CertificateConfiguration:
+            CertificateType: DISABLED
+          Description: Description of my Game Fleet
+          DesiredEC2Instances: 1
+          EC2InstanceType: c4.large
+          FleetType: SPOT
+          LogPaths:
+            - c:\game\testlog.log
+            - c:\game\testlog2.log
+          MetricGroups:
+            - MetricGroupName
+          Name: MyGameFleet
+          NewGameSessionProtectionPolicy: FullProtection
+          ResourceCreationLimitPolicy:
+            NewGameSessionsPerCreator: 5
+            PolicyPeriodInMinutes: 2
+          RuntimeConfiguration:
+            GameSessionActivationTimeoutSeconds: 300
+            MaxConcurrentGameSessionActivations: 1
+            ServerProcesses:
+              - ConcurrentExecutions: 1
+                LaunchPath: c:\game\TestApplicationServer.exe
+            Locations:
+              - Location: 'us-west-2'
+              - Location: 'us-east-1'
+              - Location: 'eu-west-1'
+  expectations:
+    rules:
+      GAMELIFT_FLEET_INBOUND_PORT_RANGE_RULE: PASS
+
+- name: GameLift with InBoundPermissions with a single port
+  input:
+    Resources:
+      FleetResource:
+        Type: AWS::GameLift::Fleet
+        Properties:
+          BuildId: !Ref BuildResource
+          CertificateConfiguration:
+            CertificateType: DISABLED
+          Description: Description of my Game Fleet
+          DesiredEC2Instances: 1
+          EC2InboundPermissions:
+            - FromPort: 1324
+              ToPort: 1324
+              IpRange: 0.0.0.0/24
+              Protocol: TCP
+            - FromPort: 1356
+              ToPort: 1356
+              IpRange: 192.168.0.0/24
+              Protocol: UDP
+          EC2InstanceType: c4.large
+          FleetType: SPOT
+          LogPaths:
+            - c:\game\testlog.log
+            - c:\game\testlog2.log
+          MetricGroups:
+            - MetricGroupName
+          Name: MyGameFleet
+          NewGameSessionProtectionPolicy: FullProtection
+          ResourceCreationLimitPolicy:
+            NewGameSessionsPerCreator: 5
+            PolicyPeriodInMinutes: 2
+          RuntimeConfiguration:
+            GameSessionActivationTimeoutSeconds: 300
+            MaxConcurrentGameSessionActivations: 1
+            ServerProcesses:
+              - ConcurrentExecutions: 1
+                LaunchPath: c:\game\TestApplicationServer.exe
+            Locations:
+              - Location: 'us-west-2'
+              - Location: 'us-east-1'
+              - Location: 'eu-west-1'
+  expectations:
+    rules:
+      GAMELIFT_FLEET_INBOUND_PORT_RANGE_RULE: PASS
+
+- name: GameLift with single InBoundPermission with a range of ports
+  input:
+    Resources:
+      FleetResource:
+        Type: AWS::GameLift::Fleet
+        Properties:
+          BuildId: !Ref BuildResource
+          CertificateConfiguration:
+            CertificateType: DISABLED
+          Description: Description of my Game Fleet
+          DesiredEC2Instances: 1
+          EC2InboundPermissions:
+            - FromPort: 1234
+              ToPort: 1345
+              IpRange: 0.0.0.0/24
+              Protocol: TCP
+          EC2InstanceType: c4.large
+          FleetType: SPOT
+          LogPaths:
+            - c:\game\testlog.log
+            - c:\game\testlog2.log
+          MetricGroups:
+            - MetricGroupName
+          Name: MyGameFleet
+          NewGameSessionProtectionPolicy: FullProtection
+          ResourceCreationLimitPolicy:
+            NewGameSessionsPerCreator: 5
+            PolicyPeriodInMinutes: 2
+          RuntimeConfiguration:
+            GameSessionActivationTimeoutSeconds: 300
+            MaxConcurrentGameSessionActivations: 1
+            ServerProcesses:
+              - ConcurrentExecutions: 1
+                LaunchPath: c:\game\TestApplicationServer.exe
+            Locations:
+              - Location: 'us-west-2'
+              - Location: 'us-east-1'
+              - Location: 'eu-west-1'
+  expectations:
+    rules:
+      GAMELIFT_FLEET_INBOUND_PORT_RANGE_RULE: FAIL
+
+- name: GameLift with single InBoundPermissions with a range of ports
+  input:
+    Resources:
+      FleetResource:
+        Type: AWS::GameLift::Fleet
+        Properties:
+          BuildId: !Ref BuildResource
+          CertificateConfiguration:
+            CertificateType: DISABLED
+          Description: Description of my Game Fleet
+          DesiredEC2Instances: 1
+          EC2InboundPermissions:
+            - FromPort: 1234
+              ToPort: 1345
+              IpRange: 0.0.0.0/24
+              Protocol: TCP
+            - FromPort: 1234
+              ToPort: 1246
+              IpRange: 0.0.0.0/24
+              Protocol: TCP
+          EC2InstanceType: c4.large
+          FleetType: SPOT
+          LogPaths:
+            - c:\game\testlog.log
+            - c:\game\testlog2.log
+          MetricGroups:
+            - MetricGroupName
+          Name: MyGameFleet
+          NewGameSessionProtectionPolicy: FullProtection
+          ResourceCreationLimitPolicy:
+            NewGameSessionsPerCreator: 5
+            PolicyPeriodInMinutes: 2
+          RuntimeConfiguration:
+            GameSessionActivationTimeoutSeconds: 300
+            MaxConcurrentGameSessionActivations: 1
+            ServerProcesses:
+              - ConcurrentExecutions: 1
+                LaunchPath: c:\game\TestApplicationServer.exe
+            Locations:
+              - Location: 'us-west-2'
+              - Location: 'us-east-1'
+              - Location: 'eu-west-1'
+  expectations:
+    rules:
+      GAMELIFT_FLEET_INBOUND_PORT_RANGE_RULE: FAIL
+
+- name: CFN_NAG suppression for W65
+  input:
+    Resources:
+      FleetResource:
+        Type: AWS::GameLift::Fleet
+        Properties:
+          BuildId: !Ref BuildResource
+          CertificateConfiguration:
+            CertificateType: DISABLED
+          Description: Description of my Game Fleet
+          DesiredEC2Instances: 1
+          EC2InboundPermissions:
+            - FromPort: 1234
+              ToPort: 1345
+              IpRange: 0.0.0.0/24
+              Protocol: TCP
+          EC2InstanceType: c4.large
+          FleetType: SPOT
+          LogPaths:
+            - c:\game\testlog.log
+            - c:\game\testlog2.log
+          MetricGroups:
+            - MetricGroupName
+          Name: MyGameFleet
+          NewGameSessionProtectionPolicy: FullProtection
+          ResourceCreationLimitPolicy:
+            NewGameSessionsPerCreator: 5
+            PolicyPeriodInMinutes: 2
+          RuntimeConfiguration:
+            GameSessionActivationTimeoutSeconds: 300
+            MaxConcurrentGameSessionActivations: 1
+            ServerProcesses:
+              - ConcurrentExecutions: 1
+                LaunchPath: c:\game\TestApplicationServer.exe
+            Locations:
+              - Location: 'us-west-2'
+              - Location: 'us-east-1'
+              - Location: 'eu-west-1'
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W65
+              reason: Suppressed to test suppression works and skips this test
+  expectations:
+    rules:
+      GAMELIFT_FLEET_INBOUND_PORT_RANGE_RULE: SKIP
+
+- name: Guard suppression for GAMELIFT_FLEET_INBOUND_PORT_RANGE_RULE
+  input:
+    Resources:
+      FleetResource:
+        Type: AWS::GameLift::Fleet
+        Properties:
+          BuildId: !Ref BuildResource
+          CertificateConfiguration:
+            CertificateType: DISABLED
+          Description: Description of my Game Fleet
+          DesiredEC2Instances: 1
+          EC2InboundPermissions:
+            - FromPort: 1234
+              ToPort: 1345
+              IpRange: 0.0.0.0/24
+              Protocol: TCP
+          EC2InstanceType: c4.large
+          FleetType: SPOT
+          LogPaths:
+            - c:\game\testlog.log
+            - c:\game\testlog2.log
+          MetricGroups:
+            - MetricGroupName
+          Name: MyGameFleet
+          NewGameSessionProtectionPolicy: FullProtection
+          ResourceCreationLimitPolicy:
+            NewGameSessionsPerCreator: 5
+            PolicyPeriodInMinutes: 2
+          RuntimeConfiguration:
+            GameSessionActivationTimeoutSeconds: 300
+            MaxConcurrentGameSessionActivations: 1
+            ServerProcesses:
+              - ConcurrentExecutions: 1
+                LaunchPath: c:\game\TestApplicationServer.exe
+            Locations:
+              - Location: 'us-west-2'
+              - Location: 'us-east-1'
+              - Location: 'eu-west-1'
+        Metadata:
+          guard:
+            SuppressedRules:
+            - GAMELIFT_FLEET_INBOUND_PORT_RANGE_RULE
+  expectations:
+    rules:
+      GAMELIFT_FLEET_INBOUND_PORT_RANGE_RULE: SKIP
+
+- name: Guard and CFN_NAG suppression for W65 & GAMELIFT_FLEET_INBOUND_PORT_RANGE_RULE
+  input:
+    Resources:
+      FleetResource:
+        Type: AWS::GameLift::Fleet
+        Properties:
+          BuildId: !Ref BuildResource
+          CertificateConfiguration:
+            CertificateType: DISABLED
+          Description: Description of my Game Fleet
+          DesiredEC2Instances: 1
+          EC2InboundPermissions:
+            - FromPort: 1234
+              ToPort: 1345
+              IpRange: 0.0.0.0/24
+              Protocol: TCP
+          EC2InstanceType: c4.large
+          FleetType: SPOT
+          LogPaths:
+            - c:\game\testlog.log
+            - c:\game\testlog2.log
+          MetricGroups:
+            - MetricGroupName
+          Name: MyGameFleet
+          NewGameSessionProtectionPolicy: FullProtection
+          ResourceCreationLimitPolicy:
+            NewGameSessionsPerCreator: 5
+            PolicyPeriodInMinutes: 2
+          RuntimeConfiguration:
+            GameSessionActivationTimeoutSeconds: 300
+            MaxConcurrentGameSessionActivations: 1
+            ServerProcesses:
+              - ConcurrentExecutions: 1
+                LaunchPath: c:\game\TestApplicationServer.exe
+            Locations:
+              - Location: 'us-west-2'
+              - Location: 'us-east-1'
+              - Location: 'eu-west-1'
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W65
+              reason: Suppressed to test suppression works and skips this test
+          guard:
+            SuppressedRules:
+            - GAMELIFT_FLEET_INBOUND_PORT_RANGE_RULE
+  expectations:
+    rules:
+      GAMELIFT_FLEET_INBOUND_PORT_RANGE_RULE: SKIP

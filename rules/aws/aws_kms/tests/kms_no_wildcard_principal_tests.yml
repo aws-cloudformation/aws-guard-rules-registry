@@ -1,0 +1,197 @@
+###
+# KMS_NO_WILDCARD_PRINCIPAL tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      KMS_NO_WILDCARD_PRINCIPAL: SKIP
+
+- name: Scenario a) No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      KMS_NO_WILDCARD_PRINCIPAL: SKIP
+
+- name: KMS key with principal "*", FAIL
+  input:
+    Resources:
+      KMS_NO_WILDCARD_PRINCIPAL:
+        Type: AWS::KMS::Key
+        Properties:
+          KeyPolicy:
+            Statement:
+              - Action: kms:*
+                Effect: Allow
+                Principal:
+                  AWS:
+                    Fn::Join:
+                      - ""
+                      - - 'arn:'
+                        - Ref: AWS::Partition
+                        - :iam::123456789012:root
+                Resource: 'arn:aws:iam::111122223333:foobar'
+              - Action:
+                  - kms:Decrypt
+                  - kms:DescribeKey
+                  - kms:Encrypt
+                  - kms:ReEncrypt*
+                  - kms:GenerateDataKey*
+                Effect: Allow
+                Principal: '*'
+                Resource: 'arn:aws:ec2:us-east-1:111122223333:foobar'
+  expectations:
+    rules:
+      KMS_NO_WILDCARD_PRINCIPAL: FAIL
+
+- name: KMS key with principal NOT "*", PASS
+  input:
+    Resources:
+      KMS_NO_WILDCARD_PRINCIPAL:
+        Type: AWS::KMS::Key
+        Properties:
+          KeyPolicy:
+            Statement:
+              - Action: kms:*
+                Effect: Allow
+                Principal:
+                  AWS:
+                    Fn::Join:
+                      - ""
+                      - - 'arn:'
+                        - Ref: AWS::Partition
+                        - :iam::123456789012:root
+                Resource: 'arn:aws:iam::111122223333:foobar'
+              - Action:
+                  - kms:Decrypt
+                  - kms:DescribeKey
+                  - kms:Encrypt
+                  - kms:ReEncrypt*
+                  - kms:GenerateDataKey*
+                Effect: Allow
+                Principal: 
+                  AWS:
+                    Fn::Join:
+                      - ""
+                      - - 'arn:'
+                        - Ref: AWS::Partition
+                        - :iam::123456789012:root
+                Resource: 'arn:aws:ec2:us-east-1:111122223333:foobar'
+  expectations:
+    rules:
+      KMS_NO_WILDCARD_PRINCIPAL: PASS
+
+##
+## Suppressions
+##
+- name: F76 CFN-NAG suppression, SKIP
+  input:
+    Resources:
+      KMS_NO_WILDCARD_PRINCIPAL:
+        Type: AWS::KMS::Key
+        Properties:
+          KeyPolicy:
+            Statement:
+              - Action: kms:*
+                Effect: Allow
+                Principal:
+                  AWS:
+                    Fn::Join:
+                      - ""
+                      - - 'arn:'
+                        - Ref: AWS::Partition
+                        - :iam::123456789012:root
+                Resource: 'arn:aws:iam::111122223333:foobar'
+              - Action:
+                  - kms:Decrypt
+                  - kms:DescribeKey
+                  - kms:Encrypt
+                  - kms:ReEncrypt*
+                  - kms:GenerateDataKey*
+                Effect: Allow
+                Principal: '*'
+                Resource: 'arn:aws:ec2:us-east-1:111122223333:foobar'
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: F76
+              reason: Suppressed for a very good reason
+  expectations:
+    rules:
+      KMS_NO_WILDCARD_PRINCIPAL: SKIP
+
+- name: cfn-guard suppression, SKIP
+  input:
+    Resources:
+      KMS_NO_WILDCARD_PRINCIPAL:
+        Type: AWS::KMS::Key
+        Properties:
+          KeyPolicy:
+            Statement:
+              - Action: kms:*
+                Effect: Allow
+                Principal:
+                  AWS:
+                    Fn::Join:
+                      - ""
+                      - - 'arn:'
+                        - Ref: AWS::Partition
+                        - :iam::123456789012:root
+                Resource: 'arn:aws:iam::111122223333:foobar'
+              - Action:
+                  - kms:Decrypt
+                  - kms:DescribeKey
+                  - kms:Encrypt
+                  - kms:ReEncrypt*
+                  - kms:GenerateDataKey*
+                Effect: Allow
+                Principal: '*'
+                Resource: 'arn:aws:ec2:us-east-1:111122223333:foobar'
+        Metadata:
+          guard:
+            SuppressedRules:
+            - KMS_NO_WILDCARD_PRINCIPAL: Suppressed for a very good reason
+  expectations:
+    rules:
+      KMS_NO_WILDCARD_PRINCIPAL: SKIP
+
+- name: cfn-guard and cfn-nag suppression, SKIP
+  input:
+    Resources:
+      KMS_NO_WILDCARD_PRINCIPAL:
+        Type: AWS::KMS::Key
+        Properties:
+          KeyPolicy:
+            Statement:
+              - Action: kms:*
+                Effect: Allow
+                Principal:
+                  AWS:
+                    Fn::Join:
+                      - ""
+                      - - 'arn:'
+                        - Ref: AWS::Partition
+                        - :iam::123456789012:root
+                Resource: 'arn:aws:iam::111122223333:foobar'
+              - Action:
+                  - kms:Decrypt
+                  - kms:DescribeKey
+                  - kms:Encrypt
+                  - kms:ReEncrypt*
+                  - kms:GenerateDataKey*
+                Effect: Allow
+                Principal: '*'
+                Resource: 'arn:aws:ec2:us-east-1:111122223333:foobar'
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: F76
+              reason: Suppressed for a very good reason
+          guard:
+            SuppressedRules:
+            - KMS_NO_WILDCARD_PRINCIPAL: Suppressed for a very good reason
+  expectations:
+    rules:
+      KMS_NO_WILDCARD_PRINCIPAL: SKIP

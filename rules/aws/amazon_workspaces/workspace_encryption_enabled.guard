@@ -1,0 +1,53 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#    WORKSPACE_ENCRYPTION_ENABLED
+#
+# Description:
+#    Workspace should have encryption enabled
+#
+#
+# Reports on:
+#    AWS::WorkSpaces::Workspace
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# CFN_NAG Rule Id:
+#   F29
+#
+# Scenarios:
+# a) SKIP: when there are no RDS instances present
+# b) PASS: when all RDS instances / clusters have StorageEncrypted set to true
+# c) FAIL: when any RDS instances / clusters have StorageEncrypted set to false
+# d) FAIL: when there are RDS instances / clusters with StorageEncrypted property is not present
+# e) SKIP: when metadata includes the suppression for rule RDS_STORAGE_ENCRYPTED
+
+#
+# Select all RDS instance resources from incoming template (payload)
+#
+let workspace_encryption_enabled = Resources.*[ Type in [ /AWS::WorkSpaces::Workspace/ ]
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "F29"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "WORKSPACE_ENCRYPTION_ENABLED"
+]
+
+
+rule WORKSPACE_ENCRYPTION_ENABLED when %workspace_encryption_enabled !empty {
+  let violations = %workspace_encryption_enabled[
+    Properties.UserVolumeEncryptionEnabled !EXISTS
+    or
+    Properties.UserVolumeEncryptionEnabled != true
+  ]
+  %violations empty
+  <<
+    Violation: Workspace should have encryption enabled
+    Fix: Set UserVolumeEncryptionEnabled to true and set the VolumeEncryptionKey to your KMS key
+  >>
+}

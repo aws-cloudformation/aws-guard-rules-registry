@@ -1,0 +1,47 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#    ELASTICACHE_REPLICATION_GROUP_ENCRYPTION_IN_TRANSIT
+#
+# Description:
+#    ElastiCache ReplicationGroup should have encryption enabled for in transit
+#
+# Reports on:
+#    AWS::Elasticache::ReplicationGroup
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# CFN_NAG Rule Id:
+#   F33
+#
+# Scenarios:
+# a) SKIP: when no AWS::Elasticache::ReplicationGroup resources are present
+# b) PASS: when all AWS::Elasticache::ReplicationGroup resources have the TransitEncryptionEnabled property set to true
+# c) FAIL: when any AWS::Elasticache::ReplicationGroup resources have the TransitEncryptionEnabled set to false or absent (default false)
+# e) SKIP: when metadata includes the suppression for rule ELASTICACHE_REPLICATION_GROUP_ENCRYPTION_IN_TRANSIT
+
+#
+# Select all AWS::Elasticache::ReplicationGroup resources from incoming template (payload)
+#
+let elasticache_replication_group_transit_encryption = Resources.*[ Type == 'AWS::ElastiCache::ReplicationGroup'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "F33"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "ELASTICACHE_REPLICATION_GROUP_ENCRYPTION_AT_REST"
+  Properties.Engine == "redis"
+  Properties.EngineVersion not in [ /^2\..*/, /^3\.1\..*/, /^3\.2\.5$/ ] # v3.2.6 or 4.x+
+]
+
+rule ELASTICACHE_REPLICATION_GROUP_ENCRYPTION_IN_TRANSIT when %elasticache_replication_group_transit_encryption !empty {
+    %elasticache_replication_group_transit_encryption.Properties.TransitEncryptionEnabled == true
+		<<
+			Violation: ElastiCache ReplicationGroup should have encryption enabled for in transit
+			Fix: Set TransitEncryptionEnabled property to true
+		>>
+}

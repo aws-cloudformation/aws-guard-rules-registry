@@ -1,0 +1,137 @@
+###
+# WORKSPACE_ENCRYPTION_ENABLED tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      WORKSPACE_ENCRYPTION_ENABLED: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      WORKSPACE_ENCRYPTION_ENABLED: SKIP
+
+- name: Worspace with encyption, PASS
+  input:
+    Resources:
+      WorkSpaceWithEncryption:
+        Type: AWS::WorkSpaces::Workspace
+        Properties:
+          BundleId: !Ref Bundle
+          DirectoryId: !Ref Directory
+          UserName: !Ref User
+          RootVolumeEncryptionEnabled: true
+          UserVolumeEncryptionEnabled: true
+          VolumeEncryptionKey: !If [HasEncryption, !Ref EncryptionKey, ""]
+          WorkspaceProperties:
+            RunningMode: !Ref RunningModeType
+  expectations:
+    rules:
+      WORKSPACE_ENCRYPTION_ENABLED: PASS
+
+- name: Workspace with no encryption, FAIL
+  input:
+    Resources:
+      WorkSpaceWithoutEncryption:
+        Type: AWS::WorkSpaces::Workspace
+        Properties:
+          BundleId: !Ref Bundle
+          DirectoryId: !Ref Directory
+          UserName: !Ref User
+          RootVolumeEncryptionEnabled: false
+          UserVolumeEncryptionEnabled: false
+          WorkspaceProperties:
+            RunningMode: !Ref RunningModeType
+  expectations:
+    rules:
+      WORKSPACE_ENCRYPTION_ENABLED: FAIL
+  
+- name: Workspace with no encryption value, FAIL
+  input:
+    Resources:
+      WorkSpaceWithoutEncryption:
+        Type: AWS::WorkSpaces::Workspace
+        Properties:
+          BundleId: !Ref Bundle
+          DirectoryId: !Ref Directory
+          UserName: !Ref User
+          WorkspaceProperties:
+            RunningMode: !Ref RunningModeType
+  expectations:
+    rules:
+      WORKSPACE_ENCRYPTION_ENABLED: FAIL
+
+##
+## Suppression
+##
+- name: F29 CFN-NAG Suppression, SKIP
+  input:
+    Resources:
+      WorkSpaceWithoutEncryption:
+        Type: AWS::WorkSpaces::Workspace
+        Properties:
+          BundleId: !Ref Bundle
+          DirectoryId: !Ref Directory
+          UserName: !Ref User
+          RootVolumeEncryptionEnabled: false
+          UserVolumeEncryptionEnabled: false
+          WorkspaceProperties:
+            RunningMode: !Ref RunningModeType
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: F29
+              reason: Suppressed for a very good reason
+  expectations:
+    rules:
+      WORKSPACE_ENCRYPTION_ENABLED: SKIP
+
+- name: WORKSPACE_ENCRYPTION_ENABLED Guard Suppression, SKIP
+  input:
+    Resources:
+      WorkSpaceWithoutEncryption:
+        Type: AWS::WorkSpaces::Workspace
+        Properties:
+          BundleId: !Ref Bundle
+          DirectoryId: !Ref Directory
+          UserName: !Ref User
+          RootVolumeEncryptionEnabled: false
+          UserVolumeEncryptionEnabled: false
+          WorkspaceProperties:
+            RunningMode: !Ref RunningModeType
+        Metadata:
+          guard:
+            SuppressedRules:
+            - WORKSPACE_ENCRYPTION_ENABLED
+  expectations:
+    rules:
+      WORKSPACE_ENCRYPTION_ENABLED: SKIP
+
+- name: CFN_NAG & Guard Suppression, SKIP
+  input:
+    Resources:
+      WorkSpaceWithoutEncryption:
+        Type: AWS::WorkSpaces::Workspace
+        Properties:
+          BundleId: !Ref Bundle
+          DirectoryId: !Ref Directory
+          UserName: !Ref User
+          RootVolumeEncryptionEnabled: false
+          UserVolumeEncryptionEnabled: false
+          WorkspaceProperties:
+            RunningMode: !Ref RunningModeType
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: F29
+              reason: Suppressed for a very good reason
+          guard:
+            SuppressedRules:
+            - WORKSPACE_ENCRYPTION_ENABLED
+  expectations:
+    rules:
+      WORKSPACE_ENCRYPTION_ENABLED: SKIP

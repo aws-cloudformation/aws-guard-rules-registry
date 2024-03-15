@@ -1,0 +1,168 @@
+###
+# ELBV2_LISTENER_PROTOCOL_RULE tests
+###
+---
+- name: Empty
+  input: {}
+  expectations:
+    rules:
+      ELBV2_LISTENER_PROTOCOL_RULE: SKIP
+
+- name: No resources
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      ELBV2_LISTENER_PROTOCOL_RULE: SKIP
+
+- name: ELBV2 with protocol as HTTPS
+  input:
+    Resources:
+      HTTPlistener:
+         Type: "AWS::ElasticLoadBalancingV2::Listener"
+         Properties:
+           DefaultActions:
+             - Type: "redirect"
+               RedirectConfig:
+                 Protocol: "HTTPS"
+                 Port: 443
+                 Host: "#{host}"
+                 Path: "/#{path}"
+                 Query: "#{query}"
+                 StatusCode: "HTTP_301"
+           LoadBalancerArn: !Ref myLoadBalancer
+           Port: 80
+           Protocol: "HTTPS"
+           SslPolicy: TLS13-1-2-2021-06
+  expectations:
+    rules:
+      ELBV2_LISTENER_PROTOCOL_RULE: PASS
+
+- name: ELBV2 listener with no protocol specified
+  input:
+    Resources:
+      HTTPlistener:
+        Type: "AWS::ElasticLoadBalancingV2::Listener"
+        Properties:
+          DefaultActions:
+            - Type: "redirect"
+              RedirectConfig:
+                Protocol: "HTTPS"
+                Port: 443
+                Host: "#{host}"
+                Path: "/#{path}"
+                Query: "#{query}"
+                StatusCode: "HTTP_301"
+          LoadBalancerArn: !Ref myLoadBalancer
+          Port: 80
+  expectations:
+    rules:
+      ELBV2_LISTENER_PROTOCOL_RULE: PASS
+
+- name: ELBV2 listener with Protocol as HTTP
+  input:
+    Resources:
+      HTTPlistener:
+         Type: "AWS::ElasticLoadBalancingV2::Listener"
+         Properties:
+           DefaultActions:
+             - Type: "redirect"
+               RedirectConfig:
+                 Protocol: "HTTPS"
+                 Port: 443
+                 Host: "#{host}"
+                 Path: "/#{path}"
+                 Query: "#{query}"
+                 StatusCode: "HTTP_301"
+           LoadBalancerArn: !Ref myLoadBalancer
+           Port: 80
+           Protocol: "HTTP"
+  expectations:
+    rules:
+      ELBV2_LISTENER_PROTOCOL_RULE: FAIL
+
+- name: CFN_NAG suppression for W56
+  input:
+    Resources:
+      HTTPlistener:
+         Type: "AWS::ElasticLoadBalancingV2::Listener"
+         Properties:
+           DefaultActions:
+             - Type: "redirect"
+               RedirectConfig:
+                 Protocol: "HTTPS"
+                 Port: 443
+                 Host: "#{host}"
+                 Path: "/#{path}"
+                 Query: "#{query}"
+                 StatusCode: "HTTP_301"
+           LoadBalancerArn: !Ref myLoadBalancer
+           Port: 80
+           Protocol: "HTTP"
+           SslPolicy: ELBSecurityPolicy-TLS-1-1-2017-01
+         Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W56
+              reason: Suppressed to test suppression works and skips this test
+  expectations:
+    rules:
+      ELBV2_LISTENER_PROTOCOL_RULE: SKIP
+
+- name: Guard suppression for ELBV2_LISTENER_PROTOCOL_RULE
+  input:
+    Resources:
+      HTTPlistener:
+       Type: "AWS::ElasticLoadBalancingV2::Listener"
+       Properties:
+         DefaultActions:
+           - Type: "redirect"
+             RedirectConfig:
+               Protocol: "HTTPS"
+               Port: 443
+               Host: "#{host}"
+               Path: "/#{path}"
+               Query: "#{query}"
+               StatusCode: "HTTP_301"
+         LoadBalancerArn: !Ref myLoadBalancer
+         Port: 80
+         Protocol: "HTTP"
+         SslPolicy: ELBSecurityPolicy-TLS-1-1-2017-01
+       Metadata:
+          guard:
+            SuppressedRules:
+            - ELBV2_LISTENER_PROTOCOL_RULE
+  expectations:
+    rules:
+      ELBV2_LISTENER_PROTOCOL_RULE: SKIP
+
+- name: Guard and CFN_NAG suppression for W56 & ELBV2_LISTENER_PROTOCOL_RULE
+  input:
+    Resources:
+      HTTPlistener:
+         Type: "AWS::ElasticLoadBalancingV2::Listener"
+         Properties:
+           DefaultActions:
+             - Type: "redirect"
+               RedirectConfig:
+                 Protocol: "HTTPS"
+                 Port: 443
+                 Host: "#{host}"
+                 Path: "/#{path}"
+                 Query: "#{query}"
+                 StatusCode: "HTTP_301"
+           LoadBalancerArn: !Ref myLoadBalancer
+           Port: 80
+           Protocol: "HTTP"
+           SslPolicy: ELBSecurityPolicy-TLS-1-1-2017-01
+         Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W56
+              reason: Suppressed to test suppression works and skips this test
+          guard:
+            SuppressedRules:
+            - ELBV2_LISTENER_PROTOCOL_RULE
+  expectations:
+    rules:
+      ELBV2_LISTENER_PROTOCOL_RULE: SKIP

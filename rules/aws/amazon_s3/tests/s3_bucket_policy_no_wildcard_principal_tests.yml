@@ -1,0 +1,199 @@
+###
+# S3_BUCKET_POLICY_NO_WILDCARD_PRINCIPAL tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      S3_BUCKET_POLICY_NO_WILDCARD_PRINCIPAL: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      S3_BUCKET_POLICY_NO_WILDCARD_PRINCIPAL: SKIP
+
+- name: S3 BucketPolicy w/ no global principal, PASS
+  input:
+    Resources:
+      SampleBucketPolicy:
+        Type: AWS::S3::BucketPolicy
+        Properties:
+          Bucket: !Ref DOC-EXAMPLE-BUCKET
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Action:
+                  - 's3:GetObject'
+                Effect: Allow
+                Resource: !Join
+                  - ''
+                  - - 'arn:aws:s3:::'
+                    - !Ref DOC-EXAMPLE-BUCKET
+                    - /*
+                Principal: 'events.amazonaws.com'
+                Condition:
+                  StringLike:
+                    'aws:Referer':
+                      - 'http://www.example.com/*'
+                      - 'http://example.net/*'
+  expectations:
+    rules:
+      S3_BUCKET_POLICY_NO_WILDCARD_PRINCIPAL: PASS
+
+- name: S3 BucketPolicy w/ Principal "*", FAIL
+  input:
+    Resources:
+      SampleBucketPolicy:
+        Type: AWS::S3::BucketPolicy
+        Properties:
+          Bucket: !Ref DOC-EXAMPLE-BUCKET
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Action: "*"
+                Effect: Allow
+                Resource: !Join
+                  - ''
+                  - - 'arn:aws:s3:::'
+                    - !Ref DOC-EXAMPLE-BUCKET
+                    - /*
+                Principal: '*'
+                Condition:
+                  StringLike:
+                    'aws:Referer':
+                      - 'http://www.example.com/*'
+                      - 'http://example.net/*'
+  expectations:
+    rules:
+      S3_BUCKET_POLICY_NO_WILDCARD_PRINCIPAL: FAIL
+
+- name: S3 BucketPolicy w/ Principal "*", Effect Deny, PASS
+  input:
+    Resources:
+      SampleBucketPolicy:
+        Type: AWS::S3::BucketPolicy
+        Properties:
+          Bucket: !Ref DOC-EXAMPLE-BUCKET
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Action: "*"
+                Effect: Deny
+                Resource: !Join
+                  - ''
+                  - - 'arn:aws:s3:::'
+                    - !Ref DOC-EXAMPLE-BUCKET
+                    - /*
+                Principal: '*'
+                Condition:
+                  StringLike:
+                    'aws:Referer':
+                      - 'http://www.example.com/*'
+                      - 'http://example.net/*'
+  expectations:
+    rules:
+      S3_BUCKET_POLICY_NO_WILDCARD_PRINCIPAL: PASS
+
+##
+## Suppression
+##
+- name: F16 CFN_NAG SUPPRESSION, SKIP
+  input:
+    Resources:
+      SampleBucketPolicy:
+        Type: AWS::S3::BucketPolicy
+        Properties:
+          Bucket: !Ref DOC-EXAMPLE-BUCKET
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Action: "*"
+                Effect: Allow
+                Resource: !Join
+                  - ''
+                  - - 'arn:aws:s3:::'
+                    - !Ref DOC-EXAMPLE-BUCKET
+                    - /*
+                Principal: '*'
+                Condition:
+                  StringLike:
+                    'aws:Referer':
+                      - 'http://www.example.com/*'
+                      - 'http://example.net/*'
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: F16
+              reason: Suppressed for a very good reason
+  expectations:
+    rules:
+      S3_BUCKET_POLICY_NO_WILDCARD_PRINCIPAL: SKIP
+
+- name: S3_BUCKET_POLICY_NO_WILDCARD_PRINCIPAL Guard suppression, SKIP
+  input:
+    Resources:
+      SampleBucketPolicy:
+        Type: AWS::S3::BucketPolicy
+        Properties:
+          Bucket: !Ref DOC-EXAMPLE-BUCKET
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Action: "*"
+                Effect: Allow
+                Resource: !Join
+                  - ''
+                  - - 'arn:aws:s3:::'
+                    - !Ref DOC-EXAMPLE-BUCKET
+                    - /*
+                Principal: '*'
+                Condition:
+                  StringLike:
+                    'aws:Referer':
+                      - 'http://www.example.com/*'
+                      - 'http://example.net/*'
+        Metadata:
+          guard:
+            SuppressedRules:
+            - S3_BUCKET_POLICY_NO_WILDCARD_PRINCIPAL
+  expectations:
+    rules:
+      S3_BUCKET_POLICY_NO_WILDCARD_PRINCIPAL: SKIP
+
+- name: F16 CFN_NAG & S3_BUCKET_POLICY_NO_WILDCARD_PRINCIPAL Guard suppression, SKIP
+  input:
+    Resources:
+      SampleBucketPolicy:
+        Type: AWS::S3::BucketPolicy
+        Properties:
+          Bucket: !Ref DOC-EXAMPLE-BUCKET
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Action: "*"
+                Effect: Allow
+                Resource: !Join
+                  - ''
+                  - - 'arn:aws:s3:::'
+                    - !Ref DOC-EXAMPLE-BUCKET
+                    - /*
+                Principal: '*'
+                Condition:
+                  StringLike:
+                    'aws:Referer':
+                      - 'http://www.example.com/*'
+                      - 'http://example.net/*'
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: F16
+              reason: Suppressed for a very good reason
+          guard:
+            SuppressedRules:
+            - S3_BUCKET_POLICY_NO_WILDCARD_PRINCIPAL
+  expectations:
+    rules:
+      S3_BUCKET_POLICY_NO_WILDCARD_PRINCIPAL: SKIP

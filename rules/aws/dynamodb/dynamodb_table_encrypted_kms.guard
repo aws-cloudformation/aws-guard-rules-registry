@@ -25,6 +25,8 @@
 # d) PASS: when all DynamoDB Tables are encrypted with KMS
 
 let dynamodb_table_encrypted_kms = Resources.*[ Type == "AWS::DynamoDB::Table"
+  Metadata.cfn_nag.rules_to_suppress not exists or 
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W74"
   Metadata.guard.SuppressedRules not exists or
   Metadata.guard.SuppressedRules.* != "DYNAMODB_TABLE_ENCRYPTED_KMS"
 ]

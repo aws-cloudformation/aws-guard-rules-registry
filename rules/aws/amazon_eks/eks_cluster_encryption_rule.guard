@@ -1,0 +1,54 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#    EKS_CLUSTER_ENCRYPTION_RULE
+#
+# Description:
+#   EKS Cluster EncryptionConfig Provider should specify KeyArn to enable Encryption.
+#
+# Reports on:
+#    AWS::EKS::Cluster
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# CFN_NAG Rule Id:
+#   W82
+#
+# Scenarios:
+# a) SKIP: when there are no EKS Cluster resources present.
+# b) PASS: when all EKS Cluster resources specifies KeyArn to enable encryption.
+# c) FAIL: when any EKS Cluster resources does not specify KeyArn.
+# d) SKIP: when metadata has rule suppression for EKS_CLUSTER_ENCRYPTION_RULE
+
+#
+# Select all EKS Cluster resources from incoming template (payload)
+#
+let eks_cluster_encryption_rule = Resources.*[ Type == 'AWS::EKS::Cluster'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W82"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "EKS_CLUSTER_ENCRYPTION_RULE"
+]
+
+rule EKS_CLUSTER_ENCRYPTION_RULE when %eks_cluster_encryption_rule !empty {
+  let violations = %eks_cluster_encryption_rule[
+    Type == 'AWS::EKS::Cluster'
+    Properties.EncryptionConfig !exists
+    OR
+    some Properties.EncryptionConfig[*].Provider !exists
+    OR
+    some Properties.EncryptionConfig[*].Provider.KeyArn !exists
+  ]
+
+  %violations empty
+  <<
+    Violation: EKS Cluster resources does not specify KeyArn.
+    Fix: specify KeyArn to enable Encryption.
+  >>
+}

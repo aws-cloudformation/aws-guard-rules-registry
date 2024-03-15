@@ -1,0 +1,279 @@
+###
+# CFN_AUTHENTICATION_RULE tests
+###
+---
+- name: Empty
+  input: {}
+  expectations:
+    rules:
+      CFN_AUTHENTICATION_RULE: SKIP
+
+- name: No resources
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      CFN_AUTHENTICATION_RULE: SKIP
+
+- name: CFN Insensitive authentication
+  input:
+    Resources:
+        RootRole:
+          Type: "AWS::IAM::Role"
+          Properties:
+           AssumeRolePolicyDocument:
+             Version: "2012-10-17"
+             Statement:
+               - Effect: "Allow"
+                 Principal:
+                   Service:
+                     - "ec2.amazonaws.com"
+                   AWS: "arn:aws:iam::324320755747:root"
+                 Action:
+                   - "sts:AssumeRole"
+        EC2I4LBA1:
+          Type: "AWS::EC2::Instance"
+          Properties:
+            ImageId: "ami-6df1e514"
+            InstanceType: "t2.micro"
+            SubnetId:
+              "Ref": "subnetId"
+        Metadata:
+          Type: AWS::CloudFormation::Authentication
+          AWS::CloudFormation::Authentication:
+            testS3:
+              type: "s3"
+              roleName: !Ref RootRole
+              buckets:
+                - "somebucket333"
+  expectations:
+    rules:
+      CFN_AUTHENTICATION_RULE: PASS
+
+- name: CFN Sensitive authentication
+  input:
+    Resources:
+      RootRole:
+        Type: "AWS::IAM::Role"
+        Properties:
+          AssumeRolePolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Principal:
+                  Service:
+                    - "ec2.amazonaws.com"
+                  AWS: "arn:aws:iam::324320755747:root"
+                Action:
+                  - "sts:AssumeRole"
+      EC2I4LBA1:
+        Type: "AWS::EC2::Instance"
+        Properties:
+          ImageId: "ami-6df1e514"
+          InstanceType: "t2.micro"
+          SubnetId:
+            "Ref": "subnetId"
+      Metadata:
+        Type: AWS::CloudFormation::Authentication
+        AWS::CloudFormation::Authentication:
+          testBasic:
+            type: "basic"
+            username: "testUsername1"
+            password: "sensitive_password"
+            uris:
+              - "http://www.example.com/test"
+  expectations:
+    rules:
+      CFN_AUTHENTICATION_RULE: FAIL
+
+- name: CFN does not contains Metadata Resource
+  input:
+    Resources:
+        RootRole:
+          Type: "AWS::IAM::Role"
+          Properties:
+           AssumeRolePolicyDocument:
+             Version: "2012-10-17"
+             Statement:
+               - Effect: "Allow"
+                 Principal:
+                   Service:
+                     - "ec2.amazonaws.com"
+                   AWS: "arn:aws:iam::324320755747:root"
+                 Action:
+                   - "sts:AssumeRole"
+        EC2I4LBA1:
+          Type: "AWS::EC2::Instance"
+          Properties:
+            ImageId: "ami-6df1e514"
+            InstanceType: "t2.micro"
+            SubnetId:
+              "Ref": "subnetId"
+  expectations:
+    rules:
+      CFN_AUTHENTICATION_RULE: SKIP
+
+- name: CFN_NAG suppression for W1
+  input:
+    Resources:
+      RootRole:
+        Type: "AWS::IAM::Role"
+        Properties:
+          AssumeRolePolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Principal:
+                  Service:
+                    - "ec2.amazonaws.com"
+                  AWS: "arn:aws:iam::324320755747:root"
+                Action:
+                  - "sts:AssumeRole"
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+              - id: W1
+                reason: Suppressed to test suppression works and skips this test
+          guard:
+            SuppressedRules:
+              - CFN_AUTHENTICATION_RULE
+      EC2I4LBA1:
+        Type: "AWS::EC2::Instance"
+        Properties:
+          ImageId: "ami-6df1e514"
+          InstanceType: "t2.micro"
+          SubnetId:
+            "Ref": "subnetId"
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+              - id: W1
+                reason: Suppressed to test suppression works and skips this test
+          guard:
+            SuppressedRules:
+              - CFN_AUTHENTICATION_RULE
+      Metadata:
+        Type: AWS::CloudFormation::Authentication
+        AWS::CloudFormation::Authentication:
+          testBasic:
+            type: "basic"
+            username: "testUsername1"
+            password: "sensitive_password"
+            uris:
+              - "http://www.example.com/test"
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+              - id: W1
+                reason: Suppressed to test suppression works and skips this test
+  expectations:
+    rules:
+      CFN_AUTHENTICATION_RULE: SKIP
+
+- name: Guard suppression for CFN_AUTHENTICATION_RULE
+  input:
+    Resources:
+      RootRole:
+        Type: "AWS::IAM::Role"
+        Properties:
+          AssumeRolePolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Principal:
+                  Service:
+                    - "ec2.amazonaws.com"
+                  AWS: "arn:aws:iam::324320755747:root"
+                Action:
+                  - "sts:AssumeRole"
+        Metadata:
+          guard:
+            SuppressedRules:
+              - CFN_AUTHENTICATION_RULE
+      EC2I4LBA1:
+        Type: "AWS::EC2::Instance"
+        Properties:
+          ImageId: "ami-6df1e514"
+          InstanceType: "t2.micro"
+          SubnetId:
+            "Ref": "subnetId"
+        Metadata:
+          guard:
+            SuppressedRules:
+              - CFN_AUTHENTICATION_RULE
+      Metadata:
+        Type: AWS::CloudFormation::Authentication
+        AWS::CloudFormation::Authentication:
+          testBasic:
+            type: "basic"
+            username: "testUsername1"
+            password: "sensitive_password"
+            uris:
+              - "http://www.example.com/test"
+        Metadata:
+          guard:
+            SuppressedRules:
+              - CFN_AUTHENTICATION_RULE
+  expectations:
+    rules:
+      CFN_AUTHENTICATION_RULE: SKIP
+
+- name: Guard and CFN_NAG suppression for W1 & CFN_AUTHENTICATION_RULE
+  input:
+    Resources:
+      RootRole:
+        Type: "AWS::IAM::Role"
+        Properties:
+          AssumeRolePolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Principal:
+                  Service:
+                    - "ec2.amazonaws.com"
+                  AWS: "arn:aws:iam::324320755747:root"
+                Action:
+                  - "sts:AssumeRole"
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+              - id: W1
+                reason: Suppressed to test suppression works and skips this test
+          guard:
+            SuppressedRules:
+              - CFN_AUTHENTICATION_RULE
+      EC2I4LBA1:
+        Type: "AWS::EC2::Instance"
+        Properties:
+          ImageId: "ami-6df1e514"
+          InstanceType: "t2.micro"
+          SubnetId:
+            "Ref": "subnetId"
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+              - id: W1
+                reason: Suppressed to test suppression works and skips this test
+          guard:
+            SuppressedRules:
+              - CFN_AUTHENTICATION_RULE
+      Metadata:
+        Type: AWS::CloudFormation::Authentication
+        AWS::CloudFormation::Authentication:
+          testBasic:
+            type: "basic"
+            username: "testUsername1"
+            password: "sensitive_password"
+            uris:
+              - "http://www.example.com/test"
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+              - id: W1
+                reason: Suppressed to test suppression works and skips this test
+          guard:
+            SuppressedRules:
+              - CFN_AUTHENTICATION_RULE
+  expectations:
+    rules:
+      CFN_AUTHENTICATION_RULE: SKIP

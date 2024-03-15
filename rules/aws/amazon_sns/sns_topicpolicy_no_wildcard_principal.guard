@@ -1,0 +1,54 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#    SNS_TOPICPOLICY_NO_WILDCARD_PRINCIPAL
+#
+# Description:
+#   SNS Topic policy should not allow * principal
+#
+# Reports on:
+#    AWS::SNS::TopicPolicy
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# CFN_NAG Rule Id:
+#   F18
+#
+# Reference:
+#   https://docs.aws.amazon.com/sns/latest/dg/sns-access-policy-use-cases.html
+#
+# Scenarios:
+# a) SKIP: when there is no SNS TopicPolicy resource present
+# b) PASS: when no SNS TopicPolicy resources have open Principal
+# c) FAIL: when any SNS TopicPolicy has Principal "*"
+# d) SKIP: when metada has rule suppression for SNS_TOPICPOLICY_NO_WILDCARD_PRINCIPAL
+
+#
+# Select all SNS TopicPolicy resources from incoming template (payload)
+#
+let sns_topicpolicy_no_wildcard_principal = Resources.*[ Type == 'AWS::SNS::TopicPolicy'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "F18"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "SNS_TOPICPOLICY_NO_WILDCARD_PRINCIPAL"
+]
+
+rule SNS_TOPICPOLICY_NO_WILDCARD_PRINCIPAL when %sns_topicpolicy_no_wildcard_principal !empty {
+  let violations = %sns_topicpolicy_no_wildcard_principal[
+    some Properties.PolicyDocument.Statement[*] {
+      Principal == "*" OR Principal.AWS == "*" OR Principal == "arn:aws:iam::*"
+      Effect == "Allow"
+    }
+  ]
+  %violations empty
+  <<
+    Violation: SNS Topic policy should not allow * principal
+    Fix: Specify explicit principals in the SNS TopicPolicy
+  >>
+}

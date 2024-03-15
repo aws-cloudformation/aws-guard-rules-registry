@@ -1,0 +1,50 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#   WAF_WEB_ACL_DEFAULT_ACTION_RULE
+#
+# Description:
+#   WebAcl DefaultAction should not be ALLOW.
+#
+# Reports on:
+#   AWS::WAF::WebACL
+#
+# Evaluates:
+#   AWS CloudFormation
+#
+# Rule Parameters:
+#   NA
+#
+# CFN_NAG Rule Id:
+#   F665
+#
+# Scenarios:
+# a) SKIP: when there are no WAF ACL resources present.
+# b) PASS: when all WAF ACL resources do not have default action as allow.
+# c) FAIL: when any WAF ACL resources have default action as allow.
+# d) SKIP: when metadata has rule suppression for WAF_WEB_ACL_DEFAULT_ACTION_RULE or CFN_NAG F665
+
+#
+# Select all WAF ACL resources from incoming template (payload)
+#
+let waf_web_acl_default_action_rule = Resources.*[ Type == 'AWS::WAF::WebACL'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "F665"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "WAF_WEB_ACL_DEFAULT_ACTION_RULE"
+]
+
+rule WAF_WEB_ACL_DEFAULT_ACTION_RULE when %waf_web_acl_default_action_rule !empty {
+  let violation = %waf_web_acl_default_action_rule[
+    Type == 'AWS::WAF::WebACL'
+    Properties.DefaultAction.Type == 'ALLOW'
+  ]
+
+  %violation empty
+  <<
+    Violation: WAF ACL resources have default action as allow.
+    Fix: Change Default Action on WAF ACL resources.
+  >>
+}

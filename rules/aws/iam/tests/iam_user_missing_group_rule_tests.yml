@@ -1,0 +1,125 @@
+###
+# IAM_USER_MISSING_GROUP_RULE tests
+###
+---
+- name: Empty
+  input: {}
+  expectations:
+    rules:
+      IAM_USER_MISSING_GROUP_RULE: SKIP
+
+- name: No resources
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      IAM_USER_MISSING_GROUP_RULE: SKIP
+
+- name: IAM User with test group
+  input:
+    Resources:
+      ExampleUser:
+        Type: "AWS::IAM::User"
+        Properties:
+          Policies:
+            - PolicyName: "Admin"
+              PolicyDocument:
+                Version: "2012-10-17"
+                Statement:
+                  - Effect: "Allow"
+                    Action: "*"
+                    Resource: "*"
+          Groups:
+            - 'testGroup'
+  expectations:
+    rules:
+      IAM_USER_MISSING_GROUP_RULE: PASS
+
+- name: IAM user with no groups
+  input:
+    Resources:
+      ExampleUser:
+        Type: "AWS::IAM::User"
+        Properties:
+          Policies:
+            - PolicyName: "Admin"
+              PolicyDocument:
+                Version: "2012-10-17"
+                Statement:
+                  - Effect: "Allow"
+                    Action: "*"
+                    Resource: "*"
+  expectations:
+    rules:
+      IAM_USER_MISSING_GROUP_RULE: FAIL
+
+- name: CFN_NAG suppression for F2000
+  input:
+    Resources:
+      ExampleUser:
+        Type: "AWS::IAM::User"
+        Properties:
+          Policies:
+            - PolicyName: "Admin"
+              PolicyDocument:
+                Version: "2012-10-17"
+                Statement:
+                  - Effect: "Allow"
+                    Action: "*"
+                    Resource: "*"
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+              - id: F2000
+                reason: Suppressed to test suppression works and skips this test
+  expectations:
+    rules:
+      IAM_USER_MISSING_GROUP_RULE: SKIP
+
+- name: Guard suppression for IAM_USER_MISSING_GROUP_RULE
+  input:
+    Resources:
+      ExampleUser:
+        Type: "AWS::IAM::User"
+        Properties:
+          Policies:
+            - PolicyName: "Admin"
+              PolicyDocument:
+                Version: "2012-10-17"
+                Statement:
+                  - Effect: "Allow"
+                    Action: "*"
+                    Resource: "*"
+        Metadata:
+          guard:
+            SuppressedRules:
+              - IAM_USER_MISSING_GROUP_RULE
+  expectations:
+    rules:
+      IAM_USER_MISSING_GROUP_RULE: SKIP
+
+- name: Guard and CFN_NAG suppression for F2000 & IAM_USER_MISSING_GROUP_RULE
+  input:
+    Resources:
+      ExampleUser:
+        Type: "AWS::IAM::User"
+        Properties:
+          Policies:
+            - PolicyName: "Admin"
+              PolicyDocument:
+                Version: "2012-10-17"
+                Statement:
+                  - Effect: "Allow"
+                    Action: "*"
+                    Resource: "*"
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+              - id: F2000
+                reason: Suppressed to test suppression works and skips this test
+          guard:
+            SuppressedRules:
+              - IAM_USER_MISSING_GROUP_RULE
+  expectations:
+    rules:
+      IAM_USER_MISSING_GROUP_RULE: SKIP

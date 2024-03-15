@@ -28,6 +28,8 @@
 # Select all AWS::SageMaker::EndpointConfig resources from incoming template (payload)
 #
 let sagemaker_endpoint_configuration_kms_key_configured = Resources.*[ Type == "AWS::SageMaker::EndpointConfig"
+  Metadata.cfn_nag.rules_to_suppress not exists or 
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W1200"
   Metadata.guard.SuppressedRules not exists or
   Metadata.guard.SuppressedRules.* != "SAGEMAKER_ENDPOINT_CONFIGURATION_KMS_KEY_CONFIGURED"
 ]

@@ -36,7 +36,7 @@ let aws_security_groups_restricted_incoming_traffic = Resources.*[ Type == 'AWS:
 ]
 
 rule RESTRICTED_INCOMING_TRAFFIC when %aws_security_groups_restricted_incoming_traffic !empty {
-	let violations = Resources.*[
+	let violations = %aws_security_groups_restricted_incoming_traffic[
 		Type == 'AWS::EC2::SecurityGroup'
 		some Properties.SecurityGroupIngress[*] {
 			FromPort in [ 20, 21, 3389, 3306, 4333 ]

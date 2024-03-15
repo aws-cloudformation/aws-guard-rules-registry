@@ -1,0 +1,46 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#   IAM_USER_MISSING_GROUP_RULE
+#
+# Description:
+#   IAM User is not assigned to a group.
+#
+# Reports on:
+#   AWS::IAM::User
+#
+# Evaluates:
+#   AWS CloudFormation
+#
+# Rule Parameters:
+#   NA
+#
+# CFN_NAG Rule Id:
+#   F2000
+#
+# Scenarios:
+# a) SKIP: when there are no IAM Users present
+# b) PASS: when all IAM Users have been assigned to a group.
+# c) FAIL: when any IAM Users have not been assigned to a group.
+# d) SKIP: when metadata has rule suppression for IAM_USER_MISSING_GROUP_RULE or CFN_NAG F2000
+
+#
+# Select all IAM User resources from incoming template (payload)
+#
+let iam_user_missing_group_rule = Resources.*[ Type == 'AWS::IAM::User'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "F2000"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "IAM_USER_MISSING_GROUP_RULE"
+]
+
+rule IAM_USER_MISSING_GROUP_RULE when %iam_user_missing_group_rule !empty {
+  %iam_user_missing_group_rule.Type == 'AWS::IAM::User'
+  %iam_user_missing_group_rule.Properties.Groups exists
+  <<
+    Violation: IAM Users have not been assigned to a group.
+    Fix: Assign IAM user to a group.
+  >>
+}

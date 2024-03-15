@@ -1,0 +1,51 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#   COGNITO_USER_POOL_MFA_CONFIGURATION_RULE
+#
+# Description:
+#   AWS Cognito UserPool should have MfaConfiguration set to 'ON' (MUST be wrapped in quotes) or at least 'OPTIONAL.
+#
+# Reports on:
+#   AWS::Cognito::UserPool
+#
+# Evaluates:
+#   AWS CloudFormation
+#
+# Rule Parameters:
+#   NA
+#
+# CFN_NAG Rule Id:
+#   F78
+#
+# Scenarios:
+# a) SKIP: when there are no cognito userpool resources present.
+# b) PASS: when all cognito userpool resources have mfa configuration as ON or OPTIONAL.
+# c) FAIL: when any cognito userpool resources have mfa configuration as OFF.
+# d) SKIP: when metadata has rule suppression for COGNITO_USER_POOL_MFA_CONFIGURATION_RULE or CFN_NAG F78
+
+#
+# Select all cognito UserPool resources from incoming template (payload)
+#
+let cognito_user_pool_mfa_configuration_rule = Resources.*[ Type == 'AWS::Cognito::UserPool'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "F78"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "COGNITO_USER_POOL_MFA_CONFIGURATION_RULE"
+]
+
+rule COGNITO_USER_POOL_MFA_CONFIGURATION_RULE when %cognito_user_pool_mfa_configuration_rule !empty {
+  let violation = %cognito_user_pool_mfa_configuration_rule[
+    Type == 'AWS::Cognito::UserPool'
+    Properties.MfaConfiguration exists
+    Properties.MfaConfiguration == 'OFF'
+  ]
+
+  %violation empty
+  <<
+    Violation: cognito userpool resources have mfa configuration as OFF.
+    Fix: Change mfa configuration to ON or OPTIONAL.
+  >>
+}

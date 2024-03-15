@@ -1,0 +1,49 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#    GAMELIFT_FLEET_INBOUND_PORT_RANGE_RULE
+#
+# Description:
+#   GameLift fleet EC2InboundPermissions found with port range instead of just a single port
+#
+# Reports on:
+#    AWS::GameLift::Fleet
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# CFN_NAG Rule Id:
+#   W65
+#
+# Scenarios:
+# a) SKIP: when there is no GameLift Fleet resource present.
+# b) PASS: when all GameLift Fleet InboundPermissions resources have single port instead of range.
+# c) FAIL: when any GameLift Fleet InboundPermissions resources have range of ports.
+# d) SKIP: when metadata has rule suppression for GAMELIFT_FLEET_INBOUND_PORT_RANGE_RULE
+
+#
+# Select all GameLift Fleet resources from incoming template (payload)
+#
+let gamelift_fleet_inbound_port_range_rule = Resources.*[ Type == 'AWS::GameLift::Fleet'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W65"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "GAMELIFT_FLEET_INBOUND_PORT_RANGE_RULE"
+]
+
+rule GAMELIFT_FLEET_INBOUND_PORT_RANGE_RULE when %gamelift_fleet_inbound_port_range_rule !empty {
+    %gamelift_fleet_inbound_port_range_rule.Properties.EC2InboundPermissions !exists
+    OR
+    %gamelift_fleet_inbound_port_range_rule.Properties.EC2InboundPermissions[*] {
+        FromPort == ToPort
+        <<
+        Violation: Gamelift fleet inbound permissions has range of ports instead of single port
+        Fix: Specify a single port instead of range of ports
+        >>
+    }
+}

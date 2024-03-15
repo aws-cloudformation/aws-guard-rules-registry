@@ -114,3 +114,22 @@
   expectations:
     rules:
       DB_INSTANCE_BACKUP_ENABLED: SKIP
+
+- name: RDS BackupRetentionPeriod property missing but rule suppressed, SKIP
+  input:
+    Resources:
+      ExampleRDS:
+        Type: AWS::RDS::DBInstance
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W75
+              reason: Suppressed for a very good reason
+        Properties:
+          DBInstanceClass: !Ref DBInstanceType
+          SourceDBInstanceIdentifier: !Ref SourceDBInstanceIdentifier
+          SourceRegion: !Ref SourceRegion
+          KmsKeyId: !Ref MyKey
+  expectations:
+    rules:
+      DB_INSTANCE_BACKUP_ENABLED: SKIP

@@ -32,6 +32,8 @@ let aws_iam_entities_no_inline_policy = Resources.*[
   Type in [ /AWS::IAM::User/,
             /AWS::IAM::Role/,
             /AWS::IAM::Group/ ]
+  Metadata.cfn_nag.rules_to_suppress not exists or 
+  Metadata.cfn_nag.rules_to_suppress.*.id != "F10"
   Metadata.guard.SuppressedRules not exists or
   Metadata.guard.SuppressedRules.* != "IAM_NO_INLINE_POLICY_CHECK"
 ]

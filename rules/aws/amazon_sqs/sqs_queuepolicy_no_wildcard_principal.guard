@@ -1,0 +1,54 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#    SQS_QUEUEPOLICY_NO_WILDCARD_PRINCIPAL
+#
+# Description:
+#   SQS Queue policy should not allow * principal
+#
+# Reports on:
+#    AWS::SQS::QueuePolicy
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# CFN_NAG Rule Id:
+#   F21
+#
+# Reference:
+#   https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-overview-of-managing-access.html
+#
+# Scenarios:
+# a) SKIP: when there is no SQS QueuePolicy resource present
+# b) PASS: when no SQS QueuePolicy resources have open Principal
+# c) FAIL: when any SQS QueuePolicy has Principal "*"
+# d) SKIP: when metada has rule suppression for SQS_QUEUEPOLICY_NO_WILDCARD_PRINCIPAL
+
+#
+# Select all SQS QueuePolicy resources from incoming template (payload)
+#
+let sqs_queuepolicy_no_wildcard_principal = Resources.*[ Type == 'AWS::SQS::QueuePolicy'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "F21"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "SQS_QUEUEPOLICY_NO_WILDCARD_PRINCIPAL"
+]
+
+rule SQS_QUEUEPOLICY_NO_WILDCARD_PRINCIPAL when %sqs_queuepolicy_no_wildcard_principal !empty {
+  let violations = %sqs_queuepolicy_no_wildcard_principal[
+    some Properties.PolicyDocument.Statement[*] {
+      Principal == "*" OR Principal.AWS == "*" OR Principal == "arn:aws:iam::*"
+      Effect == "Allow"
+    }
+  ]
+  %violations empty
+  <<
+    Violation: SQS QueuePolicy should not allow * principal
+    Fix: Specify explicit principals in the SQS QueuePolicy
+  >>
+}

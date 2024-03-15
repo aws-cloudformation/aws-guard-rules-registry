@@ -1,0 +1,186 @@
+###
+# AMAZON_MQ_BROKER_ENCRYPTION_OPTIONS_RULE tests
+###
+---
+- name: Empty
+  input: {}
+  expectations:
+    rules:
+      AMAZON_MQ_BROKER_ENCRYPTION_OPTIONS_RULE: SKIP
+
+- name: No resources
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      AMAZON_MQ_BROKER_ENCRYPTION_OPTIONS_RULE: SKIP
+
+- name: AmazonMQ Broker with encryptionOptions
+  input:
+    Resources:
+      ComplexBroker:
+        Type: 'AWS::AmazonMQ::Broker'
+        Properties:
+          AutoMinorVersionUpgrade: false
+          BrokerName: MyComplexRabbitBroker
+          DeploymentMode: SINGLE_INSTANCE
+          EngineType: RabbitMQ
+          EngineVersion: 3.8.6
+          HostInstanceType: mq.t3.micro
+          EncryptionOptions:
+            KmsKeyId: testEncryption
+            UseAwsOwnedKey: true
+          Logs:
+            General: true
+          MaintenanceWindowStartTime:
+            DayOfWeek: Monday
+            TimeOfDay: '22:45'
+            TimeZone: America/Los_Angeles
+          PubliclyAccessible: false
+          SecurityGroups:
+            - 'sg-1a234b5cd6efgh7i8'
+          SubnetIds:
+            - 'subnet-123456b7891abcd1f'
+          Users:
+            - Password: AmazonMqPassword
+              Username: AmazonMqUsername
+  expectations:
+    rules:
+      AMAZON_MQ_BROKER_ENCRYPTION_OPTIONS_RULE: PASS
+
+- name: AmazonMQ Broker with no encryptionOptions
+  input:
+    Resources:
+      ComplexBroker:
+        Type: 'AWS::AmazonMQ::Broker'
+        Properties:
+          AutoMinorVersionUpgrade: false
+          BrokerName: MyComplexRabbitBroker
+          DeploymentMode: SINGLE_INSTANCE
+          EngineType: RabbitMQ
+          EngineVersion: 3.8.6
+          HostInstanceType: mq.t3.micro
+          Logs:
+            General: true
+          MaintenanceWindowStartTime:
+            DayOfWeek: Monday
+            TimeOfDay: '22:45'
+            TimeZone: America/Los_Angeles
+          PubliclyAccessible: false
+          SecurityGroups:
+            - 'sg-1a234b5cd6efgh7i8'
+          SubnetIds:
+            - 'subnet-123456b7891abcd1f'
+          Users:
+            - Password: AmazonMqPassword
+              Username: AmazonMqUsername
+  expectations:
+    rules:
+      AMAZON_MQ_BROKER_ENCRYPTION_OPTIONS_RULE: FAIL
+
+- name: CFN_NAG suppression for W53
+  input:
+    Resources:
+      ComplexBroker:
+        Type: 'AWS::AmazonMQ::Broker'
+        Properties:
+          AutoMinorVersionUpgrade: false
+          BrokerName: MyComplexRabbitBroker
+          DeploymentMode: SINGLE_INSTANCE
+          EngineType: RabbitMQ
+          EngineVersion: 3.8.6
+          HostInstanceType: mq.t3.micro
+          Logs:
+            General: true
+          MaintenanceWindowStartTime:
+            DayOfWeek: Monday
+            TimeOfDay: '22:45'
+            TimeZone: America/Los_Angeles
+          PubliclyAccessible: false
+          SecurityGroups:
+            - 'sg-1a234b5cd6efgh7i8'
+          SubnetIds:
+            - 'subnet-123456b7891abcd1f'
+          Users:
+            - Password: AmazonMqPassword
+              Username: AmazonMqUsername
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W53
+              reason: Suppressed to test suppression works and skips this test
+  expectations:
+    rules:
+      AMAZON_MQ_BROKER_ENCRYPTION_OPTIONS_RULE: SKIP
+
+- name: Guard suppression for AMAZON_MQ_BROKER_ENCRYPTION_OPTIONS_RULE
+  input:
+    Resources:
+      ComplexBroker:
+        Type: 'AWS::AmazonMQ::Broker'
+        Properties:
+          AutoMinorVersionUpgrade: false
+          BrokerName: MyComplexRabbitBroker
+          DeploymentMode: SINGLE_INSTANCE
+          EngineType: RabbitMQ
+          EngineVersion: 3.8.6
+          HostInstanceType: mq.t3.micro
+          Logs:
+            General: true
+          MaintenanceWindowStartTime:
+            DayOfWeek: Monday
+            TimeOfDay: '22:45'
+            TimeZone: America/Los_Angeles
+          PubliclyAccessible: false
+          SecurityGroups:
+            - 'sg-1a234b5cd6efgh7i8'
+          SubnetIds:
+            - 'subnet-123456b7891abcd1f'
+          Users:
+            - Password: AmazonMqPassword
+              Username: AmazonMqUsername
+        Metadata:
+          guard:
+            SuppressedRules:
+            - AMAZON_MQ_BROKER_ENCRYPTION_OPTIONS_RULE
+  expectations:
+    rules:
+      AMAZON_MQ_BROKER_ENCRYPTION_OPTIONS_RULE: SKIP
+
+- name: Guard and CFN_NAG suppression for W53 & AMAZON_MQ_BROKER_ENCRYPTION_OPTIONS_RULE
+  input:
+    Resources:
+      ComplexBroker:
+        Type: 'AWS::AmazonMQ::Broker'
+        Properties:
+          AutoMinorVersionUpgrade: false
+          BrokerName: MyComplexRabbitBroker
+          DeploymentMode: SINGLE_INSTANCE
+          EngineType: RabbitMQ
+          EngineVersion: 3.8.6
+          HostInstanceType: mq.t3.micro
+          Logs:
+            General: true
+          MaintenanceWindowStartTime:
+            DayOfWeek: Monday
+            TimeOfDay: '22:45'
+            TimeZone: America/Los_Angeles
+          PubliclyAccessible: false
+          SecurityGroups:
+            - 'sg-1a234b5cd6efgh7i8'
+          SubnetIds:
+            - 'subnet-123456b7891abcd1f'
+          Users:
+            - Password: AmazonMqPassword
+              Username: AmazonMqUsername
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W53
+              reason: Suppressed to test suppression works and skips this test
+          guard:
+            SuppressedRules:
+            - AMAZON_MQ_BROKER_ENCRYPTION_OPTIONS_RULE
+  expectations:
+    rules:
+      AMAZON_MQ_BROKER_ENCRYPTION_OPTIONS_RULE: SKIP

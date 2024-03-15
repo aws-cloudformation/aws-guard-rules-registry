@@ -1,0 +1,62 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#   IAM_ROLE_OR_POLICY_NO_ALLOW_PLUS_NOT_ACTION
+#
+# Description:
+#   Checks that AWS Identity and Access Management (IAM) roles do not use Allow+NotAction
+#
+# Reports on:
+#   AWS::IAM::Role, AWS::IAM::Policy, AWS::IAM::ManagedPolicy
+#
+# Evaluates:
+#   AWS CloudFormation
+#
+# Rule Parameters:
+#   NA
+#
+# CFN_NAG Rule Id:
+#   W15, W16, W17
+#
+# Documentation:
+# https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_notaction.html
+#
+# Scenarios:
+# a) SKIP: when there are no IAM Roles or Policies present
+# b) PASS: when all IAM Roles and Policies do not use Allow+NotAction
+# c) FAIL: when any IAM Roles or Policies has both Effect: Allow and NotAction
+# d) SKIP: when metadata has rule suppression for IAM_ROLE_OR_POLICY_NO_ALLOW_PLUS_NOT_ACTION or CFN_NAG W15, W16, W17
+
+let applicable_types = [
+  "AWS::IAM::Role",
+  "AWS::IAM::Policy",
+  "AWS::IAM::ManagedPolicy"
+]
+
+let iam_role_or_policy_no_allow_plus_not_action = Resources.*[ Type in %applicable_types
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id !in ["W15", "W16", "W17"]
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "IAM_ROLE_OR_POLICY_NO_ALLOW_PLUS_NOT_ACTION"
+]
+
+rule IAM_ROLE_OR_POLICY_NO_ALLOW_PLUS_NOT_ACTION when %iam_role_or_policy_no_allow_plus_not_action !empty {
+  let violations = %iam_role_or_policy_no_allow_plus_not_action[
+    Type == 'AWS::IAM::Role'
+    or
+    Type == 'AWS::IAM::Policy'
+    or
+    Type == 'AWS::IAM::ManagedPolicy'
+    some Properties.PolicyDocument.Statement[*] {
+      Effect == "Allow"
+      NotAction exists
+    }
+  ]
+  %violations empty
+  <<
+    Violation: IAM role or policy should not allow Allow+NotAction
+    Fix: Remove roles or policy statements that match {"Effect": "Allow", "NotAction": ... }
+  >>
+}

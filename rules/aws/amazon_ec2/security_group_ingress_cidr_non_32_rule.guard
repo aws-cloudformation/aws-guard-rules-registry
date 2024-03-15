@@ -1,0 +1,68 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#    SECURITY_GROUP_INGRESS_CIDR_NON_32_RULE
+#
+# Description:
+#   Check if Security Groups found ingress cidr is not /32
+#
+# Reports on:
+#    [AWS::EC2::SecurityGroup, AWS::EC2::SecurityGroupIngress]
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# CFN_NAG Rule Id:
+#   W9
+#
+# Scenarios:
+# a) SKIP: when there are no Security Ingress Groups resource present
+# b) PASS: When all Security Ingress Groups cidr is /32 for ipv4 or /128 for ipv6
+# c) FAIL: when any Security Ingress Groups cidr is not /32 for ipv4 or /128 for ipv6
+# d) SKIP: when metadata has rule suppression for SECURITY_GROUP_INGRESS_CIDR_NON_32_RULE
+
+#
+# Select all Security Group Ingress resources from incoming template (payload)
+#
+let security_group_ingress_cidr_non_32_rule_sg_resources = Resources.*[ Type == 'AWS::EC2::SecurityGroup'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W9"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "SECURITY_GROUP_INGRESS_CIDR_NON_32_RULE"
+]
+
+let security_group_ingress_cidr_non_32_rule_sgi_resources = Resources.*[ Type == 'AWS::EC2::SecurityGroupIngress'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W9"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "SECURITY_GROUP_INGRESS_CIDR_NON_32_RULE"
+]
+
+rule SECURITY_GROUP_INGRESS_CIDR_NON_32_RULE when %security_group_ingress_cidr_non_32_rule_sgi_resources !empty OR %security_group_ingress_cidr_non_32_rule_sg_resources !empty {
+   let violations_sg = %security_group_ingress_cidr_non_32_rule_sg_resources[
+     Type == 'AWS::EC2::SecurityGroup'
+     Properties.SecurityGroupIngress exists
+     some Properties.SecurityGroupIngress[*].CidrIp != /\/32/
+     OR
+     some Properties.SecurityGroupIngress[*].CidrIpv6 != /\/128/
+   ]
+
+   let violations_sgi = %security_group_ingress_cidr_non_32_rule_sgi_resources[
+     Type == 'AWS::EC2::SecurityGroupIngress'
+     Properties.CidrIp != /\/32/
+     OR
+     Properties.CidrIpv6 != /\/128/
+  ]
+
+  %violations_sg empty
+  %violations_sgi empty
+  <<
+    Violation: Security Group Ingress cidr has ipv4 that is not /32 or ipv6 that is not /128
+    Fix: Use /32 for ipv4 cidr and /128 for ipv6 cidr
+  >>
+}

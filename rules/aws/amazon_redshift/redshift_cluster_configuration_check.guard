@@ -16,6 +16,9 @@
 # Rule Parameters:
 #    NA
 #
+# CFN_NAG Rule Id:
+#   F28
+#
 # Scenarios:
 # a) SKIP: when there are no Redshift Cluster resource present
 # b) PASS: when Redshift Cluster resources have the Encrypted property set to true
@@ -27,6 +30,8 @@
 # Select all Redshift Cluster resources from incoming template (payload)
 #
 let redhshift_clusters_configuration_check = Resources.*[ Type == 'AWS::Redshift::Cluster' 
+    Metadata.cfn_nag.rules_to_suppress not exists or 
+    Metadata.cfn_nag.rules_to_suppress.*.id != "F28"
 	Metadata.guard.SuppressedRules not exists or
     Metadata.guard.SuppressedRules.* != "REDSHIFT_CLUSTER_CONFIGURATION_CHECK"
 ]

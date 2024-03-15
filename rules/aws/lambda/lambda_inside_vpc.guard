@@ -27,6 +27,8 @@
 # Select all AWS Lambda Function resources from incoming template (payload)
 #
 let aws_lambda_functions_inside_vpc = Resources.*[ Type == 'AWS::Lambda::Function' 
+  Metadata.cfn_nag.rules_to_suppress not exists or 
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W89"
   Metadata.guard.SuppressedRules not exists or
   Metadata.guard.SuppressedRules.* != "LAMBDA_INSIDE_VPC"
 ]

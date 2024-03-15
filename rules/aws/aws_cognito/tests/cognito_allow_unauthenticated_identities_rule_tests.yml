@@ -1,0 +1,103 @@
+###
+# COGNITO_ALLOW_UNAUTHENTICATED_IDENTITIES_RULE tests
+###
+---
+- name: Empty
+  input: {}
+  expectations:
+    rules:
+      COGNITO_ALLOW_UNAUTHENTICATED_IDENTITIES_RULE: SKIP
+
+- name: No resources
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      COGNITO_ALLOW_UNAUTHENTICATED_IDENTITIES_RULE: SKIP
+
+- name: Cognito IdentityPool resource with AllowUnauthenticatedIdentities set to false
+  input:
+    Resources:
+      SampleCognitoResource:
+        Type: AWS::Cognito::IdentityPool
+        Properties:
+          AllowClassicFlow: true
+          AllowUnauthenticatedIdentities: false
+          DeveloperProviderName: 'testProvider'
+          IdentityPoolName: 'testIdentity'
+  expectations:
+    rules:
+      COGNITO_ALLOW_UNAUTHENTICATED_IDENTITIES_RULE: PASS
+
+- name: Cognito IdentityPool resource with AllowUnauthenticatedIdentities set to true
+  input:
+    Resources:
+      SampleCognitoResource:
+        Type: AWS::Cognito::IdentityPool
+        Properties:
+          AllowClassicFlow: true
+          AllowUnauthenticatedIdentities: true
+          DeveloperProviderName: 'testProvider'
+          IdentityPoolName: 'testIdentity'
+  expectations:
+    rules:
+      COGNITO_ALLOW_UNAUTHENTICATED_IDENTITIES_RULE: FAIL
+
+- name: CFN_NAG suppression for W57
+  input:
+    Resources:
+      SampleCognitoResource:
+        Type: AWS::Cognito::IdentityPool
+        Properties:
+          AllowClassicFlow: true
+          AllowUnauthenticatedIdentities: true
+          DeveloperProviderName: 'testProvider'
+          IdentityPoolName: 'testIdentity'
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W57
+              reason: Suppressed to test suppression works and skips this test
+  expectations:
+    rules:
+      COGNITO_ALLOW_UNAUTHENTICATED_IDENTITIES_RULE: SKIP
+
+- name: Guard suppression for COGNITO_ALLOW_UNAUTHENTICATED_IDENTITIES_RULE
+  input:
+    Resources:
+      SampleCognitoResource:
+        Type: AWS::Cognito::IdentityPool
+        Properties:
+          AllowClassicFlow: true
+          AllowUnauthenticatedIdentities: true
+          DeveloperProviderName: 'testProvider'
+          IdentityPoolName: 'testIdentity'
+        Metadata:
+          guard:
+            SuppressedRules:
+            - COGNITO_ALLOW_UNAUTHENTICATED_IDENTITIES_RULE
+  expectations:
+    rules:
+      COGNITO_ALLOW_UNAUTHENTICATED_IDENTITIES_RULE: SKIP
+
+- name: Guard and CFN_NAG suppression for W57 & COGNITO_ALLOW_UNAUTHENTICATED_IDENTITIES_RULE
+  input:
+    Resources:
+      SampleCognitoResource:
+        Type: AWS::Cognito::IdentityPool
+        Properties:
+          AllowClassicFlow: true
+          AllowUnauthenticatedIdentities: true
+          DeveloperProviderName: 'testProvider'
+          IdentityPoolName: 'testIdentity'
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W57
+              reason: Suppressed to test suppression works and skips this test
+          guard:
+            SuppressedRules:
+            - COGNITO_ALLOW_UNAUTHENTICATED_IDENTITIES_RULE
+  expectations:
+    rules:
+      COGNITO_ALLOW_UNAUTHENTICATED_IDENTITIES_RULE: SKIP

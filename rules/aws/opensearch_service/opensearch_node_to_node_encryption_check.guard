@@ -28,6 +28,8 @@
 # Select all elasticsearch domains from incoming template
 #
 let opensearch_node_to_node_encryption_check = Resources.*[ Type == "AWS::OpenSearchService::Domain"
+  Metadata.cfn_nag.rules_to_suppress not exists or 
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W85"
   Metadata.guard.SuppressedRules not exists or
   Metadata.guard.SuppressedRules.* != "OPENSEARCH_NODE_TO_NODE_ENCRYPTION_CHECK"
 ]

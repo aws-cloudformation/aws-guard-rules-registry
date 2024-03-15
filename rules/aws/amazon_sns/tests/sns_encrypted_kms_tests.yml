@@ -62,6 +62,54 @@
     rules:
       SNS_ENCRYPTED_KMS: SKIP
 
+- name: Scenario b) KmsMasterKeyId not set but rule suppressed, SKIP
+  input:
+    Resources:
+      MySNSTopic:
+        Type: AWS::SNS::Topic
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W47
+              reason: Suppressed for a very good reason
+        Properties:
+          Subscription:
+            - Endpoint:
+                Fn::GetAtt:
+                  - "MyQueue1"
+                  - "Arn"
+              Protocol: "sqs"
+            - Endpoint:
+                Fn::GetAtt:
+                  - "MyQueue2"
+                  - "Arn"
+              Protocol: "sqs"
+          TopicName: "SampleTopic"
+      MySNSTopicPolicy:
+        Type: AWS::SNS::TopicPolicy
+        Properties:
+          Topics:
+            - Ref: MySNSTopic
+          PolicyDocument:
+            Version: "2008-10-17"
+            Id: Policy1415489375392
+            Statement:
+              - Sid: deny-unless-tls
+                Effect: Deny
+                Principal:
+                  AWS: "*"
+                Action:
+                  - sns:Publish
+                Resource: arn:aws:sns:us-east-2:111122223333:MySNSTopic
+                Condition:
+                  Bool:
+                    aws:SecureTransport: false
+                  NumericLessThan:
+                    s3:TlsVersion: 1.2
+  expectations:
+    rules:
+      SNS_ENCRYPTED_KMS: SKIP
+
 - name: Scenario c) KmsMasterKeyId not set, FAIL
   input:
     Resources:

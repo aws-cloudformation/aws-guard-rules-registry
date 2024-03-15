@@ -1,0 +1,114 @@
+###
+# SQS_QUEUE_KMS_MASTER_KEY_ID_RULE tests
+###
+---
+- name: Empty
+  input: {}
+  expectations:
+    rules:
+      SQS_QUEUE_KMS_MASTER_KEY_ID_RULE: SKIP
+
+- name: No resources
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      SQS_QUEUE_KMS_MASTER_KEY_ID_RULE: SKIP
+
+- name: SQS Queue with KmsMasterKeyId
+  input:
+    Resources:
+      MySourceQueue:
+        Type: AWS::SQS::Queue
+        Properties:
+          RedrivePolicy:
+            deadLetterTargetArn:
+              Fn::GetAtt:
+                - "MyDeadLetterQueue"
+                - "Arn"
+            maxReceiveCount: 5
+          KmsMasterKeyId: 'TestKey'
+  expectations:
+    rules:
+      SQS_QUEUE_KMS_MASTER_KEY_ID_RULE: PASS
+
+- name: SQS Queue without KmsMasterKeyId
+  input:
+    Resources:
+      MySourceQueue:
+        Type: AWS::SQS::Queue
+        Properties:
+          RedrivePolicy:
+            deadLetterTargetArn:
+              Fn::GetAtt:
+                - "MyDeadLetterQueue"
+                - "Arn"
+            maxReceiveCount: 5
+  expectations:
+    rules:
+      SQS_QUEUE_KMS_MASTER_KEY_ID_RULE: FAIL
+
+- name: CFN_NAG suppression for W48
+  input:
+    Resources:
+      MySourceQueue:
+        Type: AWS::SQS::Queue
+        Properties:
+          RedrivePolicy:
+            deadLetterTargetArn:
+              Fn::GetAtt:
+                - "MyDeadLetterQueue"
+                - "Arn"
+            maxReceiveCount: 5
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W48
+              reason: Suppressed to test suppression works and skips this test
+  expectations:
+    rules:
+      SQS_QUEUE_KMS_MASTER_KEY_ID_RULE: SKIP
+
+- name: Guard suppression for SQS_QUEUE_KMS_MASTER_KEY_ID_RULE
+  input:
+    Resources:
+      MySourceQueue:
+        Type: AWS::SQS::Queue
+        Properties:
+          RedrivePolicy:
+            deadLetterTargetArn:
+              Fn::GetAtt:
+                - "MyDeadLetterQueue"
+                - "Arn"
+            maxReceiveCount: 5
+        Metadata:
+          guard:
+            SuppressedRules:
+            - SQS_QUEUE_KMS_MASTER_KEY_ID_RULE
+  expectations:
+    rules:
+      SQS_QUEUE_KMS_MASTER_KEY_ID_RULE: SKIP
+
+- name: Guard and CFN_NAG suppression for W48 & SQS_QUEUE_KMS_MASTER_KEY_ID_RULE
+  input:
+    Resources:
+      MySourceQueue:
+        Type: AWS::SQS::Queue
+        Properties:
+          RedrivePolicy:
+            deadLetterTargetArn:
+              Fn::GetAtt:
+                - "MyDeadLetterQueue"
+                - "Arn"
+            maxReceiveCount: 5
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W48
+              reason: Suppressed to test suppression works and skips this test
+          guard:
+            SuppressedRules:
+            - SQS_QUEUE_KMS_MASTER_KEY_ID_RULE
+  expectations:
+    rules:
+      SQS_QUEUE_KMS_MASTER_KEY_ID_RULE: SKIP

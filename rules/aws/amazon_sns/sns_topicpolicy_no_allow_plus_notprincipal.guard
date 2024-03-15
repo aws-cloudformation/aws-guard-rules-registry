@@ -1,0 +1,54 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#   SNS_TOPICPOLICY_NO_ALLOW_PLUS_NOTPRINCIPAL
+#
+# Description:
+#   Checks that Amazon SNS TopicPolicies do not use Effect:Allow with NotPrincipal
+#
+# Reports on:
+#   AWS::SNS::TopicPolicy
+#
+# Evaluates:
+#   AWS CloudFormation
+#
+# Rule Parameters:
+#   NA
+# 
+# CFN_NAG Rule Id:
+#   F8
+#
+# Documentation:
+# https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_notprincipal.html
+#
+# Scenarios:
+# a) SKIP: when there are no SNS TopicPolicies present
+# b) PASS: when all SNS TopicPolicies do not Allow with NotPrincipal
+# c) FAIL: when any SNS TopicPolicy PolicyDocument statement has both Effect: Allow and NotPrincipal
+# d) SKIP: when metada has rule suppression for SNS_TOPICPOLICY_NO_ALLOW_PLUS_NOTPRINCIPAL or CFN_NAG F8
+
+#
+# Select all SNS TopicPolicy resources from incoming template (payload)
+# 
+let aws_sqs_queuepolicy_resources = Resources.*[ Type == 'AWS::SNS::TopicPolicy'
+  Metadata.cfn_nag.rules_to_suppress not exists or 
+  Metadata.cfn_nag.rules_to_suppress.*.id != "F8"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "SNS_TOPICPOLICY_NO_ALLOW_PLUS_NOTPRINCIPAL" 
+]
+
+rule SNS_TOPICPOLICY_NO_ALLOW_PLUS_NOTPRINCIPAL when %aws_sqs_queuepolicy_resources !empty {
+  let violations = %aws_sqs_queuepolicy_resources[
+    some Properties.PolicyDocument.Statement[*] {
+      Effect == "Allow"
+      NotPrincipal exists
+    }
+  ]
+  %violations empty
+  <<
+    Violation: SNS TopciPolicy should not allow Allow+NotPrincipal
+    Fix: Remove policy statements that match {"Effect": "Allow", "NotPrincipal": ... }
+  >>
+} 

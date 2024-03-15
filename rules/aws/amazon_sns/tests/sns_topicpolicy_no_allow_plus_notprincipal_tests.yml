@@ -1,0 +1,134 @@
+###
+# SNS_TOPICPOLICY_NO_ALLOW_PLUS_NOTPRINCIPAL tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      SNS_TOPICPOLICY_NO_ALLOW_PLUS_NOTPRINCIPAL: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      SNS_TOPICPOLICY_NO_ALLOW_PLUS_NOTPRINCIPAL: SKIP
+
+- name: SNS TopicPolicy PolicyDocument with Effect:Deny, PASS
+  input: 
+    Resources: 
+      ExampleResource: 
+        Type: "AWS::SNS::TopicPolicy"
+        Properties:
+          Topics:
+          - foo-bar-baz
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+            - Effect: Deny
+              NotPrincipal: 
+                AWS:
+                - "arn:aws:iam::444455556666:user/Bob"
+                - "arn:aws:iam::444455556666:root"
+  expectations:
+    rules: 
+      SNS_TOPICPOLICY_NO_ALLOW_PLUS_NOTPRINCIPAL: PASS
+
+- name: SNS TopicPolicy PolicyDocument with Effect:Allow, FAIL
+  input: 
+    Resources: 
+      ExampleResource: 
+        Type: "AWS::SNS::TopicPolicy"
+        Properties:
+          Topics:
+           - foo-bar-baz
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+            - Effect: Allow
+              NotPrincipal: 
+                AWS:
+                - "arn:aws:iam::444455556666:user/Bob"
+                - "arn:aws:iam::444455556666:root"
+  expectations:
+    rules: 
+      SNS_TOPICPOLICY_NO_ALLOW_PLUS_NOTPRINCIPAL: FAIL
+
+
+- name: SNS TopicPolicy PolicyDocument with Effect:Allow, but rule suppressed, SKIP
+  input: 
+    Resources: 
+      ExampleResource: 
+        Type: "AWS::SNS::TopicPolicy"
+        Properties:
+          Topics:
+          - foo-bar-baz
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+            - Effect: Allow
+              NotPrincipal: 
+                AWS:
+                - "arn:aws:iam::444455556666:user/Bob"
+                - "arn:aws:iam::444455556666:root"
+        Metadata:
+          guard:
+            SuppressedRules:
+            - SNS_TOPICPOLICY_NO_ALLOW_PLUS_NOTPRINCIPAL: Suppressed for a very good reason
+  expectations:
+    rules: 
+      SNS_TOPICPOLICY_NO_ALLOW_PLUS_NOTPRINCIPAL: SKIP
+
+- name: SNS TopicPolicy PolicyDocument with Effect:Allow, but rule suppressed - CFN_NAG, SKIP
+  input: 
+    Resources: 
+      ExampleResource: 
+        Type: "AWS::SNS::TopicPolicy"
+        Properties:
+          Topics:
+          - foo-bar-baz
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+            - Effect: Allow
+              NotPrincipal: 
+                AWS:
+                - "arn:aws:iam::444455556666:user/Bob"
+                - "arn:aws:iam::444455556666:root"
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: F8
+              reason: Suppressed for a very good reason
+  expectations:
+    rules: 
+      SNS_TOPICPOLICY_NO_ALLOW_PLUS_NOTPRINCIPAL: SKIP
+
+- name: SNS TopicPolicy PolicyDocument with Effect:Allow, but rule suppressed - BOTH, SKIP
+  input: 
+    Resources: 
+      ExampleResource: 
+        Type: "AWS::SNS::TopicPolicy"
+        Properties:
+          Topics:
+          - foo-bar-baz
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+            - Effect: Allow
+              NotPrincipal: 
+                AWS:
+                - "arn:aws:iam::444455556666:user/Bob"
+                - "arn:aws:iam::444455556666:root"
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: F8
+              reason: Suppressed for a very good reason
+          guard:
+            SuppressedRules:
+            - SNS_TOPICPOLICY_NO_ALLOW_PLUS_NOTPRINCIPAL: Suppressed for a very good reason
+  expectations:
+    rules: 
+      SNS_TOPICPOLICY_NO_ALLOW_PLUS_NOTPRINCIPAL: SKIP

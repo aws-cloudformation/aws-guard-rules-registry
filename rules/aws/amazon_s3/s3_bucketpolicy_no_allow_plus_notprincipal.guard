@@ -1,0 +1,54 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#   S3_BUCKETPOLICY_NO_ALLOW_PLUS_NOTPRINCIPAL
+#
+# Description:
+#   Checks that Amazon S3 BucketPolicies do not use Effect:Allow with NotPrincipal
+#
+# Reports on:
+#   AWS::S3::BucketPolicy
+#
+# Evaluates:
+#   AWS CloudFormation
+#
+# Rule Parameters:
+#   NA
+# 
+# CFN_NAG Rule Id:
+#   F9
+#
+# Documentation:
+# https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_notprincipal.html
+#
+# Scenarios:
+# a) SKIP: when there are no S3 BucketPolicies present
+# b) PASS: when all S3 BucketPolicies do not Allow with NotPrincipal
+# c) FAIL: when any S3 BucketPolicies PolicyDocument statement has both Effect: Allow and NotPrincipal
+# d) SKIP: when metada has rule suppression for S3_BUCKETPOLICY_NO_ALLOW_PLUS_NOTPRINCIPAL or CFN_NAG F9
+
+#
+# Select all S3 BucketPolicy resources from incoming template (payload)
+# 
+let aws_s3_bucketpolicy_resources = Resources.*[ Type == 'AWS::S3::BucketPolicy'
+  Metadata.cfn_nag.rules_to_suppress not exists or 
+  Metadata.cfn_nag.rules_to_suppress.*.id != "F9"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "S3_BUCKETPOLICY_NO_ALLOW_PLUS_NOTPRINCIPAL" 
+]
+
+rule S3_BUCKETPOLICY_NO_ALLOW_PLUS_NOTPRINCIPAL when %aws_s3_bucketpolicy_resources !empty {
+  let violations = %aws_s3_bucketpolicy_resources[
+    some Properties.PolicyDocument.Statement[*] {
+      Effect == "Allow"
+      NotPrincipal exists
+    }
+  ]
+  %violations empty
+  <<
+    Violation: S3 Bucket policy should not allow Allow+NotPrincipal
+    Fix: Remove policy statements that match {"Effect": "Allow", "NotPrincipal": ... }
+  >>
+} 

@@ -58,6 +58,50 @@
     rules:
       CMK_BACKING_KEY_ROTATION_ENABLED: SKIP
 
+- name: Scenario b) EnableKeyRotation has been set to false but rule suppressed - CFN_NAG, SKIP
+  input:
+    Resources:
+      myKMSKey:
+        Type: AWS::KMS::Key
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: F11
+              reason: Suppressed for a very good reason
+        Properties:
+          EnableKeyRotation: false
+          KeyPolicy:
+            Statement:
+              - Action: kms:*
+                Effect: Allow
+                Principal:
+                  AWS:
+                    Fn::Join:
+                      - ""
+                      - - 'arn:'
+                        - Ref: AWS::Partition
+                        - :iam::123456789012:root
+                Resource: '*'
+              - Action:
+                  - kms:Decrypt
+                  - kms:DescribeKey
+                  - kms:Encrypt
+                  - kms:ReEncrypt*
+                  - kms:GenerateDataKey*
+                Effect: Allow
+                Principal:
+                  AWS:
+                    Fn::Join:
+                      - ""
+                      - - 'arn:'
+                        - Ref: AWS::Partition
+                        - :iam::123456789012:root
+                Resource: '*'
+            Version: "2012-10-17"
+  expectations:
+    rules:
+      CMK_BACKING_KEY_ROTATION_ENABLED: SKIP
+
 - name: Scenario c) EnableKeyRotation has not been set, FAIL
   input:
     Resources:

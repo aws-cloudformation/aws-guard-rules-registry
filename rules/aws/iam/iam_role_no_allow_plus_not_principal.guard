@@ -1,0 +1,55 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#   IAM_ROLE_NO_ALLOW_PLUS_NOT_PRINCIPAL
+#
+# Description:
+#   Checks that AWS Identity and Access Management (IAM) roles do not use Allow+NotPrincipal in its trust policy
+#
+# Reports on:
+#   AWS::IAM::Role
+#
+# Evaluates:
+#   AWS CloudFormation
+#
+# Rule Parameters:
+#   NA
+#
+# CFN_NAG Rule Id:
+#   F6
+#
+# Documentation:
+# https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_notprincipal.html
+#
+# Scenarios:
+# a) SKIP: when there are no IAM Roles present
+# b) PASS: when all IAM Roles do not allow full Action * for at least 1 AWS service
+# c) FAIL: when any IAM Role AssumeRolePolicyDocument statement has both Effect: Allow and NotPrincipal
+# d) SKIP: when metadata has rule suppression for IAM_ROLE_NO_ALLOW_PLUS_NOT_PRINCIPAL or CFN_NAG F6
+
+#
+# Select all IAM Role resources from incoming template (payload)
+#
+let aws_iam_role_resources = Resources.*[ Type == 'AWS::IAM::Role'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "F6"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "IAM_ROLE_NO_ALLOW_PLUS_NOT_PRINCIPAL"
+]
+
+rule IAM_ROLE_NO_ALLOW_PLUS_NOT_PRINCIPAL when %aws_iam_role_resources !empty {
+  let violations = %aws_iam_role_resources[
+    Type == 'AWS::IAM::Role'
+    some Properties.AssumeRolePolicyDocument.Statement[*] {
+      Effect == "Allow"
+      NotPrincipal exists
+    }
+  ]
+  %violations empty
+  <<
+    Violation: IAM role AssumeRolePolicyDocument should not allow Allow+NotPrincipal in its trust policy
+    Fix: Remove policy statements that match {"Effect": "Allow", "NotPrincipal": ... }
+  >>
+}

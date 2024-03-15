@@ -1,0 +1,51 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#   IAM_ROLE_NO_WILDCARD_RESOURCE_ON_PASSROLE
+#
+# Description:
+#   IAM role should not allow * resource with PassRole action on its permissions policy
+#
+# Reports on:
+#   AWS::IAM::Role
+#
+# Evaluates:
+#   AWS CloudFormation
+#
+# Rule Parameters:
+#   NA
+#
+# CFN_NAG Rule Id:
+#   F38
+#
+# Scenarios:
+# a) SKIP: when there are no IAM Roles that contain Policies present
+# b) PASS: when no IAM Roles with Policies use Resource *
+# c) FAIL: when any IAM Role with a Policy allows Resource *
+# d) SKIP: when metada has rule suppression for IAM_ROLE_NO_WILDCARD_RESOURCE_ON_PASSROLE or CFN_NAG F38
+
+let iam_role_no_wildcard_resource_on_passrole = Resources.*[ Type == /AWS::IAM::Role/
+  Properties.Policies exists
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "F38"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "IAM_ROLE_NO_WILDCARD_RESOURCE_ON_PASSROLE"
+]
+
+rule IAM_ROLE_NO_WILDCARD_RESOURCE_ON_PASSROLE when %iam_role_no_wildcard_resource_on_passrole !empty {
+  let violations = %iam_role_no_wildcard_resource_on_passrole[
+    some Properties.Policies[*].PolicyDocument.Statement[*] {
+      some Action[*] == 'iam:PassRole'
+      Resource == "*"
+      Effect == "Allow"
+      Condition not exists
+    }
+  ]
+  %violations empty
+  <<
+    Violation: IAM role should not allow * resource with PassRole action on its permissions policy
+    Fix: Limit the scope of the Resource for iam:PassRole as much as possible
+  >>
+}

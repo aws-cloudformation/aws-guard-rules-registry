@@ -1,0 +1,52 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#    KENDRA_INDEX_ENCRYPTION_KMS_KEY_ID_RULE
+#
+# Description:
+#   Kendra Index ServerSideEncryptionConfiguration should specify a KmsKeyId value.
+#
+# Reports on:
+#    AWS::Kendra::Index
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# CFN_NAG Rule Id:
+#   W80
+#
+# Scenarios:
+# a) SKIP: when there is no Kendra Index resource present.
+# b) PASS: when Kendra Index ServerSideEncryptionConfiguration has a kmsKeyId value.
+# c) FAIL: when Kendra Index ServerSideEncryptionConfiguration do not specify a kmsKeyId value.
+# d) SKIP: when metadata has rule suppression for KENDRA_INDEX_ENCRYPTION_KMS_KEY_ID_RULE
+
+#
+# Select all Kendra Index resources from incoming template (payload)
+#
+let kendra_index_encryption_kms_key_id_rule = Resources.*[ Type == 'AWS::Kendra::Index'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W80"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "KENDRA_INDEX_ENCRYPTION_KMS_KEY_ID_RULE"
+]
+
+rule KENDRA_INDEX_ENCRYPTION_KMS_KEY_ID_RULE when %kendra_index_encryption_kms_key_id_rule !empty {
+  let violations = %kendra_index_encryption_kms_key_id_rule[
+    Type == 'AWS::Kendra::Index'
+    Properties.ServerSideEncryptionConfiguration !exists
+    OR
+    Properties.ServerSideEncryptionConfiguration.KmsKeyId !exists
+  ]
+
+  %violations empty
+  <<
+    Violation: Kendra Index do not have ServerSideEncryptionConfiguration or KmsKeyId for ServerSideEncryptionConfiguration.
+    Fix: Specify ServerSideEncryptionConfiguration and KmsKeyId for ServerSideEncryptionConfiguration.
+  >>
+}

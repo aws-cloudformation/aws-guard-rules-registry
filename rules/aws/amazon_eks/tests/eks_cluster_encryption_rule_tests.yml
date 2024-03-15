@@ -1,0 +1,278 @@
+###
+# EKS_CLUSTER_ENCRYPTION_RULE tests
+###
+---
+- name: Empty
+  input: {}
+  expectations:
+    rules:
+      EKS_CLUSTER_ENCRYPTION_RULE: SKIP
+
+- name: No resources
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      EKS_CLUSTER_ENCRYPTION_RULE: SKIP
+
+- name: EKS Cluster with SSE specified
+  input:
+    Resources:
+      EKSCluster:
+          Type: AWS::EKS::Cluster
+          Properties:
+            Version: "1.20"
+            RoleArn: "arn:aws:iam::012345678910:role/eks-service-role-AWSServiceRoleForAmazonEKS-EXAMPLEBQ4PI"
+            EncryptionConfig:
+              - Provider:
+                  KeyArn: "testKey1"
+                Resources:
+                  - "testVal1"
+              - Provider:
+                  KeyArn: "testKey2"
+                Resources:
+                  - "testVal2"
+            ResourcesVpcConfig:
+              SecurityGroupIds:
+                - sg-6979fe18
+              SubnetIds:
+                - subnet-6782e71e
+                - subnet-e7e761ac
+              EndpointPublicAccess: false
+              EndpointPrivateAccess: true
+              PublicAccessCidrs: [ "1.1.1.2/32" ]
+            Logging:
+              ClusterLogging:
+                EnabledTypes:
+                  - Type: api
+                  - Type: audit
+            Tags:
+              - Key: "key"
+                Value: "val"
+  expectations:
+    rules:
+      EKS_CLUSTER_ENCRYPTION_RULE: PASS
+
+- name: EKS Cluster with no EncryptionConfig
+  input:
+    Resources:
+      EKSCluster:
+          Type: AWS::EKS::Cluster
+          Properties:
+            Version: "1.20"
+            RoleArn: "arn:aws:iam::012345678910:role/eks-service-role-AWSServiceRoleForAmazonEKS-EXAMPLEBQ4PI"
+            ResourcesVpcConfig:
+              SecurityGroupIds:
+                - sg-6979fe18
+              SubnetIds:
+                - subnet-6782e71e
+                - subnet-e7e761ac
+              EndpointPublicAccess: false
+              EndpointPrivateAccess: true
+              PublicAccessCidrs: [ "1.1.1.2/32" ]
+            Logging:
+              ClusterLogging:
+                EnabledTypes:
+                  - Type: api
+                  - Type: audit
+            Tags:
+              - Key: "key"
+                Value: "val"
+  expectations:
+    rules:
+      EKS_CLUSTER_ENCRYPTION_RULE: FAIL
+
+- name: EKS Cluster with EncryptionConfig but no providers
+  input:
+    Resources:
+      EKSCluster:
+          Type: AWS::EKS::Cluster
+          Properties:
+            Version: "1.20"
+            RoleArn: "arn:aws:iam::012345678910:role/eks-service-role-AWSServiceRoleForAmazonEKS-EXAMPLEBQ4PI"
+            EncryptionConfig:
+            ResourcesVpcConfig:
+              SecurityGroupIds:
+                - sg-6979fe18
+              SubnetIds:
+                - subnet-6782e71e
+                - subnet-e7e761ac
+              EndpointPublicAccess: false
+              EndpointPrivateAccess: true
+              PublicAccessCidrs: [ "1.1.1.2/32" ]
+            Logging:
+              ClusterLogging:
+                EnabledTypes:
+                  - Type: api
+                  - Type: audit
+            Tags:
+              - Key: "key"
+                Value: "val"
+  expectations:
+    rules:
+      EKS_CLUSTER_ENCRYPTION_RULE: FAIL
+
+- name: EKS Cluster with Encryption and providers but no keyArn
+  input:
+    Resources:
+      EKSCluster:
+          Type: AWS::EKS::Cluster
+          Properties:
+            Version: "1.20"
+            RoleArn: "arn:aws:iam::012345678910:role/eks-service-role-AWSServiceRoleForAmazonEKS-EXAMPLEBQ4PI"
+            EncryptionConfig:
+              - Provider:
+                Resources:
+                  - "testVal1"
+              - Provider:
+                  KeyArn: "testKey2"
+                Resources:
+                  - "testVal2"
+            ResourcesVpcConfig:
+              SecurityGroupIds:
+                - sg-6979fe18
+              SubnetIds:
+                - subnet-6782e71e
+                - subnet-e7e761ac
+              EndpointPublicAccess: false
+              EndpointPrivateAccess: true
+              PublicAccessCidrs: [ "1.1.1.2/32" ]
+            Logging:
+              ClusterLogging:
+                EnabledTypes:
+                  - Type: api
+                  - Type: audit
+            Tags:
+              - Key: "key"
+                Value: "val"
+  expectations:
+    rules:
+      EKS_CLUSTER_ENCRYPTION_RULE: FAIL
+
+- name: CFN_NAG suppression for W82
+  input:
+    Resources:
+      EKSCluster:
+          Type: AWS::EKS::Cluster
+          Properties:
+            Version: "1.20"
+            RoleArn: "arn:aws:iam::012345678910:role/eks-service-role-AWSServiceRoleForAmazonEKS-EXAMPLEBQ4PI"
+            EncryptionConfig:
+              - Provider:
+                Resources:
+                  - "testVal1"
+              - Provider:
+                  KeyArn: "testKey2"
+                Resources:
+                  - "testVal2"
+            ResourcesVpcConfig:
+              SecurityGroupIds:
+                - sg-6979fe18
+              SubnetIds:
+                - subnet-6782e71e
+                - subnet-e7e761ac
+              EndpointPublicAccess: false
+              EndpointPrivateAccess: true
+              PublicAccessCidrs: [ "1.1.1.2/32" ]
+            Logging:
+              ClusterLogging:
+                EnabledTypes:
+                  - Type: api
+                  - Type: audit
+            Tags:
+              - Key: "key"
+                Value: "val"
+          Metadata:
+            cfn_nag:
+              rules_to_suppress:
+              - id: W82
+                reason: Suppressed to test suppression works and skips this test
+  expectations:
+    rules:
+      EKS_CLUSTER_ENCRYPTION_RULE: SKIP
+
+- name: Guard suppression for EKS_CLUSTER_ENCRYPTION_RULE
+  input:
+    Resources:
+      EKSCluster:
+          Type: AWS::EKS::Cluster
+          Properties:
+            Version: "1.20"
+            RoleArn: "arn:aws:iam::012345678910:role/eks-service-role-AWSServiceRoleForAmazonEKS-EXAMPLEBQ4PI"
+            EncryptionConfig:
+              - Provider:
+                Resources:
+                  - "testVal1"
+              - Provider:
+                  KeyArn: "testKey2"
+                Resources:
+                  - "testVal2"
+            ResourcesVpcConfig:
+              SecurityGroupIds:
+                - sg-6979fe18
+              SubnetIds:
+                - subnet-6782e71e
+                - subnet-e7e761ac
+              EndpointPublicAccess: false
+              EndpointPrivateAccess: true
+              PublicAccessCidrs: [ "1.1.1.2/32" ]
+            Logging:
+              ClusterLogging:
+                EnabledTypes:
+                  - Type: api
+                  - Type: audit
+            Tags:
+              - Key: "key"
+                Value: "val"
+          Metadata:
+            guard:
+              SuppressedRules:
+              - EKS_CLUSTER_ENCRYPTION_RULE
+  expectations:
+    rules:
+      EKS_CLUSTER_ENCRYPTION_RULE: SKIP
+
+- name: Guard and CFN_NAG suppression for W82 & EKS_CLUSTER_ENCRYPTION_RULE
+  input:
+    Resources:
+      EKSCluster:
+          Type: AWS::EKS::Cluster
+          Properties:
+            Version: "1.20"
+            RoleArn: "arn:aws:iam::012345678910:role/eks-service-role-AWSServiceRoleForAmazonEKS-EXAMPLEBQ4PI"
+            EncryptionConfig:
+              - Provider:
+                Resources:
+                  - "testVal1"
+              - Provider:
+                  KeyArn: "testKey2"
+                Resources:
+                  - "testVal2"
+            ResourcesVpcConfig:
+              SecurityGroupIds:
+                - sg-6979fe18
+              SubnetIds:
+                - subnet-6782e71e
+                - subnet-e7e761ac
+              EndpointPublicAccess: false
+              EndpointPrivateAccess: true
+              PublicAccessCidrs: [ "1.1.1.2/32" ]
+            Logging:
+              ClusterLogging:
+                EnabledTypes:
+                  - Type: api
+                  - Type: audit
+            Tags:
+              - Key: "key"
+                Value: "val"
+          Metadata:
+            cfn_nag:
+              rules_to_suppress:
+              - id: W82
+                reason: Suppressed to test suppression works and skips this test
+            guard:
+              SuppressedRules:
+              - EKS_CLUSTER_ENCRYPTION_RULE
+  expectations:
+    rules:
+      EKS_CLUSTER_ENCRYPTION_RULE: SKIP

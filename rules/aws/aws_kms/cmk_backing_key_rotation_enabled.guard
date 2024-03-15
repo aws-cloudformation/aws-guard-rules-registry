@@ -30,6 +30,8 @@
 #
 
 let cmk_backing_key_rotation_enabled = Resources.*[ Type == "AWS::KMS::Key"
+  Metadata.cfn_nag.rules_to_suppress not exists or 
+  Metadata.cfn_nag.rules_to_suppress.*.id != "F19"
   Metadata.guard.SuppressedRules not exists or
   Metadata.guard.SuppressedRules.* != "CMK_BACKING_KEY_ROTATION_ENABLED"
 ]

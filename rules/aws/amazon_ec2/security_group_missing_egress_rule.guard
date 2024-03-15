@@ -1,0 +1,46 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#    SECURITY_GROUP_MISSING_EGRESS_RULE
+#
+# Description:
+#   Missing egress rule means all traffic is allowed outbound. Make this explicit if it is desired configuration.
+#
+# Reports on:
+#    AWS::EC2::SecurityGroup
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# CFN_NAG Rule Id:
+#   F1000
+#
+# Scenarios:
+# a) SKIP: when there are no Security Groups resource present
+# b) PASS: When all Security Groups has Egresses specified.
+# c) FAIL: When any Security Groups does not have Egresses specified.
+# d) SKIP: when metadata has rule suppression for SECURITY_GROUP_MISSING_EGRESS_RULE
+
+#
+# Select all Security Group resources from incoming template (payload)
+#
+let security_group_missing_egress_rule = Resources.*[ Type == 'AWS::EC2::SecurityGroup'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "F1000"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "SECURITY_GROUP_MISSING_EGRESS_RULE"
+]
+
+rule SECURITY_GROUP_MISSING_EGRESS_RULE when %security_group_missing_egress_rule !empty {
+  %security_group_missing_egress_rule.Type == 'AWS::EC2::SecurityGroup'
+  %security_group_missing_egress_rule.Properties.SecurityGroupEgress exists
+  <<
+    Violation: Security Groups resources does not have Egresses specified.
+    Fix: Specify Egresses for all security group resources exists
+  >>
+}

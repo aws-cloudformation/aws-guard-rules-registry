@@ -1,0 +1,51 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#    S3_BUCKET_POLICY_NO_WILDCARD_ACTION
+#
+# Description:
+#   S3 Bucket policy should not allow * action
+#
+# Reports on:
+#    AWS::S3::BucketPolicy
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# CFN_NAG Rule Id:
+#   F15
+#
+# Scenarios:
+# a) SKIP: when there is no S3 BucketPolicy resource present
+# b) PASS: when no S3 BucketPolicy resources have open Action
+# c) FAIL: when any S3 resources has Action "*"
+# d) SKIP: when metada has rule suppression for S3_BUCKET_POLICY_NO_WILDCARD_ACTION
+
+#
+# Select all S3 BucketPolicy resources from incoming template (payload)
+#
+let s3_bucket_policy_no_wildcard_action = Resources.*[ Type == 'AWS::S3::BucketPolicy'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "F15"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "S3_BUCKET_POLICY_NO_WILDCARD_ACTION"
+]
+
+rule S3_BUCKET_POLICY_NO_WILDCARD_ACTION when %s3_bucket_policy_no_wildcard_action !empty {
+  let violations = %s3_bucket_policy_no_wildcard_action[
+    some Properties.PolicyDocument.Statement[*] {
+      some Action[*] in ["*", /^[a-zA-Z0-9]*:\*$/]
+      Effect == "Allow"
+    }
+  ]
+  %violations empty
+  <<
+    Violation: S3 Bucket policy should not allow * action.
+    Fix: Specify explicit actions in the S3 BucketPolicy
+  >>
+}

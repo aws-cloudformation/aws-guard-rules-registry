@@ -1,0 +1,69 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#    EC2_SECURITY_GROUP_INGRESS_OPEN_TO_WORLD_RULE
+#
+# Description:
+#   Check if cidr FOR ipv4 and ipv6 on security group ingress is open or private.
+#
+# Reports on:
+#    [AWS::EC2::SecurityGroupIngress, AWS::EC2::SecurityGroup]
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# CFN_NAG Rule Id:
+#   W2
+#
+# Scenarios:
+# a) SKIP: when there are no Security Ingress Groups resource present
+# b) PASS: When all Security Ingress Groups do not use open to world cidr
+# c) FAIL: when any Security Ingress Groups uses open to world cidr
+# d) SKIP: when metadata has rule suppression for EC2_SECURITY_GROUP_INGRESS_OPEN_TO_WORLD_RULE
+
+#
+# Select all Security Group Ingress resources from incoming template (payload)
+#
+
+let ec2_security_group_ingress_open_to_world_rule_sg_ingress_resources = Resources.*[ Type == 'AWS::EC2::SecurityGroup'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W2"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "EC2_SECURITY_GROUP_INGRESS_OPEN_TO_WORLD_RULE"
+]
+
+let ec2_security_group_ingress_open_to_world_rule_sgi_resources = Resources.*[ Type == 'AWS::EC2::SecurityGroupIngress'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W2"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "EC2_SECURITY_GROUP_INGRESS_OPEN_TO_WORLD_RULE"
+]
+
+rule EC2_SECURITY_GROUP_INGRESS_OPEN_TO_WORLD_RULE when %ec2_security_group_ingress_open_to_world_rule_sgi_resources !empty OR %ec2_security_group_ingress_open_to_world_rule_sg_ingress_resources !empty {
+  let violations_sg = %ec2_security_group_ingress_open_to_world_rule_sg_ingress_resources[
+    Type == 'AWS::EC2::SecurityGroup'
+    Properties.SecurityGroupIngress exists
+    some Properties.SecurityGroupIngress[*].CidrIp == '0.0.0.0/0'
+    OR
+    some Properties.SecurityGroupIngress[*].CidrIpv6 == '::/0'
+  ]
+
+  let violations_sgi = %ec2_security_group_ingress_open_to_world_rule_sgi_resources[
+    Type == 'AWS::EC2::SecurityGroupIngress'
+    Properties.CidrIp == '0.0.0.0/0'
+    OR
+    Properties.CidrIpv6 == '::/0'
+  ]
+
+  %violations_sg empty
+  %violations_sgi empty
+  <<
+    Violation: Security Group Ingress has a range of ports instead of a single port
+    Fix: Use single port instead of range of ports for ingress rules
+  >>
+}

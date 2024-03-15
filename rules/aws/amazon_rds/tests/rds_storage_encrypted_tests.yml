@@ -15,7 +15,7 @@
     rules:
       RDS_STORAGE_ENCRYPTED: SKIP
 
-- name: RDS StorageEncrypted set with value of true, PASS
+- name: RDS Instance StorageEncrypted set with value of true, PASS
   input:
     Resources:
       ExampleRDS:
@@ -28,6 +28,24 @@
           MonitoringInterval: 1
           DeletionProtection: true
           MultiAZ: true
+          StorageEncrypted: true
+  expectations:
+    rules:
+      RDS_STORAGE_ENCRYPTED: PASS
+
+- name: RDS Cluster StorageEncrypted set with value of true, PASS
+  input:
+    Resources:
+      RDSCluster:
+        Type: 'AWS::RDS::DBCluster'
+        Properties:
+          MasterUsername:
+            Ref: Username
+          MasterUserPassword:
+            Ref: Password
+          Engine: aurora-mysql
+          DBClusterParameterGroupName:
+            Ref: RDSDBClusterParameterGroup
           StorageEncrypted: true
   expectations:
     rules:
@@ -51,6 +69,24 @@
     rules:
       RDS_STORAGE_ENCRYPTED: FAIL
 
+- name: RDS Cluster StorageEncrypted set with value of false, FAIL
+  input:
+    Resources:
+       RDSCluster:
+        Type: 'AWS::RDS::DBCluster'
+        Properties:
+          MasterUsername:
+            Ref: Username
+          MasterUserPassword:
+            Ref: Password
+          Engine: aurora-mysql
+          DBClusterParameterGroupName:
+            Ref: RDSDBClusterParameterGroup
+          StorageEncrypted: false
+  expectations:
+    rules:
+      RDS_STORAGE_ENCRYPTED: FAIL
+
 - name: RDS StorageEncrypted property missing, FAIL
   input:
     Resources:
@@ -65,7 +101,27 @@
     rules:
       RDS_STORAGE_ENCRYPTED: FAIL
 
-- name: RDS StorageEncrypted property missing but rule suppressed, SKIP
+- name: RDS Cluster StorageEncrypted property missing, FAIL
+  input:
+    Resources:
+       RDSCluster:
+        Type: 'AWS::RDS::DBCluster'
+        Properties:
+          MasterUsername:
+            Ref: Username
+          MasterUserPassword:
+            Ref: Password
+          Engine: aurora-mysql
+          DBClusterParameterGroupName:
+            Ref: RDSDBClusterParameterGroup
+  expectations:
+    rules:
+      RDS_STORAGE_ENCRYPTED: FAIL
+
+##
+## Suppression
+##
+- name: RDS_STORAGE_ENCRYPTED Guard suppressed, SKIP
   input:
     Resources:
       ExampleRDS:
@@ -79,6 +135,47 @@
           SourceDBInstanceIdentifier: !Ref SourceDBInstanceIdentifier
           SourceRegion: !Ref SourceRegion
           KmsKeyId: !Ref MyKey
+  expectations:
+    rules:
+      RDS_STORAGE_ENCRYPTED: SKIP
+
+- name: F27 CFN_NAG Suppression - RDS Instance, SKIP
+  input:
+    Resources:
+      ExampleRDS:
+        Type: AWS::RDS::DBInstance
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: F27
+              reason: Suppressed for a very good reason
+        Properties:
+          DBInstanceClass: !Ref DBInstanceType
+          SourceDBInstanceIdentifier: !Ref SourceDBInstanceIdentifier
+          SourceRegion: !Ref SourceRegion
+          KmsKeyId: !Ref MyKey
+  expectations:
+    rules:
+      RDS_STORAGE_ENCRYPTED: SKIP
+
+- name: F26 CFN_NAG Suppression - RDS Cluster, SKIP
+  input:
+    Resources:
+      RDSCluster:
+        Type: 'AWS::RDS::DBCluster'
+        Properties:
+          MasterUsername:
+            Ref: Username
+          MasterUserPassword:
+            Ref: Password
+          Engine: aurora-mysql
+          DBClusterParameterGroupName:
+            Ref: RDSDBClusterParameterGroup
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: F26
+              reason: Suppressed for a very good reason
   expectations:
     rules:
       RDS_STORAGE_ENCRYPTED: SKIP

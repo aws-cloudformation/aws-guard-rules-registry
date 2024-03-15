@@ -21,7 +21,7 @@
 # a) SKIP: when there are no IAM Policies present
 # b) PASS: when all IAM Policies do not grant permissions to all actions on all resources
 # c) FAIL: when any IAM Policies grant permissions to all actions on all resources
-# d) SKIP: when metada has rule suppression for IAM_POLICY_NO_STATEMENTS_WITH_ADMIN_ACCESS
+# d) SKIP: when metadata has rule suppression for IAM_POLICY_NO_STATEMENTS_WITH_ADMIN_ACCESS
 
 #
 # Select all IAM Policy resources from incoming template (payload)

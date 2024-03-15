@@ -1,0 +1,51 @@
+#
+#####################################
+##         AWS Solutions           ##
+#####################################
+# Rule Identifier:
+#    LAMBDA_NO_WILDCARD_PRINCIPALS
+#
+# Description:
+#    Checks if the AWS Lambda permission uses open principal
+#
+# Reports on:
+#    AWS::Lambda::Permission
+#    AWS::Lambda::LayerVersionPermission
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# CFN_NAG Rule Id:
+#   F13
+#
+# Scenarios:
+# a) SKIP: when no AWS Lambda permission policies are present
+# b) PASS: when no AWS Lambda permission policies allow all principals
+# c) FAIL: when any AWS Lambda permission allows all principals
+# d) SKIP: hen metadata includes the suppression for rule LAMBDA_NO_WILDCARD_PRINCIPALS
+
+let applicable_types = [
+  "AWS::Lambda::Permission",
+  "AWS::Lambda::LayerVersionPermission"
+]
+
+let lambda_no_wildcard_principal = Resources.*[ Type in %applicable_types
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "F13"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "LAMBDA_NO_WILDCARD_PRINCIPALS"
+]
+
+rule LAMBDA_NO_WILDCARD_PRINCIPALS when %lambda_no_wildcard_principal !empty {
+  let violations = %lambda_no_wildcard_principal[
+    Properties.Principal == '*'
+  ]
+  %violations empty
+  <<
+    Violation: Lambda permission principal should not be wildcard.
+    Fix: Specify principal or a list of principals.
+  >>
+}

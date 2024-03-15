@@ -1,0 +1,46 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#    CODEBUILD_ENCRYPTION_KEY_RULE
+#
+# Description:
+#   CodeBuild project should specify an EncryptionKey value
+#
+# Reports on:
+#    AWS::CodeBuild::Project
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# CFN_NAG Rule Id:
+#   W32
+#
+# Scenarios:
+# a) SKIP: when there is no CodeBuild Project resource present.
+# b) PASS: when CodeBuild Project resources have Encryption Key.
+# c) FAIL: when CodeBuild Project resources does have Encryption Key.
+# d) SKIP: when metadata has rule suppression for CODEBUILD_ENCRYPTION_KEY_RULE
+
+#
+# Select all CodeBuild Project resources from incoming template (payload)
+#
+let codebuild_encryption_key_rule = Resources.*[ Type == 'AWS::CodeBuild::Project'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W32"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "CODEBUILD_ENCRYPTION_KEY_RULE"
+]
+
+rule CODEBUILD_ENCRYPTION_KEY_RULE when %codebuild_encryption_key_rule !empty {
+  %codebuild_encryption_key_rule.Type == 'AWS::CodeBuild::Project'
+  %codebuild_encryption_key_rule.Properties.EncryptionKey exists
+  <<
+    Violation: CodeBuild project encryption key does not exist
+    Fix: Specify encryption key value
+  >>
+}

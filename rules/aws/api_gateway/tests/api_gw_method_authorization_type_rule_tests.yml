@@ -1,0 +1,207 @@
+###
+# API_GW_METHOD_AUTHORIZATION_TYPE_RULE tests
+###
+---
+- name: Empty
+  input: {}
+  expectations:
+    rules:
+      API_GW_METHOD_AUTHORIZATION_TYPE_RULE: SKIP
+
+- name: No resources
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      API_GW_METHOD_AUTHORIZATION_TYPE_RULE: SKIP
+
+- name: API Gateway method has AuthorizationType of AWS_IAM
+  input:
+    Resources:
+      SampleGWResource:
+        Type: AWS::ApiGateway::Method
+        Properties:
+          ApiKeyRequired: true
+          AuthorizationType: 'AWS_IAM'
+          AuthorizerId: 'testId'
+          HttpMethod: 'OPTIONS'
+          OperationName: 'TestRule'
+          RequestModels:
+            Key: 'testValue'
+          RequestParameters:
+            Key: 'sampleValue'
+          RequestValidatorId: 'testValidatorId'
+          ResourceId: 'testResourceId'
+          RestApiId: 'XYZ007'
+  expectations:
+    rules:
+      API_GW_METHOD_AUTHORIZATION_TYPE_RULE: PASS
+
+- name: API Gateway method has AuthorizationType of NONE and HttpMethod of 'OPTIONS'
+  input:
+    Resources:
+      SampleGWResource:
+        Type: AWS::ApiGateway::Method
+        Properties:
+          ApiKeyRequired: true
+          AuthorizationType: 'NONE'
+          AuthorizerId: 'testId'
+          HttpMethod: 'OPTIONS'
+          OperationName: 'TestRule'
+          RequestModels:
+            Key: 'testValue'
+          RequestParameters:
+            Key: 'sampleValue'
+          RequestValidatorId: 'testValidatorId'
+          ResourceId: 'testResourceId'
+          RestApiId: 'XYZ007'
+  expectations:
+    rules:
+      API_GW_METHOD_AUTHORIZATION_TYPE_RULE: PASS
+
+- name: API Gateway method has no AuthorizationType and HttpMethod of 'OPTIONS'
+  input:
+    Resources:
+      SampleGWResource:
+        Type: AWS::ApiGateway::Method
+        Properties:
+          ApiKeyRequired: true
+          AuthorizerId: 'testId'
+          HttpMethod: 'OPTIONS'
+          OperationName: 'TestRule'
+          RequestModels:
+            Key: 'testValue'
+          RequestParameters:
+            Key: 'sampleValue'
+          RequestValidatorId: 'testValidatorId'
+          ResourceId: 'testResourceId'
+          RestApiId: 'XYZ007'
+  expectations:
+    rules:
+      API_GW_METHOD_AUTHORIZATION_TYPE_RULE: PASS
+
+- name: API Gateway method has no AuthorizationType and HttpMethod is POST
+  input:
+    Resources:
+      SampleGWResource:
+        Type: AWS::ApiGateway::Method
+        Properties:
+          ApiKeyRequired: true
+          AuthorizerId: 'testId'
+          HttpMethod: 'POST'
+          OperationName: 'TestRule'
+          RequestModels:
+            Key: 'testValue'
+          RequestParameters:
+            Key: 'sampleValue'
+          RequestValidatorId: 'testValidatorId'
+          ResourceId: 'testResourceId'
+          RestApiId: 'XYZ007'
+  expectations:
+    rules:
+      API_GW_METHOD_AUTHORIZATION_TYPE_RULE: FAIL
+
+- name: API Gateway method has AuthorizationType of NONE and HttpMethod is POST
+  input:
+    Resources:
+      SampleGWResource:
+        Type: AWS::ApiGateway::Method
+        Properties:
+          ApiKeyRequired: true
+          AuthorizationType: 'NONE'
+          AuthorizerId: 'testId'
+          HttpMethod: 'POST'
+          OperationName: 'TestRule'
+          RequestModels:
+            Key: 'testValue'
+          RequestParameters:
+            Key: 'sampleValue'
+          RequestValidatorId: 'testValidatorId'
+          ResourceId: 'testResourceId'
+          RestApiId: 'XYZ007'
+  expectations:
+    rules:
+      API_GW_METHOD_AUTHORIZATION_TYPE_RULE: FAIL
+
+- name: CFN_NAG suppression for W59
+  input:
+    Resources:
+      SampleGWResource:
+        Type: AWS::ApiGateway::Method
+        Properties:
+          ApiKeyRequired: true
+          AuthorizationType: 'NONE'
+          AuthorizerId: 'testId'
+          HttpMethod: 'POST'
+          OperationName: 'TestRule'
+          RequestModels:
+            Key: 'testValue'
+          RequestParameters:
+            Key: 'sampleValue'
+          RequestValidatorId: 'testValidatorId'
+          ResourceId: 'testResourceId'
+          RestApiId: 'XYZ007'
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W59
+              reason: Suppressed to test suppression works and skips this test
+  expectations:
+    rules:
+      API_GW_METHOD_AUTHORIZATION_TYPE_RULE: SKIP
+
+- name: Guard suppression for API_GW_METHOD_AUTHORIZATION_TYPE_RULE
+  input:
+    Resources:
+      SampleGWResource:
+        Type: AWS::ApiGateway::Method
+        Properties:
+          ApiKeyRequired: true
+          AuthorizationType: 'NONE'
+          AuthorizerId: 'testId'
+          HttpMethod: 'POST'
+          OperationName: 'TestRule'
+          RequestModels:
+            Key: 'testValue'
+          RequestParameters:
+            Key: 'sampleValue'
+          RequestValidatorId: 'testValidatorId'
+          ResourceId: 'testResourceId'
+          RestApiId: 'XYZ007'
+        Metadata:
+          guard:
+            SuppressedRules:
+            - API_GW_METHOD_AUTHORIZATION_TYPE_RULE
+  expectations:
+    rules:
+      API_GW_METHOD_AUTHORIZATION_TYPE_RULE: SKIP
+
+- name: Guard and CFN_NAG suppression for W59 & API_GW_METHOD_AUTHORIZATION_TYPE_RULE
+  input:
+    Resources:
+      SampleGWResource:
+        Type: AWS::ApiGateway::Method
+        Properties:
+          ApiKeyRequired: true
+          AuthorizationType: 'NONE'
+          AuthorizerId: 'testId'
+          HttpMethod: 'POST'
+          OperationName: 'TestRule'
+          RequestModels:
+            Key: 'testValue'
+          RequestParameters:
+            Key: 'sampleValue'
+          RequestValidatorId: 'testValidatorId'
+          ResourceId: 'testResourceId'
+          RestApiId: 'XYZ007'
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W59
+              reason: Suppressed to test suppression works and skips this test
+          guard:
+            SuppressedRules:
+            - API_GW_METHOD_AUTHORIZATION_TYPE_RULE
+  expectations:
+    rules:
+      API_GW_METHOD_AUTHORIZATION_TYPE_RULE: SKIP

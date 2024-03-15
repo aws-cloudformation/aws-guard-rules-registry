@@ -1,0 +1,52 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#   SNS_TOPICPOLICY_NO_ALLOW_PLUS_NOT_ACTION
+#
+# Description:
+#   Checks that SIMPLE NOTIFICATION SERVICE (SNS) TOPIC Policy do not use Allow+NotAction
+#
+# Reports on:
+#   AWS::SNS::TopicPolicy
+#
+# Evaluates:
+#   AWS CloudFormation
+#
+# Rule Parameters:
+#   NA
+#
+# CFN_NAG Rule Id:
+#   W19
+#
+# Documentation:
+# https://docs.aws.amazon.com/sns/latest/dg/sns-using-identity-based-policies.html
+#
+# Scenarios:
+# a) SKIP: when there are no SNS Topic Policies present
+# b) PASS: when all SNS Topic Policies do not use Allow+NotAction
+# c) FAIL: when any SNS Topic Policies allow both Effect: Allow and NotAction
+# d) SKIP: when metadata has rule suppression for SNS_TOPICPOLICY_NO_ALLOW_PLUS_NOT_ACTION or CFN_NAG W19
+
+let sns_topicpolicy_no_allow_plus_not_action = Resources.*[ Type == 'AWS::SNS::TopicPolicy'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W19"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "SNS_TOPICPOLICY_NO_ALLOW_PLUS_NOT_ACTION"
+]
+
+rule SNS_TOPICPOLICY_NO_ALLOW_PLUS_NOT_ACTION when %sns_topicpolicy_no_allow_plus_not_action !empty {
+  let violations = %sns_topicpolicy_no_allow_plus_not_action[
+    Type == 'AWS::SNS::TopicPolicy'
+    some Properties.PolicyDocument.Statement[*] {
+      Effect == "Allow"
+      NotAction exists
+    }
+  ]
+  %violations empty
+  <<
+    Violation: SNS TopicPolicy should not allow Allow+NotAction
+    Fix: Remove SNS Topic Policies that match {"Effect": "Allow", "NotAction": ... }
+  >>
+}

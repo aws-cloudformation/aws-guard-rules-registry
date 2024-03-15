@@ -1,0 +1,51 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#    S3_BUCKET_POLICY_NO_WILDCARD_PRINCIPAL
+#
+# Description:
+#   S3 Bucket policy should not allow * principal
+#
+# Reports on:
+#    AWS::S3::BucketPolicy
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# CFN_NAG Rule Id:
+#   F16
+#
+# Scenarios:
+# a) SKIP: when there is no S3 BucketPolicy resource present
+# b) PASS: when no S3 BucketPolicy resources have open Principal
+# c) FAIL: when any S3 resources has Principal "*"
+# d) SKIP: when metada has rule suppression for S3_BUCKET_POLICY_NO_WILDCARD_PRINCIPAL
+
+#
+# Select all S3 BucketPolicy resources from incoming template (payload)
+#
+let s3_bucket_policy_no_wildcard_principal = Resources.*[ Type == 'AWS::S3::BucketPolicy'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "F16"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "S3_BUCKET_POLICY_NO_WILDCARD_PRINCIPAL"
+]
+
+rule S3_BUCKET_POLICY_NO_WILDCARD_PRINCIPAL when %s3_bucket_policy_no_wildcard_principal !empty {
+  let violations = %s3_bucket_policy_no_wildcard_principal[
+    some Properties.PolicyDocument.Statement[*] {
+      Principal == "*"
+      Effect == "Allow"
+    }
+  ]
+  %violations empty
+  <<
+    Violation: S3 Bucket policy should not allow * principal
+    Fix: Specify explicit principals in the S3 BucketPolicy
+  >>
+}

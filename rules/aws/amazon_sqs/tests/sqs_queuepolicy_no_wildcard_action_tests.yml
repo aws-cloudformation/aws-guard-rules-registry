@@ -1,0 +1,193 @@
+###
+# SQS_QUEUEPOLICY_NO_WILDCARD_ACTION tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      SQS_QUEUEPOLICY_NO_WILDCARD_ACTION: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      SQS_QUEUEPOLICY_NO_WILDCARD_ACTION: SKIP
+
+- name: SQS QueuePolicy with Action <service:*, Effect:Deny, PASS
+  input: 
+    Resources: 
+      SampleSQSPolicy: 
+        Type: AWS::SQS::QueuePolicy
+        Properties: 
+          Queues: 
+            - "https://sqs:us-east-2.amazonaws.com/444455556666/queue2"
+          PolicyDocument: 
+            Statement: 
+              - 
+                Action: 
+                  - "SQS:*" 
+                Effect: "Deny"
+                Resource: "arn:aws:sqs:us-east-2:444455556666:queue2"
+                Principal:
+                  AWS:
+                    - "arn:aws:iam::444455556666:user/Bob"
+                    - "arn:aws:iam::444455556666:root"
+  expectations:
+    rules: 
+      SQS_QUEUEPOLICY_NO_WILDCARD_ACTION: PASS
+
+- name: SQS QueuePolicy with specific Actions, PASS
+  input: 
+    Resources: 
+      SampleSQSPolicy: 
+        Type: AWS::SQS::QueuePolicy
+        Properties: 
+          Queues: 
+            - "https://sqs:us-east-2.amazonaws.com/444455556666/queue2"
+          PolicyDocument: 
+            Statement: 
+              - 
+                Action: 
+                  - "SQS:SendMessage" 
+                  - "SQS:ReceiveMessage"
+                Effect: "Allow"
+                Resource: "arn:aws:sqs:us-east-2:444455556666:queue2"
+                Principal:
+                  AWS:
+                  - "arn:aws:iam::444455556666:user/Bob"
+                  - "arn:aws:iam::444455556666:root"
+  expectations:
+    rules: 
+      SQS_QUEUEPOLICY_NO_WILDCARD_ACTION: PASS
+
+- name: SQS QueuePolicy with Action *, Effect Allow, FAIL
+  input: 
+    Resources: 
+      SampleSQSPolicy: 
+        Type: AWS::SQS::QueuePolicy
+        Properties: 
+          Queues: 
+            - "https://sqs:us-east-2.amazonaws.com/444455556666/queue2"
+          PolicyDocument: 
+            Statement: 
+              - 
+                Action: "*"
+                Effect: "Allow"
+                Resource: "arn:aws:sqs:us-east-2:444455556666:queue2"
+                Principal:
+                  AWS:
+                  - "arn:aws:iam::444455556666:user/Bob"
+                  - "arn:aws:iam::444455556666:root"
+  expectations:
+    rules: 
+      SQS_QUEUEPOLICY_NO_WILDCARD_ACTION: FAIL
+
+- name: SQS QueuePolicy with Action <service:*, Effect Allow, FAIL
+  input: 
+    Resources: 
+      SampleSQSPolicy: 
+        Type: AWS::SQS::QueuePolicy
+        Properties: 
+          Queues: 
+            - "https://sqs:us-east-2.amazonaws.com/444455556666/queue2"
+          PolicyDocument: 
+            Statement: 
+              - 
+                Action: 
+                - "SQS:*"
+                Effect: "Allow"
+                Resource: "arn:aws:sqs:us-east-2:444455556666:queue2"
+                Principal:
+                  AWS:
+                  - "arn:aws:iam::444455556666:user/Bob"
+                  - "arn:aws:iam::444455556666:root"
+  expectations:
+    rules: 
+      SQS_QUEUEPOLICY_NO_WILDCARD_ACTION: FAIL
+
+- name: F20 CFN_NAG suppression, SKIP
+  input: 
+    Resources: 
+      SampleSQSPolicy: 
+        Type: AWS::SQS::QueuePolicy
+        Properties: 
+          Queues: 
+            - "https://sqs:us-east-2.amazonaws.com/444455556666/queue2"
+          PolicyDocument: 
+            Statement: 
+              - 
+                Action: "*"
+                Effect: "Allow"
+                Resource: "arn:aws:sqs:us-east-2:444455556666:queue2"
+                Principal:
+                  AWS:
+                  - "arn:aws:iam::444455556666:user/Bob"
+                  - "arn:aws:iam::444455556666:root"
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: F20
+              reason: Suppressed for a very good reason
+  expectations:
+    rules: 
+      SQS_QUEUEPOLICY_NO_WILDCARD_ACTION: SKIP
+
+- name: SQS_QUEUEPOLICY_NO_WILDCARD_ACTION Guard suppression, SKIP
+  input: 
+    Resources: 
+      SampleSQSPolicy: 
+        Type: AWS::SQS::QueuePolicy
+        Properties: 
+          Queues: 
+            - "https://sqs:us-east-2.amazonaws.com/444455556666/queue2"
+          PolicyDocument: 
+            Statement: 
+              - 
+                Action: 
+                  - "SQS:*" 
+                Effect: "Allow"
+                Resource: "arn:aws:sqs:us-east-2:444455556666:queue2"
+                Principal:
+                  AWS:
+                  - "arn:aws:iam::444455556666:user/Bob"
+                  - "arn:aws:iam::444455556666:root"
+        Metadata:
+          guard:
+            SuppressedRules:
+            - SQS_QUEUEPOLICY_NO_WILDCARD_ACTION: Suppressed for a very good reason
+  expectations:
+    rules: 
+      SQS_QUEUEPOLICY_NO_WILDCARD_ACTION: SKIP
+
+- name: F20 CFN_NAG & SQS_QUEUEPOLICY_NO_WILDCARD_ACTION Guard suppression, SKIP
+  input: 
+    Resources: 
+      SampleSQSPolicy: 
+        Type: AWS::SQS::QueuePolicy
+        Properties: 
+          Queues: 
+            - "https://sqs:us-east-2.amazonaws.com/444455556666/queue2"
+          PolicyDocument: 
+            Statement: 
+              - 
+                Action: 
+                  - "SQS:*" 
+                Effect: "Allow"
+                Resource: "arn:aws:sqs:us-east-2:444455556666:queue2"
+                Principal:
+                  AWS:
+                  - "arn:aws:iam::444455556666:user/Bob"
+                  - "arn:aws:iam::444455556666:root"
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: F20
+              reason: Suppressed for a very good reason
+          guard:
+            SuppressedRules:
+            - SQS_QUEUEPOLICY_NO_WILDCARD_ACTION: Suppressed for a very good reason
+  expectations:
+    rules: 
+      SQS_QUEUEPOLICY_NO_WILDCARD_ACTION: SKIP

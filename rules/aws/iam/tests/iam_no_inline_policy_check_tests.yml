@@ -122,3 +122,26 @@
   expectations:
     rules: 
       IAM_NO_INLINE_POLICY_CHECK: SKIP
+
+- name: IAM User with inline policies but rule suppressed, SKIP
+  input: 
+    Resources: 
+      ExampleUser: 
+        Type: "AWS::IAM::User"
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: F10
+              reason: Suppressed for a very good reason
+        Properties: 
+          Policies: 
+            - PolicyName: "Admin"
+              PolicyDocument: 
+                Version: "2012-10-17"
+                Statement:
+                  - Effect: "Allow"
+                    Action: "*"
+                    Resource: "*"
+  expectations:
+    rules: 
+      IAM_NO_INLINE_POLICY_CHECK: SKIP

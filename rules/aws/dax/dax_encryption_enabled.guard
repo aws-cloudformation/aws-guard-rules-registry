@@ -29,7 +29,9 @@
 #
 
 let dax_clusters_encryption = Resources.*[ Type == "AWS::DAX::Cluster"
-	Metadata.guard.SuppressedRules not exists or
+  Metadata.cfn_nag.rules_to_suppress not exists or 
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W83"
+  Metadata.guard.SuppressedRules not exists or
   Metadata.guard.SuppressedRules.* != "DAX_ENCRYPTION_ENABLED"
 ]
 

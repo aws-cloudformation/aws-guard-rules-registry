@@ -1,0 +1,54 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#    DYNAMODB_BILLING_MODE_RULE
+#
+# Description:
+#   DynamoDB table should have billing mode set to either PAY_PER_REQUEST or PROVISIONED.
+#
+# Reports on:
+#    AWS::DynamoDB::Table
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# CFN_NAG Rule Id:
+#   W73
+#
+# Scenarios:
+# a) SKIP: when there are no DynamoDb Table resources present
+# b) PASS: When all DynamoDb Table resources uses billingMode as PAY_PER_REQUEST or PROVISIONED
+# c) FAIL: When any DynamoDb Table resources uses billingMode not as PAY_PER_REQUEST or PROVISIONED or billingMode is not specified.
+# d) SKIP: when metadata has rule suppression for DYNAMODB_BILLING_MODE_RULE
+
+#
+# Select all DynamoDb Table resources from incoming template (payload)
+#
+let dynamodb_billing_mode_rule = Resources.*[ Type == 'AWS::DynamoDB::Table'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W73"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "DYNAMODB_BILLING_MODE_RULE"
+]
+
+rule DYNAMODB_BILLING_MODE_RULE when %dynamodb_billing_mode_rule !empty {
+  let violations = %dynamodb_billing_mode_rule[
+    Properties.BillingMode !exists
+    OR
+    Properties {
+        BillingMode != 'PAY_PER_REQUEST'
+        BillingMode != 'PROVISIONED'
+    }
+  ]
+
+  %violations empty
+  <<
+    Violation: DynamoDb Table resources uses billingMode not as PAY_PER_REQUEST or PROVISIONED or billingMode is not specified.
+    Fix: Specify billingMode as PAY_PER_REQUEST or PROVISIONED.
+  >>
+}

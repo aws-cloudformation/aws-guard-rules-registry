@@ -1,0 +1,51 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#   IAM_ROLE_NO_FULL_ACCESS_ON_TRUST_POLICY
+#
+# Description:
+#   Checks if AWS Identity and Access Management (IAM) roles grant permissions to all actions in the trust policy.
+#
+# Reports on:
+#   AWS::IAM::Role
+#
+# Evaluates:
+#   AWS CloudFormation
+#
+# Rule Parameters:
+#   NA
+# 
+# CFN_NAG Rule Id:
+#   F2
+#
+# Scenarios:
+# a) SKIP: when there are no IAM Roles present
+# b) PASS: when all IAM Roles do not allow full access to at least 1 AWS service
+# c) FAIL: when any IAM Role allows full access to at least 1 AWS service.
+# d) SKIP: when metada has rule suppression for IAM_ROLE_NO_FULL_ACCESS_ON_TRUST_POLICY or CFN_NAG F2
+
+#
+# Select all IAM Role resources from incoming template (payload)
+# 
+let aws_iam_role_no_full_acess_on_trust_policy = Resources.*[ Type == 'AWS::IAM::Role'
+  Metadata.cfn_nag.rules_to_suppress not exists or 
+  Metadata.cfn_nag.rules_to_suppress.*.id != "F2"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "IAM_ROLE_NO_FULL_ACCESS_ON_TRUST_POLICY" 
+]
+
+rule IAM_ROLE_NO_FULL_ACCESS_ON_TRUST_POLICY when %aws_iam_role_no_full_acess_on_trust_policy !empty {
+  let violations = %aws_iam_role_no_full_acess_on_trust_policy[
+    some Properties.AssumeRolePolicyDocument.Statement[*] {
+      some Action[*] in ["*", /^[a-zA-Z0-9]*:\*$/]
+      Effect == "Allow"
+    }
+  ]
+  %violations empty
+  <<
+    Violation: One or more IAM Roles allow full access in the trust policy
+    Fix: Remove AssumeRole policy statements that match {"Effect": "Allow", "Action": "<service-name>:*" ... } or {"Effect": "Allow", "Action": "*" ... }
+  >>
+} 

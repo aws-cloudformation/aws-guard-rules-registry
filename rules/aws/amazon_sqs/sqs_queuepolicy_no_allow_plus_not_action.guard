@@ -1,0 +1,52 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#   SQS_QUEUEPOLICY_NO_ALLOW_PLUS_NOT_ACTION
+#
+# Description:
+#   Checks that SIMPLE QUEUE SERVICE (SQS) Queue Policy do not use Allow+NotAction
+#
+# Reports on:
+#   AWS::SQS::QueuePolicy
+#
+# Evaluates:
+#   AWS CloudFormation
+#
+# Rule Parameters:
+#   NA
+#
+# CFN_NAG Rule Id:
+#   W18
+#
+# Documentation:
+# https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-overview-of-managing-access.html
+#
+# Scenarios:
+# a) SKIP: when there are no SQS Queue Policies present
+# b) PASS: when all SQS Queue Policies do not use Allow+NotAction
+# c) FAIL: when any SQS Queue Policies allow both Effect: Allow and NotAction
+# d) SKIP: when metadata has rule suppression for SQS_QUEUEPOLICY_NO_ALLOW_PLUS_NOT_ACTION or CFN_NAG W18
+
+let sqs_queuepolicy_no_allow_plus_not_action = Resources.*[ Type == 'AWS::SQS::QueuePolicy'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W18"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "SQS_QUEUEPOLICY_NO_ALLOW_PLUS_NOT_ACTION"
+]
+
+rule SQS_QUEUEPOLICY_NO_ALLOW_PLUS_NOT_ACTION when %sqs_queuepolicy_no_allow_plus_not_action !empty {
+  let violations = %sqs_queuepolicy_no_allow_plus_not_action[
+    Type == 'AWS::SQS::QueuePolicy'
+    some Properties.PolicyDocument.Statement[*] {
+      Effect == "Allow"
+      NotAction exists
+    }
+  ]
+  %violations empty
+  <<
+    Violation: SQS QueuePolicy should not allow Allow+NotAction
+    Fix: Remove SQS Queue Policies that match {"Effect": "Allow", "NotAction": ... }
+  >>
+}

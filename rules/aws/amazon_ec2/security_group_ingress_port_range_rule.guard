@@ -1,0 +1,70 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#    SECURITY_GROUP_INGRESS_PORT_RANGE_RULE
+#
+# Description:
+#   Check if Security Groups found ingress with port range instead of just a single PORT
+#
+# Reports on:
+#    [AWS::EC2::SecurityGroup, AWS::EC2::SecurityGroupIngress]
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# CFN_NAG Rule Id:
+#   W27
+#
+# Scenarios:
+# a) SKIP: when there are no Security Ingress Groups resource present
+# b) PASS: When all Security Ingress Groups uses a single port and not range
+# c) FAIL: when any Security Ingress Groups uses a range of ports
+# d) SKIP: when metadata has rule suppression for SECURITY_GROUP_INGRESS_PORT_RANGE_RULE
+
+#
+# Select all Security Group Ingress resources from incoming template (payload)
+#
+let security_group_ingress_port_range_rule_sg_ingress_resources = Resources.*[ Type == 'AWS::EC2::SecurityGroup'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W27"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "SECURITY_GROUP_INGRESS_PORT_RANGE_RULE"
+]
+
+let security_group_ingress_port_range_rule_sgi_resources = Resources.*[ Type == 'AWS::EC2::SecurityGroupIngress'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W27"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "SECURITY_GROUP_INGRESS_PORT_RANGE_RULE"
+]
+
+rule SECURITY_GROUP_INGRESS_PORT_RANGE_RULE when %security_group_ingress_port_range_rule_sgi_resources !empty OR %security_group_ingress_port_range_rule_sg_ingress_resources !empty {
+  let violations_sg = %security_group_ingress_port_range_rule_sg_ingress_resources[
+    Type == 'AWS::EC2::SecurityGroup'
+    Properties.SecurityGroupIngress exists
+    some Properties.SecurityGroupIngress[*] {
+        FromPort exists
+        ToPort exists
+        FromPort not in ToPort
+    }
+  ]
+
+  let violations_sgi = %security_group_ingress_port_range_rule_sgi_resources[
+    Type == 'AWS::EC2::SecurityGroupIngress'
+    Properties.FromPort exists
+    Properties.ToPort exists
+    Properties.FromPort not in Properties.ToPort
+  ]
+
+  %violations_sg empty
+  %violations_sgi empty
+  <<
+    Violation: Security Group Ingress has a range of ports instead of a single port
+    Fix: Use single port instead of range of ports for ingress rules
+  >>
+}

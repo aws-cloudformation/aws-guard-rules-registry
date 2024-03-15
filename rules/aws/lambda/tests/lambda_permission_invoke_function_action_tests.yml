@@ -1,0 +1,131 @@
+###
+# LAMBDA_PERMISSION_INVOKE_FUNCTION_ACTION tests
+###
+---
+- name: Empty
+  input: {}
+  expectations:
+    rules:
+      LAMBDA_PERMISSION_INVOKE_FUNCTION_ACTION: SKIP
+
+- name: No resources
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      LAMBDA_PERMISSION_INVOKE_FUNCTION_ACTION: SKIP
+
+- name: Lambda permission policy with only invokeFunction actions
+  input:
+    Resources:
+      ExampleLambdaPermission1:
+        Type: "AWS::Lambda::Permission"
+        Properties:
+          Action: lambda:InvokeFunction
+          FunctionName: test-function
+          Principal: 111122223333
+      ExampleLambdaPermission2:
+        Type: "AWS::Lambda::Permission"
+        Properties:
+          Action: lambda:InvokeFunction
+          FunctionName: test-function
+          Principal: "123456789012"
+      ExampleLambdaPermission3:
+        Type: "AWS::Lambda::Permission"
+        Properties:
+          Action: lambda:InvokeFunction
+          FunctionName: test-function
+          Principal: !Ref AWS::AccountId
+  expectations:
+    rules:
+      LAMBDA_PERMISSION_INVOKE_FUNCTION_ACTION: PASS
+
+- name: Lambda permission action is lambda:GetFunction
+  input:
+    Resources:
+      ExampleLambdaPermission1:
+        Type: "AWS::Lambda::Permission"
+        Properties:
+          Action: lambda:GetFunction
+          FunctionName: test-function
+          Principal: 111122223333
+          SourceAccount: 123456789012
+  expectations:
+    rules:
+      LAMBDA_PERMISSION_INVOKE_FUNCTION_ACTION: FAIL
+
+- name: Lambda permission actions are lambda:GetFunction and lambda:InvokeFunction
+  input:
+    Resources:
+      ExampleLambdaPermission1:
+        Type: "AWS::Lambda::Permission"
+        Properties:
+          Action: [
+            lambda:InvokeFunction,
+            lambda:GetFunction
+          ]
+          FunctionName: test-function
+          Principal: 111122223333
+          SourceAccount: 123456789012
+  expectations:
+    rules:
+      LAMBDA_PERMISSION_INVOKE_FUNCTION_ACTION: FAIL
+
+- name: CFN_NAG suppression for W24
+  input:
+    Resources:
+      ExampleLambdaPermission:
+        Type: "AWS::Lambda::Permission"
+        Properties:
+          Action: lambda:GetFunction
+          Principal: 111122223333
+          FunctionName: test-function
+          OrganizationId: o-aa111bb222
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W24
+              reason: Suppressed to test suppression works and skips this test
+  expectations:
+    rules:
+      LAMBDA_PERMISSION_INVOKE_FUNCTION_ACTION: SKIP
+
+- name: Guard suppression for LAMBDA_PERMISSION_INVOKE_FUNCTION_ACTION
+  input:
+    Resources:
+      ExampleLambdaPermission:
+        Type: "AWS::Lambda::Permission"
+        Properties:
+          Action: lambda:GetFunction
+          Principal: 111122223333
+          FunctionName: test-function
+          OrganizationId: o-aa111bb222
+        Metadata:
+          guard:
+            SuppressedRules:
+            - LAMBDA_PERMISSION_INVOKE_FUNCTION_ACTION
+  expectations:
+    rules:
+      LAMBDA_PERMISSION_INVOKE_FUNCTION_ACTION: SKIP
+
+- name: Guard and CFN_NAG suppression for W24 & LAMBDA_PERMISSION_INVOKE_FUNCTION_ACTION
+  input:
+    Resources:
+      ExampleLambdaPermission:
+        Type: "AWS::Lambda::Permission"
+        Properties:
+          Action: lambda:GetFunction
+          Principal: 111122223333
+          FunctionName: test-function
+          OrganizationId: o-aa111bb222
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W24
+              reason: Suppressed to test suppression works and skips this test
+          guard:
+            SuppressedRules:
+            - LAMBDA_PERMISSION_INVOKE_FUNCTION_ACTION
+  expectations:
+    rules:
+      LAMBDA_PERMISSION_INVOKE_FUNCTION_ACTION: SKIP

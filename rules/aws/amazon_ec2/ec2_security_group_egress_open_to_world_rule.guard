@@ -1,0 +1,69 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#    EC2_SECURITY_GROUP_EGRESS_OPEN_TO_WORLD_RULE
+#
+# Description:
+#   Check if cidr FOR ipv4 and ipv6 on security group egress is open or private.
+#
+# Reports on:
+#    AWS::EC2::SecurityGroup, AWS::EC2::SecurityGroupEgress
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# CFN_NAG Rule Id:
+#   W5
+#
+# Scenarios:
+# a) SKIP: when there are no Security Egress Groups resource present
+# b) PASS: When all Security Egress Groups do not use open to world cidr
+# c) FAIL: when any Security Egress Groups uses open to world cidr
+# d) SKIP: when metadata has rule suppression for EC2_SECURITY_GROUP_EGRESS_OPEN_TO_WORLD_RULE
+
+#
+# Select all Security Group Egress resources from incoming template (payload)
+#
+
+let ec2_security_group_ingress_open_to_world_rule_sg_egress_resources = Resources.*[ Type == 'AWS::EC2::SecurityGroup'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W5"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "EC2_SECURITY_GROUP_EGRESS_OPEN_TO_WORLD_RULE"
+]
+
+let ec2_security_group_egress_open_to_world_rule_sge_resources = Resources.*[ Type == 'AWS::EC2::SecurityGroupEgress'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W5"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "EC2_SECURITY_GROUP_EGRESS_OPEN_TO_WORLD_RULE"
+]
+
+rule EC2_SECURITY_GROUP_EGRESS_OPEN_TO_WORLD_RULE when %ec2_security_group_egress_open_to_world_rule_sge_resources !empty OR %ec2_security_group_ingress_open_to_world_rule_sg_egress_resources !empty {
+  let violations_sg = %ec2_security_group_ingress_open_to_world_rule_sg_egress_resources[
+    Type == 'AWS::EC2::SecurityGroup'
+    Properties.SecurityGroupEgress exists
+    some Properties.SecurityGroupEgress[*].CidrIp == '0.0.0.0/0'
+    OR
+    some Properties.SecurityGroupEgress[*].CidrIpv6 == '::/0'
+  ]
+
+  let violations_sge = %ec2_security_group_egress_open_to_world_rule_sge_resources[
+    Type == 'AWS::EC2::SecurityGroupEgress'
+    Properties.CidrIp == '0.0.0.0/0'
+    OR
+    Properties.CidrIpv6 == '::/0'
+  ]
+
+  %violations_sg empty
+  %violations_sge empty
+  <<
+    Violation: Security Group Egress has a range of ports instead of a single port
+    Fix: Use single port instead of range of ports for egress rules
+  >>
+}

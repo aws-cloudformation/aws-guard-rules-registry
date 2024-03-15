@@ -1,0 +1,53 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#   IAM_NO_POLICY_ON_USER
+#
+# Description:
+#   Checks that IAM Policies are not attached to IAM Users
+#
+# Reports on:
+#   AWS::IAM::Policy
+#
+# Evaluates:
+#   AWS CloudFormation
+#
+# Rule Parameters:
+#   NA
+#
+# CFN_NAG Rule Id:
+#   F11, F12
+#
+# Scenarios:
+# a) SKIP: when there are no IAM Policies present
+# b) PASS: when no IAM Policies attach to Users
+# c) FAIL: when any S3 BucketPolicies PolicyDocument statement has both Effect: Allow and NotPrincipal
+# d) SKIP: when metadata has rule suppression for IAM_NO_POLICY_ON_USER or CFN_NAG F11, F12
+
+let applicable_types = [
+  "AWS::IAM::Policy",
+  "AWS::IAM::ManagedPolicy"
+]
+
+let iam_no_policy_on_user = Resources.*[ Type in %applicable_types
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id !in [ "F11", "F12" ]
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "IAM_NO_POLICY_ON_USER"
+]
+
+rule IAM_NO_POLICY_ON_USER when %iam_no_policy_on_user !empty {
+  let violations = %iam_no_policy_on_user[
+    Type == 'AWS::IAM::Policy'
+    or
+    Type == 'AWS::IAM::ManagedPolicy'
+    Properties.Users !empty
+  ]
+  %violations empty
+  <<
+    Violation: IAM policy/managedpolicy should not apply directly to users.  Should be on group
+    Fix: Associate the IAM Policy/ManagedPolicy with a Group and make the IAM User a member of the group.
+  >>
+}

@@ -1,0 +1,55 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#    KINESIS_STREAM_ENCRYPTION_RULE
+#
+# Description:
+#   Kinesis Stream should specify StreamEncryption. EncryptionType should be KMS and specify KMS Key Id.
+#
+# Reports on:
+#    AWS::Kinesis::Stream
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# CFN_NAG Rule Id:
+#   W49
+#
+# Scenarios:
+# a) SKIP: when there is no Kinesis Stream resource present.
+# b) PASS: when Kinesis Stream have StreamEncryption in which KeyId and EncryptionType set to 'KMS'.
+# c) FAIL: when Kinesis Stream does not have StreamEncryption in which KeyId or EncryptionType is not set to 'KMS'.
+# d) SKIP: when metadata has rule suppression for KINESIS_STREAM_ENCRYPTION_RULE
+
+#
+# Select all Kinesis Stream resources from incoming template (payload)
+#
+let kinesis_stream_encryption_rule = Resources.*[ Type == 'AWS::Kinesis::Stream'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W49"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "KINESIS_STREAM_ENCRYPTION_RULE"
+]
+
+rule KINESIS_STREAM_ENCRYPTION_RULE when %kinesis_stream_encryption_rule !empty {
+  let violations = %kinesis_stream_encryption_rule[
+    Type == 'AWS::Kinesis::Stream'
+    Properties.StreamEncryption !exists
+    OR
+    Properties.StreamEncryption.EncryptionType !exists
+    OR
+    Properties.StreamEncryption.EncryptionType != 'KMS'
+    OR
+    Properties.StreamEncryption.KeyId !exists
+  ]
+  %violations empty
+  <<
+    Violation: Kinesis Streams does not have streamEncryption in which KeyId should be specified and EncryptionType should be 'KMS'.
+    Fix: Specify streamEncryption in which KeyId should be specified and EncryptionType should be 'KMS'.
+  >>
+}

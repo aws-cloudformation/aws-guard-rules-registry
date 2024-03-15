@@ -1,0 +1,126 @@
+###
+# IAM_ROLE_NO_WILDCARD_ACTIONS_ON_PERMISSIONS tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      IAM_ROLE_NO_WILDCARD_ACTIONS_ON_PERMISSIONS: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      IAM_ROLE_NO_WILDCARD_ACTIONS_ON_PERMISSIONS: SKIP
+
+- name: IAM Role with PolicyDocument and no global allow, PASS
+  input: 
+    Resources: 
+      ExamplePolicy: 
+        Type: "AWS::IAM::Role"
+        Properties:
+          Policies:
+          - PolicyName: root
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: Allow
+                  Action: 'ec2:DescribeInstance'
+                  Resource: '*'
+  expectations:
+    rules: 
+      IAM_ROLE_NO_WILDCARD_ACTIONS_ON_PERMISSIONS: PASS
+
+- name: IAM Role with full access to a single service, FAIL
+  input:
+    Resources:
+      ExamplePolicy:
+        Type: "AWS::IAM::Role"
+        Properties:
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action: "s3:*"
+  expectations:
+    rules:
+      IAM_ROLE_NO_WILDCARD_ACTIONS_ON_PERMISSIONS: FAIL
+
+- name: IAM Role with full access to all services, FAIL
+  input:
+    Resources:
+      ExamplePolicy:
+        Type: "AWS::IAM::Role"
+        Properties:
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action: "*"
+  expectations:
+    rules:
+      IAM_ROLE_NO_WILDCARD_ACTIONS_ON_PERMISSIONS: FAIL
+
+- name: IAM Role with full access to all services, but rule suppressed, SKIP
+  input: 
+    Resources:
+      ExamplePolicy:
+        Type: "AWS::IAM::Role"
+        Metadata:
+          guard:
+            SuppressedRules:
+            - IAM_ROLE_NO_WILDCARD_ACTIONS_ON_PERMISSIONS: Suppressed for a very good reason
+        Properties:
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action: "*"
+  expectations:
+    rules: 
+      IAM_ROLE_NO_WILDCARD_ACTIONS_ON_PERMISSIONS: SKIP
+
+- name: IAM Role with full access to all services, but rule suppressed - CFN_NAG, SKIP
+  input: 
+    Resources:
+      ExamplePolicy:
+        Type: "AWS::IAM::Role"
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: F3
+              reason: Suppressed for a very good reason
+        Properties:
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action: "*"
+  expectations:
+    rules: 
+      IAM_ROLE_NO_WILDCARD_ACTIONS_ON_PERMISSIONS: SKIP
+
+- name: IAM Role with full access to all services, but rule suppressed - BOTH, SKIP
+  input: 
+    Resources:
+      ExamplePolicy:
+        Type: "AWS::IAM::Role"
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: F3
+              reason: Suppressed for a very good reason
+          guard:
+            SuppressedRules:
+            - IAM_ROLE_NO_WILDCARD_ACTIONS_ON_PERMISSIONS: Suppressed for a very good reason
+        Properties:
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action: "*"
+  expectations:
+    rules: 
+      IAM_ROLE_NO_WILDCARD_ACTIONS_ON_PERMISSIONS: SKIP

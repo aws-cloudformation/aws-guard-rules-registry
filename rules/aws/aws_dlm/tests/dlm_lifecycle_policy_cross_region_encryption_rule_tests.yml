@@ -1,0 +1,403 @@
+###
+# DLM_LIFECYCLE_POLICY_CROSS_REGION_ENCRYPTION_RULE tests
+###
+---
+- name: Empty
+  input: {}
+  expectations:
+    rules:
+      DLM_LIFECYCLE_POLICY_CROSS_REGION_ENCRYPTION_RULE: SKIP
+
+- name: No resources
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      DLM_LIFECYCLE_POLICY_CROSS_REGION_ENCRYPTION_RULE: SKIP
+
+- name: ACTIONS do not exist
+  input:
+    Resources:
+      BasicLifecyclePolicy:
+        Type: AWS::DLM::LifecyclePolicy
+        Properties:
+          Description: Lifecycle Policy using CloudFormation
+          State: ENABLED
+          ExecutionRoleArn: arn:aws:iam::123456789012:role/service-role/AWSDataLifecycleManagerDefaultRole
+          PolicyDetails:
+            ResourceTypes:
+              - VOLUME
+            TargetTags:
+              - Key: costcenter
+                Value: '115'
+            Schedules:
+              - Name: Daily Snapshots
+                TagsToAdd:
+                  - Key: type
+                    Value: DailySnapshot
+                CreateRule:
+                  Interval: 12
+                  IntervalUnit: HOURS
+                  Times:
+                    - '13:00'
+                RetainRule:
+                  Count: 1
+                CopyTags: true
+                CrossRegionCopyRules:
+                  - Encrypted: false
+                    Target: us-east-1
+  expectations:
+    rules:
+      DLM_LIFECYCLE_POLICY_CROSS_REGION_ENCRYPTION_RULE: PASS
+
+- name: CrossRegionCopy do not exist
+  input:
+    Resources:
+      BasicLifecyclePolicy:
+        Type: AWS::DLM::LifecyclePolicy
+        Properties:
+          Description: Lifecycle Policy using CloudFormation
+          State: ENABLED
+          ExecutionRoleArn: arn:aws:iam::123456789012:role/service-role/AWSDataLifecycleManagerDefaultRole
+          PolicyDetails:
+            Actions:
+            ResourceTypes:
+              - VOLUME
+            TargetTags:
+              - Key: costcenter
+                Value: '115'
+            Schedules:
+              - Name: Daily Snapshots
+                TagsToAdd:
+                  - Key: type
+                    Value: DailySnapshot
+                CreateRule:
+                  Interval: 12
+                  IntervalUnit: HOURS
+                  Times:
+                    - '13:00'
+                RetainRule:
+                  Count: 1
+                CopyTags: true
+                CrossRegionCopyRules:
+                  - Encrypted: false
+                    Target: us-east-1
+  expectations:
+    rules:
+      DLM_LIFECYCLE_POLICY_CROSS_REGION_ENCRYPTION_RULE: PASS
+
+- name: Encrypted set to True
+  input:
+    Resources:
+      BasicLifecyclePolicy:
+        Type: AWS::DLM::LifecyclePolicy
+        Properties:
+          Description: Lifecycle Policy using CloudFormation
+          State: ENABLED
+          ExecutionRoleArn: arn:aws:iam::123456789012:role/service-role/AWSDataLifecycleManagerDefaultRole
+          PolicyDetails:
+            Actions:
+              - CrossRegionCopy:
+                  - EncryptionConfiguration:
+                      CmkArn: 'TestArn'
+                      Encrypted: true
+                    Target: 'TestTarget'
+                Name: 'TestName'
+            ResourceTypes:
+              - VOLUME
+            TargetTags:
+              - Key: costcenter
+                Value: '115'
+            Schedules:
+              - Name: Daily Snapshots
+                TagsToAdd:
+                  - Key: type
+                    Value: DailySnapshot
+                CreateRule:
+                  Interval: 12
+                  IntervalUnit: HOURS
+                  Times:
+                    - '13:00'
+                RetainRule:
+                  Count: 1
+                CopyTags: true
+                CrossRegionCopyRules:
+                  - Encrypted: false
+                    Target: us-east-1
+  expectations:
+    rules:
+      DLM_LIFECYCLE_POLICY_CROSS_REGION_ENCRYPTION_RULE: PASS
+
+- name: Encrypted set to False
+  input:
+    Resources:
+      BasicLifecyclePolicy:
+        Type: AWS::DLM::LifecyclePolicy
+        Properties:
+          Description: Lifecycle Policy using CloudFormation
+          State: ENABLED
+          ExecutionRoleArn: arn:aws:iam::123456789012:role/service-role/AWSDataLifecycleManagerDefaultRole
+          PolicyDetails:
+            Actions:
+              - CrossRegionCopy:
+                  - EncryptionConfiguration:
+                      CmkArn: 'TestArn'
+                      Encrypted: false
+                    Target: 'TestTarget'
+                Name: 'TestName'
+            ResourceTypes:
+              - VOLUME
+            TargetTags:
+              - Key: costcenter
+                Value: '115'
+            Schedules:
+              - Name: Daily Snapshots
+                TagsToAdd:
+                  - Key: type
+                    Value: DailySnapshot
+                CreateRule:
+                  Interval: 12
+                  IntervalUnit: HOURS
+                  Times:
+                    - '13:00'
+                RetainRule:
+                  Count: 1
+                CopyTags: true
+                CrossRegionCopyRules:
+                  - Encrypted: false
+                    Target: us-east-1
+  expectations:
+    rules:
+      DLM_LIFECYCLE_POLICY_CROSS_REGION_ENCRYPTION_RULE: FAIL
+
+- name: Encrypted do not exist
+  input:
+    Resources:
+      BasicLifecyclePolicy:
+        Type: AWS::DLM::LifecyclePolicy
+        Properties:
+          Description: Lifecycle Policy using CloudFormation
+          State: ENABLED
+          ExecutionRoleArn: arn:aws:iam::123456789012:role/service-role/AWSDataLifecycleManagerDefaultRole
+          PolicyDetails:
+            Actions:
+              - CrossRegionCopy:
+                  - EncryptionConfiguration:
+                      CmkArn: 'TestArn'
+                    Target: 'TestTarget'
+                Name: 'TestName'
+            ResourceTypes:
+              - VOLUME
+            TargetTags:
+              - Key: costcenter
+                Value: '115'
+            Schedules:
+              - Name: Daily Snapshots
+                TagsToAdd:
+                  - Key: type
+                    Value: DailySnapshot
+                CreateRule:
+                  Interval: 12
+                  IntervalUnit: HOURS
+                  Times:
+                    - '13:00'
+                RetainRule:
+                  Count: 1
+                CopyTags: true
+                CrossRegionCopyRules:
+                  - Encrypted: false
+                    Target: us-east-1
+  expectations:
+    rules:
+      DLM_LIFECYCLE_POLICY_CROSS_REGION_ENCRYPTION_RULE: FAIL
+
+- name: 2 CrossRegionCopy, one with encryption enabled, and one with encryption disabled.
+  input:
+    Resources:
+      BasicLifecyclePolicy:
+        Type: AWS::DLM::LifecyclePolicy
+        Properties:
+          Description: Lifecycle Policy using CloudFormation
+          State: ENABLED
+          ExecutionRoleArn: arn:aws:iam::123456789012:role/service-role/AWSDataLifecycleManagerDefaultRole
+          PolicyDetails:
+            Actions:
+              - CrossRegionCopy:
+                  - EncryptionConfiguration:
+                      CmkArn: 'TestArn'
+                      Encrypted: true
+                    Target: 'TestTarget'
+                Name: 'TestName'
+              - CrossRegionCopy:
+                  - EncryptionConfiguration:
+                      CmkArn: 'TestArn2'
+                      Encrypted: false
+                    Target: 'TestTarget2'
+                Name: 'TestName2'
+            ResourceTypes:
+              - VOLUME
+            TargetTags:
+              - Key: costcenter
+                Value: '115'
+            Schedules:
+              - Name: Daily Snapshots
+                TagsToAdd:
+                  - Key: type
+                    Value: DailySnapshot
+                CreateRule:
+                  Interval: 12
+                  IntervalUnit: HOURS
+                  Times:
+                    - '13:00'
+                RetainRule:
+                  Count: 1
+                CopyTags: true
+                CrossRegionCopyRules:
+                  - Encrypted: false
+                    Target: us-east-1
+  expectations:
+    rules:
+      DLM_LIFECYCLE_POLICY_CROSS_REGION_ENCRYPTION_RULE: FAIL
+
+- name: CFN_NAG suppression for W81
+  input:
+    Resources:
+      BasicLifecyclePolicy:
+        Type: AWS::DLM::LifecyclePolicy
+        Properties:
+          Description: Lifecycle Policy using CloudFormation
+          State: ENABLED
+          ExecutionRoleArn: arn:aws:iam::123456789012:role/service-role/AWSDataLifecycleManagerDefaultRole
+          PolicyDetails:
+            Actions:
+              - CrossRegionCopy:
+                  - EncryptionConfiguration:
+                      CmkArn: 'TestArn'
+                      Encrypted: false
+                    Target: 'TestTarget'
+                Name: 'TestName'
+            ResourceTypes:
+              - VOLUME
+            TargetTags:
+              - Key: costcenter
+                Value: '115'
+            Schedules:
+              - Name: Daily Snapshots
+                TagsToAdd:
+                  - Key: type
+                    Value: DailySnapshot
+                CreateRule:
+                  Interval: 12
+                  IntervalUnit: HOURS
+                  Times:
+                    - '13:00'
+                RetainRule:
+                  Count: 1
+                CopyTags: true
+                CrossRegionCopyRules:
+                  - Encrypted: false
+                    Target: us-east-1
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+              - id: W81
+                reason: Suppressed to test suppression works and skips this test
+  expectations:
+    rules:
+      DLM_LIFECYCLE_POLICY_CROSS_REGION_ENCRYPTION_RULE: SKIP
+
+- name: Guard suppression for DLM_LIFECYCLE_POLICY_CROSS_REGION_ENCRYPTION_RULE
+  input:
+    Resources:
+      BasicLifecyclePolicy:
+        Type: AWS::DLM::LifecyclePolicy
+        Properties:
+          Description: Lifecycle Policy using CloudFormation
+          State: ENABLED
+          ExecutionRoleArn: arn:aws:iam::123456789012:role/service-role/AWSDataLifecycleManagerDefaultRole
+          PolicyDetails:
+            Actions:
+              - CrossRegionCopy:
+                  - EncryptionConfiguration:
+                      CmkArn: 'TestArn'
+                      Encrypted: false
+                    Target: 'TestTarget'
+                Name: 'TestName'
+            ResourceTypes:
+              - VOLUME
+            TargetTags:
+              - Key: costcenter
+                Value: '115'
+            Schedules:
+              - Name: Daily Snapshots
+                TagsToAdd:
+                  - Key: type
+                    Value: DailySnapshot
+                CreateRule:
+                  Interval: 12
+                  IntervalUnit: HOURS
+                  Times:
+                    - '13:00'
+                RetainRule:
+                  Count: 1
+                CopyTags: true
+                CrossRegionCopyRules:
+                  - Encrypted: false
+                    Target: us-east-1
+        Metadata:
+          guard:
+            SuppressedRules:
+              - DLM_LIFECYCLE_POLICY_CROSS_REGION_ENCRYPTION_RULE
+  expectations:
+    rules:
+      DLM_LIFECYCLE_POLICY_CROSS_REGION_ENCRYPTION_RULE: SKIP
+
+- name: Guard and CFN_NAG suppression for W81 & DLM_LIFECYCLE_POLICY_CROSS_REGION_ENCRYPTION_RULE
+  input:
+    Resources:
+      BasicLifecyclePolicy:
+        Type: AWS::DLM::LifecyclePolicy
+        Properties:
+          Description: Lifecycle Policy using CloudFormation
+          State: ENABLED
+          ExecutionRoleArn: arn:aws:iam::123456789012:role/service-role/AWSDataLifecycleManagerDefaultRole
+          PolicyDetails:
+            Actions:
+              - CrossRegionCopy:
+                  - EncryptionConfiguration:
+                      CmkArn: 'TestArn'
+                      Encrypted: false
+                    Target: 'TestTarget'
+                Name: 'TestName'
+            ResourceTypes:
+              - VOLUME
+            TargetTags:
+              - Key: costcenter
+                Value: '115'
+            Schedules:
+              - Name: Daily Snapshots
+                TagsToAdd:
+                  - Key: type
+                    Value: DailySnapshot
+                CreateRule:
+                  Interval: 12
+                  IntervalUnit: HOURS
+                  Times:
+                    - '13:00'
+                RetainRule:
+                  Count: 1
+                CopyTags: true
+                CrossRegionCopyRules:
+                  - Encrypted: false
+                    Target: us-east-1
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+              - id: W81
+                reason: Suppressed to test suppression works and skips this test
+          guard:
+            SuppressedRules:
+              - DLM_LIFECYCLE_POLICY_CROSS_REGION_ENCRYPTION_RULE
+  expectations:
+    rules:
+      DLM_LIFECYCLE_POLICY_CROSS_REGION_ENCRYPTION_RULE: SKIP

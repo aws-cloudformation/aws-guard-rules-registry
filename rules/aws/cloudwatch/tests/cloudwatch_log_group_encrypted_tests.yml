@@ -52,3 +52,19 @@
   expectations:
     rules:
       CLOUDWATCH_LOG_GROUP_ENCRYPTED: SKIP
+
+- name: CloudWatch Log LogGroup missing KmsKeyId but rule suppressed, SKIP
+  input:
+    Resources:
+      ExampleLogGroup:
+        Type: AWS::Logs::LogGroup
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W84
+              reason: Suppressed for a very good reason
+        Properties:
+          LogGroupName: myLogGroup
+  expectations:
+    rules:
+      CLOUDWATCH_LOG_GROUP_ENCRYPTED: SKIP

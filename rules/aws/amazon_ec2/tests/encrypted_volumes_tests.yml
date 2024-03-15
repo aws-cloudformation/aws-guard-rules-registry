@@ -27,6 +27,20 @@
   expectations:
     rules:
       ENCRYPTED_VOLUMES: PASS
+
+- name: EC2 Volume with Encrypted property false, FAIL
+  input:
+    Resources:
+      ExampleVolume:
+        Type: AWS::EC2::Volume
+        Properties:
+          AvailabilityZone: !Ref pAz
+          Size: !Ref pSize
+          Encrypted: false
+  expectations:
+    rules:
+      ENCRYPTED_VOLUMES: FAIL
+
 - name: EC2 Volume with Encrypted property set to true, PASS
   input:
     Resources:
@@ -61,6 +75,23 @@
           guard:
             SuppressedRules:
             - ENCRYPTED_VOLUMES
+        Properties:
+          AvailabilityZone: !Ref pAz
+          Size: !Ref pSize
+  expectations:
+    rules:
+      ENCRYPTED_VOLUMES: SKIP
+
+- name: EC2 Volume without KmsKeyId or Encrypted properties set but rule suppressed, SKIP
+  input:
+    Resources:
+      ExampleVolume:
+        Type: AWS::EC2::Volume
+        Metadata:
+          cfn-nag:
+            rules_to_suppress:
+            - id: F1
+              reason: Suppressed for a very good reason
         Properties:
           AvailabilityZone: !Ref pAz
           Size: !Ref pSize
