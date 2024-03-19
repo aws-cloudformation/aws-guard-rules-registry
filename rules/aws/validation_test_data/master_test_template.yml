@@ -1,0 +1,1690 @@
+---
+# This template contains one of every failure scenario. Resource definitions
+# my be direcly from unit test data. The purpose is to use cfn-guard validate
+# to confirm that the rules work as expected in a realistic setting
+#
+# Add new rule resource examples in order by service folder and rule name
+# Choose an example from the test data for each unique failure scenario and add the resource
+# run cfn-guard validate -r rules/aws -d rules/aws/validation_test_data
+# Verify the following:
+# 1) Each example produces the expected failure
+# 2) The exception shows the Message {} for the exception
+#
+# Note: Avoid having one test trigger more than one rule!
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Sample template
+Parameters:
+  MyNotSecurePasswordWithDefault:
+    Type: String
+    Description: Enter a password
+    MinLength: 8
+    NoEcho: true
+    Default: foobarbaz
+
+  MyNotSecurePlaintextPassword:
+    MyPassword:
+      Type: String
+      Description: Enter a password
+      MinLength: 8
+
+Resources:
+##
+## all_resources
+##
+
+# -- cfn_authentication_rule
+  Metadata:
+    Type: AWS::CloudFormation::Authentication
+    "AWS::CloudFormation::Authentication":
+      testBasic:
+        type: "basic"
+        username: "testUsername1"
+        password: "sensitive_password"
+        uris:
+          - "http://www.example.com/test"
+
+# amazon_ec2
+# -- encrypted_volumes
+  ENCRYPTED_VOLUMES:
+    Type: AWS::EC2::Volume
+    Properties:
+      AvailabilityZone: !Ref pAz
+      Size: !Ref pSize
+      KmsKeyId: testKey
+
+# -- security_group_ingress_port_range_rule
+  SECURITY_GROUP_INGRESS_PORT_RANGE_RULE:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      IpProtocol: tcp
+      FromPort: 35
+      ToPort: 45
+      SourceSecurityGroupId:
+        Fn::GetAtt:
+          - SourceSG
+          - GroupId
+      GroupId:
+        Fn::GetAtt:
+          - TargetSG
+          - GroupId
+
+# -- security_group_egress_port_range_rule
+  SECURITY_GROUP_EGRESS_PORT_RANGE_RULE:
+    Type: AWS::EC2::SecurityGroupEgress
+    Properties:
+      IpProtocol: tcp
+      FromPort: 46
+      ToPort: 56
+      DestinationSecurityGroupId:
+        Fn::GetAtt:
+          - TargetSG
+          - GroupId
+      GroupId:
+        Fn::GetAtt:
+          - SourceSG
+          - GroupId
+
+# -- ec2_security_group_ingress_open_to_world_rule
+  EC2_SECURITY_GROUP_INGRESS_OPEN_TO_WORLD_RULE:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      IpProtocol: tcp
+      FromPort: 45
+      ToPort: 45
+      CidrIp: 0.0.0.0/0
+      CidrIpv6: ::/0
+      SourceSecurityGroupId:
+        Fn::GetAtt:
+          - SourceSG
+          - GroupId
+      GroupId:
+        Fn::GetAtt:
+          - TargetSG
+          - GroupId
+
+# -- ec2_security_group_egress_open_to_world_rule
+  EC2_SECURITY_GROUP_EGRESS_OPEN_TO_WORLD_RULE:
+    Type: AWS::EC2::SecurityGroupEgress
+    Properties:
+      IpProtocol: tcp
+      FromPort: 56
+      ToPort: 56
+      CidrIp: 0.0.0.0/0
+      CidrIpv6: ::/0
+      DestinationSecurityGroupId:
+        Fn::GetAtt:
+          - TargetSG
+          - GroupId
+      GroupId:
+        Fn::GetAtt:
+          - SourceSG
+          - GroupId
+
+# -- ec2_security_group_ingress_open_to_world_rule
+  SECURITY_GROUP_INGRESS_ALL_PROTOCOLS_RULE:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      IpProtocol: -1
+      FromPort: 45
+      ToPort: 45
+      SourceSecurityGroupId:
+        Fn::GetAtt:
+          - SourceSG
+          - GroupId
+      GroupId:
+        Fn::GetAtt:
+          - TargetSG
+          - GroupId
+
+# -- ec2_security_group_egress_open_to_world_rule
+  SECURITY_GROUP_EGRESS_ALL_PROTOCOLS_RULE:
+    Type: AWS::EC2::SecurityGroupEgress
+    Properties:
+      IpProtocol: -1
+      FromPort: 56
+      ToPort: 56
+      CidrIp: 172.0.0.1/32
+      CidrIpv6: 2001:db8:1234::f350:2256:f3dd/128
+      DestinationSecurityGroupId:
+        Fn::GetAtt:
+          - TargetSG
+          - GroupId
+      GroupId:
+        Fn::GetAtt:
+          - SourceSG
+          - GroupId
+
+# -- ec2_security_group_ingress_open_to_world_rule
+  SECURITY_GROUP_INGRESS_CIDR_NON_32_RULE:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      IpProtocol: tcp
+      FromPort: 45
+      ToPort: 45
+      CidrIp: 172.0.0.1/28
+      CidrIpv6: 2001:db8:1234::f350:2256:f3dd/64
+      SourceSecurityGroupId:
+        Fn::GetAtt:
+          - SourceSG
+          - GroupId
+      GroupId:
+        Fn::GetAtt:
+          - TargetSG
+          - GroupId
+
+# -- ebs_volume_encryption_key_rule
+  EBS_VOLUME_ENCRYPTION_KEY_RULE:
+    Type: AWS::EC2::Volume
+    Properties:
+      Size: 100
+      Encrypted: true
+      AvailabilityZone: !GetAtt Ec2Instance.AvailabilityZone
+      Tags:
+        - Key: MyTag
+          Value: TagValue
+    DeletionPolicy: Snapshot
+
+# -- security_group_description_rule
+  SECURITY_GROUP_DESCRIPTION_RULE:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      VpcId: vpc-1a2b3c4d
+      GroupDescription: Sample source security group
+      SecurityGroupEgress:
+        FromPort: 34
+        IpProtocol: 'tcp'
+        ToPort: 34
+      SecurityGroupIngress:
+        - Description: 'Test Description'
+          FromPort: 43
+          IpProtocol: 'tcp'
+          ToPort: 43
+
+# amazon_ec2_autoscaling
+
+# -- ec2_network_acl_protocol_rule
+  EC2_NETWORK_ACL_PROTOCOL_RULE:
+    Type: AWS::EC2::NetworkAclEntry
+    Properties:
+      NetworkAclId:
+        Ref: MyNACL
+      RuleNumber: 100
+      Protocol: 58
+      Egress: true
+      RuleAction: allow
+      CidrBlock: 0.0.0.0/0
+      Icmp:
+        Code: "0"
+        Type: "0"
+
+# -- ec2_network_acl_port_range_rule
+  EC2_NETWORK_ACL_PORT_RANGE_RULE:
+    Type: AWS::EC2::NetworkAclEntry
+    Properties:
+      NetworkAclId:
+        Ref: MyNACL
+      RuleNumber: 100
+      Protocol: 6
+      Egress: true
+      RuleAction: allow
+      CidrBlock: 0.0.0.0/0
+      Icmp:
+        Code: "0"
+        Type: "0"
+      PortRange:
+        From: 0
+        To: 65535
+
+# -- security_group_missing_egress_rule
+  SECURITY_GROUP_MISSING_EGRESS_RULE:
+    Type: AWS::EC2::SecurityGroup
+    DependsOn: VPC
+    Properties:
+      GroupDescription: SG to test ping
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 10.0.0.0/24
+        - IpProtocol: icmp
+          FromPort: 8
+          ToPort: -1
+          CidrIp: 10.0.0.0/24
+
+# -- ec2_network_acl_entry_ineffective_deny_rule
+  EC2_NETWORK_ACL_ENTRY_INEFFECTIVE_DENY_RULE:
+    Type: AWS::EC2::NetworkAclEntry
+    Properties:
+      NetworkAclId:
+        Ref: MyNACL
+      RuleNumber: 100
+      Protocol: 1
+      RuleAction: deny
+      CidrBlock: 172.0.0.1/32
+      Ipv6CidrBlock: 2001:0db8:85a3:0000:0000:8a2e:0370:7334/128
+      PortRange:
+        From: 0
+        To: 65535
+
+##
+## amazon_eks
+##
+
+# -- eks_cluster_encryption_rule
+  EKS_CLUSTER_ENCRYPTION_RULE:
+    Type: AWS::EKS::Cluster
+    Properties:
+      Version: "1.20"
+      RoleArn: "arn:aws:iam::012345678910:role/eks-service-role-AWSServiceRoleForAmazonEKS-EXAMPLEBQ4PI"
+      EncryptionConfig:
+        - Provider:
+          Resources:
+            - "testVal1"
+        - Provider:
+            KeyArn: "testKey2"
+          Resources:
+            - "testVal2"
+      ResourcesVpcConfig:
+        SecurityGroupIds:
+          - sg-6979fe18
+        SubnetIds:
+          - subnet-6782e71e
+          - subnet-e7e761ac
+        EndpointPublicAccess: false
+        EndpointPrivateAccess: true
+        PublicAccessCidrs: [ "1.1.1.2/32" ]
+      Logging:
+        ClusterLogging:
+          EnabledTypes:
+            - Type: api
+            - Type: audit
+      Tags:
+        - Key: "KEY"
+          Value: "val"
+
+##
+## amazon_emr
+##
+
+# -- emr_security_config_enabled_and_configured_rule
+  EMR_SECURITY_CONFIG_ENABLED_AND_CONFIGURED_RULE:
+    Type: AWS::EMR::SecurityConfiguration
+    Properties:
+      SecurityConfiguration:
+        EncryptionConfiguration:
+          EnableAtRestEncryption: false
+          EnableInTransitEncryption: true
+          AtRestEncryptionConfiguration:
+            S3EncryptionConfiguration:
+              EncryptionMode: SSE-S3
+            LocalDiskEncryptionConfiguration:
+              EncryptionKeyProviderType: AwsKms
+              AwsKmsKey: !Ref KMSKeyArn
+          InTransitEncryptionConfiguration:
+            TLSCertificateConfiguration:
+              CertificateProviderType: PEM
+              S3Object: !Ref CertZipLocation
+
+##
+## amazon_mq
+##
+
+# -- amazon_mq_broker_encryption_options_rule
+  AMAZON_MQ_BROKER_ENCRYPTION_OPTIONS_RULE:
+    Type: 'AWS::AmazonMQ::Broker'
+    Properties:
+      AutoMinorVersionUpgrade: false
+      BrokerName: MyComplexRabbitBroker
+      DeploymentMode: SINGLE_INSTANCE
+      EngineType: RabbitMQ
+      EngineVersion: 3.8.6
+      HostInstanceType: mq.t3.micro
+      Logs:
+        General: true
+      MaintenanceWindowStartTime:
+        DayOfWeek: Monday
+        TimeOfDay: '22:45'
+        TimeZone: America/Los_Angeles
+      PubliclyAccessible: false
+      SecurityGroups:
+        - 'sg-1a234b5cd6efgh7i8'
+      SubnetIds:
+        - 'subnet-123456b7891abcd1f'
+      Users:
+        - Password: '{{resolve:secretsmanager:{MyMQBrokerSecret}::password}}'
+          Username: AmazonMqUsername
+
+# -- amazon_mq_broker_users_no_plaintext_password
+  AMAZON_MQ_BROKER_USERS_NO_PLAINTEXT_PASSWORD:
+    Type: 'AWS::AmazonMQ::Broker'
+    Properties:
+      AutoMinorVersionUpgrade: false
+      BrokerName: MyComplexRabbitBroker
+      DeploymentMode: SINGLE_INSTANCE
+      EngineType: RabbitMQ
+      EngineVersion: 3.8.6
+      HostInstanceType: mq.t3.micro
+      Logs:
+        General: true
+      MaintenanceWindowStartTime:
+        DayOfWeek: Monday
+        TimeOfDay: '22:45'
+        TimeZone: America/Los_Angeles
+      PubliclyAccessible: false
+      SecurityGroups:
+        - 'sg-1a234b5cd6efgh7i8'
+      SubnetIds:
+        - 'subnet-123456b7891abcd1f'
+      Users:
+        - Password: !Ref MyNotSecurePasswordWithDefault
+          Username: AmazonMqUsername
+
+##
+## amazon_rds
+##
+
+# -- rds_instance_public_access_check
+  RDS_INSTANCE_PUBLIC_ACCESS_CHECK:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      PubliclyAccessible: true
+      StorageEncrypted: true
+      BackupRetentionPeriod: 1
+      MultiAZ: true
+      AutoMinorVersionUpgrade: true
+      MonitoringInterval: 1
+      DeletionProtection: true
+      EnableCloudwatchLogsExports:
+        - audit
+        - error
+        - general
+        - slowquery
+
+# -- rds_storage_encrypted
+  RDS_STORAGE_ENCRYPTED:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      PubliclyAccessible: false
+      DBInstanceClass: !Ref DBInstanceType
+      SourceDBInstanceIdentifier: !Ref SourceDBInstanceIdentifier
+      SourceRegion: !Ref SourceRegion
+      KmsKeyId: !Ref MyKey
+      BackupRetentionPeriod: 1
+      MultiAZ: true
+      AutoMinorVersionUpgrade: true
+      MonitoringInterval: 1
+      DeletionProtection: true
+      EnableCloudwatchLogsExports:
+        - audit
+        - error
+        - general
+        - slowquery
+
+# -- rds_master_user_password_no_plaintext_password
+  RDS_MASTER_USER_PASSWORD_NO_PLAINTEXT_PASSWORD:
+    Type: 'AWS::RDS::DBInstance'
+    Properties:
+      AllocatedStorage: '100'
+      AutomaticBackupReplicationRegion: ap-northeast-1
+      BackupRetentionPeriod: 1
+      DBInstanceClass: db.t3.micro
+      Engine: postgres
+      Iops: 1000
+      MasterUserPassword: !Ref MyNotSecurePasswordWithDefault
+      StorageType: IO1
+
+# -- rds_master_user_name_no_plaintext_password
+  RDS_MASTER_USER_NAME_NO_PLAINTEXT_PASSWORD:
+    Type: 'AWS::RDS::DBInstance'
+    Properties:
+      AllocatedStorage: '100'
+      AutomaticBackupReplicationRegion: ap-northeast-1
+      BackupRetentionPeriod: 1
+      DBInstanceClass: db.t3.micro
+      Engine: postgres
+      Iops: 1000
+      MasterUsername: !Ref MyNotSecurePasswordWithDefault
+      StorageType: IO1
+
+# -- rds_cluster_master_user_password_no_plaintext_password
+  RDS_CLUSTER_MASTER_USER_PASSWORD_NO_PLAINTEXT_PASSWORD:
+    Type: 'AWS::RDS::DBCluster'
+    Properties:
+      AllocatedStorage: '100'
+      AutoMinorVersionUpgrade: false
+      BackupRetentionPeriod: 1
+      DBClusterInstanceClass: db.t3.micro
+      Engine: postgres
+      Iops: 1000
+      MasterUserPassword: !Ref MyNotSecurePasswordWithDefault
+      StorageType: IO1
+
+##
+## amazon_redshift
+##
+
+# -- redshift_cluster_configuration_check
+# -- redshift_cluster_configuration_check
+  REDSHIFT_CLUSTER_CONFIGURATION_CHECK:
+    Type: AWS::Redshift::Cluster
+    Properties:
+      ClusterType: multi-node
+      DBName: dev
+      MasterUsername:
+      MasterUserPassword: '{{resolve:ssm-secure:password}}'
+      NodeType:
+      NumberOfNodes: 2
+      AutomatedSnapshotRetentionPeriod: 2
+      EnhancedVpcRouting: true
+      PreferredMaintenanceWindow: Mon:09:30-Mon:10:00
+      AllowVersionUpgrade: true
+
+# -- redshift_cluster_master_user_password_no_plaintext_password
+  REDSHIFT_CLUSTER_MASTER_USER_PASSWORD_NO_PLAINTEXT_PASSWORD:
+    Type: 'AWS::Redshift::Cluster'
+    Properties:
+      AquaConfigurationStatus: auto
+      AutomatedSnapshotRetentionPeriod: 32
+      DBName: test
+      KmsKeyId: testKey
+      ManualSnapshotRetentionPeriod: 100
+      MasterUserPassword: !Ref MyNotSecurePasswordWithDefault
+      MasterUsername: MasterUser
+      SnapshotCopyGrantName: testName
+
+
+##
+## amazon_s3
+##
+# -- s3_bucket_policy_no_wildcard_action
+  S3_BUCKET_POLICY_NO_WILDCARD_ACTION:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref DOC-EXAMPLE-BUCKET
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Action: "*"
+            Effect: Allow
+            Resource: !Join
+              - ''
+              - - 'arn:aws:s3:::'
+                - !Ref DOC-EXAMPLE-BUCKET
+                - /*
+            Principal: 'arn:aws:iam::111122223333:user:foo'
+            Condition:
+              StringLike:
+                'aws:Referer':
+                  - 'http://www.example.com/*'
+                  - 'http://example.net/*'
+
+# -- s3_bucketpolicy_no_allow_plus_notprincipal
+  S3_BUCKETPOLICY_NO_ALLOW_PLUS_NOTPRINCIPAL:
+    Type: "AWS::S3::BucketPolicy"
+    Properties:
+      Bucket: foo-bar-baz
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Effect: Allow
+          NotPrincipal:
+            AWS:
+            - "arn:aws:iam::444455556666:user/Bob"
+            - "arn:aws:iam::444455556666:root"
+
+
+# -- s3_bucket_no_public_rw_acl
+      S3_BUCKET_NO_PUBLIC_RW_ACL:
+        Type: 'AWS::S3::Bucket'
+        Properties:
+          BucketName: my-bucket
+          OwnershipControls:
+            Rules:
+            - ObjectOwnership: BucketOwnerPreferred
+          AccessControl: PublicReadWrite
+
+# -- s3_bucket_policy_no_wildcard_principal
+  S3_BUCKET_POLICY_NO_WILDCARD_PRINCIPAL:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref DOC-EXAMPLE-BUCKET
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Action: "s3:ListObjects"
+            Effect: Allow
+            Resource: !Join
+              - ''
+              - - 'arn:aws:s3:::'
+                - !Ref DOC-EXAMPLE-BUCKET
+                - /*
+            Principal: '*'
+            Condition:
+              StringLike:
+                'aws:Referer':
+                  - 'http://www.example.com/*'
+                  - 'http://example.net/*'
+
+# -- s3_bucket_policy_no_allow_plus_not_action
+  S3_BUCKET_POLICY_NO_ALLOW_PLUS_NOT_ACTION:
+    Type: "AWS::S3::BucketPolicy"
+    Properties:
+      Bucket: foo-bar-baz
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Effect: Allow
+          NotAction:
+            AWS:
+            - "arn:aws:iam::444455556666:user/Bob"
+            - "arn:aws:iam::444455556666:root"
+
+# -- s3_bucket_public_read_acl
+  S3_BUCKET_PUBLIC_READ_ACL:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: my-bucket
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: BucketOwnerPreferred
+      AccessControl: PublicRead
+      LoggingConfiguration:
+        DestinationBucketName: !Ref LoggingBucket
+        LogFilePrefix: testing-logs
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+
+##
+## amazon_sns
+##
+# -- sns_topicpolicy_no_allow_plus_notprincipal
+  SNS_TOPICPOLICY_NO_ALLOW_PLUS_NOTPRINCIPAL:
+    Type: "AWS::SNS::TopicPolicy"
+    Properties:
+      Topics:
+        - foo-bar-baz
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Effect: Allow
+          NotPrincipal:
+            AWS:
+            - "arn:aws:iam::444455556666:user/Bob"
+            - "arn:aws:iam::444455556666:root"
+
+# -- sns_topicpolicy_no_wildcard_principal
+  SNS_TOPICPOLICY_NO_WILDCARD_PRINCIPAL:
+    Type: "AWS::SNS::TopicPolicy"
+    Properties:
+      Topics:
+        - foo-bar-baz
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Effect: Allow
+          Principal: "arn:aws:iam::*"
+
+# -- sns_topicpolicy_no_allow_plus_not_action
+  SNS_TOPICPOLICY_NO_ALLOW_PLUS_NOT_ACTION:
+    Type: "AWS::SNS::TopicPolicy"
+    Properties:
+      Topics:
+        - foo-bar-baz
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            NotAction:
+              AWS:
+                - "arn:aws:iam::444455556666:user/Bob"
+                - "arn:aws:iam::444455556666:root"
+
+##
+## amazon_sqs
+##
+# -- SQS_QUEUEPOLICY_NO_ALLOW_PLUS_NOTPRINCIPAL
+  SQS_QUEUEPOLICY_NO_ALLOW_PLUS_NOTPRINCIPAL:
+    Type: "AWS::SQS::QueuePolicy"
+    Properties:
+      Queues:
+      - foo-bar-baz
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Effect: Allow
+          NotPrincipal:
+            AWS:
+            - "arn:aws:iam::444455556666:user/Bob"
+            - "arn:aws:iam::444455556666:root"
+
+# -- sqs_queuepolicy_no_wildcard_action
+  SQS_QUEUEPOLICY_NO_WILDCARD_ACTION:
+    Type: AWS::SQS::QueuePolicy
+    Properties:
+      Queues:
+        - "https://sqs:us-east-2.amazonaws.com/444455556666/queue2"
+      PolicyDocument:
+        Statement:
+          -
+            Action:
+            - "SQS:*"
+            Effect: "Allow"
+            Resource: "arn:aws:sqs:us-east-2:444455556666:queue2"
+            Principal:
+              AWS:
+              - "arn:aws:iam::444455556666:user/Bob"
+              - "arn:aws:iam::444455556666:root"
+
+# -- sqs_queuepolicy_no_wildcard_principal
+  SQS_QUEUEPOLICY_NO_WILDCARD_PRINCIPAL:
+    Type: AWS::SQS::QueuePolicy
+    Properties:
+      Queues:
+        - "https://sqs:us-east-2.amazonaws.com/444455556666/queue2"
+      PolicyDocument:
+        Statement:
+          -
+            Action:
+              - "SQS:SendMessage"
+              - "SQS:ReceiveMessage"
+            Effect: "Allow"
+            Resource: "arn:aws:sqs:us-east-2:444455556666:queue2"
+            Principal: "*"
+
+# -- sqs_queuepolicy_no_allow_plus_not_action
+  SQS_QUEUEPOLICY_NO_ALLOW_PLUS_NOT_ACTION:
+    Type: "AWS::SQS::QueuePolicy"
+    Properties:
+      Queues:
+      - foo-bar-baz
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Effect: Allow
+          NotAction:
+            AWS:
+            - "arn:aws:iam::444455556666:user/Bob"
+            - "arn:aws:iam::444455556666:root"
+
+# -- sqs_queue_kms_master_key_id_rule
+  SQS_QUEUE_KMS_MASTER_KEY_ID_RULE:
+    Type: AWS::SQS::Queue
+    Properties:
+      RedrivePolicy:
+        deadLetterTargetArn:
+          Fn::GetAtt:
+            - "MyDeadLetterQueue"
+            - "Arn"
+        maxReceiveCount: 5
+
+##
+## amazon_workspaces
+##
+
+## -- workspace_encryption_enabled
+  WORKSPACE_ENCRYPTION_ENABLED:
+    Type: AWS::WorkSpaces::Workspace
+    Properties:
+      BundleId: !Ref Bundle
+      DirectoryId: !Ref Directory
+      UserName: !Ref User
+      RootVolumeEncryptionEnabled: false
+      UserVolumeEncryptionEnabled: false
+      WorkspaceProperties:
+        RunningMode: !Ref RunningModeType
+
+##
+## api_gateway
+##
+
+# -- api_gw_method_authorization_type_rule
+  API_GW_METHOD_AUTHORIZATION_TYPE_RULE:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      ApiKeyRequired: true
+      AuthorizationType: 'NONE'
+      AuthorizerId: 'testId'
+      HttpMethod: 'POST'
+      OperationName: 'TestRule'
+      RequestModels:
+        Key: 'testValue'
+      RequestParameters:
+        Key: 'sampleValue'
+      RequestValidatorId: 'testValidatorId'
+      ResourceId: 'testResourceId'
+      RestApiId: 'XYZ007'
+
+# -- api_gw_stage_access_logging_rule
+  API_GW_STAGE_ACCESS_LOGGING_RULE:
+    Type: AWS::ApiGateway::Stage
+    Properties:
+      StageName: Prod
+      Description: Prod Stage
+      RestApiId: !Ref MyRestApi
+      DeploymentId: !Ref TestDeployment
+      DocumentationVersion: !Ref MyDocumentationVersion
+      ClientCertificateId: !Ref ClientCertificate
+      CacheClusterEnabled: true
+      Variables:
+        Stack: Prod
+      MethodSettings:
+        - ResourcePath: /
+          HttpMethod: GET
+          MetricsEnabled: 'true'
+          DataTraceEnabled: 'false'
+          CacheDataEncrypted: true
+          CachingEnabled: true
+        - ResourcePath: /stack
+          HttpMethod: POST
+          MetricsEnabled: 'true'
+          DataTraceEnabled: 'false'
+          ThrottlingBurstLimit: '999'
+          CacheDataEncrypted: true
+          CachingEnabled: true
+        - ResourcePath: /stack
+          HttpMethod: GET
+          MetricsEnabled: 'true'
+          DataTraceEnabled: 'false'
+          ThrottlingBurstLimit: '555'
+          CacheDataEncrypted: true
+          CachingEnabled: true
+
+##
+## aws_cognito
+##
+
+# -- cognito_allow_unauthenticated_identities_rule
+  COGNITO_ALLOW_UNAUTHENTICATED_IDENTITIES_RULE:
+    Type: AWS::Cognito::IdentityPool
+    Properties:
+      AllowClassicFlow: true
+      AllowUnauthenticatedIdentities: true
+      DeveloperProviderName: 'testProvider'
+      IdentityPoolName: 'testIdentity'
+
+# -- cognito_user_pool_mfa_configuration_rule
+  COGNITO_USER_POOL_MFA_CONFIGURATION_RULE:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      AliasAttributes:
+        - test@amazon.com
+        - 1234567890
+        - test-alias
+      AutoVerifiedAttributes:
+        - test1@amazon.com
+      DeletionProtection: ACTIVE
+      UserPoolName: 'TEST'
+      MfaConfiguration: 'OFF'
+##
+## aws_dlm
+##
+
+# -- dlm_lifecycle_policy_cross_region_encryption_rule
+  DLM_LIFECYCLE_POLICY_CROSS_REGION_ENCRYPTION_RULE:
+    Type: AWS::DLM::LifecyclePolicy
+    Properties:
+      Description: Lifecycle Policy using CloudFormation
+      State: ENABLED
+      ExecutionRoleArn: arn:aws:iam::123456789012:role/service-role/AWSDataLifecycleManagerDefaultRole
+      PolicyDetails:
+        Actions:
+          - CrossRegionCopy:
+              - EncryptionConfiguration:
+                  CmkArn: 'TestArn'
+                  Encrypted: true
+                Target: 'TestTarget'
+            Name: 'TestName'
+          - CrossRegionCopy:
+              - EncryptionConfiguration:
+                  CmkArn: 'TestArn2'
+                  Encrypted: false
+                Target: 'TestTarget2'
+            Name: 'TestName2'
+        ResourceTypes:
+          - VOLUME
+        TargetTags:
+          - Key: costcenter
+            Value: '115'
+        Schedules:
+          - Name: Daily Snapshots
+            TagsToAdd:
+              - Key: type
+                Value: DailySnapshot
+            CreateRule:
+              Interval: 12
+              IntervalUnit: HOURS
+              Times:
+                - '13:00'
+            RetainRule:
+              Count: 1
+            CopyTags: true
+            CrossRegionCopyRules:
+              - Encrypted: false
+                Target: us-east-1
+
+##
+## aws_dms
+##
+
+## -- DMS_NO_PLAINTEXT_PASSWORD
+  DMS_NO_PLAINTEXT_PASSWORD_MyNotSecurePasswordWithDefault:
+    Properties:
+      DatabaseName: my-db
+      EndpointType: target
+      EngineName: mysql
+      Password: !Ref MyNotSecurePasswordWithDefault
+      Port: 1234
+      ServerName: server.db.amazon.com
+      Tags:
+        -
+          Key: type
+          Value: new
+      Username: username
+    Type: "AWS::DMS::Endpoint"
+
+  DMS_NO_PLAINTEXT_PASSWORD_MyNotSecurePlaintextPassword:
+    Properties:
+      DatabaseName: my-db
+      EndpointType: target
+      EngineName: mysql
+      Password: !Ref MyNotSecurePlaintextPassword
+      Port: 1234
+      ServerName: server.db.amazon.com
+      Tags:
+        -
+          Key: type
+          Value: new
+      Username: username
+    Type: "AWS::DMS::Endpoint"
+
+##
+## aws_gamelift
+##
+
+# -- ecr_repo_scan_on_push_rule
+  ECR_REPO_SCAN_ON_PUSH:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryPolicyText:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: AllowPushPull
+            Effect: Allow
+            Principal:
+              AWS:
+                - "arn:aws:iam::123456789012:user/Bob"
+                - "arn:aws:iam::123456789012:user/Alice"
+            Action:
+              - "ecr:GetDownloadUrlForLayer"
+              - "ecr:BatchGetImage"
+              - "ecr:BatchCheckLayerAvailability"
+              - "ecr:PutImage"
+              - "ecr:InitiateLayerUpload"
+              - "ecr:UploadLayerPart"
+              - "ecr:CompleteLayerUpload"
+      ImageScanningConfiguration:
+        ScanOnPush: false
+
+##
+## aws_gamelift
+##
+
+# -- gamelift_fleet_inbound_port_range_rule
+  GAMELIFT_FLEET_INBOUND_PORT_RANGE_RULE:
+    Type: AWS::GameLift::Fleet
+    Properties:
+      BuildId: !Ref BuildResource
+      CertificateConfiguration:
+        CertificateType: DISABLED
+      Description: Description of my Game Fleet
+      DesiredEC2Instances: 1
+      EC2InboundPermissions:
+        - FromPort: 1234
+          ToPort: 1345
+          IpRange: 0.0.0.0/24
+          Protocol: TCP
+      EC2InstanceType: c4.large
+      FleetType: SPOT
+      LogPaths:
+        - c:\game\testlog.log
+        - c:\game\testlog2.log
+      MetricGroups:
+        - MetricGroupName
+      Name: MyGameFleet
+      NewGameSessionProtectionPolicy: FullProtection
+      ResourceCreationLimitPolicy:
+        NewGameSessionsPerCreator: 5
+        PolicyPeriodInMinutes: 2
+      RuntimeConfiguration:
+        GameSessionActivationTimeoutSeconds: 300
+        MaxConcurrentGameSessionActivations: 1
+        ServerProcesses:
+          - ConcurrentExecutions: 1
+            LaunchPath: c:\game\TestApplicationServer.exe
+        Locations:
+          - Location: 'us-west-2'
+          - Location: 'us-east-1'
+          - Location: 'eu-west-1'
+
+##
+## aws_kendra
+##
+
+# -- kendra_index_encryption_kms_key_id_rule
+  KENDRA_INDEX_ENCRYPTION_KMS_KEY_ID_RULE:
+    Type: AWS::Kendra::Index
+    Properties:
+      Description: 'Test Kendra Resource'
+      Edition: 'testEditor'
+      Name: 'testName'
+      RoleArn: 'testArn'
+      ServerSideEncryptionConfiguration:
+
+##
+## aws_kinesis
+##
+
+# -- kinesis_stream_encryption_rule
+  KINESIS_STREAM_ENCRYPTION_RULE:
+    Type: AWS::Kinesis::Stream
+    Properties:
+      RetentionPeriodHours: 168
+      ShardCount: 3
+      StreamEncryption:
+        KeyId: !Ref myKey
+      Tags:
+        - Key: Environment
+          Value: Production
+
+# -- kinesis_firehose_delivery_stream_encryption_rule
+  KINESIS_FIREHOSE_DELIVERY_STREAM_ENCRYPTION_RULE:
+    Type: AWS::KinesisFirehose::DeliveryStream
+    Properties:
+      DeliveryStreamName: !Ref deliveryStreamName
+      DeliveryStreamType: DirectPut
+      DeliveryStreamEncryptionConfigurationInput:
+        KeyARN: 'testArn'
+      KinesisStreamSourceConfiguration:
+        KinesisStreamARN: !Ref kinesisStreamARN
+        RoleARN: !Ref kinesisStreamRoleArn
+      RedshiftDestinationConfiguration:
+        ClusterJDBCURL: 'testURL'
+        RoleARN: 'testArn'
+        Username: testName
+        Password: '{{resolve:secretsmanager:{$MyKinesisSecret}::password}}'
+      ExtendedS3DestinationConfiguration:
+        BucketARN: !Ref s3bucketArn
+        BufferingHints:
+          IntervalInSeconds: 60
+          SizeInMBs: 50
+        CompressionFormat: UNCOMPRESSED
+        Prefix: firehose/
+        RoleARN: !Ref deliveryRoleArn
+
+# -- kinesis_firehose_redshift_destination_configuration_no_plaintext_password
+  KINESIS_FIREHOSE_REDSHIFT_DESTINATION_CONFIGURATION_NO_PLAINTEXT_PASSWORD:
+    Type: AWS::KinesisFirehose::DeliveryStream
+    Properties:
+      DeliveryStreamName: !Ref deliveryStreamName
+      DeliveryStreamType: KinesisStreamAsSource
+      KinesisStreamSourceConfiguration:
+        KinesisStreamARN: !Ref kinesisStreamARN
+        RoleARN: !Ref kinesisStreamRoleArn
+      RedshiftDestinationConfiguration:
+        ClusterJDBCURL: 'testURL'
+        RoleARN: 'testArn'
+        Username: testName
+        Password: !Ref MyNotSecurePasswordWithDefault
+      ExtendedS3DestinationConfiguration:
+        BucketARN: !Ref s3bucketArn
+        BufferingHints:
+          IntervalInSeconds: 60
+          SizeInMBs: 50
+        CompressionFormat: UNCOMPRESSED
+        Prefix: firehose/
+        RoleARN: !Ref deliveryRoleArn
+
+# -- kinesis_firehose_splunk_destination_configuration_no_plaintext_password
+  KINESIS_FIREHOSE_SPLUNK_DESTINATION_CONFIGURATION_NO_PLAINTEXT_PASSWORD:
+    Type: AWS::KinesisFirehose::DeliveryStream
+    Properties:
+      DeliveryStreamName: !Ref deliveryStreamName
+      DeliveryStreamType: KinesisStreamAsSource
+      KinesisStreamSourceConfiguration:
+        KinesisStreamARN: !Ref kinesisStreamARN
+        RoleARN: !Ref kinesisStreamRoleArn
+      SplunkDestinationConfiguration:
+        HECAcknowledgmentTimeoutInSeconds: 60
+        HECEndpoint: testEndpoint
+        HECEndpointType: Raw
+        S3BackupMode: FailedEventsOnly
+        HECToken: !Ref MyNotSecurePasswordWithDefault
+      ExtendedS3DestinationConfiguration:
+        BucketARN: !Ref s3bucketArn
+        BufferingHints:
+          IntervalInSeconds: 60
+          SizeInMBs: 50
+        CompressionFormat: UNCOMPRESSED
+        Prefix: firehose/
+        RoleARN: !Ref deliveryRoleArn
+
+##
+## aws_kms
+##
+
+# -- cmk_backing_key_rotation_enabled
+  CMK_BACKING_KEY_ROTATION_ENABLED:
+    Type: AWS::KMS::Key
+    Properties:
+      KeyPolicy:
+        Statement:
+          - Action: kms:*
+            Effect: Allow
+            Principal:
+              AWS:
+                Fn::Join:
+                  - ""
+                  - - 'arn:'
+                    - Ref: AWS::Partition
+                    - :iam::123456789012:root
+            Resource: 'arn:aws:iam::111122223333:foobar'
+          - Action:
+              - kms:Decrypt
+              - kms:DescribeKey
+              - kms:Encrypt
+              - kms:ReEncrypt*
+              - kms:GenerateDataKey*
+            Effect: Allow
+            Principal:
+              AWS:
+                Fn::Join:
+                  - ""
+                  - - 'arn:'
+                    - Ref: AWS::Partition
+                    - :iam::123456789012:root
+            Resource: 'arn:aws:ec2:us-east-1:111122223333:foobar'
+
+##
+## aws_microsoft_ad
+##
+
+# -- microsoft_ad_no_plaintext_password
+  MICROSOFT_AD_NO_PLAINTEXT_PASSWORD:
+    Type: AWS::DirectoryService::MicrosoftAD
+    Properties:
+      Name: "corp.example.com"
+      Password: !Ref MyNotSecurePasswordWithDefault
+      ShortName:
+        Ref: MicrosoftADShortName
+      VpcSettings:
+        SubnetIds:
+          - Ref: subnetID1
+          - Ref: subnetID2
+        VpcId:
+          Ref: vpcID
+
+##
+## aws_waf
+##
+
+# -- waf_web_acl_default_action_rule
+  WAF_WEB_ACL_DEFAULT_ACTION_RULE:
+    Type: "AWS::WAF::WebACL"
+    Properties:
+      Name: "WebACL to with three rules"
+      DefaultAction:
+        Type: "ALLOW"
+      MetricName: "MyWebACL"
+      Rules:
+        - Action:
+            Type: "BLOCK"
+          Priority: 1
+          RuleId:
+            Ref: "MyRule"
+        - Action:
+            Type: "BLOCK"
+          Priority: 2
+          RuleId:
+            Ref: "BadReferersRule"
+        - Action:
+            Type: "BLOCK"
+          Priority: 3
+          RuleId:
+            Ref: "SqlInjRule"
+
+##
+## cloudfront
+##
+
+# -- cloudfront_minimum_protocol_version_rule
+  CLOUDFRONT_MINIMUM_PROTOCOL_VERSION_RULE:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        CacheBehaviors:
+          - LambdaFunctionAssociations:
+              - EventType: 'testString'
+                LambdaFunctionARN: 'testString'
+        DefaultCacheBehavior:
+          LambdaFunctionAssociations:
+            - EventType: 'testString'
+              LambdaFunctionARN: 'testString'
+        IPV6Enabled: true
+        Origins:
+          - CustomOriginConfig:
+              OriginKeepaliveTimeout: 5
+              OriginReadTimeout: 5
+        Logging:
+          Bucket: 'testBucket'
+          IncludeCookies: false
+          Prefix: 'logging-prefix'
+        ViewerCertificate:
+          AcmCertificateArn: 'testArn'
+          CloudFrontDefaultCertificate: true
+          MinimumProtocolVersion: 'TLSv1.2-03-2008'
+          SslSupportMethod: 'POST'
+
+##
+## dynamodb
+##
+
+# -- dynamodb_billing_mode_rule
+  DYNAMODB_BILLING_MODE_RULE:
+    Type: AWS::DynamoDB::Table
+    DependsOn: "myFirstDDBTable"
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: "ArtistId"
+          AttributeType: "S"
+        - AttributeName: "Concert"
+          AttributeType: "S"
+        - AttributeName: "TicketSales"
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: "ArtistId"
+          KeyType: "HASH"
+        - AttributeName: "Concert"
+          KeyType: "RANGE"
+      ProvisionedThroughput:
+        ReadCapacityUnits:
+          Ref: "ReadCapacityUnits"
+        WriteCapacityUnits:
+          Ref: "WriteCapacityUnits"
+      GlobalSecondaryIndexes:
+        - IndexName: "myGSI"
+          KeySchema:
+            - AttributeName: "TicketSales"
+              KeyType: "HASH"
+          Projection:
+            ProjectionType: "KEYS_ONLY"
+          ProvisionedThroughput:
+            ReadCapacityUnits:
+              Ref: "ReadCapacityUnits"
+            WriteCapacityUnits:
+              Ref: "WriteCapacityUnits"
+      SSESpecification:
+        KMSMasterKeyId: 'KMS'
+        SSEEnabled: true
+        SSEType: 'KMS'
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+
+##
+## elasticache
+##
+
+## -- elasticache_replication_group_encryption_at_rest
+  ELASTICACHE_REPLICATION_GROUP_ENCRYPTION_AT_REST:
+    Type: 'AWS::ElastiCache::ReplicationGroup'
+    Properties:
+      ReplicationGroupDescription: my description
+      NumCacheClusters: '2'
+      Engine: redis
+      CacheNodeType: cache.m3.medium
+      AutomaticFailoverEnabled: 'true'
+      CacheSubnetGroupName: subnetgroup
+      EngineVersion: 2.8.6
+      PreferredMaintenanceWindow: 'wed:09:25-wed:22:30'
+      SnapshotRetentionLimit: '4'
+      SnapshotWindow: '03:30-05:30'
+
+##
+## elastic_load_balancing_v2
+##
+
+# -- elbv2_access_logging_rule
+  ELBV2_ACCESS_LOGGING_RULE:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      EnforceSecurityGroupInboundRulesOnPrivateLinkTraffic: TestRule
+      IpAddressType: ipv4
+      LoadBalancerAttributes:
+        - Key: access_logs.s3.bucket
+          Value: 'testBucket'
+        - Key: access_logs.s3.enabled
+          Value: 'false'
+      Name: testElb
+      Type: ElbResource
+
+# -- elbv2_listener_ssl_policy_rule
+  ELBV2_LISTENER_SSL_POLICY_RULE:
+    Type: "AWS::ElasticLoadBalancingV2::Listener"
+    Properties:
+      DefaultActions:
+        - Type: "redirect"
+          RedirectConfig:
+            Protocol: "HTTPS"
+            Port: 443
+            Host: "#{host}"
+            Path: "/#{path}"
+            Query: "#{query}"
+            StatusCode: "HTTP_301"
+      LoadBalancerArn: !Ref myLoadBalancer
+      Port: 80
+      Protocol: "HTTPS"
+      SslPolicy: ELBSecurityPolicy-TLS-1-1-2017-01
+
+# -- elbv2_listener_protocol_rule
+  ELBV2_LISTENER_PROTOCOL_RULE:
+    Type: "AWS::ElasticLoadBalancingV2::Listener"
+    Properties:
+      DefaultActions:
+        - Type: "redirect"
+          RedirectConfig:
+            Protocol: "HTTPS"
+            Port: 443
+            Host: "#{host}"
+            Path: "/#{path}"
+            Query: "#{query}"
+            StatusCode: "HTTP_301"
+      LoadBalancerArn: !Ref myLoadBalancer
+      Port: 80
+      Protocol: "HTTP"
+      SslPolicy: TLS13-1-2-2021-06
+
+##
+## iam
+##
+# -- iam_managedpolicy_no_statements_with_full_access
+  IAM_MANAGEDPOLICY_NO_STATEMENTS_WITH_FULL_ACCESS:
+    Type: "AWS::IAM::ManagedPolicy"
+    Properties:
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Deny"
+            Action: "ec2:*"
+            Resource: "arn:aws:ec2:us-east-1:111122223333:foobarbaz"
+          - Effect: "Allow"
+            Action:
+              - "iam:Get*"
+              - "iam:List*"
+            Resource: "arn:aws:iam:::foobarbaz"
+          - Effect: "Allow"
+            Action: "s3:*"
+            Resource: "arn:aws:s3:::foobarbaz"
+
+# -- iam_no_policy_on_user
+  IAM_NO_POLICY_ON_USER:
+    Type: "AWS::IAM::Policy"
+    Properties:
+      Users:
+      - foobar
+      - test
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Effect: Allow
+          Action: s3.ListObjects
+
+# -- iam_policy_no_statements_with_full_access
+  IAM_POLICY_NO_STATEMENTS_WITH_FULL_ACCESS:
+    Type: "AWS::IAM::Policy"
+    Properties:
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Deny"
+            Action: "ec2:*"
+            Resource: "arn:aws:ec2:us-east-1:111122223333:foobarbaz"
+          - Effect: "Allow"
+            Action:
+              - "iam:Get*"
+              - "iam:List*"
+            Resource: "arn:aws:iam:::foobarbaz"
+          - Effect: "Allow"
+            Action: "s3:*"
+            Resource: "arn:aws:s3:::foobarbaz"
+
+# -- iam_policydocument_no_wildcard_resource
+  IAM_POLICYDOCUMENT_NO_WILDCARD_RESOURCE:
+    Type: "AWS::IAM::Policy"
+    Properties:
+      PolicyDocument:
+        Version: '2012-10-17'
+        Id: ExamplePolicy01
+        Statement:
+        - Sid: ExampleStatement01
+          Effect: Allow
+          Action:
+          - s3:GetObject
+          - s3:GetBucketLocation
+          - s3:ListBucket
+          Resource: "*"
+
+# -- iam_role_no_allow_plus_not_principal
+  IAM_ROLE_NO_ALLOW_PLUS_NOT_PRINCIPAL:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Effect: Allow
+          NotPrincipal:
+            AWS:
+            - "arn:aws:iam::444455556666:user/Bob"
+            - "arn:aws:iam::444455556666:root"
+
+# -- IAM_NO_INLINE_POLICY_CHECK
+  IAM_NO_INLINE_POLICY_CHECK:
+    Type: "AWS::IAM::User"
+    Properties:
+      Policies:
+        - PolicyName: "Admin"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action: "sts:getcalleridentity"
+                Resource: "arn:aws:iam::111122223333:user:foo"
+    Metadata:
+      guard:
+        SuppressedRules:
+        - IAM_USER_NO_POLICIES_CHECK: This is not the rule being tested
+
+# -- iam_role_no_full_access_on_trust_policy
+  IAM_ROLE_NO_FULL_ACCESS_ON_TRUST_POLICY:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal: { "codebuild.amazonaws.com"}
+            Action: "s3:*"
+
+# -- iam_role_no_wildcard_actions_on_permissions
+  IAM_ROLE_NO_WILDCARD_ACTIONS_ON_PERMISSIONS:
+    Type: "AWS::IAM::Role"
+    Properties:
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Action: "s3:*"
+
+# -- iam_policy_no_wildcard_resource_on_passrole
+# Also matches IAM_POLICYDOCUMENT_NO_WILDCARD_RESOURCE
+  IAM_POLICY_NO_WILDCARD_RESOURCE_ON_PASSROLE:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: root
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+            - 'iam:PassRole'
+            - 's3:ListBuckets'
+            Resource: '*'
+
+# -- iam_role_no_wildcard_resource_on_passrole
+  IAM_ROLE_NO_WILDCARD_RESOURCE_ON_PASSROLE:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      Policies:
+        - PolicyName: root
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'iam:PassRole'
+                  - 's3:ListBuckets'
+                Resource: '*'
+    Metadata:
+      guard:
+        SuppressedRules:
+        - IAM_NO_INLINE_POLICY_CHECK: This is not the rule being tested
+
+# -- iam_role_no_allow_plus_not_principal
+  IAM_ROLE_NO_ALLOW_PLUS_NOT_ACTION_ON_TRUST_POLICY:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Effect: Allow
+          NotAction:
+            AWS:
+            - "arn:aws:iam::444455556666:user/Bob"
+            - "arn:aws:iam::444455556666:root"
+
+# -- iam_role_or_policy_no_allow_plus_not_action
+  IAM_ROLE_OR_POLICY_NO_ALLOW_PLUS_NOT_ACTION:
+    Type: "AWS::IAM::Role"
+    Properties:
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Effect: Allow
+          NotAction:
+            AWS:
+            - "arn:aws:iam::444455556666:user/Bob"
+            - "arn:aws:iam::444455556666:root"
+
+# -- iam_role_or_policy_no_allow_plus_not_resource
+  IAM_ROLE_OR_POLICY_NO_ALLOW_PLUS_NOT_RESOURCE:
+    Type: "AWS::IAM::Role"
+    Properties:
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Effect: Allow
+          NotResource:
+            AWS:
+            - "arn:aws:iam::444455556666:user/Bob"
+            - "arn:aws:iam::444455556666:root"
+
+# -- iam_role_administrator_access_policy_rule
+  IAM_ROLE_ADMINISTRATOR_ACCESS_POLICY_RULE:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AdministratorAccess
+      Path: /
+
+# -- iam_role_elevated_managed_policy_rule
+  IAM_ROLE_ELEVATED_MANAGED_POLICY_RULE:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/PowerUserAccess
+        - arn:aws:iam::aws:policy/IAMFullAccess
+      Path: /
+
+# -- iam_user_login_profile_password_reset_rule
+  IAM_USER_LOGIN_PROFILE_PASSWORD_RESET_RULE:
+    Type: AWS::IAM::User
+    Properties:
+      Groups:
+        - 'GroupTest'
+      LoginProfile:
+        Password: 'TestPassword'
+        PasswordResetRequired: false
+      ManagedPolicyArns:
+        - arn:aws:iam::123456789012:user/Development/product_1234/*
+        - arn:aws:s3:::my_corporate_bucket/Development/*
+      Path: /
+      PermissionsBoundary: 'TestBoundary'
+      UserName: 'test-iam-user'
+
+# -- iam_user_missing_group_rule
+  IAM_USER_MISSING_GROUP_RULE:
+    Type: "AWS::IAM::User"
+    Properties:
+      Path: "/"
+      LoginProfile:
+        Password: 'TestPassword'
+        PasswordResetRequired: true
+
+# -- iam_user_login_profile_no_plaintext_password
+  IAM_USER_LOGIN_PROFILE_NO_PLAINTEXT_PASSWORD:
+    Type: AWS::IAM::User
+    Properties:
+      Groups:
+        - 'Group1'
+        - 'Group2'
+      LoginProfile:
+        Password: !Ref MyNotSecurePasswordWithDefault
+        PasswordResetRequired: true
+      Path: '/'
+      UserName: 'testUser'
+
+##
+## lambda
+##
+
+# -- lambda_no_wildcard_principals
+  LAMBDA_NO_WILDCARD_PRINCIPALS:
+    Type: "AWS::Lambda::Permission"
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: test-function
+      Principal: '*'
+      SourceAccount: 123456789012
+
+# -- lambda_permission_invoke_function_action
+  LAMBDA_PERMISSION_INVOKE_FUNCTION_ACTION:
+    Type: "AWS::Lambda::Permission"
+    Properties:
+      Action: lambda:GetFunction
+      FunctionName: test-function
+      Principal: 111122223333
+      SourceAccount: 123456789012
+
+
+##
+## amazon_iot
+##
+
+# -- iot_policy_wildcard_action_rule
+  IOT_POLICY_WILDCARD_ACTION_RULE:
+    Type: AWS::IoT::Policy
+    Properties:
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - iot:Connect
+              - "*"
+            Resource:
+              - arn:aws:iot:us-east-1:123456789012:client/client1
+      PolicyName: SampleIotPolicy
+
+# -- iot_policy_wildcard_resource_rule
+  IOT_POLICY_WILDCARD_RESOURCE_RULE:
+    Type: AWS::IoT::Policy
+    Properties:
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - iot:Connect
+            Resource:
+              - arn:aws:iot:us-east-1:123456789012:client/client1
+              - "*"
+      PolicyName: SampleIotPolicy
+
+##
+## codebuild
+##
+
+#-- codebuild_encryption_key_rule
+  CODEBUILD_ENCRYPTION_KEY_RULE:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: myProjectName
+      Description: A description about my project
+      ServiceRole: !GetAtt ServiceRole.Arn
+      Artifacts:
+        Type: no_artifacts
+      Environment:
+        Type: LINUX_CONTAINER
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/java:openjdk-8
+        EnvironmentVariables:
+          - Name: varName
+            Type: varType
+            Value: varValue
+      Source:
+        Location: codebuild-demo-test/0123ab9a371ebf0187b0fe5614fbb72c
+        Type: S3
+      TimeoutInMinutes: 10
+      Tags:
+        - Key: testKey
+          Value: Value1
+
+##
+## aws_batch
+##
+
+#-- batch_job_container_properties_privileged_rule
+  BATCH_JOB_CONTAINER_PROPERTIES_PRIVILEGED_RULE:
+    Type: AWS::Batch::JobDefinition
+    Properties:
+      Type: container
+      JobDefinitionName: nvidia-smi
+      ContainerProperties:
+        MountPoints:
+          - ReadOnly: false
+            SourceVolume: nvidia
+            ContainerPath: /usr/local/nvidia
+        Volumes:
+          - Host:
+              SourcePath: /var/lib/nvidia-docker/volumes/nvidia_driver/latest
+            Name: nvidia
+        Command:
+          - nvidia-smi
+        Privileged: true
+        JobRoleArn: String
+        ReadonlyRootFilesystem: true
+        ResourceRequirements:
+          - Type: MEMORY
+            Value: '2000'
+          - Type: VCPU
+            Value: '2'
+        Image: nvidia/cuda
