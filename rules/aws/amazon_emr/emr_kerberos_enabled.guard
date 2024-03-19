@@ -29,6 +29,8 @@
 #
 
 let emr_kerberos_enabled = Resources.*[ Type == "AWS::EMR::Cluster"
+  Metadata.cfn_nag.rules_to_suppress not exists or 
+  Metadata.cfn_nag.rules_to_suppress.*.id != "F63"
   Metadata.guard.SuppressedRules not exists or
   Metadata.guard.SuppressedRules.* != "EMR_KERBEROS_ENABLED"
 ]

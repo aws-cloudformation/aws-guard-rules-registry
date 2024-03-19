@@ -1,0 +1,148 @@
+###
+# IOT_POLICY_WILDCARD_RESOURCE_RULE tests
+###
+---
+- name: Empty
+  input: {}
+  expectations:
+    rules:
+      IOT_POLICY_WILDCARD_RESOURCE_RULE: SKIP
+
+- name: No resources
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      IOT_POLICY_WILDCARD_RESOURCE_RULE: SKIP
+
+- name: Iot Policy with no global resources
+  input:
+    Resources:
+      SampleIotPolicy:
+        Type: AWS::IoT::Policy
+        Properties:
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - iot:Connect
+                Resource:
+                  - arn:aws:iot:us-east-1:123456789012:client/client1
+          PolicyName: SampleIotPolicy
+  expectations:
+    rules:
+      IOT_POLICY_WILDCARD_RESOURCE_RULE: PASS
+
+- name: Iot Policy with one resource which is global
+  input:
+    Resources:
+      SampleIotPolicy:
+        Type: AWS::IoT::Policy
+        Properties:
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - iot:Connect
+                Resource:
+                  - "*"
+          PolicyName: SampleIotPolicy
+  expectations:
+    rules:
+      IOT_POLICY_WILDCARD_RESOURCE_RULE: FAIL
+
+- name: Iot Policy with two resources of which one is global
+  input:
+    Resources:
+      SampleIotPolicy:
+        Type: AWS::IoT::Policy
+        Properties:
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - iot:Connect
+                Resource:
+                  - arn:aws:iot:us-east-1:123456789012:client/client1
+                  - "*"
+          PolicyName: SampleIotPolicy
+  expectations:
+    rules:
+      IOT_POLICY_WILDCARD_RESOURCE_RULE: FAIL
+
+- name: Iot Policy PolicyDocument with Effect:Allow, but rule suppressed
+  input:
+    Resources:
+      SampleIotPolicy:
+        Type: AWS::IoT::Policy
+        Properties:
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "*"
+                Resource:
+                  - arn:aws:iot:us-east-1:123456789012:client/client1
+          PolicyName: testPolicy
+        Metadata:
+          guard:
+            SuppressedRules:
+            - IOT_POLICY_WILDCARD_RESOURCE_RULE: Suppressed to test suppression works and skips this test
+  expectations:
+    rules:
+      IOT_POLICY_WILDCARD_RESOURCE_RULE: SKIP
+
+- name: Iot Policy PolicyDocument with Effect:Allow, but rule suppressed - CFN_NAG
+  input:
+    Resources:
+      SampleIotPolicy:
+        Type: AWS::IoT::Policy
+        Properties:
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "*"
+                Resource:
+                  - arn:aws:iot:us-east-1:123456789012:client/client1
+          PolicyName: testPolicy
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W39
+              reason: Suppressed to test suppression works and skips this test
+  expectations:
+    rules:
+      IOT_POLICY_WILDCARD_RESOURCE_RULE: SKIP
+
+- name: Iot Policy PolicyDocument with Effect:Allow, but rule suppressed - BOTH
+  input:
+    Resources:
+      SampleIotPolicy:
+        Type: AWS::IoT::Policy
+        Properties:
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "*"
+                Resource:
+                  - arn:aws:iot:us-east-1:123456789012:client/client1
+          PolicyName: testPolicy
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W39
+              reason: Suppressed to test suppression works and skips this test
+          guard:
+            SuppressedRules:
+            - IOT_POLICY_WILDCARD_RESOURCE_RULE: Suppressed to test suppression works and skips this test
+  expectations:
+    rules:
+      IOT_POLICY_WILDCARD_RESOURCE_RULE: SKIP

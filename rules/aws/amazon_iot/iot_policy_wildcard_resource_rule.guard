@@ -1,0 +1,51 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#    IOT_POLICY_WILDCARD_RESOURCE_RULE
+#
+# Description:
+#   IOT policy should not allow * resource
+#
+# Reports on:
+#    AWS::IoT::Policy
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# CFN_NAG Rule Id:
+#   W39
+#
+# Scenarios:
+# a) SKIP: when there is no Iot Policy resource present
+# b) PASS: when no Iot Policy resources have open Resource
+# c) FAIL: when any Iot Policy has Resource "*"
+# d) SKIP: when metadata has rule suppression for IOT_POLICY_WILDCARD_RESOURCE_RULE
+
+#
+# Select all IoT Policy resources from incoming template (payload)
+#
+let iot_policy_wildcard_resource_rule = Resources.*[ Type == 'AWS::IoT::Policy'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W39"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "IOT_POLICY_WILDCARD_RESOURCE_RULE"
+]
+
+rule IOT_POLICY_WILDCARD_RESOURCE_RULE when %iot_policy_wildcard_resource_rule !empty {
+  let violations = %iot_policy_wildcard_resource_rule[
+    some Properties.PolicyDocument.Statement[*] {
+      some Resource[*] == "*"
+      Effect == "Allow"
+    }
+  ]
+  %violations empty
+  <<
+    Violation: IoT policy should not allow * resource.
+    Fix: Specify explicit resources in the IoT Policy.
+  >>
+}

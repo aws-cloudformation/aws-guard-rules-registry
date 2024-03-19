@@ -1,0 +1,45 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#    AMAZON_MQ_BROKER_ENCRYPTION_OPTIONS_RULE
+#
+# Description:
+#   AmazonMQ Broker should specify EncryptionOptions
+#
+# Reports on:
+#    AWS::AmazonMQ::Broker
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# CFN_NAG Rule Id:
+#   W53
+#
+# Scenarios:
+# a) SKIP: when there is no Amazon MQ Broker present
+# b) PASS: when all Amazon MQ Broker resources have Encryption Options
+# c) FAIL: when any Amazon MQ Broker resources do not have Encryption Options
+# d) SKIP: when metadata has rule suppression for AMAZON_MQ_BROKER_ENCRYPTION_OPTIONS_RULE
+
+#
+# Select all Amazon MQ Broker resources from incoming template (payload)
+#
+let amazon_mq_broker_encryption_options_rule = Resources.*[ Type == 'AWS::AmazonMQ::Broker'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W53"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "AMAZON_MQ_BROKER_ENCRYPTION_OPTIONS_RULE"
+]
+
+rule AMAZON_MQ_BROKER_ENCRYPTION_OPTIONS_RULE when %amazon_mq_broker_encryption_options_rule !empty {
+  %amazon_mq_broker_encryption_options_rule.Properties.EncryptionOptions exists
+  <<
+    Violation: AmazonMQ Broker does not specify EncryptionOptions.
+    Fix: Specify EncryptionOptions in AmazonMQ Broker.
+  >>
+}
