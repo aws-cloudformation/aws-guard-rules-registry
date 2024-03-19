@@ -29,14 +29,20 @@
 #
 
 let aws_rds_instances_db_instance_backup_enabled = Resources.*[ Type == 'AWS::RDS::DBInstance'
+  Metadata.cfn_nag.rules_to_suppress not exists or 
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W75"
   Metadata.guard.SuppressedRules not exists or
   Metadata.guard.SuppressedRules.* != "DB_INSTANCE_BACKUP_ENABLED"
 ]
 
 
 rule DB_INSTANCE_BACKUP_ENABLED when %aws_rds_instances_db_instance_backup_enabled !empty {
-  %aws_rds_instances_db_instance_backup_enabled.Properties.BackupRetentionPeriod EXISTS
-  %aws_rds_instances_db_instance_backup_enabled.Properties.BackupRetentionPeriod >= 1
+  let violations = %aws_rds_instances_db_instance_backup_enabled[
+    Properties.BackupRetentionPeriod !EXISTS
+    or
+    Properties.BackupRetentionPeriod < 1
+  ]
+  %violations empty
   <<
     Violation: All RDS instances must have automated backup enabled.
     Fix: Set the BackupRetentionPeriod to values of 1 to 35 to enable backups.

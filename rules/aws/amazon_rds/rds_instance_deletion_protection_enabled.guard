@@ -28,6 +28,8 @@
 # Select all RDS instance resources from incoming template (payload)
 #
 let aws_rds_instances_deletion_protection_enabled = Resources.*[ Type == 'AWS::RDS::DBInstance'
+  Metadata.cfn_nag.rules_to_suppress not exists or 
+  Metadata.cfn_nag.rules_to_suppress.*.id != "F80"
   Metadata.guard.SuppressedRules not exists or
   Metadata.guard.SuppressedRules.* != "RDS_INSTANCE_DELETION_PROTECTION_ENABLED"
 ]
