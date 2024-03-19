@@ -1,0 +1,53 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#    ECR_REPO_SCAN_ON_PUSH
+#
+# Description:
+#   ECR Repository should have ScanOnPush enabled.
+#
+# Reports on:
+#    AWS::ECR::Repository
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# CFN_NAG Rule Id:
+#   W79
+#
+# Scenarios:
+# a) SKIP: when there are no ECR Repository resources present
+# b) PASS: When all ECR Repository resources have ScanOnPush enabled.
+# c) FAIL: When any ECR Repository resources have ScanOnPush disabled or not specified.
+# d) SKIP: when metadata has rule suppression for ECR_REPO_SCAN_ON_PUSH
+
+#
+# Select all DynamoDb Table resources from incoming template (payload)
+#
+let ecr_repo_scan_on_push_rule = Resources.*[ Type == 'AWS::ECR::Repository'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W79"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "ECR_REPO_SCAN_ON_PUSH"
+]
+
+rule ECR_REPO_SCAN_ON_PUSH when %ecr_repo_scan_on_push_rule !empty {
+  let violations = %ecr_repo_scan_on_push_rule[
+    Properties.ImageScanningConfiguration !exists
+    OR
+    Properties.ImageScanningConfiguration.ScanOnPush == 'False'
+    OR
+    Properties.ImageScanningConfiguration.ScanOnPush == false
+  ]
+
+  %violations empty
+  <<
+    Violation: ECR Repository resources have ScanOnPush disabled or not specified.
+    Fix: Set ScanOnPush in ImageScanningConfiguration to true
+  >>
+}

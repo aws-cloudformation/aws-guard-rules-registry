@@ -1,0 +1,217 @@
+###
+# ECR_REPO_SCAN_ON_PUSH tests
+###
+---
+- name: Empty
+  input: {}
+  expectations:
+    rules:
+      ECR_REPO_SCAN_ON_PUSH: SKIP
+
+- name: No resources
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      ECR_REPO_SCAN_ON_PUSH: SKIP
+
+- name: ECR Repository scanOnPush enabled.
+  input:
+    Resources:
+      MyRepository:
+        Type: AWS::ECR::Repository
+        Properties:
+          RepositoryName: "test-repository"
+          RepositoryPolicyText:
+            Version: "2012-10-17"
+            Statement:
+              -
+                Sid: AllowPushPull
+                Effect: Allow
+                Principal:
+                  AWS:
+                    - "arn:aws:iam::123456789012:user/Bob"
+                    - "arn:aws:iam::123456789012:user/Alice"
+                Action:
+                  - "ecr:GetDownloadUrlForLayer"
+                  - "ecr:BatchGetImage"
+                  - "ecr:BatchCheckLayerAvailability"
+                  - "ecr:PutImage"
+                  - "ecr:InitiateLayerUpload"
+                  - "ecr:UploadLayerPart"
+                  - "ecr:CompleteLayerUpload"
+          ImageScanningConfiguration:
+            ScanOnPush: true
+  expectations:
+    rules:
+      ECR_REPO_SCAN_ON_PUSH: PASS
+
+- name: ECR Repository scanOnPush does not exist.
+  input:
+    Resources:
+      MyRepository:
+        Type: AWS::ECR::Repository
+        Properties:
+          RepositoryName: "test-repository"
+          RepositoryPolicyText:
+            Version: "2012-10-17"
+            Statement:
+              -
+                Sid: AllowPushPull
+                Effect: Allow
+                Principal:
+                  AWS:
+                    - "arn:aws:iam::123456789012:user/Bob"
+                    - "arn:aws:iam::123456789012:user/Alice"
+                Action:
+                  - "ecr:GetDownloadUrlForLayer"
+                  - "ecr:BatchGetImage"
+                  - "ecr:BatchCheckLayerAvailability"
+                  - "ecr:PutImage"
+                  - "ecr:InitiateLayerUpload"
+                  - "ecr:UploadLayerPart"
+                  - "ecr:CompleteLayerUpload"
+  expectations:
+    rules:
+      ECR_REPO_SCAN_ON_PUSH: FAIL
+
+- name: ECR Repository scanOnPush disabled.
+  input:
+    Resources:
+      MyRepository:
+        Type: AWS::ECR::Repository
+        Properties:
+          RepositoryName: "test-repository"
+          RepositoryPolicyText:
+            Version: "2012-10-17"
+            Statement:
+              -
+                Sid: AllowPushPull
+                Effect: Allow
+                Principal:
+                  AWS:
+                    - "arn:aws:iam::123456789012:user/Bob"
+                    - "arn:aws:iam::123456789012:user/Alice"
+                Action:
+                  - "ecr:GetDownloadUrlForLayer"
+                  - "ecr:BatchGetImage"
+                  - "ecr:BatchCheckLayerAvailability"
+                  - "ecr:PutImage"
+                  - "ecr:InitiateLayerUpload"
+                  - "ecr:UploadLayerPart"
+                  - "ecr:CompleteLayerUpload"
+          ImageScanningConfiguration:
+            ScanOnPush: false
+  expectations:
+    rules:
+      ECR_REPO_SCAN_ON_PUSH: FAIL
+
+- name: CFN_NAG suppression for W79
+  input:
+    Resources:
+      MyRepository:
+        Type: AWS::ECR::Repository
+        Properties:
+          RepositoryName: "test-repository"
+          RepositoryPolicyText:
+            Version: "2012-10-17"
+            Statement:
+              -
+                Sid: AllowPushPull
+                Effect: Allow
+                Principal:
+                  AWS:
+                    - "arn:aws:iam::123456789012:user/Bob"
+                    - "arn:aws:iam::123456789012:user/Alice"
+                Action:
+                  - "ecr:GetDownloadUrlForLayer"
+                  - "ecr:BatchGetImage"
+                  - "ecr:BatchCheckLayerAvailability"
+                  - "ecr:PutImage"
+                  - "ecr:InitiateLayerUpload"
+                  - "ecr:UploadLayerPart"
+                  - "ecr:CompleteLayerUpload"
+          ImageScanningConfiguration:
+            ScanOnPush: false
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W79
+              reason: Suppressed to test suppression works and skips this test
+  expectations:
+    rules:
+      ECR_REPO_SCAN_ON_PUSH: SKIP
+
+- name: Guard suppression for ECR_REPO_SCAN_ON_PUSH
+  input:
+    Resources:
+      MyRepository:
+        Type: AWS::ECR::Repository
+        Properties:
+          RepositoryName: "test-repository"
+          RepositoryPolicyText:
+            Version: "2012-10-17"
+            Statement:
+              -
+                Sid: AllowPushPull
+                Effect: Allow
+                Principal:
+                  AWS:
+                    - "arn:aws:iam::123456789012:user/Bob"
+                    - "arn:aws:iam::123456789012:user/Alice"
+                Action:
+                  - "ecr:GetDownloadUrlForLayer"
+                  - "ecr:BatchGetImage"
+                  - "ecr:BatchCheckLayerAvailability"
+                  - "ecr:PutImage"
+                  - "ecr:InitiateLayerUpload"
+                  - "ecr:UploadLayerPart"
+                  - "ecr:CompleteLayerUpload"
+          ImageScanningConfiguration:
+            ScanOnPush: false
+        Metadata:
+          guard:
+            SuppressedRules:
+            - ECR_REPO_SCAN_ON_PUSH
+  expectations:
+    rules:
+      ECR_REPO_SCAN_ON_PUSH: SKIP
+
+- name: Guard and CFN_NAG suppression for W79 & ECR_REPO_SCAN_ON_PUSH
+  input:
+    Resources:
+      MyRepository:
+        Type: AWS::ECR::Repository
+        Properties:
+          RepositoryName: "test-repository"
+          RepositoryPolicyText:
+            Version: "2012-10-17"
+            Statement:
+              -
+                Sid: AllowPushPull
+                Effect: Allow
+                Principal:
+                  AWS:
+                    - "arn:aws:iam::123456789012:user/Bob"
+                    - "arn:aws:iam::123456789012:user/Alice"
+                Action:
+                  - "ecr:GetDownloadUrlForLayer"
+                  - "ecr:BatchGetImage"
+                  - "ecr:BatchCheckLayerAvailability"
+                  - "ecr:PutImage"
+                  - "ecr:InitiateLayerUpload"
+                  - "ecr:UploadLayerPart"
+                  - "ecr:CompleteLayerUpload"
+          ImageScanningConfiguration:
+            ScanOnPush: false
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W79
+              reason: Suppressed to test suppression works and skips this test
+          guard:
+            SuppressedRules:
+            - ECR_REPO_SCAN_ON_PUSH
+  expectations:
+    rules:
+      ECR_REPO_SCAN_ON_PUSH: SKIP

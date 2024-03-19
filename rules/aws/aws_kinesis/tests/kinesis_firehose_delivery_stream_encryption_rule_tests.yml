@@ -1,0 +1,194 @@
+###
+# KINESIS_FIREHOSE_DELIVERY_STREAM_ENCRYPTION_RULE tests
+###
+---
+- name: Empty
+  input: {}
+  expectations:
+    rules:
+      KINESIS_FIREHOSE_DELIVERY_STREAM_ENCRYPTION_RULE: SKIP
+
+- name: No resources
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      KINESIS_FIREHOSE_DELIVERY_STREAM_ENCRYPTION_RULE: SKIP
+
+- name: Kinesis Firehose deliveryStream with DeliveryStreamType as KinesisStreamAsSource
+  input:
+    Resources:
+      Deliverystream:
+        Type: AWS::KinesisFirehose::DeliveryStream
+        Properties:
+            DeliveryStreamName: !Ref deliveryStreamName
+            DeliveryStreamType: KinesisStreamAsSource
+            KinesisStreamSourceConfiguration:
+                KinesisStreamARN: !Ref kinesisStreamARN
+                RoleARN: !Ref kinesisStreamRoleArn
+            ExtendedS3DestinationConfiguration:
+                BucketARN: !Ref s3bucketArn
+                BufferingHints:
+                    IntervalInSeconds: 60
+                    SizeInMBs: 50
+                CompressionFormat: UNCOMPRESSED
+                Prefix: firehose/
+                RoleARN: !Ref deliveryRoleArn
+  expectations:
+    rules:
+      KINESIS_FIREHOSE_DELIVERY_STREAM_ENCRYPTION_RULE: PASS
+
+- name: Kinesis Firehose deliveryStream with DeliveryStreamType with SSE specified
+  input:
+    Resources:
+      Deliverystream:
+        Type: AWS::KinesisFirehose::DeliveryStream
+        Properties:
+            DeliveryStreamName: !Ref deliveryStreamName
+            DeliveryStreamEncryptionConfigurationInput:
+              KeyARN: 'testArn'
+              KeyType: AWS_OWNED_CMK
+            KinesisStreamSourceConfiguration:
+                KinesisStreamARN: !Ref kinesisStreamARN
+                RoleARN: !Ref kinesisStreamRoleArn
+            ExtendedS3DestinationConfiguration:
+                BucketARN: !Ref s3bucketArn
+                BufferingHints:
+                    IntervalInSeconds: 60
+                    SizeInMBs: 50
+                CompressionFormat: UNCOMPRESSED
+                Prefix: firehose/
+                RoleARN: !Ref deliveryRoleArn
+  expectations:
+    rules:
+      KINESIS_FIREHOSE_DELIVERY_STREAM_ENCRYPTION_RULE: PASS
+
+- name: Kinesis Firehose deliveryStream with DeliveryStreamType with no SSE specified
+  input:
+    Resources:
+      Deliverystream:
+        Type: AWS::KinesisFirehose::DeliveryStream
+        Properties:
+            DeliveryStreamName: !Ref deliveryStreamName
+            KinesisStreamSourceConfiguration:
+                KinesisStreamARN: !Ref kinesisStreamARN
+                RoleARN: !Ref kinesisStreamRoleArn
+            ExtendedS3DestinationConfiguration:
+                BucketARN: !Ref s3bucketArn
+                BufferingHints:
+                    IntervalInSeconds: 60
+                    SizeInMBs: 50
+                CompressionFormat: UNCOMPRESSED
+                Prefix: firehose/
+                RoleARN: !Ref deliveryRoleArn
+  expectations:
+    rules:
+      KINESIS_FIREHOSE_DELIVERY_STREAM_ENCRYPTION_RULE: FAIL
+
+- name: Kinesis Firehose deliveryStream with DeliveryStreamType with SSE specified but no KeyType
+  input:
+    Resources:
+      Deliverystream:
+        Type: AWS::KinesisFirehose::DeliveryStream
+        Properties:
+            DeliveryStreamName: !Ref deliveryStreamName
+            DeliveryStreamType: DirectPut
+            DeliveryStreamEncryptionConfigurationInput:
+              KeyARN: 'testArn'
+            KinesisStreamSourceConfiguration:
+                KinesisStreamARN: !Ref kinesisStreamARN
+                RoleARN: !Ref kinesisStreamRoleArn
+            ExtendedS3DestinationConfiguration:
+                BucketARN: !Ref s3bucketArn
+                BufferingHints:
+                    IntervalInSeconds: 60
+                    SizeInMBs: 50
+                CompressionFormat: UNCOMPRESSED
+                Prefix: firehose/
+                RoleARN: !Ref deliveryRoleArn
+  expectations:
+    rules:
+      KINESIS_FIREHOSE_DELIVERY_STREAM_ENCRYPTION_RULE: FAIL
+
+- name: CFN_NAG suppression for W88
+  input:
+    Resources:
+      Deliverystream:
+        Type: AWS::KinesisFirehose::DeliveryStream
+        Properties:
+            DeliveryStreamName: !Ref deliveryStreamName
+            KinesisStreamSourceConfiguration:
+                KinesisStreamARN: !Ref kinesisStreamARN
+                RoleARN: !Ref kinesisStreamRoleArn
+            ExtendedS3DestinationConfiguration:
+                BucketARN: !Ref s3bucketArn
+                BufferingHints:
+                    IntervalInSeconds: 60
+                    SizeInMBs: 50
+                CompressionFormat: UNCOMPRESSED
+                Prefix: firehose/
+                RoleARN: !Ref deliveryRoleArn
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W88
+              reason: Suppressed to test suppression works and skips this test
+  expectations:
+    rules:
+      KINESIS_FIREHOSE_DELIVERY_STREAM_ENCRYPTION_RULE: SKIP
+
+- name: Guard suppression for KINESIS_FIREHOSE_DELIVERY_STREAM_ENCRYPTION_RULE
+  input:
+    Resources:
+      Deliverystream:
+        Type: AWS::KinesisFirehose::DeliveryStream
+        Properties:
+            DeliveryStreamName: !Ref deliveryStreamName
+            KinesisStreamSourceConfiguration:
+                KinesisStreamARN: !Ref kinesisStreamARN
+                RoleARN: !Ref kinesisStreamRoleArn
+            ExtendedS3DestinationConfiguration:
+                BucketARN: !Ref s3bucketArn
+                BufferingHints:
+                    IntervalInSeconds: 60
+                    SizeInMBs: 50
+                CompressionFormat: UNCOMPRESSED
+                Prefix: firehose/
+                RoleARN: !Ref deliveryRoleArn
+        Metadata:
+          guard:
+            SuppressedRules:
+            - KINESIS_FIREHOSE_DELIVERY_STREAM_ENCRYPTION_RULE
+  expectations:
+    rules:
+      KINESIS_FIREHOSE_DELIVERY_STREAM_ENCRYPTION_RULE: SKIP
+
+- name: Guard and CFN_NAG suppression for W88 & KINESIS_FIREHOSE_DELIVERY_STREAM_ENCRYPTION_RULE
+  input:
+    Resources:
+      Deliverystream:
+        Type: AWS::KinesisFirehose::DeliveryStream
+        Properties:
+            DeliveryStreamName: !Ref deliveryStreamName
+            KinesisStreamSourceConfiguration:
+                KinesisStreamARN: !Ref kinesisStreamARN
+                RoleARN: !Ref kinesisStreamRoleArn
+            ExtendedS3DestinationConfiguration:
+                BucketARN: !Ref s3bucketArn
+                BufferingHints:
+                    IntervalInSeconds: 60
+                    SizeInMBs: 50
+                CompressionFormat: UNCOMPRESSED
+                Prefix: firehose/
+                RoleARN: !Ref deliveryRoleArn
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W88
+              reason: Suppressed to test suppression works and skips this test
+          guard:
+            SuppressedRules:
+            - KINESIS_FIREHOSE_DELIVERY_STREAM_ENCRYPTION_RULE
+  expectations:
+    rules:
+      KINESIS_FIREHOSE_DELIVERY_STREAM_ENCRYPTION_RULE: SKIP
