@@ -1,0 +1,68 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#    EC2_NETWORK_ACL_PROTOCOL_RULE
+#
+# Description:
+#   To avoid opening all ports for Allow rules, EC2 NetworkACL Entry Protocol should be either 6 (for TCP), 17 (for UDP), 1 (for ICMP), or 58 (for ICMPv6, which must include an IPv6 CIDR block, ICMP type, and code).
+#
+# Reports on:
+#    AWS::EC2::NetworkAclEntry
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# CFN_NAG Rule Id:
+#   W66
+#
+# Scenarios:
+# a) SKIP: when there are no EC2 NetworkACLEntry resource present
+# b) PASS: When all EC2 NetworkACLEntry resources only uses specific protocol port number 6 (for TCP), 17 (for UDP), 1 (for ICMP), or 58 (for ICMPv6, which must include an IPv6 CIDR block, ICMP type, and code).
+# c) FAIL: When any EC2 NetworkACLEntry resources does not use specific protocol port number 6 (for TCP), 17 (for UDP), 1 (for ICMP), or 58 (for ICMPv6, which must include an IPv6 CIDR block, ICMP type, and code).
+# d) SKIP: when metadata has rule suppression for EC2_NETWORK_ACL_PROTOCOL_RULE
+
+#
+# Select all EC2 NetworkACLEntry resources from incoming template (payload)
+#
+let ec2_network_acl_protocol_rule = Resources.*[ Type == 'AWS::EC2::NetworkAclEntry'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W66"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "EC2_NETWORK_ACL_PROTOCOL_RULE"
+]
+
+rule EC2_NETWORK_ACL_PROTOCOL_RULE when %ec2_network_acl_protocol_rule !empty {
+
+  let violations = %ec2_network_acl_protocol_rule[
+    Type == 'AWS::EC2::NetworkAclEntry'
+    Properties.RuleAction == 'allow'
+    Properties {
+        Protocol != 1
+        Protocol != 6
+        Protocol != 17
+        Protocol != 58
+    }
+    OR
+    Properties {
+        Protocol == 58
+        Ipv6CidrBlock !exists
+        OR
+        Icmp !exists
+        OR
+        Icmp.Code !exists
+        OR
+        Icmp.Type !exists
+    }
+  ]
+
+  %violations empty
+  <<
+    Violation: EC2 NetworkACLEntry resources does not use specific protocol port number 6 (for TCP), 17 (for UDP), 1 (for ICMP), or 58 (for ICMPv6, which must include an IPv6 CIDR block, ICMP type, and code).
+    Fix: Use protocol port number 6 (for TCP), 17 (for UDP), 1 (for ICMP), or 58 (for ICMPv6, which must include an IPv6 CIDR block, ICMP type, and code).
+  >>
+}

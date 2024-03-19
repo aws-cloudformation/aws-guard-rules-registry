@@ -1,0 +1,350 @@
+###
+# SECURITY_GROUP_INGRESS_ALL_PROTOCOLS_RULE tests
+###
+---
+- name: Empty
+  input: {}
+  expectations:
+    rules:
+      SECURITY_GROUP_INGRESS_ALL_PROTOCOLS_RULE: SKIP
+
+- name: No resources
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      SECURITY_GROUP_INGRESS_ALL_PROTOCOLS_RULE: SKIP
+
+- name: Ingress IpProtocol value of 'tcp'
+  input:
+    Resources:
+      SourceSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample source security group
+      TargetSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample target security group
+      OutboundRule:
+        Type: AWS::EC2::SecurityGroupEgress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 0
+          ToPort: 65535
+          DestinationSecurityGroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+      InboundRule:
+        Type: AWS::EC2::SecurityGroupIngress
+        Properties:
+          IpProtocol: "tcp"
+          FromPort: 45
+          ToPort: 45
+          SourceSecurityGroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+  expectations:
+    rules:
+      SECURITY_GROUP_INGRESS_ALL_PROTOCOLS_RULE: PASS
+
+- name: Ingress IpProtocol value as -1 with SG Resources
+  input:
+    Resources:
+      InstanceSecurityGroup:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          GroupDescription: Allow http to client host
+          VpcId: !Ref myVPC
+          SecurityGroupIngress:
+            - IpProtocol: tcp
+              FromPort: 80
+              ToPort: 80
+              CidrIp: 0.0.0.0/0
+            - IpProtocol: "-1"
+              FromPort: 35
+              ToPort: 35
+              CidrIp: 0.0.0.0/0
+          SecurityGroupEgress:
+            - IpProtocol: tcp
+              FromPort: 80
+              ToPort: 80
+              CidrIp: 0.0.0.0/0
+  expectations:
+    rules:
+      SECURITY_GROUP_INGRESS_ALL_PROTOCOLS_RULE: FAIL
+
+- name: Ingress IpProtocol value as -1 with SG Resources and SG Ingress resource
+  input:
+    Resources:
+      InstanceSecurityGroup:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          GroupDescription: Allow http to client host
+          VpcId: !Ref myVPC
+          SecurityGroupIngress:
+            - IpProtocol: tcp
+              FromPort: 80
+              ToPort: 80
+              CidrIp: 0.0.0.0/0
+            - IpProtocol: "-1"
+              FromPort: 35
+              ToPort: 35
+              CidrIp: 0.0.0.0/0
+          SecurityGroupEgress:
+            - IpProtocol: tcp
+              FromPort: 80
+              ToPort: 80
+              CidrIp: 0.0.0.0/0
+      InboundRule:
+        Type: AWS::EC2::SecurityGroupIngress
+        Properties:
+          IpProtocol: "tcp"
+          FromPort: 45
+          ToPort: 45
+  expectations:
+    rules:
+      SECURITY_GROUP_INGRESS_ALL_PROTOCOLS_RULE: FAIL
+
+- name: Ingress IpProtocol value as -1
+  input:
+    Resources:
+      SourceSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample source security group
+      TargetSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample target security group
+      OutboundRule:
+        Type: AWS::EC2::SecurityGroupEgress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 46
+          ToPort: 56
+          DestinationSecurityGroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+      InboundRule:
+        Type: AWS::EC2::SecurityGroupIngress
+        Properties:
+          IpProtocol: "-1"
+          FromPort: 45
+          ToPort: 45
+          SourceSecurityGroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+  expectations:
+    rules:
+      SECURITY_GROUP_INGRESS_ALL_PROTOCOLS_RULE: FAIL
+
+- name: CFN_NAG suppression for W42
+  input:
+    Resources:
+      SourceSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample source security group
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+              - id: W42
+                reason: Suppressed to test suppression works and skips this test
+      TargetSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample target security group
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+              - id: W42
+                reason: Suppressed to test suppression works and skips this test
+      OutboundRule:
+        Type: AWS::EC2::SecurityGroupEgress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 46
+          ToPort: 56
+          DestinationSecurityGroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+      InboundRule:
+        Type: AWS::EC2::SecurityGroupIngress
+        Properties:
+          IpProtocol: "tcp"
+          FromPort: 35
+          ToPort: 45
+          SourceSecurityGroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W42
+              reason: Suppressed to test suppression works and skips this test
+  expectations:
+    rules:
+      SECURITY_GROUP_INGRESS_ALL_PROTOCOLS_RULE: SKIP
+
+- name: Guard suppression for SECURITY_GROUP_INGRESS_ALL_PROTOCOLS_RULE
+  input:
+    Resources:
+      SourceSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample source security group
+        Metadata:
+          guard:
+            SuppressedRules:
+              - SECURITY_GROUP_INGRESS_ALL_PROTOCOLS_RULE
+      TargetSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample target security group
+        Metadata:
+          guard:
+            SuppressedRules:
+              - SECURITY_GROUP_INGRESS_ALL_PROTOCOLS_RULE
+      OutboundRule:
+        Type: AWS::EC2::SecurityGroupEgress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 46
+          ToPort: 56
+          DestinationSecurityGroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+      InboundRule:
+        Type: AWS::EC2::SecurityGroupIngress
+        Properties:
+          IpProtocol: "tcp"
+          FromPort: 35
+          ToPort: 45
+          SourceSecurityGroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+        Metadata:
+          guard:
+            SuppressedRules:
+            - SECURITY_GROUP_INGRESS_ALL_PROTOCOLS_RULE
+  expectations:
+    rules:
+      SECURITY_GROUP_INGRESS_ALL_PROTOCOLS_RULE: SKIP
+
+- name: Guard and CFN_NAG suppression for W42 & SECURITY_GROUP_INGRESS_ALL_PROTOCOLS_RULE
+  input:
+    Resources:
+      SourceSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample source security group
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+              - id: W42
+                reason: Suppressed to test suppression works and skips this test
+          guard:
+            SuppressedRules:
+              - SECURITY_GROUP_INGRESS_ALL_PROTOCOLS_RULE
+      TargetSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample target security group
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+              - id: W42
+                reason: Suppressed to test suppression works and skips this test
+          guard:
+            SuppressedRules:
+              - SECURITY_GROUP_INGRESS_ALL_PROTOCOLS_RULE
+      OutboundRule:
+        Type: AWS::EC2::SecurityGroupEgress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 46
+          ToPort: 56
+          DestinationSecurityGroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+      InboundRule:
+        Type: AWS::EC2::SecurityGroupIngress
+        Properties:
+          IpProtocol: "tcp"
+          FromPort: 35
+          ToPort: 45
+          SourceSecurityGroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W42
+              reason: Suppressed to test suppression works and skips this test
+          guard:
+            SuppressedRules:
+            - SECURITY_GROUP_INGRESS_ALL_PROTOCOLS_RULE
+  expectations:
+    rules:
+      SECURITY_GROUP_INGRESS_ALL_PROTOCOLS_RULE: SKIP

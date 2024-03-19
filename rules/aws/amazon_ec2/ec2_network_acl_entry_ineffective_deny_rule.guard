@@ -1,0 +1,60 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#    EC2_NETWORK_ACL_ENTRY_INEFFECTIVE_DENY_RULE
+#
+# Description:
+#   NetworkACL Entry Deny rules should affect all CIDR ranges.
+#
+# Reports on:
+#    AWS::EC2::NetworkAclEntry
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# CFN_NAG Rule Id:
+#   W71
+#
+# Scenarios:
+# a) SKIP: when there are no EC2 NetworkACLEntry resource present
+# b) PASS: When all EC2 NetworkACLEntry resources deny affects all CIDR ranges.
+# c) FAIL: When any EC2 NetworkACLEntry resources deny does not affect all CIDR ranges.
+# d) SKIP: when metadata has rule suppression for EC2_NETWORK_ACL_ENTRY_INEFFECTIVE_DENY_RULE
+
+#
+# Select all EC2 NetworkACLEntry resources from incoming template (payload)
+#
+let ec2_network_acl_entry_ineffective_deny_rule = Resources.*[ Type == 'AWS::EC2::NetworkAclEntry'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W71"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "EC2_NETWORK_ACL_ENTRY_INEFFECTIVE_DENY_RULE"
+]
+
+rule EC2_NETWORK_ACL_ENTRY_INEFFECTIVE_DENY_RULE when %ec2_network_acl_entry_ineffective_deny_rule !empty {
+  let violations = %ec2_network_acl_entry_ineffective_deny_rule[
+    Type == 'AWS::EC2::NetworkAclEntry'
+    Properties.RuleAction == 'deny'
+    Properties {
+        CidrBlock exists
+        CidrBlock != '0.0.0.0/0'
+    }
+    OR
+    Properties {
+        Ipv6CidrBlock exists
+        Ipv6CidrBlock != '::/0'
+        Ipv6CidrBlock != ':/0'
+    }
+  ]
+
+  %violations empty
+  <<
+    Violation: EC2 NetworkACLEntry resources with ruleAction Deny does not cover all CIDR Ranges.
+    Fix: Cover all CIDR ranges for deny RuleAction.
+  >>
+}

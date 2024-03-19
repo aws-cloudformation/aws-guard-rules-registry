@@ -27,6 +27,8 @@
 # Select all EC2 Subnet resources from incoming template (payload)
 #
 let ec2_subnets_auto_assign_public_ip_disabled = Resources.*[ Type == 'AWS::EC2::Subnet' 
+  Metadata.cfn_nag.rules_to_suppress not exists or 
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W33"
   Metadata.guard.SuppressedRules not exists or
   Metadata.guard.SuppressedRules.* != "SUBNET_AUTO_ASSIGN_PUBLIC_IP_DISABLED"
 ]

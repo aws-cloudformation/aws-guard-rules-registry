@@ -1,0 +1,510 @@
+###
+# SECURITY_GROUP_INGRESS_CIDR_NON_32_RULE tests
+###
+---
+- name: Empty
+  input: {}
+  expectations:
+    rules:
+      SECURITY_GROUP_INGRESS_CIDR_NON_32_RULE: SKIP
+
+- name: No resources
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      SECURITY_GROUP_INGRESS_CIDR_NON_32_RULE: SKIP
+
+- name: Ingress cidr ipv4 is /32 and ipv6 is /128
+  input:
+    Resources:
+      SourceSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample source security group
+      TargetSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample target security group
+      OutboundRule:
+        Type: AWS::EC2::SecurityGroupEgress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 0
+          ToPort: 65535
+          DestinationSecurityGroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+      InboundRule:
+        Type: AWS::EC2::SecurityGroupIngress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 45
+          ToPort: 45
+          CidrIp: 172.0.0.1/32
+          CidrIpv6: 2001:db8:1234::f350:2256:f3dd/128
+          SourceSecurityGroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+  expectations:
+    rules:
+      SECURITY_GROUP_INGRESS_CIDR_NON_32_RULE: PASS
+
+- name: Ingress cidr ipv4 is /32 and ipv6 is not specified
+  input:
+    Resources:
+      SourceSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample source security group
+      TargetSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample target security group
+      OutboundRule:
+        Type: AWS::EC2::SecurityGroupEgress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 0
+          ToPort: 65535
+          DestinationSecurityGroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+      InboundRule:
+        Type: AWS::EC2::SecurityGroupIngress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 45
+          ToPort: 45
+          CidrIp: 172.0.0.1/32
+          SourceSecurityGroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+  expectations:
+    rules:
+      SECURITY_GROUP_INGRESS_CIDR_NON_32_RULE: PASS
+
+- name: Ingress cidr ipv4 is not /32 and ipv6 is not specified for SG Resources
+  input:
+    Resources:
+      InstanceSecurityGroup:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          GroupDescription: Allow http to client host
+          VpcId: !Ref myVPC
+          SecurityGroupIngress:
+            - IpProtocol: tcp
+              FromPort: 80
+              ToPort: 80
+              CidrIp: 172.0.0.1/11
+          SecurityGroupEgress:
+            - IpProtocol: tcp
+              FromPort: 80
+              ToPort: 80
+              CidrIp: 0.0.0.0/0
+  expectations:
+    rules:
+      SECURITY_GROUP_INGRESS_CIDR_NON_32_RULE: FAIL
+
+- name: Ingress cidr ipv4 is not /32 and ipv6 is /128 for SG Resources
+  input:
+    Resources:
+      InstanceSecurityGroup:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          GroupDescription: Allow http to client host
+          VpcId: !Ref myVPC
+          SecurityGroupIngress:
+            - IpProtocol: tcp
+              FromPort: 80
+              ToPort: 80
+              CidrIp: 172.0.0.1/11
+              CidrIpv6: 2001:db8:1234::f350:2256:f3dd/128
+          SecurityGroupEgress:
+            - IpProtocol: tcp
+              FromPort: 80
+              ToPort: 80
+              CidrIp: 0.0.0.0/0
+  expectations:
+    rules:
+      SECURITY_GROUP_INGRESS_CIDR_NON_32_RULE: FAIL
+
+- name: Ingress cidr ipv4 is not /32 and ipv6 is not specified for SG Resources and Standalone ingress ipv6 is /128.
+  input:
+    Resources:
+      InstanceSecurityGroup:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          GroupDescription: Allow http to client host
+          VpcId: !Ref myVPC
+          SecurityGroupIngress:
+            - IpProtocol: tcp
+              FromPort: 80
+              ToPort: 80
+              CidrIp: 172.0.0.1/11
+          SecurityGroupEgress:
+            - IpProtocol: tcp
+              FromPort: 80
+              ToPort: 80
+              CidrIp: 0.0.0.0/0
+      InboundRule:
+        Type: AWS::EC2::SecurityGroupIngress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 45
+          ToPort: 45
+          CidrIpv6: 2001:db8:1234::f350:2256:f3dd/128
+  expectations:
+    rules:
+      SECURITY_GROUP_INGRESS_CIDR_NON_32_RULE: FAIL
+
+- name: Ingress cidr ipv4 is not /32 and ipv6 is /128
+  input:
+    Resources:
+      SourceSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample source security group
+      TargetSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample target security group
+      OutboundRule:
+        Type: AWS::EC2::SecurityGroupEgress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 46
+          ToPort: 56
+          DestinationSecurityGroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+      InboundRule:
+        Type: AWS::EC2::SecurityGroupIngress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 35
+          ToPort: 45
+          CidrIp: 172.0.0.1/28
+          CidrIpv6: 2001:db8:1234::f350:2256:f3dd/128
+          SourceSecurityGroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+  expectations:
+    rules:
+      SECURITY_GROUP_INGRESS_CIDR_NON_32_RULE: FAIL
+
+- name: Ingress cidr ipv4 is /32 and ipv6 is not /128
+  input:
+    Resources:
+      SourceSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample source security group
+      TargetSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample target security group
+      OutboundRule:
+        Type: AWS::EC2::SecurityGroupEgress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 46
+          ToPort: 56
+          DestinationSecurityGroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+      InboundRule:
+        Type: AWS::EC2::SecurityGroupIngress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 35
+          ToPort: 45
+          CidrIp: 172.0.0.1/32
+          CidrIpv6: 2001:db8:1234::f350:2256:f3dd/64
+          SourceSecurityGroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+  expectations:
+    rules:
+      SECURITY_GROUP_INGRESS_CIDR_NON_32_RULE: FAIL
+
+- name: Ingress cidr ipv4 is not /32 and ipv6 is not /128
+  input:
+    Resources:
+      SourceSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample source security group
+      TargetSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample target security group
+      OutboundRule:
+        Type: AWS::EC2::SecurityGroupEgress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 46
+          ToPort: 56
+          DestinationSecurityGroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+      InboundRule:
+        Type: AWS::EC2::SecurityGroupIngress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 35
+          ToPort: 45
+          CidrIp: 172.0.0.1/28
+          CidrIpv6: 2001:db8:1234::f350:2256:f3dd/64
+          SourceSecurityGroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+  expectations:
+    rules:
+      SECURITY_GROUP_INGRESS_CIDR_NON_32_RULE: FAIL
+
+- name: CFN_NAG suppression for W9
+  input:
+    Resources:
+      SourceSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample source security group
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+              - id: W9
+                reason: Suppressed to test suppression works and skips this test
+      TargetSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample target security group
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+              - id: W9
+                reason: Suppressed to test suppression works and skips this test
+      OutboundRule:
+        Type: AWS::EC2::SecurityGroupEgress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 46
+          ToPort: 56
+          DestinationSecurityGroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+      InboundRule:
+        Type: AWS::EC2::SecurityGroupIngress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 35
+          ToPort: 45
+          SourceSecurityGroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W9
+              reason: Suppressed to test suppression works and skips this test
+  expectations:
+    rules:
+      SECURITY_GROUP_INGRESS_CIDR_NON_32_RULE: SKIP
+
+- name: Guard suppression for SECURITY_GROUP_INGRESS_CIDR_NON_32_RULE
+  input:
+    Resources:
+      SourceSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample source security group
+        Metadata:
+          guard:
+            SuppressedRules:
+              - SECURITY_GROUP_INGRESS_CIDR_NON_32_RULE
+      TargetSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample target security group
+        Metadata:
+          guard:
+            SuppressedRules:
+              - SECURITY_GROUP_INGRESS_CIDR_NON_32_RULE
+      OutboundRule:
+        Type: AWS::EC2::SecurityGroupEgress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 46
+          ToPort: 56
+          DestinationSecurityGroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+      InboundRule:
+        Type: AWS::EC2::SecurityGroupIngress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 35
+          ToPort: 45
+          SourceSecurityGroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+        Metadata:
+          guard:
+            SuppressedRules:
+            - SECURITY_GROUP_INGRESS_CIDR_NON_32_RULE
+  expectations:
+    rules:
+      SECURITY_GROUP_INGRESS_CIDR_NON_32_RULE: SKIP
+
+- name: Guard and CFN_NAG suppression for W9 & SECURITY_GROUP_INGRESS_CIDR_NON_32_RULE
+  input:
+    Resources:
+      SourceSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample source security group
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+              - id: W9
+                reason: Suppressed to test suppression works and skips this test
+          guard:
+            SuppressedRules:
+              - SECURITY_GROUP_INGRESS_CIDR_NON_32_RULE
+      TargetSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample target security group
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+              - id: W9
+                reason: Suppressed to test suppression works and skips this test
+          guard:
+            SuppressedRules:
+              - SECURITY_GROUP_INGRESS_CIDR_NON_32_RULE
+      OutboundRule:
+        Type: AWS::EC2::SecurityGroupEgress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 46
+          ToPort: 56
+          DestinationSecurityGroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+      InboundRule:
+        Type: AWS::EC2::SecurityGroupIngress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 35
+          ToPort: 45
+          SourceSecurityGroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W9
+              reason: Suppressed to test suppression works and skips this test
+          guard:
+            SuppressedRules:
+            - SECURITY_GROUP_INGRESS_CIDR_NON_32_RULE
+  expectations:
+    rules:
+      SECURITY_GROUP_INGRESS_CIDR_NON_32_RULE: SKIP

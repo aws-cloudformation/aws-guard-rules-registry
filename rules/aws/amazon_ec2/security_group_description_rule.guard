@@ -1,0 +1,85 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#    SECURITY_GROUP_DESCRIPTION_RULE
+#
+# Description:
+#   Security group rules without a description obscure their purpose and may lead to bad practices in ensuring they only allow traffic from the ports and sources/destinations required.
+#
+# Reports on:
+#    [AWS::EC2::SecurityGroupEgress, AWS::EC2::SecurityGroup, AWS::EC2::SecurityGroupIngress]
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# CFN_NAG Rule Id:
+#   W36
+#
+# Scenarios:
+# a) SKIP: when there are no Security Groups, Ingress or Egress resource present.
+# b) PASS: When all Security Groups, Ingress or Egress resources has descriptions.
+# c) FAIL: when any Security Groups, Ingress or Egress resources haas no description.
+# d) SKIP: when metadata has rule suppression for SECURITY_GROUP_DESCRIPTION_RULE
+
+#
+# Select all Security Group Egress resources from incoming template (payload)
+#
+let security_group_description_rule_sg_resources = Resources.*[ Type == 'AWS::EC2::SecurityGroup'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W36"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "SECURITY_GROUP_DESCRIPTION_RULE"
+]
+
+let security_group_description_rule_sge_resources = Resources.*[ Type == 'AWS::EC2::SecurityGroupEgress'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W36"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "SECURITY_GROUP_DESCRIPTION_RULE"
+]
+
+let security_group_description_rule_sgi_resources = Resources.*[ Type == 'AWS::EC2::SecurityGroupIngress'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W36"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "SECURITY_GROUP_DESCRIPTION_RULE"
+]
+
+rule SECURITY_GROUP_DESCRIPTION_RULE when %security_group_description_rule_sg_resources !empty OR %security_group_description_rule_sge_resources !empty OR %security_group_description_rule_sgi_resources !empty {
+  let violations_sg = %security_group_description_rule_sg_resources[
+    Type == 'AWS::EC2::SecurityGroup'
+    Properties {
+        SecurityGroupEgress exists
+        some SecurityGroupEgress[*].Description !exists
+    }
+    OR
+    Properties {
+        SecurityGroupIngress exists
+        some SecurityGroupIngress[*].Description !exists
+    }
+  ]
+
+  let violation_sge = %security_group_description_rule_sge_resources[
+    Type == 'AWS::EC2::SecurityGroupEgress'
+    Properties.Description !exists
+  ]
+
+  let violation_sgi = %security_group_description_rule_sgi_resources[
+    Type == 'AWS::EC2::SecurityGroupIngress'
+    Properties.Description !exists
+  ]
+
+  %violations_sg empty
+  %violation_sge empty
+  %violation_sgi empty
+
+  <<
+    Violation: Security Group or Security Group Egress or Security Group Ingress resources do not have description.
+    Fix: Specify the description for Security Group and Security Group Egress and Security Group Ingress resources.
+  >>
+}

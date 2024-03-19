@@ -1,0 +1,143 @@
+###
+# SECURITY_GROUP_MISSING_EGRESS_RULE tests
+###
+---
+- name: Empty
+  input: {}
+  expectations:
+    rules:
+      SECURITY_GROUP_MISSING_EGRESS_RULE: SKIP
+
+- name: No resources
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      SECURITY_GROUP_MISSING_EGRESS_RULE: SKIP
+
+- name: Egress does exist
+  input:
+    Resources:
+      SGPing:
+        Type: AWS::EC2::SecurityGroup
+        DependsOn: VPC
+        Properties:
+          GroupDescription: SG to test ping
+          VpcId: !Ref VPC
+          SecurityGroupEgress:
+            - IpProtocol: tcp
+              FromPort: 22
+              ToPort: 22
+              CidrIp: 10.0.0.0/24
+            - IpProtocol: icmp
+              FromPort: 8
+              ToPort: -1
+              CidrIp: 10.0.0.0/24
+  expectations:
+    rules:
+      SECURITY_GROUP_MISSING_EGRESS_RULE: PASS
+
+- name: Egress does not exist
+  input:
+    Resources:
+      SGPing:
+        Type: AWS::EC2::SecurityGroup
+        DependsOn: VPC
+        Properties:
+          GroupDescription: SG to test ping
+          VpcId: !Ref VPC
+          SecurityGroupIngress:
+            - IpProtocol: tcp
+              FromPort: 22
+              ToPort: 22
+              CidrIp: 10.0.0.0/24
+            - IpProtocol: icmp
+              FromPort: 8
+              ToPort: -1
+              CidrIp: 10.0.0.0/24
+  expectations:
+    rules:
+      SECURITY_GROUP_MISSING_EGRESS_RULE: FAIL
+
+- name: CFN_NAG suppression for F1000
+  input:
+    Resources:
+      SGPing:
+        Type: AWS::EC2::SecurityGroup
+        DependsOn: VPC
+        Properties:
+          GroupDescription: SG to test ping
+          VpcId: !Ref VPC
+          SecurityGroupIngress:
+            - IpProtocol: tcp
+              FromPort: 22
+              ToPort: 22
+              CidrIp: 10.0.0.0/24
+            - IpProtocol: icmp
+              FromPort: 8
+              ToPort: -1
+              CidrIp: 10.0.0.0/24
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+              - id: F1000
+                reason: Suppressed to test suppression works and skips this test
+  expectations:
+    rules:
+      SECURITY_GROUP_MISSING_EGRESS_RULE: SKIP
+
+- name: Guard suppression for SECURITY_GROUP_MISSING_EGRESS_RULE
+  input:
+    Resources:
+      SGPing:
+        Type: AWS::EC2::SecurityGroup
+        DependsOn: VPC
+        Properties:
+          GroupDescription: SG to test ping
+          VpcId: !Ref VPC
+          SecurityGroupIngress:
+            - IpProtocol: tcp
+              FromPort: 22
+              ToPort: 22
+              CidrIp: 10.0.0.0/24
+            - IpProtocol: icmp
+              FromPort: 8
+              ToPort: -1
+              CidrIp: 10.0.0.0/24
+        Metadata:
+          guard:
+            SuppressedRules:
+              - SECURITY_GROUP_MISSING_EGRESS_RULE
+  expectations:
+    rules:
+      SECURITY_GROUP_MISSING_EGRESS_RULE: SKIP
+
+- name: Guard and CFN_NAG suppression for F1000 & SECURITY_GROUP_MISSING_EGRESS_RULE
+  input:
+    Resources:
+      SGPing:
+        Type: AWS::EC2::SecurityGroup
+        DependsOn: VPC
+        Properties:
+          GroupDescription: SG to test ping
+          VpcId: !Ref VPC
+          SecurityGroupIngress:
+            - IpProtocol: tcp
+              FromPort: 22
+              ToPort: 22
+              CidrIp: 10.0.0.0/24
+            - IpProtocol: icmp
+              FromPort: 8
+              ToPort: -1
+              CidrIp: 10.0.0.0/24
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+              - id: F1000
+                reason: Suppressed to test suppression works and skips this test
+          guard:
+            SuppressedRules:
+              - SECURITY_GROUP_MISSING_EGRESS_RULE
+  expectations:
+    rules:
+      SECURITY_GROUP_MISSING_EGRESS_RULE: SKIP

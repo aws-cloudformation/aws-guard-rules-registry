@@ -1,0 +1,566 @@
+###
+# SECURITY_GROUP_DESCRIPTION_RULE tests
+###
+---
+- name: Empty
+  input: {}
+  expectations:
+    rules:
+      SECURITY_GROUP_DESCRIPTION_RULE: SKIP
+
+- name: No resources
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      SECURITY_GROUP_DESCRIPTION_RULE: SKIP
+
+- name: All security Groups have descriptions and egress and ingress for sg do not exist
+  input:
+    Resources:
+      SourceSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample source security group
+      TargetSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample target security group
+      OutboundRule:
+        Type: AWS::EC2::SecurityGroupEgress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 45
+          ToPort: 45
+          DestinationSecurityGroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+          Description: 'Test Description'
+      InboundRule:
+        Type: AWS::EC2::SecurityGroupIngress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 35
+          ToPort: 44
+          SourceSecurityGroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+          Description: 'Test Description'
+  expectations:
+    rules:
+      SECURITY_GROUP_DESCRIPTION_RULE: PASS
+
+- name: All security Groups have descriptions with SG
+  input:
+    Resources:
+      SourceSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample source security group
+          SecurityGroupEgress:
+            - Description: 'Test Description'
+              FromPort: 34
+              IpProtocol: 'tcp'
+              ToPort: 34
+          SecurityGroupIngress:
+            - Description: 'Test Description'
+              FromPort: 43
+              IpProtocol: 'tcp'
+              ToPort: 43
+      TargetSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample target security group
+      OutboundRule:
+        Type: AWS::EC2::SecurityGroupEgress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 45
+          ToPort: 45
+          DestinationSecurityGroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+          Description: 'Test Description'
+      InboundRule:
+        Type: AWS::EC2::SecurityGroupIngress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 35
+          ToPort: 44
+          SourceSecurityGroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+          Description: 'Test Description'
+  expectations:
+    rules:
+      SECURITY_GROUP_DESCRIPTION_RULE: PASS
+
+- name: All security Groups have descriptions with SG ingress do not exist
+  input:
+    Resources:
+      SourceSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample source security group
+          SecurityGroupEgress:
+            - Description: 'Test Description'
+              FromPort: 34
+              IpProtocol: 'tcp'
+              ToPort: 34
+      TargetSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample target security group
+      OutboundRule:
+        Type: AWS::EC2::SecurityGroupEgress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 45
+          ToPort: 45
+          DestinationSecurityGroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+          Description: 'Test Description'
+      InboundRule:
+        Type: AWS::EC2::SecurityGroupIngress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 35
+          ToPort: 44
+          SourceSecurityGroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+          Description: 'Test Description'
+  expectations:
+    rules:
+      SECURITY_GROUP_DESCRIPTION_RULE: PASS
+
+- name: All security Groups have descriptions with SG egress do not exist
+  input:
+    Resources:
+      SourceSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample source security group
+          SecurityGroupIngress:
+            - Description: 'Test Description'
+              FromPort: 43
+              IpProtocol: 'tcp'
+              ToPort: 43
+      TargetSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample target security group
+      OutboundRule:
+        Type: AWS::EC2::SecurityGroupEgress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 45
+          ToPort: 45
+          DestinationSecurityGroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+          Description: 'Test Description'
+      InboundRule:
+        Type: AWS::EC2::SecurityGroupIngress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 35
+          ToPort: 44
+          SourceSecurityGroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+          Description: 'Test Description'
+  expectations:
+    rules:
+      SECURITY_GROUP_DESCRIPTION_RULE: PASS
+
+- name: Only one sg resource exist along with descriptions
+  input:
+    Resources:
+      SourceSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample source security group
+          SecurityGroupEgress:
+            - Description: 'Test Description'
+              FromPort: 34
+              IpProtocol: 'tcp'
+              ToPort: 34
+          SecurityGroupIngress:
+            - Description: 'Test Description'
+              FromPort: 43
+              IpProtocol: 'tcp'
+              ToPort: 43
+      TargetSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample target security group
+  expectations:
+    rules:
+      SECURITY_GROUP_DESCRIPTION_RULE: PASS
+
+- name: Standalone ingress resource with description
+  input:
+    Resources:
+      InboundRule:
+        Type: AWS::EC2::SecurityGroupIngress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 35
+          ToPort: 44
+          SourceSecurityGroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+          Description: 'Test Description'
+  expectations:
+    rules:
+      SECURITY_GROUP_DESCRIPTION_RULE: PASS
+
+- name: security Groups Ingress do not have descriptions
+  input:
+    Resources:
+      SourceSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample source security group
+      TargetSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample target security group
+      OutboundRule:
+        Type: AWS::EC2::SecurityGroupEgress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 45
+          ToPort: 45
+          DestinationSecurityGroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+          Description: 'Test Description'
+      InboundRule:
+        Type: AWS::EC2::SecurityGroupIngress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 35
+          ToPort: 44
+          SourceSecurityGroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+  expectations:
+    rules:
+      SECURITY_GROUP_DESCRIPTION_RULE: FAIL
+
+- name: All security Groups have descriptions with SG and egress do not have description
+  input:
+    Resources:
+      SourceSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample source security group
+          SecurityGroupEgress:
+            - Description: 'Test Description'
+              FromPort: 34
+              IpProtocol: 'tcp'
+              ToPort: 34
+          SecurityGroupIngress:
+            - Description: 'Test Description'
+              FromPort: 43
+              IpProtocol: 'tcp'
+              ToPort: 43
+      TargetSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample target security group
+      OutboundRule:
+        Type: AWS::EC2::SecurityGroupEgress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 45
+          ToPort: 45
+          DestinationSecurityGroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+      InboundRule:
+        Type: AWS::EC2::SecurityGroupIngress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 35
+          ToPort: 44
+          SourceSecurityGroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+  expectations:
+    rules:
+      SECURITY_GROUP_DESCRIPTION_RULE: FAIL
+
+- name: All security Groups have descriptions with SG with egress existing but no descriptions
+  input:
+    Resources:
+      SourceSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample source security group
+          SecurityGroupEgress:
+              FromPort: 34
+              IpProtocol: 'tcp'
+              ToPort: 34
+          SecurityGroupIngress:
+            - Description: 'Test Description'
+              FromPort: 43
+              IpProtocol: 'tcp'
+              ToPort: 43
+      TargetSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample target security group
+      OutboundRule:
+        Type: AWS::EC2::SecurityGroupEgress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 45
+          ToPort: 45
+          DestinationSecurityGroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+          Description: 'Test Description'
+      InboundRule:
+        Type: AWS::EC2::SecurityGroupIngress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 35
+          ToPort: 44
+          SourceSecurityGroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+          Description: 'Test Description'
+  expectations:
+    rules:
+      SECURITY_GROUP_DESCRIPTION_RULE: FAIL
+
+- name: All security Groups have descriptions with SG ingress exists but no description
+  input:
+    Resources:
+      SourceSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample source security group
+          SecurityGroupEgress:
+            - Description: 'Test Description'
+              FromPort: 34
+              IpProtocol: 'tcp'
+              ToPort: 34
+          SecurityGroupIngress:
+              FromPort: 43
+              IpProtocol: 'tcp'
+              ToPort: 43
+      TargetSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample target security group
+      OutboundRule:
+        Type: AWS::EC2::SecurityGroupEgress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 45
+          ToPort: 45
+          DestinationSecurityGroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+          Description: 'Test Description'
+      InboundRule:
+        Type: AWS::EC2::SecurityGroupIngress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 35
+          ToPort: 44
+          SourceSecurityGroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+          Description: 'Test Description'
+  expectations:
+    rules:
+      SECURITY_GROUP_DESCRIPTION_RULE: FAIL
+
+- name: CFN_NAG suppression for W36
+  input:
+    Resources:
+      SourceSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample source security group
+          SecurityGroupEgress:
+            - Description: 'Test Description'
+              FromPort: 34
+              IpProtocol: 'tcp'
+              ToPort: 34
+          SecurityGroupIngress:
+            FromPort: 43
+            IpProtocol: 'tcp'
+            ToPort: 43
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+              - id: W36
+                reason: Suppressed to test suppression works and skips this test
+  expectations:
+    rules:
+      SECURITY_GROUP_DESCRIPTION_RULE: SKIP
+
+- name: Guard suppression for SECURITY_GROUP_DESCRIPTION_RULE
+  input:
+    Resources:
+      SourceSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample source security group
+          SecurityGroupEgress:
+            - Description: 'Test Description'
+              FromPort: 34
+              IpProtocol: 'tcp'
+              ToPort: 34
+          SecurityGroupIngress:
+            FromPort: 43
+            IpProtocol: 'tcp'
+            ToPort: 43
+        Metadata:
+          guard:
+            SuppressedRules:
+              - SECURITY_GROUP_DESCRIPTION_RULE
+  expectations:
+    rules:
+      SECURITY_GROUP_DESCRIPTION_RULE: SKIP
+
+- name: Guard and CFN_NAG suppression for W36 & SECURITY_GROUP_DESCRIPTION_RULE
+  input:
+    Resources:
+      SourceSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample source security group
+          SecurityGroupEgress:
+            - Description: 'Test Description'
+              FromPort: 34
+              IpProtocol: 'tcp'
+              ToPort: 34
+          SecurityGroupIngress:
+            FromPort: 43
+            IpProtocol: 'tcp'
+            ToPort: 43
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+              - id: W36
+                reason: Suppressed to test suppression works and skips this test
+          guard:
+            SuppressedRules:
+              - SECURITY_GROUP_DESCRIPTION_RULE
+  expectations:
+    rules:
+      SECURITY_GROUP_DESCRIPTION_RULE: SKIP

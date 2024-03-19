@@ -1,0 +1,119 @@
+###
+# EBS_VOLUME_ENCRYPTION_KEY_RULE tests
+###
+---
+- name: Empty
+  input: {}
+  expectations:
+    rules:
+      EBS_VOLUME_ENCRYPTION_KEY_RULE: SKIP
+
+- name: No resources
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      EBS_VOLUME_ENCRYPTION_KEY_RULE: SKIP
+
+- name: EC2 Volume resource where KmsKeyId exists
+  input:
+    Resources:
+      NewVolume:
+        Type: AWS::EC2::Volume
+        Properties:
+          Size: 100
+          Encrypted: true
+          KmsKeyId: testKey
+          AvailabilityZone: !GetAtt Ec2Instance.AvailabilityZone
+          Tags:
+            - Key: MyTag
+              Value: TagValue
+        DeletionPolicy: Snapshot
+  expectations:
+    rules:
+      EBS_VOLUME_ENCRYPTION_KEY_RULE: PASS
+
+- name: EC2 Volume resource where KmsKeyId does not exist
+  input:
+    Resources:
+      NewVolume:
+        Type: AWS::EC2::Volume
+        Properties:
+          Size: 100
+          Encrypted: true
+          AvailabilityZone: !GetAtt Ec2Instance.AvailabilityZone
+          Tags:
+            - Key: MyTag
+              Value: TagValue
+        DeletionPolicy: Snapshot
+  expectations:
+    rules:
+      EBS_VOLUME_ENCRYPTION_KEY_RULE: FAIL
+
+- name: CFN_NAG suppression for W37
+  input:
+    Resources:
+      NewVolume:
+        Type: AWS::EC2::Volume
+        Properties:
+          Size: 100
+          Encrypted: true
+          AvailabilityZone: !GetAtt Ec2Instance.AvailabilityZone
+          Tags:
+            - Key: MyTag
+              Value: TagValue
+        DeletionPolicy: Snapshot
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W37
+              reason: Suppressed to test suppression works and skips this test
+  expectations:
+    rules:
+      EBS_VOLUME_ENCRYPTION_KEY_RULE: SKIP
+
+- name: Guard suppression for EBS_VOLUME_ENCRYPTION_KEY_RULE
+  input:
+    Resources:
+      NewVolume:
+        Type: AWS::EC2::Volume
+        Properties:
+          Size: 100
+          Encrypted: true
+          AvailabilityZone: !GetAtt Ec2Instance.AvailabilityZone
+          Tags:
+            - Key: MyTag
+              Value: TagValue
+        DeletionPolicy: Snapshot
+        Metadata:
+          guard:
+            SuppressedRules:
+            - EBS_VOLUME_ENCRYPTION_KEY_RULE
+  expectations:
+    rules:
+      EBS_VOLUME_ENCRYPTION_KEY_RULE: SKIP
+
+- name: Guard and CFN_NAG suppression for W37 & EBS_VOLUME_ENCRYPTION_KEY_RULE
+  input:
+    Resources:
+      NewVolume:
+        Type: AWS::EC2::Volume
+        Properties:
+          Size: 100
+          Encrypted: true
+          AvailabilityZone: !GetAtt Ec2Instance.AvailabilityZone
+          Tags:
+            - Key: MyTag
+              Value: TagValue
+        DeletionPolicy: Snapshot
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W37
+              reason: Suppressed to test suppression works and skips this test
+          guard:
+            SuppressedRules:
+            - EBS_VOLUME_ENCRYPTION_KEY_RULE
+  expectations:
+    rules:
+      EBS_VOLUME_ENCRYPTION_KEY_RULE: SKIP
