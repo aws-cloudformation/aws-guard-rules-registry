@@ -1,0 +1,124 @@
+###
+# IAM_ROLE_NO_ALLOW_PLUS_NOT_ACTION_ON_TRUST_POLICY tests
+###
+---
+- name: Empty
+  input: {}
+  expectations:
+    rules:
+      IAM_ROLE_NO_ALLOW_PLUS_NOT_ACTION_ON_TRUST_POLICY: SKIP
+
+- name: No resources
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      IAM_ROLE_NO_ALLOW_PLUS_NOT_ACTION_ON_TRUST_POLICY: SKIP
+
+- name: IAM Role with AssumeRolePolicyDocument and Effect:Deny and NotAction
+  input:
+    Resources:
+      ExamplePolicy:
+        Type: "AWS::IAM::Role"
+        Properties:
+          AssumeRolePolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+            - Effect: Deny
+              NotAction:
+                AWS:
+                - "arn:aws:iam::444455556666:user/Bob"
+                - "arn:aws:iam::444455556666:root"
+  expectations:
+    rules:
+      IAM_ROLE_NO_ALLOW_PLUS_NOT_ACTION_ON_TRUST_POLICY: PASS
+
+- name: IAM Role with AssumeRolePolicyDocument and Effect:Allow and NotAction
+  input:
+    Resources:
+      ExamplePolicy:
+        Type: "AWS::IAM::Role"
+        Properties:
+          AssumeRolePolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+            - Effect: Allow
+              NotAction:
+                AWS:
+                - "arn:aws:iam::444455556666:user/Bob"
+                - "arn:aws:iam::444455556666:root"
+  expectations:
+    rules:
+      IAM_ROLE_NO_ALLOW_PLUS_NOT_ACTION_ON_TRUST_POLICY: FAIL
+
+
+- name: IAM Role with AssumeRolePolicyDocument and Effect:Allow, but rule suppressed
+  input:
+    Resources:
+      ExamplePolicy:
+        Type: "AWS::IAM::Role"
+        Properties:
+          AssumeRolePolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+            - Effect: Allow
+              NotAction:
+                AWS:
+                - "arn:aws:iam::444455556666:user/Bob"
+                - "arn:aws:iam::444455556666:root"
+        Metadata:
+          guard:
+            SuppressedRules:
+            - IAM_ROLE_NO_ALLOW_PLUS_NOT_ACTION_ON_TRUST_POLICY: Suppressed to test suppression works and skips this test
+  expectations:
+    rules:
+      IAM_ROLE_NO_ALLOW_PLUS_NOT_ACTION_ON_TRUST_POLICY: SKIP
+
+- name: IAM Role with AssumeRolePolicyDocument and Effect:Allow, but rule suppressed - CFN_NAG
+  input:
+    Resources:
+      ExamplePolicy:
+        Type: "AWS::IAM::Role"
+        Properties:
+          AssumeRolePolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+            - Effect: Allow
+              NotAction:
+                AWS:
+                - "arn:aws:iam::444455556666:user/Bob"
+                - "arn:aws:iam::444455556666:root"
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W14
+              reason: Suppressed to test suppression works and skips this test
+  expectations:
+    rules:
+      IAM_ROLE_NO_ALLOW_PLUS_NOT_ACTION_ON_TRUST_POLICY: SKIP
+
+- name: IAM Role with AssumeRolePolicyDocument and Effect:Allow, but rule suppressed - BOTH
+  input:
+    Resources:
+      ExamplePolicy:
+        Type: "AWS::IAM::Role"
+        Properties:
+          AssumeRolePolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+            - Effect: Allow
+              NotAction:
+                AWS:
+                - "arn:aws:iam::444455556666:user/Bob"
+                - "arn:aws:iam::444455556666:root"
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W14
+              reason: Suppressed to test suppression works and skips this test
+          guard:
+            SuppressedRules:
+            - IAM_ROLE_NO_ALLOW_PLUS_NOT_ACTION_ON_TRUST_POLICY: Suppressed to test suppression works and skips this test
+  expectations:
+    rules:
+      IAM_ROLE_NO_ALLOW_PLUS_NOT_ACTION_ON_TRUST_POLICY: SKIP

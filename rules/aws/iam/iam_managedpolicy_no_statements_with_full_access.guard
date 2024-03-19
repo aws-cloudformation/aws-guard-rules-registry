@@ -1,0 +1,52 @@
+#
+#####################################
+##           Gherkin               ##
+#####################################
+# Rule Identifier:
+#   IAM_MANAGEDPOLICY_NO_STATEMENTS_WITH_FULL_ACCESS
+#
+# Description:
+#   Checks if AWS Identity and Access Management (IAM) managed policies grant permissions to all actions on individual AWS resources.
+#
+# Reports on:
+#   AWS::IAM::ManagedPolicy
+#
+# Evaluates:
+#   AWS CloudFormation
+#
+# Rule Parameters:
+#   NA
+#
+# CFN_NAG Rule Id:
+#   F5
+#
+# Scenarios:
+# a) SKIP: when there are no IAM Managed Policies present
+# b) PASS: when all IAM Managed Policies do not allow full access to at least 1 AWS service
+# c) FAIL: when any IAM Managed Policy allows full access to at least 1 AWS service.
+# d) SKIP: when metada has rule suppression for IAM_MANAGEDPOLICY_NO_STATEMENTS_WITH_FULL_ACCESS or F5
+
+#
+# Select all IAM Managed Policy resources from incoming template (payload)
+# 
+let aws_iam_managed_policies = Resources.*[ Type == 'AWS::IAM::ManagedPolicy'
+  Metadata.cfn_nag.rules_to_suppress not exists or 
+  Metadata.cfn_nag.rules_to_suppress.*.id != "F5"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "IAM_MANAGEDPOLICY_NO_STATEMENTS_WITH_FULL_ACCESS" 
+]
+
+rule IAM_MANAGEDPOLICY_NO_STATEMENTS_WITH_FULL_ACCESS when %aws_iam_managed_policies !empty {
+  let violations = %aws_iam_managed_policies[
+    Type == 'AWS::IAM::ManagedPolicy'
+    some Properties.PolicyDocument.Statement[*] {
+      some Action[*] in ["*", /^[a-zA-Z0-9]*:\*$/]
+      Effect == "Allow"
+    }
+  ]
+  %violations empty
+  <<
+    Violation: One or more IAM Managed Policies allow full access to at least 1 AWS service
+    Fix: Remove policy statements that match {"Effect": "Allow", "Action": "<service-name>:*" ... } or {"Effect": "Allow", "Action": "*" ... }
+  >>
+} 

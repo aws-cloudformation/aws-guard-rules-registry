@@ -1,0 +1,227 @@
+###
+# IAM_POLICY_NO_WILDCARD_RESOURCE_ON_PASSROLE tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      IAM_POLICY_NO_WILDCARD_RESOURCE_ON_PASSROLE: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      IAM_POLICY_NO_WILDCARD_RESOURCE_ON_PASSROLE: SKIP
+
+- name: Policy with properly scoped PassRole Resource, PASS
+  input:
+    Resources:
+      TestPolicy:
+        Type: AWS::IAM::Policy
+        Properties:
+          PolicyName: root
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: 'iam:PassRole'
+                Resource: 'arn:aws:iam::111122223333:role/EC2-roles-for-XYZ-*'
+          Roles:
+            - !Ref RootRole
+      RootInstanceProfile:
+        Type: 'AWS::IAM::InstanceProfile'
+        Properties:
+          Path: /
+          Roles:
+            - !Ref RootRole
+  expectations:
+    rules:
+      IAM_POLICY_NO_WILDCARD_RESOURCE_ON_PASSROLE: PASS
+
+- name: Passrole with Resource *, Effect Allow, FAIL
+  input:
+    Resources:
+      SampleVolume:
+        Type: AWS::EC2::Volume
+        Properties:
+          Encrypted: true
+          Size: 10
+          VolumeType: gp2
+      TestPolicy:
+        Type: AWS::IAM::Policy
+        Properties:
+          PolicyName: root
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: 
+                  - 'iam:PassRole'
+                  - 's3:ListBuckets'
+                Resource: '*'
+          Roles:
+            - !Ref RootRole
+  expectations:
+    rules:
+      IAM_POLICY_NO_WILDCARD_RESOURCE_ON_PASSROLE: FAIL
+
+- name: IAM Policy allows iam:PassRole on Resource "*", FAIL
+  input:
+    Resources:
+      TestPolicy:
+        Type: AWS::IAM::Policy
+        Properties:
+          PolicyName: root
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: 
+                - 'iam:PassRole'
+                - 's3:ListBuckets'
+                Resource: '*'
+          Roles:
+            - !Ref RootRole
+  expectations:
+    rules:
+      IAM_POLICY_NO_WILDCARD_RESOURCE_ON_PASSROLE: FAIL
+
+- name: IAM ManagedPolicy allows iam:PassRole on Resource "*", FAIL
+  input:
+    Resources:
+      TestPolicy:
+        Type: AWS::IAM::ManagedPolicy
+        Properties:
+          PolicyName: root
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: 
+                - 'iam:PassRole'
+                - 's3:ListBuckets'
+                Resource: '*'
+          Roles:
+            - !Ref RootRole
+  expectations:
+    rules:
+      IAM_POLICY_NO_WILDCARD_RESOURCE_ON_PASSROLE: FAIL
+
+- name: Passrole with Resource * but Condition limits Resource, PASS
+  input:
+    Resources:
+      TestPolicy:
+        Type: AWS::IAM::ManagedPolicy
+        Properties:
+          PolicyName: root
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: 
+                  - 'iam:PassRole'
+                  - 's3:ListBuckets'
+                Resource: '*'
+                Condition:
+                  StringEquals:
+                    "iam:PassedToService": "cloudwatch.amazon.com"
+  expectations:
+    rules:
+      IAM_POLICY_NO_WILDCARD_RESOURCE_ON_PASSROLE: PASS
+
+- name: Passrole with Resource * but Effect Deny, PASS
+  input:
+    Resources:
+      TestPolicy:
+        Type: AWS::IAM::Policy
+        Properties:
+          PolicyName: root
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Deny
+                Action: 
+                  - 'iam:PassRole'
+                  - 's3:ListBuckets'
+                Resource: '*'
+  expectations:
+    rules:
+      IAM_POLICY_NO_WILDCARD_RESOURCE_ON_PASSROLE: PASS
+##
+## Suppression
+##
+- name: F38 CFN_NAG Suppression, SKIP
+  input:
+    Resources:
+      TestPolicy:
+        Type: AWS::IAM::Policy
+        Properties:
+          PolicyName: root
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: 
+                  - 'iam:PassRole'
+                  - 's3:ListBuckets'
+                Resource: '*'
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+              - id: F39
+                reason: Suppressed for a very good reason
+  expectations:
+    rules:
+      IAM_POLICY_NO_WILDCARD_RESOURCE_ON_PASSROLE: SKIP
+
+- name: Guard Suppression, SKIP
+  input:
+    Resources:
+      TestPolicy:
+        Type: AWS::IAM::Policy
+        Properties:
+          PolicyName: root
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: 
+                  - 'iam:PassRole'
+                  - 's3:ListBuckets'
+                Resource: '*'
+        Metadata:
+          guard:
+            SuppressedRules:
+            - IAM_POLICY_NO_WILDCARD_RESOURCE_ON_PASSROLE: Suppressed for a very good reason
+  expectations:
+    rules:
+      IAM_POLICY_NO_WILDCARD_RESOURCE_ON_PASSROLE: SKIP
+
+- name: F38 CFN_NAG and Guard suppression, SKIP
+  input:
+    Resources:
+      TestPolicy:
+        Type: AWS::IAM::Policy
+        Properties:
+          PolicyName: root
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: 
+                  - 'iam:PassRole'
+                  - 's3:ListBuckets'
+                Resource: '*'
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+              - id: F39
+                reason: Suppressed for a very good reason
+          guard:
+            SuppressedRules:
+            - IAM_POLICY_NO_WILDCARD_RESOURCE_ON_PASSROLE: Suppressed for a very good reason
+  expectations:
+    rules:
+      IAM_POLICY_NO_WILDCARD_RESOURCE_ON_PASSROLE: SKIP

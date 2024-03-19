@@ -1,0 +1,50 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#   IAM_ROLE_ADMINISTRATOR_ACCESS_POLICY_RULE
+#
+# Description:
+#   IAM role should not have AdministratorAccess policy
+#
+# Reports on:
+#   AWS::IAM::Role
+#
+# Evaluates:
+#   AWS CloudFormation
+#
+# Rule Parameters:
+#   NA
+#
+# CFN_NAG Rule Id:
+#   W43
+#
+# Scenarios:
+# a) SKIP: when there are no IAM Roles present
+# b) PASS: when no IAM Roles have AdministratorAccess policy
+# c) FAIL: when any IAM Roles have AdministratorAccess policy
+# d) SKIP: when metadata has rule suppression for IAM_ROLE_ADMINISTRATOR_ACCESS_POLICY_RULE or CFN_NAG W43
+
+#
+# Select all IAM Role resources from incoming template (payload)
+#
+let iam_role_administrator_access_policy_rule = Resources.*[ Type == 'AWS::IAM::Role'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W43"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "IAM_ROLE_ADMINISTRATOR_ACCESS_POLICY_RULE"
+]
+
+rule IAM_ROLE_ADMINISTRATOR_ACCESS_POLICY_RULE when %iam_role_administrator_access_policy_rule !empty {
+  let violations = %iam_role_administrator_access_policy_rule[
+    Type == 'AWS::IAM::Role'
+    Properties.ManagedPolicyArns exists
+    some Properties.ManagedPolicyArns[*] == 'arn:aws:iam::aws:policy/AdministratorAccess'
+  ]
+  %violations empty
+  <<
+    Violation: IAM role ManagedPolicyArns has AdministratorAccess policy access.
+    Fix: Remove AdministratorAccess policy access from ManagedPolicyArns in IAM Roles.
+  >>
+}

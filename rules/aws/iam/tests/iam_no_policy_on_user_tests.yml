@@ -1,0 +1,200 @@
+###
+# IAM_NO_POLICY_ON_USER tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      IAM_NO_POLICY_ON_USER: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      IAM_NO_POLICY_ON_USER: SKIP
+
+## 
+## AWS::IAM::Policy
+##
+- name: IAM Policy with Users property, FAIL
+  input: 
+    Resources: 
+      ExampleResource: 
+        Type: "AWS::IAM::Policy"
+        Properties:
+          Users: 
+          - foobar
+          - test
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+            - Effect: Allow
+              Action: s3.ListObjects
+  expectations:
+    rules: 
+      IAM_NO_POLICY_ON_USER: FAIL
+
+- name: IAM Policy with Users property, but rule suppressed, SKIP
+  input: 
+    Resources: 
+      ExampleResource: 
+        Type: "AWS::IAM::Policy"
+        Properties:
+          Users: 
+          - foobar
+          - test
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+            - Effect: Allow
+              Action: s3.ListObjects
+        Metadata:
+          guard:
+            SuppressedRules:
+            - IAM_NO_POLICY_ON_USER: Suppressed for a very good reason
+  expectations:
+    rules: 
+      IAM_NO_POLICY_ON_USER: SKIP
+
+- name: IAM Policy with Users property, but rule suppressed - CFN_NAG, SKIP
+  input: 
+    Resources: 
+      ExampleResource: 
+        Type: "AWS::IAM::Policy"
+        Properties:
+          Users: 
+          - foobar
+          - test
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+            - Effect: Allow
+              Action: s3.ListObjects
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: F11
+              reason: Suppressed for a very good reason
+  expectations:
+    rules: 
+      IAM_NO_POLICY_ON_USER: SKIP
+
+- name: IAM Policy with Users property, but rule suppressed - BOTH, SKIP
+  input: 
+    Resources: 
+      ExampleResource: 
+        Type: "AWS::IAM::Policy"
+        Properties:
+          Users: 
+          - foobar
+          - test
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+            - Effect: Allow
+              Action: s3.ListObjects
+        Metadata:
+          guard:
+            SuppressedRules:
+            - IAM_NO_POLICY_ON_USER: Suppressed for a very good reason
+          cfn_nag:
+            rules_to_suppress:
+            - id: F11
+              reason: Suppressed for a very good reason
+  expectations:
+    rules: 
+      IAM_NO_POLICY_ON_USER: SKIP
+
+## 
+## AWS::IAM::ManagedPolicy
+##
+- name: IAM Policy with Users property, FAIL
+  input: 
+    Resources: 
+      ExampleResource: 
+        Type: "AWS::IAM::ManagedPolicy"
+        Properties:
+          Users: 
+          - foobar
+          - test
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+            - Effect: Allow
+              Action: s3.ListObjects
+  expectations:
+    rules: 
+      IAM_NO_POLICY_ON_USER: FAIL
+
+- name: IAM Policy with Users property, but rule suppressed, SKIP
+  input: 
+    Resources: 
+      ExampleResource: 
+        Type: "AWS::IAM::ManagedPolicy"
+        Properties:
+          Users: 
+          - foobar
+          - test
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+            - Effect: Allow
+              Action: s3.ListObjects
+        Metadata:
+          guard:
+            SuppressedRules:
+            - IAM_NO_POLICY_ON_USER: Suppressed for a very good reason
+  expectations:
+    rules: 
+      IAM_NO_POLICY_ON_USER: SKIP
+
+- name: IAM Policy with Users property, but rule suppressed - CFN_NAG, SKIP
+  input: 
+    Resources: 
+      ExampleResource: 
+        Type: "AWS::IAM::ManagedPolicy"
+        Properties:
+          Users: 
+          - foobar
+          - test
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+            - Effect: Allow
+              Action: s3.ListObjects
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: F12
+              reason: Suppressed for a very good reason
+  expectations:
+    rules: 
+      IAM_NO_POLICY_ON_USER: SKIP
+
+- name: IAM Policy with Users property, but rule suppressed - BOTH, SKIP
+  input: 
+    Resources: 
+      ExampleResource: 
+        Type: "AWS::IAM::ManagedPolicy"
+        Properties:
+          Users: 
+          - foobar
+          - test
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+            - Effect: Allow
+              Action: s3.ListObjects
+        Metadata:
+          guard:
+            SuppressedRules:
+            - IAM_NO_POLICY_ON_USER: Suppressed for a very good reason
+          cfn_nag:
+            rules_to_suppress:
+            - id: F12
+              reason: Suppressed for a very good reason
+  expectations:
+    rules: 
+      IAM_NO_POLICY_ON_USER: SKIP

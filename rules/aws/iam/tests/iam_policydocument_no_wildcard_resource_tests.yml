@@ -1,0 +1,442 @@
+###
+# IAM_POLICYDOCUMENT_NO_WILDCARD_RESOURCE tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      IAM_POLICYDOCUMENT_NO_WILDCARD_RESOURCE: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      IAM_POLICYDOCUMENT_NO_WILDCARD_RESOURCE: SKIP
+
+- name: IAM Role without Policies, PASS
+  input: 
+    Resources: 
+      ExamplePolicy: 
+        Type: "AWS::IAM::Role"
+        Properties: 
+  expectations:
+    rules: 
+      IAM_POLICYDOCUMENT_NO_WILDCARD_RESOURCE: PASS
+
+- name: IAM Role with "Allow", no wildcard resource, PASS
+  input: 
+    Resources: 
+      ExamplePolicy: 
+        Type: "AWS::IAM::Role"
+        Properties: 
+          Policies:
+          - PolicyName: foobar
+            PolicyDocument: 
+              Version: '2012-10-17'
+              Id: ExamplePolicy01
+              Statement:
+              - Sid: ExampleStatement01
+                Effect: Allow
+                Action:
+                - s3:GetObject
+                - s3:GetBucketLocation
+                - s3:ListBucket
+                Resource:
+                - arn:aws:s3:::awsexamplebucket1/*
+                - arn:aws:s3:::awsexamplebucket1
+  expectations:
+    rules: 
+      IAM_POLICYDOCUMENT_NO_WILDCARD_RESOURCE: PASS
+
+- name: IAM Role with "Allow" and wildcard resource, FAIL
+  input: 
+    Resources: 
+      ExamplePolicy: 
+        Type: "AWS::IAM::Role"
+        Properties: 
+          Policies:
+            - PolicyName: root
+              PolicyDocument:
+                Version: "2012-10-17"
+                Statement:
+                  - Effect: Allow
+                    Action: '*'
+                    Resource: '*'
+  expectations:
+    rules: 
+      IAM_POLICYDOCUMENT_NO_WILDCARD_RESOURCE: FAIL
+
+- name: IAM Role with "Allow" and wildcard resource - CFN-GUARD, SKIP 
+  input: 
+    Resources: 
+      ExamplePolicy: 
+        Type: "AWS::IAM::Role"
+        Properties: 
+          Policies:
+            - PolicyName: foobar
+              PolicyDocument: 
+                Version: '2012-10-17'
+                Id: ExamplePolicy01
+                Statement:
+                - Sid: ExampleStatement01
+                  Effect: Allow
+                  Action:
+                  - s3:GetObject
+                  - s3:GetBucketLocation
+                  - s3:ListBucket
+                  Resource: "*"
+        Metadata:
+          guard:
+            SuppressedRules:
+            - IAM_POLICYDOCUMENT_NO_WILDCARD_RESOURCE
+  expectations:
+    rules: 
+      IAM_POLICYDOCUMENT_NO_WILDCARD_RESOURCE: SKIP
+
+- name: IAM Role with "Allow" statement granting permissions to all actions on all resources but rule suppressed - CFN_NAG W12, SKIP 
+  input: 
+    Resources: 
+      ExamplePolicy: 
+        Type: "AWS::IAM::Role"
+        Properties: 
+          Policies:
+            - PolicyName: foobar
+              PolicyDocument: 
+                Version: '2012-10-17'
+                Id: ExamplePolicy01
+                Statement:
+                - Sid: ExampleStatement01
+                  Effect: Allow
+                  Action:
+                  - s3:GetObject
+                  - s3:GetBucketLocation
+                  - s3:ListBucket
+                  Resource: "*"
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+              - id: W12
+                reason: Suppressed for a very good reason
+  expectations:
+    rules: 
+      IAM_POLICYDOCUMENT_NO_WILDCARD_RESOURCE: SKIP
+      
+- name: IAM Role with "Allow" statement granting permissions to all actions on all resources but rule suppressed - BOTH, SKIP 
+  input: 
+    Resources: 
+      ExamplePolicy: 
+        Type: "AWS::IAM::Role"
+        Properties: 
+          Policies:
+            - PolicyName: foobar
+              PolicyDocument: 
+                Version: '2012-10-17'
+                Id: ExamplePolicy01
+                Statement:
+                - Sid: ExampleStatement01
+                  Effect: Allow
+                  Action:
+                  - s3:GetObject
+                  - s3:GetBucketLocation
+                  - s3:ListBucket
+                  Resource: "*"
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W11
+              reason: Suppressed for a very good reason
+          guard:
+            SuppressedRules:
+            - IAM_POLICYDOCUMENT_NO_WILDCARD_RESOURCE
+  expectations:
+    rules: 
+      IAM_POLICYDOCUMENT_NO_WILDCARD_RESOURCE: SKIP
+
+##
+## AWS::IAM::Policy
+##
+- name: IAM Policy with "Allow", no wildcard resourrce, PASS
+  input: 
+    Resources: 
+      ExamplePolicy: 
+        Type: "AWS::IAM::Policy"
+        Properties: 
+          PolicyDocument: 
+            Version: '2012-10-17'
+            Id: ExamplePolicy01
+            Statement:
+            - Sid: ExampleStatement01
+              Effect: Allow
+              Action:
+              - s3:GetObject
+              - s3:GetBucketLocation
+              - s3:ListBucket
+              Resource:
+              - arn:aws:s3:::awsexamplebucket1/*
+              - arn:aws:s3:::awsexamplebucket1
+  expectations:
+    rules: 
+      IAM_POLICYDOCUMENT_NO_WILDCARD_RESOURCE: PASS
+
+- name: IAM Policy with "Allow" and wildcard resource, FAIL
+  input: 
+    Resources: 
+      ExamplePolicy: 
+        Type: "AWS::IAM::Policy"
+        Properties: 
+          PolicyDocument: 
+            Version: '2012-10-17'
+            Id: ExamplePolicy01
+            Statement:
+            - Sid: ExampleStatement01
+              Effect: Allow
+              Action:
+              - s3:GetObject
+              - s3:GetBucketLocation
+              - s3:ListBucket
+              Resource: "*"
+  expectations:
+    rules: 
+      IAM_POLICYDOCUMENT_NO_WILDCARD_RESOURCE: FAIL
+
+- name: IAM Policy with "Allow" and wildcard resource - CFN-GUARD, SKIP 
+  input: 
+    Resources: 
+      ExamplePolicy: 
+        Type: "AWS::IAM::Policy"
+        Properties: 
+          PolicyDocument: 
+            Version: '2012-10-17'
+            Id: ExamplePolicy01
+            Statement:
+            - Sid: ExampleStatement01
+              Effect: Allow
+              Action:
+              - s3:GetObject
+              - s3:GetBucketLocation
+              - s3:ListBucket
+              Resource: "*"
+        Metadata:
+          guard:
+            SuppressedRules:
+            - IAM_POLICYDOCUMENT_NO_WILDCARD_RESOURCE: Suppressed for a very good reason
+  expectations:
+    rules: 
+      IAM_POLICYDOCUMENT_NO_WILDCARD_RESOURCE: SKIP
+
+- name: IAM Policy with "Allow" statement granting permissions to all actions on all resources but rule suppressed - CFN_NAG W12, SKIP 
+  input: 
+    Resources: 
+      ExamplePolicy: 
+        Type: "AWS::IAM::Policy"
+        Properties: 
+          PolicyDocument: 
+            Version: '2012-10-17'
+            Id: ExamplePolicy01
+            Statement:
+            - Sid: ExampleStatement01
+              Effect: Allow
+              Action:
+              - s3:GetObject
+              - s3:GetBucketLocation
+              - s3:ListBucket
+              Resource: "*"
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+              - id: W12
+                reason: Resource * is required due to the administrative nature of the solution.
+              - id: W28X
+                reason: Static names chosen intentionally to provide integration in cross-account permissions
+  expectations:
+    rules: 
+      IAM_POLICYDOCUMENT_NO_WILDCARD_RESOURCE: SKIP
+      
+- name: IAM Policy with "Allow" statement granting permissions to all actions on all resources but rule suppressed - BOTH, SKIP 
+  input: 
+    Resources: 
+      ExamplePolicy: 
+        Type: "AWS::IAM::Policy"
+        Properties: 
+          PolicyDocument: 
+            Version: '2012-10-17'
+            Id: ExamplePolicy01
+            Statement:
+            - Sid: ExampleStatement01
+              Effect: Allow
+              Action:
+              - s3:GetObject
+              - s3:GetBucketLocation
+              - s3:ListBucket
+              Resource: "*"
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W12
+              reason: Suppressed for a very good reason
+          guard:
+            SuppressedRules:
+            - IAM_POLICYDOCUMENT_NO_WILDCARD_RESOURCE: Suppressed for a very good reason
+  expectations:
+    rules: 
+      IAM_POLICYDOCUMENT_NO_WILDCARD_RESOURCE: SKIP
+
+- name: SHARR example, SKIP
+  input:
+    Resources:
+      ExamplePolicy:
+        Type: AWS::IAM::Policy
+        Properties:
+          PolicyDocument:
+            Statement:
+              - Action:
+                  - ec2:DescribeSecurityGroupReferences
+                  - ec2:DescribeSecurityGroups
+                  - ec2:UpdateSecurityGroupRuleDescriptionsEgress
+                  - ec2:UpdateSecurityGroupRuleDescriptionsIngress
+                  - ec2:RevokeSecurityGroupIngress
+                  - ec2:RevokeSecurityGroupEgress
+                Effect: Allow
+                Resource: "*"
+            Version: "2012-10-17"
+          PolicyName: SHARRRemediationPolicyDisablePublicAccessForSecurityGroupE214EF9A
+          Roles:
+            - Ref: RemediationRoleDisablePublicAccessForSecurityGroupMemberAccountRole3BED8BF4
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+              - id: W12
+                reason: Resource * is required for to allow remediation for *any* resource.
+  expectations:
+    rules: 
+      IAM_POLICYDOCUMENT_NO_WILDCARD_RESOURCE: SKIP
+
+##
+## AWS::IAM::ManagedPolicy
+##
+- name: IAM ManagedPolicy with "Allow", no wildcard resourrce, PASS
+  input: 
+    Resources: 
+      ExamplePolicy: 
+        Type: "AWS::IAM::ManagedPolicy"
+        Properties: 
+          PolicyDocument: 
+            Version: '2012-10-17'
+            Id: ExamplePolicy01
+            Statement:
+            - Sid: ExampleStatement01
+              Effect: Allow
+              Action:
+              - s3:GetObject
+              - s3:GetBucketLocation
+              - s3:ListBucket
+              Resource:
+              - arn:aws:s3:::awsexamplebucket1/*
+              - arn:aws:s3:::awsexamplebucket1
+  expectations:
+    rules: 
+      IAM_POLICYDOCUMENT_NO_WILDCARD_RESOURCE: PASS
+
+- name: IAM ManagedPolicy with "Allow" and wildcard resource, FAIL
+  input: 
+    Resources: 
+      ExamplePolicy: 
+        Type: "AWS::IAM::ManagedPolicy"
+        Properties: 
+          PolicyDocument: 
+            Version: '2012-10-17'
+            Id: ExamplePolicy01
+            Statement:
+            - Sid: ExampleStatement01
+              Effect: Allow
+              Action:
+              - s3:GetObject
+              - s3:GetBucketLocation
+              - s3:ListBucket
+              Resource: "*"
+  expectations:
+    rules: 
+      IAM_POLICYDOCUMENT_NO_WILDCARD_RESOURCE: FAIL
+
+- name: IAM ManagedPolicy with "Allow" and wildcard resourrce - CFN-GUARD, SKIP 
+  input: 
+    Resources: 
+      ExamplePolicy: 
+        Type: "AWS::IAM::ManagedPolicy"
+        Properties: 
+          PolicyDocument: 
+            Version: '2012-10-17'
+            Id: ExamplePolicy01
+            Statement:
+            - Sid: ExampleStatement01
+              Effect: Allow
+              Action:
+              - s3:GetObject
+              - s3:GetBucketLocation
+              - s3:ListBucket
+              Resource: "*"
+        Metadata:
+          guard:
+            SuppressedRules:
+            - IAM_POLICYDOCUMENT_NO_WILDCARD_RESOURCE: Suppressed for a very good reason
+  expectations:
+    rules: 
+      IAM_POLICYDOCUMENT_NO_WILDCARD_RESOURCE: SKIP
+
+- name: IAM ManagedPolicy with "Allow" statement granting permissions to all actions on all resources but rule suppressed - CFN_NAG W12, SKIP 
+  input: 
+    Resources: 
+      ExamplePolicy: 
+        Type: "AWS::IAM::ManagedPolicy"
+        Properties: 
+          PolicyDocument: 
+            Version: '2012-10-17'
+            Id: ExamplePolicy01
+            Statement:
+            - Sid: ExampleStatement01
+              Effect: Allow
+              Action:
+              - s3:GetObject
+              - s3:GetBucketLocation
+              - s3:ListBucket
+              Resource: "*"
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+              - id: W13
+                reason: Resource * is required due to the administrative nature of the solution.
+
+  expectations:
+    rules: 
+      IAM_POLICYDOCUMENT_NO_WILDCARD_RESOURCE: SKIP
+      
+- name: IAM ManagedPolicy with "Allow" statement granting permissions to all actions on all resources but rule suppressed - BOTH, SKIP 
+  input: 
+    Resources: 
+      ExamplePolicy: 
+        Type: "AWS::IAM::ManagedPolicy"
+        Properties: 
+          PolicyDocument: 
+            Version: '2012-10-17'
+            Id: ExamplePolicy01
+            Statement:
+            - Sid: ExampleStatement01
+              Effect: Allow
+              Action:
+              - s3:GetObject
+              - s3:GetBucketLocation
+              - s3:ListBucket
+              Resource: "*"
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W13
+              reason: Suppressed for a very good reason
+          guard:
+            SuppressedRules:
+            - IAM_POLICYDOCUMENT_NO_WILDCARD_RESOURCE: Suppressed for a very good reason
+  expectations:
+    rules: 
+      IAM_POLICYDOCUMENT_NO_WILDCARD_RESOURCE: SKIP

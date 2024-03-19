@@ -1,0 +1,328 @@
+###
+# IAM_ROLE_ELEVATED_MANAGED_POLICY_RULE tests
+###
+---
+- name: Empty
+  input: {}
+  expectations:
+    rules:
+      IAM_ROLE_ELEVATED_MANAGED_POLICY_RULE: SKIP
+
+- name: No resources
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      IAM_ROLE_ELEVATED_MANAGED_POLICY_RULE: SKIP
+
+- name: IAM Role with No ManagedPolicyArns list
+  input:
+    Resources:
+      RootRole:
+        Type: 'AWS::IAM::Role'
+        Properties:
+          AssumeRolePolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Principal:
+                  Service:
+                    - ec2.amazonaws.com
+                Action:
+                  - 'sts:AssumeRole'
+          Path: /
+          Policies:
+            - PolicyName: root
+              PolicyDocument:
+                Version: "2012-10-17"
+                Statement:
+                  - Effect: Allow
+                    Action: '*'
+                    Resource: '*'
+        RootInstanceProfile:
+          Type: 'AWS::IAM::InstanceProfile'
+          Properties:
+            Path: /
+            Roles:
+              - !Ref RootRole
+  expectations:
+    rules:
+      IAM_ROLE_ELEVATED_MANAGED_POLICY_RULE: PASS
+
+- name: IAM Role with ManagedPolicyArns list but no elevated access
+  input:
+    Resources:
+      RootRole:
+        Type: 'AWS::IAM::Role'
+        Properties:
+          AssumeRolePolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Principal:
+                  Service:
+                    - ec2.amazonaws.com
+                Action:
+                  - 'sts:AssumeRole'
+          ManagedPolicyArns:
+            - arn:aws:iam::123456789012:user/Development/product_1234/*
+            - arn:aws:s3:::my_corporate_bucket/Development/*
+          Path: /
+          Policies:
+            - PolicyName: root
+              PolicyDocument:
+                Version: "2012-10-17"
+                Statement:
+                  - Effect: Allow
+                    Action: '*'
+                    Resource: '*'
+        RootInstanceProfile:
+          Type: 'AWS::IAM::InstanceProfile'
+          Properties:
+            Path: /
+            Roles:
+              - !Ref RootRole
+  expectations:
+    rules:
+      IAM_ROLE_ELEVATED_MANAGED_POLICY_RULE: PASS
+
+- name: IAM Role with ManagedPolicyArns list with only one arn with elevated PowerUser access
+  input:
+    Resources:
+      RootRole:
+        Type: 'AWS::IAM::Role'
+        Properties:
+          AssumeRolePolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Principal:
+                  Service:
+                    - ec2.amazonaws.com
+                Action:
+                  - 'sts:AssumeRole'
+          ManagedPolicyArns:
+            - arn:aws:iam::123456789012:user/Development/product_1234/*
+            - arn:aws:s3:::my_corporate_bucket/Development/*
+            - arn:aws:iam::aws:policy/AdministratorAccess
+            - arn:aws:iam::aws:policy/PowerUserAccess
+          Path: /
+          Policies:
+            - PolicyName: root
+              PolicyDocument:
+                Version: "2012-10-17"
+                Statement:
+                  - Effect: Allow
+                    Action: '*'
+                    Resource: '*'
+        RootInstanceProfile:
+          Type: 'AWS::IAM::InstanceProfile'
+          Properties:
+            Path: /
+            Roles:
+              - !Ref RootRole
+  expectations:
+    rules:
+      IAM_ROLE_ELEVATED_MANAGED_POLICY_RULE: FAIL
+
+- name: IAM Role with ManagedPolicyArns list with IAMFull access
+  input:
+    Resources:
+      RootRole:
+        Type: 'AWS::IAM::Role'
+        Properties:
+          AssumeRolePolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Principal:
+                  Service:
+                    - ec2.amazonaws.com
+                Action:
+                  - 'sts:AssumeRole'
+          ManagedPolicyArns:
+            - arn:aws:iam::aws:policy/AdministratorAccess
+            - arn:aws:iam::aws:policy/IAMFullAccess
+          Path: /
+          Policies:
+            - PolicyName: root
+              PolicyDocument:
+                Version: "2012-10-17"
+                Statement:
+                  - Effect: Allow
+                    Action: '*'
+                    Resource: '*'
+        RootInstanceProfile:
+          Type: 'AWS::IAM::InstanceProfile'
+          Properties:
+            Path: /
+            Roles:
+              - !Ref RootRole
+  expectations:
+    rules:
+      IAM_ROLE_ELEVATED_MANAGED_POLICY_RULE: FAIL
+
+- name: IAM Role with ManagedPolicyArns list with both PowerUser and IAMFull access
+  input:
+    Resources:
+      RootRole:
+        Type: 'AWS::IAM::Role'
+        Properties:
+          AssumeRolePolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Principal:
+                  Service:
+                    - ec2.amazonaws.com
+                Action:
+                  - 'sts:AssumeRole'
+          ManagedPolicyArns:
+            - arn:aws:iam::aws:policy/PowerUserAccess
+            - arn:aws:iam::aws:policy/IAMFullAccess
+          Path: /
+          Policies:
+            - PolicyName: root
+              PolicyDocument:
+                Version: "2012-10-17"
+                Statement:
+                  - Effect: Allow
+                    Action: '*'
+                    Resource: '*'
+        RootInstanceProfile:
+          Type: 'AWS::IAM::InstanceProfile'
+          Properties:
+            Path: /
+            Roles:
+              - !Ref RootRole
+  expectations:
+    rules:
+      IAM_ROLE_ELEVATED_MANAGED_POLICY_RULE: FAIL
+
+- name: IAM Role with Elevated access, but rule suppressed
+  input:
+    Resources:
+      RootRole:
+        Type: 'AWS::IAM::Role'
+        Properties:
+          AssumeRolePolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Principal:
+                  Service:
+                    - ec2.amazonaws.com
+                Action:
+                  - 'sts:AssumeRole'
+          ManagedPolicyArns:
+            - arn:aws:iam::aws:policy/PowerUserAccess
+            - arn:aws:iam::aws:policy/IAMFullAccess
+          Path: /
+          Policies:
+            - PolicyName: root
+              PolicyDocument:
+                Version: "2012-10-17"
+                Statement:
+                  - Effect: Allow
+                    Action: '*'
+                    Resource: '*'
+        RootInstanceProfile:
+          Type: 'AWS::IAM::InstanceProfile'
+          Properties:
+            Path: /
+            Roles:
+              - !Ref RootRole
+        Metadata:
+          guard:
+            SuppressedRules:
+            - IAM_ROLE_ELEVATED_MANAGED_POLICY_RULE: Suppressed to test suppression works and skips this test
+  expectations:
+    rules:
+      IAM_ROLE_ELEVATED_MANAGED_POLICY_RULE: SKIP
+
+- name: IAM Role with Elevated access, but rule suppressed - CFN_NAG
+  input:
+    Resources:
+      RootRole:
+        Type: 'AWS::IAM::Role'
+        Properties:
+          AssumeRolePolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Principal:
+                  Service:
+                    - ec2.amazonaws.com
+                Action:
+                  - 'sts:AssumeRole'
+          ManagedPolicyArns:
+            - arn:aws:iam::aws:policy/PowerUserAccess
+            - arn:aws:iam::aws:policy/IAMFullAccess
+          Path: /
+          Policies:
+            - PolicyName: root
+              PolicyDocument:
+                Version: "2012-10-17"
+                Statement:
+                  - Effect: Allow
+                    Action: '*'
+                    Resource: '*'
+        RootInstanceProfile:
+          Type: 'AWS::IAM::InstanceProfile'
+          Properties:
+            Path: /
+            Roles:
+              - !Ref RootRole
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W44
+              reason: Suppressed to test suppression works and skips this test
+  expectations:
+    rules:
+      IAM_ROLE_ELEVATED_MANAGED_POLICY_RULE: SKIP
+
+- name: IAM Role with Elevated access, but rule suppressed - BOTH
+  input:
+    Resources:
+      RootRole:
+        Type: 'AWS::IAM::Role'
+        Properties:
+          AssumeRolePolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Principal:
+                  Service:
+                    - ec2.amazonaws.com
+                Action:
+                  - 'sts:AssumeRole'
+          ManagedPolicyArns:
+            - arn:aws:iam::aws:policy/PowerUserAccess
+            - arn:aws:iam::aws:policy/IAMFullAccess
+          Path: /
+          Policies:
+            - PolicyName: root
+              PolicyDocument:
+                Version: "2012-10-17"
+                Statement:
+                  - Effect: Allow
+                    Action: '*'
+                    Resource: '*'
+        RootInstanceProfile:
+          Type: 'AWS::IAM::InstanceProfile'
+          Properties:
+            Path: /
+            Roles:
+              - !Ref RootRole
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W44
+              reason: Suppressed to test suppression works and skips this test
+          guard:
+            SuppressedRules:
+            - IAM_ROLE_ELEVATED_MANAGED_POLICY_RULE: Suppressed to test suppression works and skips this test
+  expectations:
+    rules:
+      IAM_ROLE_ELEVATED_MANAGED_POLICY_RULE: SKIP
