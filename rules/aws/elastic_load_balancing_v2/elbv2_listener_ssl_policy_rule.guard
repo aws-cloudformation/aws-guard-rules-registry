@@ -1,0 +1,63 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+#
+# Rule Identifier:
+#   ELBV2_LISTENER_SSL_POLICY_RULE
+#
+# Description:
+#   Elastic Load Balancer V2 Listener SslPolicy should use TLS 1.2
+#
+# Reports on:
+#   AWS::ElasticLoadBalancingV2::Listener
+#
+# Evaluates:
+#   AWS CloudFormation
+#
+# Rule Parameters:
+#   None
+#
+# CFN_NAG Rule Id:
+#   W55
+#
+# Scenarios:
+# a) SKIP: when there are no Elastic Load Balancing V2 Listener Resources
+# b) SKIP: when metadata has rule suppression for ELBV2_LISTENER_SSL_POLICY_RULE
+# c) FAIL: when sslPolicy in Elastic Load Balancing V2 Listener does not exist or do not use TLS 1.2.
+# d) PASS: when sslPolicy in Elastic Load Balancing V2 Listener does exist and use TLS 1.2.
+
+#
+# Select all Elastic Load Balancing Resources from incoming template (payload)
+#
+let elbv2_listener_ssl_policy_rule = Resources.*[ Type == 'AWS::ElasticLoadBalancingV2::Listener'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W55"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "ELBV2_LISTENER_SSL_POLICY_RULE"
+]
+
+rule ELBV2_LISTENER_SSL_POLICY_RULE when %elbv2_listener_ssl_policy_rule !empty {
+  let violations = %elbv2_listener_ssl_policy_rule[
+    Type == 'AWS::ElasticLoadBalancingV2::Listener'
+    Properties.SslPolicy !exists
+    OR
+    Properties.SslPolicy == /(?i)ELBSecurityPolicy-2016-08/
+    OR
+    Properties.SslPolicy == /(?i)ELBSecurityPolicy-TLS-1-0-2015-04/
+    OR
+    Properties.SslPolicy == /(?i)ELBSecurityPolicy-TLS-1-1-2017-01/
+    OR
+    Properties.SslPolicy == /(?i)ELBSecurityPolicy-FS-2018-06/
+    OR
+    Properties.SslPolicy == /(?i)ELBSecurityPolicy-FS-1-1-2019-08/
+    OR
+    Properties.SslPolicy == /(?i)ELBSecurityPolicy-2015/
+  ]
+
+  %violations empty
+  <<
+   Violation: Elastic Load Balancer V2 does not have SslPolicy or do not use TLS 1.2.
+   Fix: Enable SslPolicy and use TLS 1.2.
+  >>
+}

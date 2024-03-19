@@ -1,0 +1,64 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+#
+# Rule Identifier:
+#   ELBV2_ACCESS_LOGGING_RULE
+#
+# Description:
+#   Elastic Load Balancer V2 should have access logging enabled
+#
+# Reports on:
+#   AWS::ElasticLoadBalancingV2::LoadBalancer
+#
+# Evaluates:
+#   AWS CloudFormation
+#
+# Rule Parameters:
+#   None
+#
+# CFN_NAG Rule Id:
+#   W52
+#
+# Scenarios:
+# a) SKIP: when there are no Elastic Load Balancing V2 LoadBalancer Resources
+# b) SKIP: when metadata has rule suppression for ELBV2_ACCESS_LOGGING_RULE
+# c) FAIL: when loadBalancerAttributes does not exists or access logging is disabled.
+# d) PASS: when loadBalancerAttributes exists or access logging is enabled.
+
+#
+# Select all Elastic Load Balancing Resources from incoming template (payload)
+#
+let elbv2_access_logging_rule = Resources.*[ Type == 'AWS::ElasticLoadBalancingV2::LoadBalancer'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W52"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "ELBV2_ACCESS_LOGGING_RULE"
+]
+
+rule ELBV2_ACCESS_LOGGING_RULE when %elbv2_access_logging_rule !empty {
+  let violations = %elbv2_access_logging_rule[
+    Type == 'AWS::ElasticLoadBalancingV2::LoadBalancer'
+    Properties.LoadBalancerAttributes !exists
+    OR
+    Properties.LoadBalancerAttributes[*].key != 'access_logs.s3.enabled'
+    OR
+    some Properties.LoadBalancerAttributes[*] {
+      key == 'access_logs.s3.enabled'
+      value !exists
+      OR
+      value == 'false'
+      OR
+      value == 'False'
+      OR
+      value == 'FALSE'
+    }
+  ]
+
+  %violations empty
+  <<
+   Violation: Elastic Load Balancer V2 does not have loadBalancerAttributes or access logging is disabled.
+   Fix: Specify loadBalancerAttributes and make sure access logging is enabled.
+  >>
+}

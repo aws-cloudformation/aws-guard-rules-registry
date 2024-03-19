@@ -1,0 +1,157 @@
+###
+# ELBV2_ACCESS_LOGGING_RULE tests
+###
+---
+- name: Empty
+  input: {}
+  expectations:
+    rules:
+      ELBV2_ACCESS_LOGGING_RULE: SKIP
+
+- name: No resources
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      ELBV2_ACCESS_LOGGING_RULE: SKIP
+
+- name: ELBV2 with loadBalancerAttributes with access logging enabled.
+  input:
+    Resources:
+      ElbV2Resource:
+        Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+        Properties:
+          EnforceSecurityGroupInboundRulesOnPrivateLinkTraffic: TestRule
+          IpAddressType: ipv4
+          LoadBalancerAttributes:
+            - Key: access_logs.s3.enabled
+              Value: true
+          Name: testElb
+          Type: ElbResource
+  expectations:
+    rules:
+      ELBV2_ACCESS_LOGGING_RULE: PASS
+
+- name: ELBV2 with no loadBalancerAttributes
+  input:
+    Resources:
+      ElbV2Resource:
+        Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+        Properties:
+          EnforceSecurityGroupInboundRulesOnPrivateLinkTraffic: TestRule
+          IpAddressType: ipv4
+          Name: testElb
+          Type: ElbResource
+  expectations:
+    rules:
+      ELBV2_ACCESS_LOGGING_RULE: FAIL
+
+- name: ELBV2 with loadBalancerAttributes with no access logging key.
+  input:
+    Resources:
+      ElbV2Resource:
+        Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+        Properties:
+          EnforceSecurityGroupInboundRulesOnPrivateLinkTraffic: TestRule
+          IpAddressType: ipv4
+          LoadBalancerAttributes:
+            - Key: access_logs.s3.bucket
+              Value: 'testBucket'
+          Name: testElb
+          Type: ElbResource
+  expectations:
+    rules:
+      ELBV2_ACCESS_LOGGING_RULE: FAIL
+
+- name: ELBV2 with loadBalancerAttributes with access logging set to false.
+  input:
+    Resources:
+      ElbV2Resource:
+        Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+        Properties:
+          EnforceSecurityGroupInboundRulesOnPrivateLinkTraffic: TestRule
+          IpAddressType: ipv4
+          LoadBalancerAttributes:
+            - Key: access_logs.s3.bucket
+              Value: 'testBucket'
+            - Key: access_logs.s3.enabled
+              Value: 'false'
+          Name: testElb
+          Type: ElbResource
+  expectations:
+    rules:
+      ELBV2_ACCESS_LOGGING_RULE: FAIL
+
+- name: CFN_NAG suppression for W52
+  input:
+    Resources:
+      ElbV2Resource:
+        Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+        Properties:
+          EnforceSecurityGroupInboundRulesOnPrivateLinkTraffic: TestRule
+          IpAddressType: ipv4
+          LoadBalancerAttributes:
+            - Key: access_logs.s3.bucket
+              Value: 'testBucket'
+            - Key: access_logs.s3.enabled
+              Value: 'false'
+          Name: testElb
+          Type: ElbResource
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W52
+              reason: Suppressed to test suppression works and skips this test
+  expectations:
+    rules:
+      ELBV2_ACCESS_LOGGING_RULE: SKIP
+
+- name: Guard suppression for ELBV2_ACCESS_LOGGING_RULE
+  input:
+    Resources:
+      ElbV2Resource:
+        Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+        Properties:
+          EnforceSecurityGroupInboundRulesOnPrivateLinkTraffic: TestRule
+          IpAddressType: ipv4
+          LoadBalancerAttributes:
+            - Key: access_logs.s3.bucket
+              Value: 'testBucket'
+            - Key: access_logs.s3.enabled
+              Value: 'false'
+          Name: testElb
+          Type: ElbResource
+        Metadata:
+          guard:
+            SuppressedRules:
+            - ELBV2_ACCESS_LOGGING_RULE
+  expectations:
+    rules:
+      ELBV2_ACCESS_LOGGING_RULE: SKIP
+
+- name: Guard and CFN_NAG suppression for W52 & ELBV2_ACCESS_LOGGING_RULE
+  input:
+    Resources:
+      ElbV2Resource:
+        Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+        Properties:
+          EnforceSecurityGroupInboundRulesOnPrivateLinkTraffic: TestRule
+          IpAddressType: ipv4
+          LoadBalancerAttributes:
+            - Key: access_logs.s3.bucket
+              Value: 'testBucket'
+            - Key: access_logs.s3.enabled
+              Value: 'false'
+          Name: testElb
+          Type: ElbResource
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W52
+              reason: Suppressed to test suppression works and skips this test
+          guard:
+            SuppressedRules:
+            - ELBV2_ACCESS_LOGGING_RULE
+  expectations:
+    rules:
+      ELBV2_ACCESS_LOGGING_RULE: SKIP

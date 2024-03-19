@@ -1,0 +1,205 @@
+###
+# ELASTICACHE_REPLICATION_GROUP_ENCRYPTION_IN_TRANSIT tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      ELASTICACHE_REPLICATION_GROUP_ENCRYPTION_IN_TRANSIT: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      ELASTICACHE_REPLICATION_GROUP_ENCRYPTION_IN_TRANSIT: SKIP
+    
+- name: Elasticache old (ignored) version 2.x, SKIP
+  input:
+    Resources:
+      myReplicationGroup:
+        Type: 'AWS::ElastiCache::ReplicationGroup'
+        Properties:
+          ReplicationGroupDescription: my description
+          NumCacheClusters: '2'
+          Engine: redis
+          CacheNodeType: cache.m3.medium    
+          AutomaticFailoverEnabled: 'true'
+          CacheSubnetGroupName: subnetgroup
+          EngineVersion: 2.8.6
+          PreferredMaintenanceWindow: 'wed:09:25-wed:22:30'
+          SnapshotRetentionLimit: '4'
+          SnapshotWindow: '03:30-05:30'
+  expectations:
+    rules:
+      ELASTICACHE_REPLICATION_GROUP_ENCRYPTION_IN_TRANSIT: SKIP
+
+- name: Elasticache old (ignored) version 3.x, SKIP
+  input:
+    Resources:
+      myReplicationGroup:
+        Type: 'AWS::ElastiCache::ReplicationGroup'
+        Properties:
+          ReplicationGroupDescription: my description
+          NumCacheClusters: '2'
+          Engine: redis
+          CacheNodeType: cache.m3.medium    
+          AutomaticFailoverEnabled: 'true'
+          CacheSubnetGroupName: subnetgroup
+          EngineVersion: 3.2.5
+          PreferredMaintenanceWindow: 'wed:09:25-wed:22:30'
+          SnapshotRetentionLimit: '4'
+          SnapshotWindow: '03:30-05:30'
+  expectations:
+    rules:
+      ELASTICACHE_REPLICATION_GROUP_ENCRYPTION_IN_TRANSIT: SKIP
+
+- name: Elasticache default to false, FAIL
+  input:
+    Resources:
+      myReplicationGroup:
+        Type: 'AWS::ElastiCache::ReplicationGroup'
+        Properties:
+          ReplicationGroupDescription: my description
+          NumCacheClusters: '2'
+          Engine: redis
+          CacheNodeType: cache.m3.medium    
+          AutomaticFailoverEnabled: 'true'
+          CacheSubnetGroupName: subnetgroup
+          EngineVersion: 4.0.10
+          PreferredMaintenanceWindow: 'wed:09:25-wed:22:30'
+          SnapshotRetentionLimit: '4'
+          SnapshotWindow: '03:30-05:30'
+  expectations:
+    rules:
+      ELASTICACHE_REPLICATION_GROUP_ENCRYPTION_IN_TRANSIT: FAIL
+
+- name: Elasticache with TransitEncryptionEnabled = false, FAIL
+  input:
+    Resources:
+      myReplicationGroup:
+        Type: 'AWS::ElastiCache::ReplicationGroup'
+        Properties:
+          AtRestEncryptionEnabled: false
+          ReplicationGroupDescription: my description
+          NumCacheClusters: '2'
+          Engine: redis
+          CacheNodeType: cache.m3.medium    
+          AutomaticFailoverEnabled: 'true'
+          CacheSubnetGroupName: subnetgroup
+          EngineVersion: 4.0.10
+          PreferredMaintenanceWindow: 'wed:09:25-wed:22:30'
+          SnapshotRetentionLimit: '4'
+          SnapshotWindow: '03:30-05:30'
+          TransitEncryptionEnabled: false
+  expectations:
+    rules:
+      ELASTICACHE_REPLICATION_GROUP_ENCRYPTION_IN_TRANSIT: FAIL
+
+- name: Elasticache with TransitEncryptionEnabled = true, PASS
+  input:
+    Resources:
+      myReplicationGroup:
+        Type: 'AWS::ElastiCache::ReplicationGroup'
+        Properties:
+          AtRestEncryptionEnabled: true
+          ReplicationGroupDescription: my description
+          NumCacheClusters: '2'
+          Engine: redis
+          CacheNodeType: cache.m3.medium    
+          AutomaticFailoverEnabled: 'true'
+          CacheSubnetGroupName: subnetgroup
+          EngineVersion: 4.0.10
+          PreferredMaintenanceWindow: 'wed:09:25-wed:22:30'
+          SnapshotRetentionLimit: '4'
+          SnapshotWindow: '03:30-05:30'
+          TransitEncryptionEnabled: true
+  expectations:
+    rules:
+      ELASTICACHE_REPLICATION_GROUP_ENCRYPTION_IN_TRANSIT: PASS
+
+##
+## Suppression
+##
+- name: F25 CFN_NAG Suppression, SKIP
+  input:
+    Resources:
+      myReplicationGroup:
+        Type: 'AWS::ElastiCache::ReplicationGroup'
+        Properties:
+          AtRestEncryptionEnabled: false
+          ReplicationGroupDescription: my description
+          NumCacheClusters: '2'
+          Engine: redis
+          CacheNodeType: cache.m3.medium    
+          AutomaticFailoverEnabled: 'true'
+          CacheSubnetGroupName: subnetgroup
+          EngineVersion: 4.0.10
+          PreferredMaintenanceWindow: 'wed:09:25-wed:22:30'
+          SnapshotRetentionLimit: '4'
+          SnapshotWindow: '03:30-05:30'
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: F33
+              reason: Suppressed for a very good reason
+          guard:
+            SuppressedRules:
+            - ELASTICACHE_REPLICATION_GROUP_ENCRYPTION_IN_TRANSIT: Suppressed for a very good reason
+  expectations:
+    rules:
+      ELASTICACHE_REPLICATION_GROUP_ENCRYPTION_IN_TRANSIT: SKIP
+
+- name: ELASTICACHE_REPLICATION_GROUP_ENCRYPTION_IN_TRANSIT Guard Suppression, SKIP
+  input:
+    Resources:
+      myReplicationGroup:
+        Type: 'AWS::ElastiCache::ReplicationGroup'
+        Properties:
+          AtRestEncryptionEnabled: false
+          ReplicationGroupDescription: my description
+          NumCacheClusters: '2'
+          Engine: redis
+          CacheNodeType: cache.m3.medium    
+          AutomaticFailoverEnabled: 'true'
+          CacheSubnetGroupName: subnetgroup
+          EngineVersion: 4.0.10
+          PreferredMaintenanceWindow: 'wed:09:25-wed:22:30'
+          SnapshotRetentionLimit: '4'
+          SnapshotWindow: '03:30-05:30'
+        Metadata:
+          guard:
+            SuppressedRules:
+            - ELASTICACHE_REPLICATION_GROUP_ENCRYPTION_IN_TRANSIT: Suppressed for a very good reason
+  expectations:
+    rules:
+      ELASTICACHE_REPLICATION_GROUP_ENCRYPTION_IN_TRANSIT: SKIP
+
+- name: CFN_NAG & Guard Suppression, SKIP
+  input:
+    Resources:
+      myReplicationGroup:
+        Type: 'AWS::ElastiCache::ReplicationGroup'
+        Properties:
+          ReplicationGroupDescription: my description
+          NumCacheClusters: '2'
+          Engine: redis
+          CacheNodeType: cache.m3.medium    
+          AutomaticFailoverEnabled: 'true'
+          CacheSubnetGroupName: subnetgroup
+          EngineVersion: 4.0.10
+          PreferredMaintenanceWindow: 'wed:09:25-wed:22:30'
+          SnapshotRetentionLimit: '4'
+          SnapshotWindow: '03:30-05:30'
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: F33
+              reason: Suppressed for a very good reason
+          guard:
+            SuppressedRules:
+            - ELASTICACHE_REPLICATION_GROUP_ENCRYPTION_IN_TRANSIT: Suppressed for a very good reason
+  expectations:
+    rules:
+      ELASTICACHE_REPLICATION_GROUP_ENCRYPTION_IN_TRANSIT: SKIP
