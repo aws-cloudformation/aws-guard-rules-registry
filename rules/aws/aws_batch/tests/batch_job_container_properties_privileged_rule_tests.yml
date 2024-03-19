@@ -1,0 +1,207 @@
+###
+# BATCH_JOB_CONTAINER_PROPERTIES_PRIVILEGED_RULE tests
+###
+---
+- name: Empty
+  input: {}
+  expectations:
+    rules:
+      BATCH_JOB_CONTAINER_PROPERTIES_PRIVILEGED_RULE: SKIP
+
+- name: No resources
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      BATCH_JOB_CONTAINER_PROPERTIES_PRIVILEGED_RULE: SKIP
+
+- name: Batch Job resource with no container properties
+  input:
+    Resources:
+      JobDefinition:
+        Type: AWS::Batch::JobDefinition
+        Properties:
+          Type: container
+          JobDefinitionName: nvidia-smi
+          Parameters: Json
+          Timeout: 6000
+  expectations:
+    rules:
+      BATCH_JOB_CONTAINER_PROPERTIES_PRIVILEGED_RULE: PASS
+
+- name: Batch Job resource with container properties and privileged set to false
+  input:
+    Resources:
+      JobDefinition:
+        Type: AWS::Batch::JobDefinition
+        Properties:
+          Type: container
+          JobDefinitionName: nvidia-smi
+          ContainerProperties:
+            MountPoints:
+              - ReadOnly: false
+                SourceVolume: nvidia
+                ContainerPath: /usr/local/nvidia
+            Volumes:
+              - Host:
+                  SourcePath: /var/lib/nvidia-docker/volumes/nvidia_driver/latest
+                Name: nvidia
+            Command:
+              - nvidia-smi
+            Privileged: false
+            JobRoleArn: String
+            ReadonlyRootFilesystem: true
+            ResourceRequirements:
+              - Type: MEMORY
+                Value: '2000'
+              - Type: VCPU
+                Value: '2'
+            Image: nvidia/cuda
+  expectations:
+    rules:
+      BATCH_JOB_CONTAINER_PROPERTIES_PRIVILEGED_RULE: PASS
+
+- name: Batch Job resource with container properties and privileged set to true
+  input:
+    Resources:
+      JobDefinition:
+        Type: AWS::Batch::JobDefinition
+        Properties:
+          Type: container
+          JobDefinitionName: nvidia-smi
+          ContainerProperties:
+            MountPoints:
+              - ReadOnly: false
+                SourceVolume: nvidia
+                ContainerPath: /usr/local/nvidia
+            Volumes:
+              - Host:
+                  SourcePath: /var/lib/nvidia-docker/volumes/nvidia_driver/latest
+                Name: nvidia
+            Command:
+              - nvidia-smi
+            Privileged: true
+            JobRoleArn: String
+            ReadonlyRootFilesystem: true
+            ResourceRequirements:
+              - Type: MEMORY
+                Value: '2000'
+              - Type: VCPU
+                Value: '2'
+            Image: nvidia/cuda
+  expectations:
+    rules:
+      BATCH_JOB_CONTAINER_PROPERTIES_PRIVILEGED_RULE: FAIL
+
+- name: CFN_NAG suppression for W34
+  input:
+    Resources:
+      JobDefinition:
+        Type: AWS::Batch::JobDefinition
+        Properties:
+          Type: container
+          JobDefinitionName: nvidia-smi
+          ContainerProperties:
+            MountPoints:
+              - ReadOnly: false
+                SourceVolume: nvidia
+                ContainerPath: /usr/local/nvidia
+            Volumes:
+              - Host:
+                  SourcePath: /var/lib/nvidia-docker/volumes/nvidia_driver/latest
+                Name: nvidia
+            Command:
+              - nvidia-smi
+            Privileged: true
+            JobRoleArn: String
+            ReadonlyRootFilesystem: true
+            ResourceRequirements:
+              - Type: MEMORY
+                Value: '2000'
+              - Type: VCPU
+                Value: '2'
+            Image: nvidia/cuda
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W34
+              reason: Suppressed to test suppression works and skips this test
+  expectations:
+    rules:
+      BATCH_JOB_CONTAINER_PROPERTIES_PRIVILEGED_RULE: SKIP
+
+- name: Guard suppression for BATCH_JOB_CONTAINER_PROPERTIES_PRIVILEGED_RULE
+  input:
+    Resources:
+      JobDefinition:
+        Type: AWS::Batch::JobDefinition
+        Properties:
+          Type: container
+          JobDefinitionName: nvidia-smi
+          ContainerProperties:
+            MountPoints:
+              - ReadOnly: false
+                SourceVolume: nvidia
+                ContainerPath: /usr/local/nvidia
+            Volumes:
+              - Host:
+                  SourcePath: /var/lib/nvidia-docker/volumes/nvidia_driver/latest
+                Name: nvidia
+            Command:
+              - nvidia-smi
+            Privileged: true
+            JobRoleArn: String
+            ReadonlyRootFilesystem: true
+            ResourceRequirements:
+              - Type: MEMORY
+                Value: '2000'
+              - Type: VCPU
+                Value: '2'
+            Image: nvidia/cuda
+        Metadata:
+          guard:
+            SuppressedRules:
+            - BATCH_JOB_CONTAINER_PROPERTIES_PRIVILEGED_RULE
+  expectations:
+    rules:
+      BATCH_JOB_CONTAINER_PROPERTIES_PRIVILEGED_RULE: SKIP
+
+- name: Guard and CFN_NAG suppression for W34 & BATCH_JOB_CONTAINER_PROPERTIES_PRIVILEGED_RULE
+  input:
+    Resources:
+      JobDefinition:
+        Type: AWS::Batch::JobDefinition
+        Properties:
+          Type: container
+          JobDefinitionName: nvidia-smi
+          ContainerProperties:
+            MountPoints:
+              - ReadOnly: false
+                SourceVolume: nvidia
+                ContainerPath: /usr/local/nvidia
+            Volumes:
+              - Host:
+                  SourcePath: /var/lib/nvidia-docker/volumes/nvidia_driver/latest
+                Name: nvidia
+            Command:
+              - nvidia-smi
+            Privileged: true
+            JobRoleArn: String
+            ReadonlyRootFilesystem: true
+            ResourceRequirements:
+              - Type: MEMORY
+                Value: '2000'
+              - Type: VCPU
+                Value: '2'
+            Image: nvidia/cuda
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W34
+              reason: Suppressed to test suppression works and skips this test
+          guard:
+            SuppressedRules:
+            - BATCH_JOB_CONTAINER_PROPERTIES_PRIVILEGED_RULE
+  expectations:
+    rules:
+      BATCH_JOB_CONTAINER_PROPERTIES_PRIVILEGED_RULE: SKIP
