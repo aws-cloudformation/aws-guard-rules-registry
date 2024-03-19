@@ -1,0 +1,198 @@
+###
+# WAF_WEB_ACL_DEFAULT_ACTION_RULE tests
+###
+---
+- name: Empty
+  input: {}
+  expectations:
+    rules:
+      WAF_WEB_ACL_DEFAULT_ACTION_RULE: SKIP
+
+- name: No resources
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      WAF_WEB_ACL_DEFAULT_ACTION_RULE: SKIP
+
+- name: WAF ACL Resource with DefaultAction as COUNT.
+  input:
+    Resources:
+      MyWebACL:
+        Type: "AWS::WAF::WebACL"
+        Properties:
+          Name: "WebACL to with three rules"
+          DefaultAction:
+            Type: "COUNT"
+          MetricName: "MyWebACL"
+          Rules:
+            -
+              Action:
+                Type: "BLOCK"
+              Priority: 1
+              RuleId:
+                Ref: "MyRule"
+            -
+              Action:
+                Type: "BLOCK"
+              Priority: 2
+              RuleId:
+                Ref: "BadReferersRule"
+            -
+              Action:
+                Type: "BLOCK"
+              Priority: 3
+              RuleId:
+                Ref: "SqlInjRule"
+  expectations:
+    rules:
+      WAF_WEB_ACL_DEFAULT_ACTION_RULE: PASS
+
+- name: WAF ACL Resource with DefaultAction as COUNT.
+  input:
+    Resources:
+      MyWebACL:
+        Type: "AWS::WAF::WebACL"
+        Properties:
+          Name: "WebACL to with three rules"
+          DefaultAction:
+            Type: "ALLOW"
+          MetricName: "MyWebACL"
+          Rules:
+            -
+              Action:
+                Type: "BLOCK"
+              Priority: 1
+              RuleId:
+                Ref: "MyRule"
+            -
+              Action:
+                Type: "BLOCK"
+              Priority: 2
+              RuleId:
+                Ref: "BadReferersRule"
+            -
+              Action:
+                Type: "BLOCK"
+              Priority: 3
+              RuleId:
+                Ref: "SqlInjRule"
+  expectations:
+    rules:
+      WAF_WEB_ACL_DEFAULT_ACTION_RULE: FAIL
+
+- name: CFN_NAG suppression for F665
+  input:
+    Resources:
+      MyWebACL:
+        Type: "AWS::WAF::WebACL"
+        Properties:
+          Name: "WebACL to with three rules"
+          DefaultAction:
+            Type: "ALLOW"
+          MetricName: "MyWebACL"
+          Rules:
+            -
+              Action:
+                Type: "BLOCK"
+              Priority: 1
+              RuleId:
+                Ref: "MyRule"
+            -
+              Action:
+                Type: "BLOCK"
+              Priority: 2
+              RuleId:
+                Ref: "BadReferersRule"
+            -
+              Action:
+                Type: "BLOCK"
+              Priority: 3
+              RuleId:
+                Ref: "SqlInjRule"
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+              - id: F665
+                reason: Suppressed to test suppression works and skips this test
+  expectations:
+    rules:
+      WAF_WEB_ACL_DEFAULT_ACTION_RULE: SKIP
+
+- name: Guard suppression for WAF_WEB_ACL_DEFAULT_ACTION_RULE
+  input:
+    Resources:
+      MyWebACL:
+        Type: "AWS::WAF::WebACL"
+        Properties:
+          Name: "WebACL to with three rules"
+          DefaultAction:
+            Type: "ALLOW"
+          MetricName: "MyWebACL"
+          Rules:
+            -
+              Action:
+                Type: "BLOCK"
+              Priority: 1
+              RuleId:
+                Ref: "MyRule"
+            -
+              Action:
+                Type: "BLOCK"
+              Priority: 2
+              RuleId:
+                Ref: "BadReferersRule"
+            -
+              Action:
+                Type: "BLOCK"
+              Priority: 3
+              RuleId:
+                Ref: "SqlInjRule"
+        Metadata:
+          guard:
+            SuppressedRules:
+              - WAF_WEB_ACL_DEFAULT_ACTION_RULE
+  expectations:
+    rules:
+      WAF_WEB_ACL_DEFAULT_ACTION_RULE: SKIP
+
+- name: Guard and CFN_NAG suppression for F665 & WAF_WEB_ACL_DEFAULT_ACTION_RULE
+  input:
+    Resources:
+      MyWebACL:
+        Type: "AWS::WAF::WebACL"
+        Properties:
+          Name: "WebACL to with three rules"
+          DefaultAction:
+            Type: "ALLOW"
+          MetricName: "MyWebACL"
+          Rules:
+            -
+              Action:
+                Type: "BLOCK"
+              Priority: 1
+              RuleId:
+                Ref: "MyRule"
+            -
+              Action:
+                Type: "BLOCK"
+              Priority: 2
+              RuleId:
+                Ref: "BadReferersRule"
+            -
+              Action:
+                Type: "BLOCK"
+              Priority: 3
+              RuleId:
+                Ref: "SqlInjRule"
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+              - id: F665
+                reason: Suppressed to test suppression works and skips this test
+          guard:
+            SuppressedRules:
+              - WAF_WEB_ACL_DEFAULT_ACTION_RULE
+  expectations:
+    rules:
+      WAF_WEB_ACL_DEFAULT_ACTION_RULE: SKIP

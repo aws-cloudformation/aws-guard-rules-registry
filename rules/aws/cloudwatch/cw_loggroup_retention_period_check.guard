@@ -28,6 +28,8 @@
 # Select all cloudwatch logs log group resources from incoming template (payload)
 #
 let cloudwatch_logs_retention_period = Resources.*[ Type == 'AWS::Logs::LogGroup'
+  Metadata.cfn_nag.rules_to_suppress not exists or 
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W86"
   Metadata.guard.SuppressedRules not exists or
   Metadata.guard.SuppressedRules.* != "CW_LOGGROUP_RETENTION_PERIOD_CHECK"
 ]

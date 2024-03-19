@@ -27,6 +27,8 @@
 # Select all CloudFront Distribution Resources from incoming template (payload)
 #
 let cloudfront_accesslogs_enabled_resources = Resources.*[ Type == 'AWS::CloudFront::Distribution'
+  Metadata.cfn_nag.rules_to_suppress not exists or 
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W10"
   Metadata.guard.SuppressedRules not exists or
   Metadata.guard.SuppressedRules.* != "CLOUDFRONT_ACCESSLOGS_ENABLED"
 ]
