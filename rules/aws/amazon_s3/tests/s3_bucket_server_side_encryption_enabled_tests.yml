@@ -71,3 +71,19 @@
   expectations:
     rules:
       S3_BUCKET_SERVER_SIDE_ENCRYPTION_ENABLED: SKIP
+
+- name: S3 Bucket Encryption not set but rule is suppressed, SKIP
+  input:
+    Resources:
+      ExampleS3:
+        Type: AWS::S3::Bucket
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W41
+              reason: Suppressed for a very good reason
+        Properties:
+          BucketName: my-bucket
+  expectations:
+    rules:
+      S3_BUCKET_SERVER_SIDE_ENCRYPTION_ENABLED: SKIP
