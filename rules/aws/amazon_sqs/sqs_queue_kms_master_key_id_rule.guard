@@ -1,0 +1,46 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#    SQS_QUEUE_KMS_MASTER_KEY_ID_RULE
+#
+# Description:
+#   SQS Queue should specify KmsMasterKeyId property
+#
+# Reports on:
+#    AWS::SQS::Queue
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# CFN_NAG Rule Id:
+#   W48
+#
+# Scenarios:
+# a) SKIP: when there is no SQS Queue resource present.
+# b) PASS: when SQS Queue resources have KmsMasterKeyId Key.
+# c) FAIL: when SQS Queue resources does not have KmsMasterKeyId Key.
+# d) SKIP: when metadata has rule suppression for SQS_QUEUE_KMS_MASTER_KEY_ID_RULE
+
+#
+# Select all SQS Queue resources from incoming template (payload)
+#
+let sqs_queue_kms_master_key_id_rule = Resources.*[ Type == 'AWS::SQS::Queue'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W48"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "SQS_QUEUE_KMS_MASTER_KEY_ID_RULE"
+]
+
+rule SQS_QUEUE_KMS_MASTER_KEY_ID_RULE when %sqs_queue_kms_master_key_id_rule !empty {
+  %sqs_queue_kms_master_key_id_rule.Type == 'AWS::SQS::Queue'
+  %sqs_queue_kms_master_key_id_rule.Properties.KmsMasterKeyId exists
+  <<
+    Violation: SQS Queue KmsMasterKeyId does not exist
+    Fix: Specify KmsMasterKeyId value
+  >>
+}

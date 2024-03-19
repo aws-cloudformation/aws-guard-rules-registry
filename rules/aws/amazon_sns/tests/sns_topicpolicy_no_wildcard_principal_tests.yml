@@ -1,0 +1,157 @@
+###
+# SNS_TOPICPOLICY_NO_WILDCARD_PRINCIPAL tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      SNS_TOPICPOLICY_NO_WILDCARD_PRINCIPAL: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      SNS_TOPICPOLICY_NO_WILDCARD_PRINCIPAL: SKIP
+
+- name: SNS TopicPolicy with Principal *, Effect:Deny, PASS
+  input: 
+    Resources: 
+      ExampleResource: 
+        Type: "AWS::SNS::TopicPolicy"
+        Properties:
+          Topics:
+          - foo-bar-baz
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+            - Effect: Deny
+              Principal: "*"
+  expectations:
+    rules: 
+      SNS_TOPICPOLICY_NO_WILDCARD_PRINCIPAL: PASS
+
+- name: SNS TopicPolicy with specific Principals, PASS
+  input: 
+    Resources: 
+      ExampleResource: 
+        Type: "AWS::SNS::TopicPolicy"
+        Properties:
+          Topics:
+           - foo-bar-baz
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+            - Effect: Allow
+              Principal: 
+                AWS:
+                - "arn:aws:iam::444455556666:user/Bob"
+                - "arn:aws:iam::444455556666:root"
+  expectations:
+    rules: 
+      SNS_TOPICPOLICY_NO_WILDCARD_PRINCIPAL: PASS
+
+- name: SNS TopicPolicy with Principal *, Effect Allow, FAIL
+  input: 
+    Resources: 
+      ExampleResource: 
+        Type: "AWS::SNS::TopicPolicy"
+        Properties:
+          Topics:
+            - foo-bar-baz
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+            - Effect: Allow
+              Principal: 
+                AWS: "*"
+  expectations:
+    rules: 
+      SNS_TOPICPOLICY_NO_WILDCARD_PRINCIPAL: FAIL
+
+- name: SNS TopicPolicy with Principal iam *, Effect Allow, FAIL
+  input: 
+    Resources: 
+      ExampleResource: 
+        Type: "AWS::SNS::TopicPolicy"
+        Properties:
+          Topics:
+            - foo-bar-baz
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+            - Effect: Allow
+              Principal: "arn:aws:iam::*"
+  expectations:
+    rules: 
+      SNS_TOPICPOLICY_NO_WILDCARD_PRINCIPAL: FAIL
+
+- name: F18 CFN_NAG suppression, SKIP
+  input: 
+    Resources: 
+      ExampleResource: 
+        Type: "AWS::SNS::TopicPolicy"
+        Properties:
+          Topics:
+            - foo-bar-baz
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+            - Effect: Allow
+              Principal: 
+                AWS: "*"
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: F18
+              reason: Suppressed for a very good reason
+  expectations:
+    rules: 
+      SNS_TOPICPOLICY_NO_WILDCARD_PRINCIPAL: SKIP
+
+- name: SNS_TOPICPOLICY_NO_WILDCARD_PRINCIPAL Guard suppression, SKIP
+  input: 
+    Resources: 
+      ExampleResource: 
+        Type: "AWS::SNS::TopicPolicy"
+        Properties:
+          Topics:
+          - foo-bar-baz
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+            - Effect: Allow
+              Principal: "*"
+        Metadata:
+          guard:
+            SuppressedRules:
+            - SNS_TOPICPOLICY_NO_WILDCARD_PRINCIPAL: Suppressed for a very good reason
+  expectations:
+    rules: 
+      SNS_TOPICPOLICY_NO_WILDCARD_PRINCIPAL: SKIP
+
+- name: F18 CFN_NAG & SNS_TOPICPOLICY_NO_WILDCARD_PRINCIPAL Guard suppression, SKIP
+  input: 
+    Resources: 
+      ExampleResource: 
+        Type: "AWS::SNS::TopicPolicy"
+        Properties:
+          Topics:
+          - foo-bar-baz
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+            - Effect: Allow
+              Principal: "arn:aws:iam::*"
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: F18
+              reason: Suppressed for a very good reason
+          guard:
+            SuppressedRules:
+            - SNS_TOPICPOLICY_NO_WILDCARD_PRINCIPAL: Suppressed for a very good reason
+  expectations:
+    rules: 
+      SNS_TOPICPOLICY_NO_WILDCARD_PRINCIPAL: SKIP

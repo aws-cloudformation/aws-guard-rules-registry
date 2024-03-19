@@ -29,6 +29,8 @@
 #
 
 let sagemaker_notebook_instance_kms_key_configured = Resources.*[ Type == "AWS::SageMaker::NotebookInstance"
+  Metadata.cfn_nag.rules_to_suppress not exists or 
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W1201"
   Metadata.guard.SuppressedRules not exists or
   Metadata.guard.SuppressedRules.* != "SAGEMAKER_NOTEBOOK_INSTANCE_KMS_KEY_CONFIGURED"
 ]
