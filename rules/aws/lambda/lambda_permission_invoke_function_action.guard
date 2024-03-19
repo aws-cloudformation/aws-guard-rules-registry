@@ -1,0 +1,49 @@
+#
+#####################################
+##         AWS Solutions           ##
+#####################################
+# Rule Identifier:
+#    LAMBDA_PERMISSION_INVOKE_FUNCTION_ACTION
+#
+# Description:
+#    Checks if the AWS Lambda permission uses any other action apart from 'lambda:InvokeFunction'
+#
+# Reports on:
+#    AWS::Lambda::Permission
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# CFN_NAG Rule Id:
+#   W24
+#
+# Scenarios:
+# a) SKIP: when no AWS Lambda permission policies are present
+# b) PASS: when no AWS Lambda permission uses any other action apart from 'lambda:InvokeFunction'
+# c) FAIL: when any AWS Lambda permission allows action apart from 'lambda:InvokeFunction'
+# d) SKIP: When metadata includes the suppression for rule LAMBDA_PERMISSION_INVOKE_FUNCTION_ACTION
+
+let applicable_types = [
+  "AWS::Lambda::Permission"
+]
+
+let lambda_permission_invoke_function_action = Resources.*[ Type in %applicable_types
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W24"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "LAMBDA_PERMISSION_INVOKE_FUNCTION_ACTION"
+]
+
+rule LAMBDA_PERMISSION_INVOKE_FUNCTION_ACTION when %lambda_permission_invoke_function_action !empty {
+  let violations = %lambda_permission_invoke_function_action[
+    some Properties.Action != 'lambda:InvokeFunction'
+  ]
+  %violations empty
+  <<
+    Violation: Lambda permission beside InvokeFunction might not be what you want.
+    Fix: Remove Actions beside 'lambda:InvokeFunction'.
+  >>
+}

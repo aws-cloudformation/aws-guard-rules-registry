@@ -30,6 +30,22 @@
     rules:
       ELASTICSEARCH_IN_VPC_ONLY: SKIP
 
+- name: Scenario b) Rule fails when ElasticSearch domain does not have VPCOptions property but rule suppressed - CFN_NAG, SKIP
+  input:
+    Resources:
+      ElasticsearchDomain:
+        Type: AWS::Elasticsearch::Domain
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W90
+              reason: Suppressed for a very good reason
+        Properties:
+          DomainName: test
+  expectations:
+    rules:
+      ELASTICSEARCH_IN_VPC_ONLY: SKIP
+
 - name: Scenario c) Rule fails when ElasticSearch domain does not have VPCOptions property, FAIL
   input:
     Resources:

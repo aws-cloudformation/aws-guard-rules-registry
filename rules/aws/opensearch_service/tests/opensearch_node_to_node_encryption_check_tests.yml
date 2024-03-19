@@ -30,6 +30,22 @@
     rules:
       OPENSEARCH_NODE_TO_NODE_ENCRYPTION_CHECK: SKIP
 
+- name: Scenario b) Rule fails when OpenSearchService domain has Node-to-Node Encryption property missing but rule suppressed - CFN_NAG, SKIP
+  input:
+    Resources:
+      OpenSearchDomain:
+        Type: AWS::OpenSearchService::Domain
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W85
+              reason: Suppressed for a very good reason
+        Properties:
+          DomainName: test
+  expectations:
+    rules:
+      OPENSEARCH_NODE_TO_NODE_ENCRYPTION_CHECK: SKIP
+
 - name: Scenario c) Rule fails when OpenSearchService domain has Node-to-Node Encryption property missing
   input:
     Resources:

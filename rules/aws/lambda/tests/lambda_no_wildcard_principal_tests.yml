@@ -1,0 +1,142 @@
+###
+# LAMBDA_NO_WILDCARD_PRINCIPALS tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      LAMBDA_NO_WILDCARD_PRINCIPALS: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      LAMBDA_NO_WILDCARD_PRINCIPALS: SKIP
+
+- name: Lambda permission policy limited to an account as the principal, PASS
+  input:
+    Resources:
+      ExampleLambdaPermission1: 
+        Type: "AWS::Lambda::Permission"
+        Properties: 
+          Action: lambda:InvokeFunction
+          FunctionName: test-function
+          Principal: 111122223333
+      ExampleLambdaPermission2: 
+        Type: "AWS::Lambda::Permission"
+        Properties: 
+          Action: lambda:InvokeFunction
+          FunctionName: test-function
+          Principal: "123456789012"
+      ExampleLambdaPermission3: 
+        Type: "AWS::Lambda::Permission"
+        Properties: 
+          Action: lambda:InvokeFunction
+          FunctionName: test-function
+          Principal: !Ref AWS::AccountId
+  expectations:
+    rules:
+      LAMBDA_NO_WILDCARD_PRINCIPALS: PASS
+
+- name: Lambda permission policy limited to a service (not S3) as the principal scoped to a principal organization, PASS
+  input:
+    Resources:
+      ExampleLambdaPermission-1: 
+        Type: "AWS::Lambda::Permission"
+        Properties: 
+          Action: lambda:InvokeFunction
+          FunctionName: test-function
+          Principal: sns.amazonaws.com
+          PrincipalOrgID: o-aa111bb222
+  expectations:
+    rules:
+      LAMBDA_NO_WILDCARD_PRINCIPALS: PASS
+
+- name: Lambda permission policy not limited, FAIL
+  input:
+    Resources:
+      ExampleLambdaPermission1: 
+        Type: "AWS::Lambda::Permission"
+        Properties: 
+          Action: lambda:InvokeFunction
+          FunctionName: test-function
+          Principal: '*'
+          SourceAccount: 123456789012
+  expectations:
+    rules:
+      LAMBDA_NO_WILDCARD_PRINCIPALS: FAIL
+
+- name: Lambda layer version permission policy limited to an organization, FAIL
+  input:
+    Resources:
+      ExampleLambdaLayerVersionPermission: 
+        Type: "AWS::Lambda::LayerVersionPermission"
+        Properties: 
+          Action: lambda:GetLayerVersion
+          LayerVersionArn: arn:aws:lambda:us-west-2:123456789012:layer:my-layer:1
+          Principal: "*"
+          OrganizationId: o-aa111bb222
+  expectations:
+    rules:
+      LAMBDA_NO_WILDCARD_PRINCIPALS: FAIL
+
+- name: CFN_NAG suppression for F13, SKIP
+  input:
+    Resources:
+      ExampleLambdaLayerVersionPermission: 
+        Type: "AWS::Lambda::LayerVersionPermission"
+        Properties: 
+          Action: lambda:GetLayerVersion
+          LayerVersionArn: arn:aws:lambda:us-west-2:123456789012:layer:my-layer:1
+          Principal: "*"
+          OrganizationId: o-aa111bb222
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: F13
+              reason: Suppressed for a very good reason
+  expectations:
+    rules:
+      LAMBDA_NO_WILDCARD_PRINCIPALS: SKIP
+
+- name: Guard suppression for LAMBDA_NO_WILDCARD_PRINCIPALS, SKIP
+  input:
+    Resources:
+      ExampleLambdaLayerVersionPermission: 
+        Type: "AWS::Lambda::LayerVersionPermission"
+        Properties: 
+          Action: lambda:GetLayerVersion
+          LayerVersionArn: arn:aws:lambda:us-west-2:123456789012:layer:my-layer:1
+          Principal: "*"
+          OrganizationId: o-aa111bb222
+        Metadata:
+          guard:
+            SuppressedRules:
+            - LAMBDA_NO_WILDCARD_PRINCIPALS
+  expectations:
+    rules:
+      LAMBDA_NO_WILDCARD_PRINCIPALS: SKIP
+
+- name: Guard and CFN_NAG suppression for F13 & LAMBDA_NO_WILDCARD_PRINCIPALS, SKIP
+  input:
+    Resources:
+      ExampleLambdaLayerVersionPermission: 
+        Type: "AWS::Lambda::LayerVersionPermission"
+        Properties: 
+          Action: lambda:GetLayerVersion
+          LayerVersionArn: arn:aws:lambda:us-west-2:123456789012:layer:my-layer:1
+          Principal: "*"
+          OrganizationId: o-aa111bb222
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: F13
+              reason: Suppressed for a very good reason
+          guard:
+            SuppressedRules:
+            - LAMBDA_NO_WILDCARD_PRINCIPALS
+  expectations:
+    rules:
+      LAMBDA_NO_WILDCARD_PRINCIPALS: SKIP
