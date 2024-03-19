@@ -25,6 +25,8 @@
 # e) PASS: when an API Gateway V2 Stage Method have an AccessLogSettings configuration with DestinationArn and Format set to a string or struct
 
 let api_gwv2_access_logs_enabled = Resources.*[ Type == "AWS::ApiGatewayV2::Stage"
+  Metadata.cfn_nag.rules_to_suppress not exists or 
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W46"
   Metadata.guard.SuppressedRules not exists or
   Metadata.guard.SuppressedRules.* != "API_GWV2_ACCESS_LOGS_ENABLED"
 ]

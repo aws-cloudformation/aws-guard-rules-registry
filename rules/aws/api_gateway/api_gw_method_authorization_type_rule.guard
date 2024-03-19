@@ -1,0 +1,54 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+#
+# Rule Identifier:
+#   API_GW_METHOD_AUTHORIZATION_TYPE_RULE
+#
+# Description:
+#   AWS::ApiGateway::Method should not have AuthorizationType set to 'NONE' unless it is of HttpMethod: OPTIONS.
+#
+# Reports on:
+#   AWS::ApiGateway::Method
+#
+# Evaluates:
+#   AWS CloudFormation
+#
+# Rule Parameters:
+#   None
+#
+# CFN_NAG Rule Id:
+#   W59
+#
+# Scenarios:
+# a) SKIP: when there are no API Gateway Method Resources.
+# b) SKIP: when metadata has rule suppression for API_GW_METHOD_AUTHORIZATION_TYPE_RULE.
+# c) FAIL: when authorizationType does not exist or is set to none when HttpMethod is not OPTIONS.
+# d) PASS: when HTTP Method is set to OPTIONS or AuthorizationType is not set to None.
+
+#
+# Select all API Gateway Method Resources from incoming template (payload)
+#
+let api_gw_method_authorization_type_rule = Resources.*[ Type == 'AWS::ApiGateway::Method'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W59"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "API_GW_METHOD_AUTHORIZATION_TYPE_RULE"
+]
+
+rule API_GW_METHOD_AUTHORIZATION_TYPE_RULE when %api_gw_method_authorization_type_rule !empty {
+  let violations = %api_gw_method_authorization_type_rule[
+    Type == 'AWS::ApiGateway::Method'
+    Properties.HttpMethod != /(?i)options/
+    Properties.AuthorizationType !exists
+    OR
+    Properties.AuthorizationType == /(?i)none/
+  ]
+
+  %violations empty
+  <<
+   Violation: AuthorizationType set to 'NONE' for API Gateway Method Resources.
+   Fix: change value of AuthorizationType for API Gateway Method Resources.
+  >>
+}

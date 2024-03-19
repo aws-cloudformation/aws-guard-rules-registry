@@ -181,3 +181,31 @@
   expectations:
     rules:
       API_GW_CACHE_ENABLED_AND_ENCRYPTED: SKIP
+
+- name: CacheDataEncrypted and CachingEnabled missing but rule suppressed - CFG_NAG, SKIP
+  input:
+    Resources:
+      myApiGWStage:
+        Type: AWS::ApiGateway::Stage
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W87
+              reason: Suppressed for a very good reason
+        Properties:
+          StageName: Prod
+          Description: Prod Stage
+          RestApiId: !Ref MyRestApi
+          DeploymentId: !Ref TestDeployment
+          DocumentationVersion: !Ref MyDocumentationVersion
+          ClientCertificateId: !Ref ClientCertificate
+          Variables:
+            Stack: Prod
+          MethodSettings:
+            - ResourcePath: /
+              HttpMethod: GET
+              MetricsEnabled: true
+              DataTraceEnabled: false
+  expectations:
+    rules:
+      API_GW_CACHE_ENABLED_AND_ENCRYPTED: SKIP

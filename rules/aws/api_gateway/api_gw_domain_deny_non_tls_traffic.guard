@@ -27,6 +27,8 @@
 # Select all API GW Method resources from incoming template (payload)
 #
 let aws_apigw_domain_resources_tls_traffic = Resources.*[ Type == 'AWS::ApiGateway::DomainName'
+  Metadata.cfn_nag.rules_to_suppress not exists or 
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W62"
   Metadata.guard.SuppressedRules not exists or
   Metadata.guard.SuppressedRules.* != "API_GW_DOMAIN_DENY_NON_TLS_TRAFFIC"
 ]
