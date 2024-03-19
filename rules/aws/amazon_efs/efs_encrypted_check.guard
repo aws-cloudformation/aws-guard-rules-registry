@@ -30,6 +30,8 @@
 # Select all EFS resources from incoming template (payload)
 #
 let efs_file_systems_encrypted_check = Resources.*[ Type == 'AWS::EFS::FileSystem'
+  Metadata.cfn_nag.rules_to_suppress not exists or 
+  Metadata.cfn_nag.rules_to_suppress.*.id != "F32"
   Metadata.guard.SuppressedRules not exists or
   Metadata.guard.SuppressedRules.* != "EFS_ENCRYPTED_CHECK"
 ]

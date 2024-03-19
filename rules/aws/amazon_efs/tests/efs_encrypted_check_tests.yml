@@ -64,3 +64,19 @@
   expectations:
     rules:
       EFS_ENCRYPTED_CHECK: SKIP
+
+- name: EFS with missing Encryption property but rule is suppressed, SKIP
+  input:
+    Resources:
+      ExampleEfs:
+        Type: AWS::EFS::FileSystem
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: F32
+              reason: Suppressed for a very good reason
+        Properties:
+          PerformanceMode: generalPurpose
+  expectations:
+    rules:
+      EFS_ENCRYPTED_CHECK: SKIP
