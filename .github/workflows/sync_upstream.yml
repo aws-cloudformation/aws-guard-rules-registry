@@ -1,0 +1,61 @@
+# Follow Changes of Forked/Upstream Repository.
+#
+# This workflow rebase-marge changes from upstream's master to origin's master. 
+# - Ref:
+#   - https://stackoverflow.com/a/61574295/12102603 by N1ngu @ StackOverflow (EN)
+#   - https://qiita.com/KEINOS/items/3bcaa6cea853f6b63475 by KEINOS @ Qiita (JA)
+
+name: Merge upstream branches
+
+# Triggers the action as scheduled
+on:
+  # Runs on 10 minutes past every hour（毎 n 時 10 分に実行）
+  schedule:
+    # Ref: 
+    #   - https://help.github.com/en/actions/reference/events-that-trigger-workflows#scheduled-events-schedule
+    #   - https://crontab.guru/examples.html
+    # Cron format:
+    #         ┌───────────── minute (0 - 59)
+    #         │ ┌───────────── hour (0 - 23)
+    #         │ │ ┌───────────── day of the month (1 - 31)
+    #         │ │ │ ┌───────────── month (1 - 12 or JAN-DEC)
+    #         │ │ │ │ ┌───────────── day of the week (0 - 6 or SUN-SAT)
+    #         │ │ │ │ │                                   
+    #         │ │ │ │ │
+    #         │ │ │ │ │
+    #         * * * * *
+    - cron:  '0 0 * * 1'
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Merge upstream
+        # 以下の設定を変更してください。REPO_FORK が fork 元です。
+        env:
+          REPO_FORK: https://github.com/aws-cloudformation/aws-guard-rules-registry
+        # 追従処理
+        run: |
+          git config --global user.name ${NAME}
+          git config --global user.email ${EMAIL}
+          
+          : # git rebase をデフォルトに設定
+          git config --global pull.rebase merges
+
+          : # "git checkout master" は不要です。デフォルトで設定されます。
+          : # しかし下記の設定は重要です。過去のコミットが取得されないと、コミット歴に不統合が
+          : # 発生した旨のエラーが出ます。
+          git pull --unshallow
+
+          : # フォーク元のリポジトリをリモート先として "upstream" に命名
+          git remote add upstream ${REPO_FORK}
+          
+          : # upstream のブランチをローカルに取得
+          git fetch upstream
+          
+          : # marster ブランチの変更をマージし、clone 元の master に push
+          : # ブランチ名を main などに変更していたり、別のブランチにしている場合は注意
+          git checkout main
+          git merge --no-edit upstream/main
+          git push origin main
