@@ -1,0 +1,57 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+#
+# Rule Identifier:
+#   COGNITO_ALLOW_UNAUTHENTICATED_IDENTITIES_RULE
+#
+# Description:
+#   AWS::Cognito::IdentityPool AllowUnauthenticatedIdentities property should be false. But CAN be true if proper restrictive IAM roles and permissions are established for unauthenticated users.
+#
+# Reports on:
+#   AWS::Cognito::IdentityPool
+#
+# Evaluates:
+#   AWS CloudFormation
+#
+# Rule Parameters:
+#   None
+#
+# CFN_NAG Rule Id:
+#   W57
+#
+# Scenarios:
+# a) SKIP: when there are no Cognito Identity Pool Resources.
+# b) SKIP: when metadata has rule suppression for COGNITO_ALLOW_UNAUTHENTICATED_IDENTITIES_RULE.
+# c) FAIL: when AllowUnauthenticatedIdentities in Cognito Identity Pool Resources is set to true.
+# d) PASS:  when AllowUnauthenticatedIdentities in Cognito Identity Pool Resources is set to false.
+
+#
+# Select all Cognito Identity Pool Resources from incoming template (payload)
+#
+let cognito_allow_unauthenticated_identities_rule = Resources.*[ Type == 'AWS::Cognito::IdentityPool'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W57"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "COGNITO_ALLOW_UNAUTHENTICATED_IDENTITIES_RULE"
+]
+
+rule COGNITO_ALLOW_UNAUTHENTICATED_IDENTITIES_RULE when %cognito_allow_unauthenticated_identities_rule !empty {
+  let violations = %cognito_allow_unauthenticated_identities_rule[
+    Type == 'AWS::Cognito::IdentityPool'
+    Properties.AllowUnauthenticatedIdentities == /(?i)true/
+    OR
+    Properties.AllowUnauthenticatedIdentities == true
+    OR
+    Properties.AllowUnauthenticatedIdentities == True
+    OR
+    Properties.AllowUnauthenticatedIdentities == TRUE
+  ]
+
+  %violations empty
+  <<
+   Violation: AllowUnauthenticatedIdentities in Cognito Identity Pool Resources is set to true.
+   Fix: set AllowUnauthenticatedIdentities to false in Cognito Identity Pool Resources.
+  >>
+}

@@ -1,0 +1,924 @@
+###
+# CFN_NO_EXPLICIT_RESOURCE_NAMES
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      CFN_NO_EXPLICIT_RESOURCE_NAMES: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      CFN_NO_EXPLICIT_RESOURCE_NAMES: SKIP
+
+- name: Unlisted resource type, SKIP
+  input: 
+    Resources: 
+      ExampleResource: 
+        Type: AWS::SomeResource::Value
+        Properties:
+          Name: loremipsum 
+  expectations:
+    rules: 
+      CFN_NO_EXPLICIT_RESOURCE_NAMES: SKIP
+
+- name: ApiGateway ApiKey without static name, PASS
+  input: 
+    Resources: 
+      ExampleResource: 
+        Type: AWS::ApiGateway::ApiKey
+        Properties:
+          Description: CloudFormation API Key V1
+          Enabled: true
+          StageKeys:
+            - RestApiId: !Ref RestApi
+              StageName: Test
+  expectations:
+    rules: 
+      CFN_NO_EXPLICIT_RESOURCE_NAMES: PASS
+      static_name: PASS
+      no_static_names: PASS
+
+- name: ApiGateway ApiKey with static name, FAIL
+  input: 
+    Resources: 
+      ExampleResource: 
+        Type: AWS::ApiGateway::ApiKey
+        Properties:
+          Name: TestApiKey
+          Description: CloudFormation API Key V1
+          Enabled: true
+          StageKeys:
+            - RestApiId: !Ref RestApi
+              StageName: Test
+  expectations:
+    rules: 
+      CFN_NO_EXPLICIT_RESOURCE_NAMES: FAIL
+      static_name: FAIL
+      no_static_names: FAIL
+
+- name: CloudWatch Alarm without static AlarmName, PASS
+  input: 
+    Resources: 
+      ExampleResource: 
+        Type: AWS::CloudWatch::Alarm
+        Properties:
+          AlarmDescription: Lambda invocations
+          ComparisonOperator: LessThanLowerOrGreaterThanUpperThreshold
+          EvaluationPeriods: 1
+          Metrics:
+          - Expression: ANOMALY_DETECTION_BAND(m1, 2)
+            Id: ad1
+          - Id: m1
+            MetricStat:
+              Metric:
+                MetricName: Invocations
+                Namespace: AWS/Lambda
+              Period: !!int 86400
+              Stat: Sum
+          ThresholdMetricId: ad1
+          TreatMissingData: breaching
+  expectations:
+    rules: 
+      CFN_NO_EXPLICIT_RESOURCE_NAMES: PASS
+      static_alarmname: PASS
+
+- name: CloudWatch Alarm with static AlarmName, FAIL
+  input: 
+    Resources: 
+      ExampleResource: 
+        Type: AWS::CloudWatch::Alarm
+        Properties:
+          AlarmDescription: Lambda invocations
+          AlarmName: LambdaInvocationsAlarm
+          ComparisonOperator: LessThanLowerOrGreaterThanUpperThreshold
+          EvaluationPeriods: 1
+          Metrics:
+          - Expression: ANOMALY_DETECTION_BAND(m1, 2)
+            Id: ad1
+          - Id: m1
+            MetricStat:
+              Metric:
+                MetricName: Invocations
+                Namespace: AWS/Lambda
+              Period: !!int 86400
+              Stat: Sum
+          ThresholdMetricId: ad1
+          TreatMissingData: breaching 
+  expectations:
+    rules: 
+      CFN_NO_EXPLICIT_RESOURCE_NAMES: FAIL
+      static_alarmname: FAIL
+
+- name: CodeDeploy DeploymentConfig without static deploymentConfigName, PASS
+  input: 
+    Resources: 
+      ExampleResource: 
+        Type: AWS::CodeDeploy::DeploymentConfig
+        Properties:
+          MinimumHealthyHosts: 
+            Type: "FLEET_PERCENT"
+            Value: 75
+  expectations:
+    rules: 
+      CFN_NO_EXPLICIT_RESOURCE_NAMES: PASS
+      static_deploymentconfigname: PASS
+
+- name: CodeDeploy DeploymentConfig without static deploymentConfigName, FAIL
+  input: 
+    Resources: 
+      ExampleResource: 
+        Type: AWS::CodeDeploy::DeploymentConfig
+        Properties:
+          DeploymentConfigName: foo-bar-baz
+          MinimumHealthyHosts:
+            Type: "FLEET_PERCENT"
+            Value: 75
+  expectations:
+    rules: 
+      CFN_NO_EXPLICIT_RESOURCE_NAMES: FAIL
+      static_deploymentconfigname: FAIL
+
+- name: CodeDeploy DeploymentGroup without static deploymentGroupName, PASS
+  input: 
+    Resources: 
+      ExampleResource: 
+        Type: AWS::CodeDeploy::DeploymentGroup
+        Properties:
+          ApplicationName: 
+            Ref: "ApplicationName" 
+          AutoScalingGroups: 
+            Ref: CodeDeployAutoScalingGroups 
+          Deployment: 
+            Description: "A sample deployment"
+            IgnoreApplicationStopFailures: true 
+            Revision: 
+              RevisionType: GitHub 
+              GitHubLocation: 
+                CommitId:
+                  Ref: CommitId 
+                Repository: 
+                  Ref: Repository 
+          ServiceRoleArn: 
+            Fn::GetAtt: [ RoleArn, Arn ]
+  expectations:
+    rules: 
+      CFN_NO_EXPLICIT_RESOURCE_NAMES: PASS
+      static_deploymentgroupname: PASS
+
+- name: CodeDeploy DeploymentGroup with static deploymentGroupName, FAIL
+  input: 
+    Resources: 
+      ExampleResource: 
+        Type: AWS::CodeDeploy::DeploymentGroup
+        Properties:
+          DeploymentGroupName: foo-bar-baz
+          ApplicationName: 
+            Ref: "ApplicationName" 
+          AutoScalingGroups: 
+            Ref: CodeDeployAutoScalingGroups 
+          Deployment: 
+            Description: "A sample deployment"
+            IgnoreApplicationStopFailures: true 
+            Revision: 
+              RevisionType: GitHub 
+              GitHubLocation: 
+                CommitId:
+                  Ref: CommitId 
+                Repository: 
+                  Ref: Repository 
+          ServiceRoleArn: 
+            Fn::GetAtt: [ RoleArn, Arn ]
+  expectations:
+    rules: 
+      CFN_NO_EXPLICIT_RESOURCE_NAMES: FAIL
+      static_deploymentgroupname: FAIL
+
+- name: DynamoDB table without static name, PASS
+  expectations:
+    rules: 
+      CFN_NO_EXPLICIT_RESOURCE_NAMES: PASS
+      static_name: PASS
+  input:
+    Resources:
+      ExampleResource:
+        Type: AWS::DynamoDB::Table
+        Properties:
+          AttributeDefinitions: 
+          - 
+            AttributeName: "Album"
+            AttributeType: "S"
+          - 
+            AttributeName: "Artist"
+            AttributeType: "S"
+          - 
+            AttributeName: "Sales"
+            AttributeType: "N"
+          - 
+            AttributeName: "NumberOfSongs"
+            AttributeType: "N"
+          KeySchema: 
+            - 
+              AttributeName: "Album"
+              KeyType: "HASH"
+            - 
+              AttributeName: "Artist"
+              KeyType: "RANGE"
+          ProvisionedThroughput: 
+            ReadCapacityUnits: "5"
+            WriteCapacityUnits: "5"
+          GlobalSecondaryIndexes: 
+            - 
+              IndexName: "myGSI"
+              KeySchema: 
+                - 
+                  AttributeName: "Sales"
+                  KeyType: "HASH"
+                - 
+                  AttributeName: "Artist"
+                  KeyType: "RANGE"
+              Projection: 
+                NonKeyAttributes: 
+                  - "Album"
+                  - "NumberOfSongs"
+                ProjectionType: "INCLUDE"
+              ProvisionedThroughput: 
+                ReadCapacityUnits: "5"
+                WriteCapacityUnits: "5"
+            - 
+              IndexName: "myGSI2"
+              KeySchema: 
+                - 
+                  AttributeName: "NumberOfSongs"
+                  KeyType: "HASH"
+                - 
+                  AttributeName: "Sales"
+                  KeyType: "RANGE"
+              Projection: 
+                NonKeyAttributes: 
+                  - "Album"
+                  - "Artist"
+                ProjectionType: "INCLUDE"
+              ProvisionedThroughput: 
+                ReadCapacityUnits: "5"
+                WriteCapacityUnits: "5"
+          LocalSecondaryIndexes: 
+            - 
+              IndexName: "myLSI"
+              KeySchema: 
+                - 
+                  AttributeName: "Album"
+                  KeyType: "HASH"
+                - 
+                  AttributeName: "Sales"
+                  KeyType: "RANGE"
+              Projection: 
+                NonKeyAttributes: 
+                  - "Artist"
+                  - "NumberOfSongs"
+                ProjectionType: "INCLUDE"
+
+- name: DynamoDB table with static name, FAIL
+  expectations:
+    rules: 
+      CFN_NO_EXPLICIT_RESOURCE_NAMES: FAIL
+      static_name: FAIL
+  input:
+    Resources:
+      ExampleResource:
+        Type: AWS::DynamoDB::Table
+        Properties:
+          AttributeDefinitions: 
+            - 
+              AttributeName: "Album"
+              AttributeType: "S"
+            - 
+              AttributeName: "Artist"
+              AttributeType: "S"
+            - 
+              AttributeName: "Sales"
+              AttributeType: "N"
+            - 
+              AttributeName: "NumberOfSongs"
+              AttributeType: "N"
+          KeySchema: 
+            - 
+              AttributeName: "Album"
+              KeyType: "HASH"
+            - 
+              AttributeName: "Artist"
+              KeyType: "RANGE"
+          ProvisionedThroughput: 
+            ReadCapacityUnits: "5"
+            WriteCapacityUnits: "5"
+          TableName: "myTableName"
+          GlobalSecondaryIndexes: 
+            - 
+              IndexName: "myGSI"
+              KeySchema: 
+                - 
+                  AttributeName: "Sales"
+                  KeyType: "HASH"
+                - 
+                  AttributeName: "Artist"
+                  KeyType: "RANGE"
+              Projection: 
+                NonKeyAttributes: 
+                  - "Album"
+                  - "NumberOfSongs"
+                ProjectionType: "INCLUDE"
+              ProvisionedThroughput: 
+                ReadCapacityUnits: "5"
+                WriteCapacityUnits: "5"
+            - 
+              IndexName: "myGSI2"
+              KeySchema: 
+                - 
+                  AttributeName: "NumberOfSongs"
+                  KeyType: "HASH"
+                - 
+                  AttributeName: "Sales"
+                  KeyType: "RANGE"
+              Projection: 
+                NonKeyAttributes: 
+                  - "Album"
+                  - "Artist"
+                ProjectionType: "INCLUDE"
+              ProvisionedThroughput: 
+                ReadCapacityUnits: "5"
+                WriteCapacityUnits: "5"
+          LocalSecondaryIndexes: 
+            - 
+              IndexName: "myLSI"
+              KeySchema: 
+                - 
+                  AttributeName: "Album"
+                  KeyType: "HASH"
+                - 
+                  AttributeName: "Sales"
+                  KeyType: "RANGE"
+              Projection: 
+                NonKeyAttributes: 
+                  - "Artist"
+                  - "NumberOfSongs"
+                ProjectionType: "INCLUDE"
+
+- name: EC2 SecurityGroup without static GroupName, PASS
+  input:
+    Resources: 
+      ExampleResource: 
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          GroupDescription: Allow http to client host
+          VpcId: !Ref myVPC
+          SecurityGroupIngress:
+            - IpProtocol: tcp
+              FromPort: 80
+              ToPort: 80
+              CidrIp: 0.0.0.0/0
+          SecurityGroupEgress:
+            - IpProtocol: tcp
+              FromPort: 80
+              ToPort: 80
+              CidrIp: 0.0.0.0/0
+  expectations:
+    rules:
+      CFN_NO_EXPLICIT_RESOURCE_NAMES: PASS
+      static_groupname: PASS
+
+- name: EC2 SecurityGroup with static GroupName, FAIL
+  input:
+    Resources: 
+      ExampleResource: 
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          GroupName: MySecurityGroup
+          GroupDescription: Allow http to client host
+          VpcId: !Ref myVPC
+          SecurityGroupIngress:
+            - IpProtocol: tcp
+              FromPort: 80
+              ToPort: 80
+              CidrIp: 0.0.0.0/0
+          SecurityGroupEgress:
+            - IpProtocol: tcp
+              FromPort: 80
+              ToPort: 80
+              CidrIp: 0.0.0.0/0
+  expectations:
+    rules:
+      CFN_NO_EXPLICIT_RESOURCE_NAMES: FAIL
+      static_groupname: FAIL
+
+- name: ECR Repository without static repositoryName, PASS
+  expectations:
+    rules:
+      CFN_NO_EXPLICIT_RESOURCE_NAMES: PASS
+      static_repositoryname: PASS
+  input:
+    Resources: 
+      ExampleResource: 
+        Type: AWS::ECR::Repository
+        Properties:
+          RepositoryPolicyText: 
+            Version: "2012-10-17"
+            Statement: 
+              - 
+                Sid: AllowPushPull
+                Effect: Allow
+                Principal: 
+                  AWS: 
+                    - "arn:aws:iam::123456789012:user/Bob"
+                    - "arn:aws:iam::123456789012:user/Alice"
+                Action: 
+                  - "ecr:GetDownloadUrlForLayer"
+                  - "ecr:BatchGetImage"
+                  - "ecr:BatchCheckLayerAvailability"
+                  - "ecr:PutImage"
+                  - "ecr:InitiateLayerUpload"
+                  - "ecr:UploadLayerPart"
+                  - "ecr:CompleteLayerUpload"
+
+- name: ECR Repository with static repositoryName, FAIL
+  expectations:
+    rules:
+      CFN_NO_EXPLICIT_RESOURCE_NAMES: FAIL
+      static_repositoryname: FAIL
+  input:
+    Resources: 
+      ExampleResource: 
+        Type: AWS::ECR::Repository
+        Properties:
+          RepositoryName: "test-repository"
+          RepositoryPolicyText: 
+            Version: "2012-10-17"
+            Statement: 
+              - 
+                Sid: AllowPushPull
+                Effect: Allow
+                Principal: 
+                  AWS: 
+                    - "arn:aws:iam::123456789012:user/Bob"
+                    - "arn:aws:iam::123456789012:user/Alice"
+                Action: 
+                  - "ecr:GetDownloadUrlForLayer"
+                  - "ecr:BatchGetImage"
+                  - "ecr:BatchCheckLayerAvailability"
+                  - "ecr:PutImage"
+                  - "ecr:InitiateLayerUpload"
+                  - "ecr:UploadLayerPart"
+                  - "ecr:CompleteLayerUpload"
+
+- name: ELB without static name, PASS
+  expectations:
+    rules: 
+      CFN_NO_EXPLICIT_RESOURCE_NAMES: PASS
+      static_name: PASS
+  input: 
+    Resources: 
+      ExampleResource: 
+        Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+        Properties: 
+          Type: application
+          Scheme: internet-facing
+          Subnets:
+            - !Ref SubnetIdA
+            - !Ref SubnetIdB
+          SecurityGroups:
+            - !Ref ELB_SG_Id
+                           
+- name: ELB with static name, FAIL
+  expectations:
+    rules: 
+      CFN_NO_EXPLICIT_RESOURCE_NAMES: FAIL
+      static_name: FAIL
+  input: 
+    Resources: 
+      ExampleResource: 
+        Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+        Properties: 
+          Type: application
+          Name: "foo-bar-alb"
+          Scheme: internet-facing
+          Subnets:
+            - !Ref SubnetIdA
+            - !Ref SubnetIdB
+          SecurityGroups:
+            - !Ref ELB_SG_Id
+
+- name: ElasticSearch Domain without static domainName, PASS
+  expectations:
+    rules: 
+      CFN_NO_EXPLICIT_RESOURCE_NAMES: PASS
+      static_domainname: PASS
+  input: 
+    Resources: 
+      ExampleResource: 
+        Type: AWS::Elasticsearch::Domain
+        Properties: 
+          ElasticsearchVersion: '7.10'
+          ElasticsearchClusterConfig:
+            DedicatedMasterEnabled: true
+            InstanceCount: '2'
+            ZoneAwarenessEnabled: true
+            InstanceType: 'm3.medium.elasticsearch'
+            DedicatedMasterType: 'm3.medium.elasticsearch'
+            DedicatedMasterCount: '3'
+          EBSOptions:
+            EBSEnabled: true
+            Iops: '0'
+            VolumeSize: '20'
+            VolumeType: 'gp2'
+          AccessPolicies:
+            Version: '2012-10-17'
+            Statement:
+              -
+                Effect: 'Allow'
+                Principal:
+                  AWS: 'arn:aws:iam::123456789012:user/es-user'
+                Action: 'es:*'
+                Resource: 'arn:aws:es:us-east-1:846973539254:domain/test/*'
+          LogPublishingOptions:
+            ES_APPLICATION_LOGS:
+                CloudWatchLogsLogGroupArn: 'arn:aws:logs:us-east-1:123456789012:log-group:/aws/opensearchservice/domains/es-application-logs'
+                Enabled: true
+            SEARCH_SLOW_LOGS:
+                CloudWatchLogsLogGroupArn: 'arn:aws:logs:us-east-1:123456789012:log-group:/aws/opensearchservice/domains/es-slow-logs'
+                Enabled: true
+            INDEX_SLOW_LOGS:
+                CloudWatchLogsLogGroupArn: 'arn:aws:logs:us-east-1:123456789012:log-group:/aws/opensearchservice/domains/es-index-slow-logs'
+                Enabled: true
+          AdvancedOptions:
+            rest.action.multi.allow_explicit_index: true
+
+- name: ElasticSearch Domain with static domainName, FAIL
+  expectations:
+    rules: 
+      CFN_NO_EXPLICIT_RESOURCE_NAMES: FAIL
+      static_domainname: FAIL
+  input: 
+    Resources: 
+      ExampleResource: 
+        Type: AWS::Elasticsearch::Domain
+        Properties: 
+          DomainName: 'foo-bar-domain'
+          ElasticsearchVersion: '7.10'
+          ElasticsearchClusterConfig:
+            DedicatedMasterEnabled: true
+            InstanceCount: '2'
+            ZoneAwarenessEnabled: true
+            InstanceType: 'm3.medium.elasticsearch'
+            DedicatedMasterType: 'm3.medium.elasticsearch'
+            DedicatedMasterCount: '3'
+          EBSOptions:
+            EBSEnabled: true
+            Iops: '0'
+            VolumeSize: '20'
+            VolumeType: 'gp2'
+          AccessPolicies:
+            Version: '2012-10-17'
+            Statement:
+              -
+                Effect: 'Allow'
+                Principal:
+                  AWS: 'arn:aws:iam::123456789012:user/es-user'
+                Action: 'es:*'
+                Resource: 'arn:aws:es:us-east-1:846973539254:domain/test/*'
+          LogPublishingOptions:
+            ES_APPLICATION_LOGS:
+                CloudWatchLogsLogGroupArn: 'arn:aws:logs:us-east-1:123456789012:log-group:/aws/opensearchservice/domains/es-application-logs'
+                Enabled: true
+            SEARCH_SLOW_LOGS:
+                CloudWatchLogsLogGroupArn: 'arn:aws:logs:us-east-1:123456789012:log-group:/aws/opensearchservice/domains/es-slow-logs'
+                Enabled: true
+            INDEX_SLOW_LOGS:
+                CloudWatchLogsLogGroupArn: 'arn:aws:logs:us-east-1:123456789012:log-group:/aws/opensearchservice/domains/es-index-slow-logs'
+                Enabled: true
+          AdvancedOptions:
+            rest.action.multi.allow_explicit_index: true
+
+- name: IAM Group without static groupName, PASS
+  expectations:
+    rules: 
+      CFN_NO_EXPLICIT_RESOURCE_NAMES: PASS
+      static_groupname: PASS
+  input: 
+    Resources: 
+      ExampleResource: 
+        Type: AWS::IAM::Group
+        Properties: 
+          ManagedPolicyArns:
+            - !Ref GroupMP
+          Path: /
+
+- name: IAM Group without static groupName, FAIL
+  expectations:
+    rules: 
+      CFN_NO_EXPLICIT_RESOURCE_NAMES: FAIL
+      static_groupname: FAIL
+  input: 
+    Resources: 
+      ExampleResource: 
+        Type: AWS::IAM::Group
+        Properties: 
+          GroupName: foobarbaz
+          ManagedPolicyArns:
+            - !Ref GroupMP
+          Path: /
+
+- name: IAM ManagedPolicy without static managedPolicyName, PASS
+  expectations:
+    rules: 
+      CFN_NO_EXPLICIT_RESOURCE_NAMES: PASS
+      static_managedpolicyname: PASS
+  input: 
+    Resources: 
+      ExampleResource: 
+        Type: AWS::IAM::ManagedPolicy
+        Properties: 
+          Description: Policy for creating a test database
+          Path: /
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: 'rds:CreateDBInstance'
+                Resource: !Join 
+                  - ''
+                  - - 'arn:aws:rds:'
+                    - !Ref 'AWS::Region'
+                    - ':'
+                    - !Ref 'AWS::AccountId'
+                    - ':db:test*'
+                Condition:
+                  StringEquals:
+                    'rds:DatabaseEngine': mysql
+              - Effect: Allow
+                Action: 'rds:CreateDBInstance'
+                Resource: !Join 
+                  - ''
+                  - - 'arn:aws:rds:'
+                    - !Ref 'AWS::Region'
+                    - ':'
+                    - !Ref 'AWS::AccountId'
+                    - ':db:test*'
+                Condition:
+                  StringEquals:
+                    'rds:DatabaseClass': db.t2.micro
+          Groups:
+            - TestDBGroup
+
+- name: IAM ManagedPolicy with static managedPolicyName, FAIL
+  expectations:
+    rules: 
+      CFN_NO_EXPLICIT_RESOURCE_NAMES: FAIL
+      static_managedpolicyname: PASS
+  input: 
+    Resources: 
+      ExampleResource: 
+        Type: AWS::IAM::ManagedPolicy
+        Properties: 
+          Description: Policy for creating a test database
+          ManagedPolicyName: foo-bar-baz
+          Path: /
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: 'rds:CreateDBInstance'
+                Resource: !Join 
+                  - ''
+                  - - 'arn:aws:rds:'
+                    - !Ref 'AWS::Region'
+                    - ':'
+                    - !Ref 'AWS::AccountId'
+                    - ':db:test*'
+                Condition:
+                  StringEquals:
+                    'rds:DatabaseEngine': mysql
+              - Effect: Allow
+                Action: 'rds:CreateDBInstance'
+                Resource: !Join 
+                  - ''
+                  - - 'arn:aws:rds:'
+                    - !Ref 'AWS::Region'
+                    - ':'
+                    - !Ref 'AWS::AccountId'
+                    - ':db:test*'
+                Condition:
+                  StringEquals:
+                    'rds:DatabaseClass': db.t2.micro
+          Groups:
+            - TestDBGroup
+
+- name: IAM Role without static roleName, PASS
+  expectations:
+    rules: 
+      CFN_NO_EXPLICIT_RESOURCE_NAMES: PASS
+      static_rolename: PASS
+  input: 
+    Resources: 
+      ExampleResource: 
+        Type: AWS::IAM::Role
+        Properties:    
+          AssumeRolePolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Principal:
+                  Service:
+                    - ec2.amazonaws.com
+                Action:
+                  - 'sts:AssumeRole'
+          Path: /
+          Policies:
+            - PolicyName: root
+              PolicyDocument:
+                Version: "2012-10-17"
+                Statement:
+                  - Effect: Allow
+                    Action: '*'
+                    Resource: '*'
+
+- name: IAM Role with static roleName, FAIL
+  expectations:
+    rules: 
+      CFN_NO_EXPLICIT_RESOURCE_NAMES: FAIL
+      static_rolename: FAIL
+  input: 
+    Resources: 
+      ExampleResource: 
+        Type: AWS::IAM::Role
+        Properties:    
+          RoleName: foobarbaz
+          AssumeRolePolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Principal:
+                  Service:
+                    - ec2.amazonaws.com
+                Action:
+                  - 'sts:AssumeRole'
+          Path: /
+          Policies:
+            - PolicyName: root
+              PolicyDocument:
+                Version: "2012-10-17"
+                Statement:
+                  - Effect: Allow
+                    Action: '*'
+                    Resource: '*'
+
+- name: IAM Role with static roleName - suppressed CFN_NAG, SKIP
+  expectations:
+    rules: 
+      CFN_NO_EXPLICIT_RESOURCE_NAMES: SKIP
+  input: 
+    Resources: 
+      ExampleResource: 
+        Type: AWS::IAM::Role
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W28
+              reason: Suppressed for a very good reason
+        Properties:    
+          RoleName: foobarbaz
+          AssumeRolePolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Principal:
+                  Service:
+                    - ec2.amazonaws.com
+                Action:
+                  - 'sts:AssumeRole'
+          Path: /
+          Policies:
+            - PolicyName: root
+              PolicyDocument:
+                Version: "2012-10-17"
+                Statement:
+                  - Effect: Allow
+                    Action: '*'
+                    Resource: '*'
+
+- name: IAM Role with static roleName - suppressed GUARD, SKIP
+  expectations:
+    rules: 
+      CFN_NO_EXPLICIT_RESOURCE_NAMES: SKIP
+  input: 
+    Resources: 
+      ExampleResource: 
+        Type: AWS::IAM::Role
+        Metadata:
+          guard:
+            SuppressedRules:
+            - CFN_NO_EXPLICIT_RESOURCE_NAMES
+        Properties:    
+          RoleName: foobarbaz
+          AssumeRolePolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Principal:
+                  Service:
+                    - ec2.amazonaws.com
+                Action:
+                  - 'sts:AssumeRole'
+          Path: /
+          Policies:
+            - PolicyName: root
+              PolicyDocument:
+                Version: "2012-10-17"
+                Statement:
+                  - Effect: Allow
+                    Action: '*'
+                    Resource: '*'
+
+- name: Kinesis Stream without static name, PASS
+  expectations:
+    rules: 
+      CFN_NO_EXPLICIT_RESOURCE_NAMES: PASS
+      static_name: PASS
+  input: 
+    Resources: 
+      ExampleResource: 
+        Type: AWS::Kinesis::Stream
+        Properties:  
+          RetentionPeriodHours: 168 
+          ShardCount: 3 
+          StreamEncryption:
+              EncryptionType: KMS 
+              KeyId: !Ref myKey 
+          Tags: 
+            -
+              Key: Environment 
+              Value: Production
+
+- name: Kinesis Stream with static name, FAIL
+  expectations:
+    rules: 
+      CFN_NO_EXPLICIT_RESOURCE_NAMES: FAIL
+      static_rolename: FAIL
+  input: 
+    Resources: 
+      ExampleResource: 
+        Type: AWS::Kinesis::Stream
+        Properties:  
+          Name: MyKinesisStream 
+          RetentionPeriodHours: 168 
+          ShardCount: 3 
+          StreamEncryption:
+              EncryptionType: KMS 
+              KeyId: !Ref myKey 
+          Tags: 
+            -
+              Key: Environment 
+              Value: Production
+
+- name: RDS Instance without static dBInstanceIdentifier, PASS
+  expectations:
+    rules: 
+      CFN_NO_EXPLICIT_RESOURCE_NAMES: PASS
+      static_dbinstanceidentifier: PASS
+  input: 
+    Resources: 
+      ExampleResource: 
+        Type: AWS::RDS::DBInstance
+        Properties:  
+          DBName: !Ref DBName
+          DBInstanceClass: !Ref DBInstanceClass
+          AllocatedStorage: !Ref DBAllocatedStorage
+          Engine: MySQL
+          EngineVersion: "8.0.33"
+          MasterUsername: !Ref DBUsername
+          MasterUserPassword: !Ref DBPassword
+          MonitoringInterval: 60
+          MonitoringRoleArn: 'arn:aws:iam::123456789012:role/rds-monitoring-role'
+
+- name: RDS Instance with static dBInstanceIdentifier, FAIL
+  expectations:
+    rules: 
+      CFN_NO_EXPLICIT_RESOURCE_NAMES: FAIL
+      static_dbinstanceidentifier: FAIL
+  input: 
+    Resources: 
+      ExampleResource: 
+        Type: AWS::RDS::DBInstance
+        Properties:  
+          DBInstanceIdentifier: !Ref DBInstanceID
+          DBName: !Ref DBName
+          DBInstanceClass: !Ref DBInstanceClass
+          AllocatedStorage: !Ref DBAllocatedStorage
+          Engine: MySQL
+          EngineVersion: "8.0.33"
+          MasterUsername: !Ref DBUsername
+          MasterUserPassword: !Ref DBPassword
+          MonitoringInterval: 60
+          MonitoringRoleArn: 'arn:aws:iam::123456789012:role/rds-monitoring-role'

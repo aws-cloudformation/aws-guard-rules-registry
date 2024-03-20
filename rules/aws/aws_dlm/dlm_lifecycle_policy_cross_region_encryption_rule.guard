@@ -1,0 +1,59 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#    DLM_LIFECYCLE_POLICY_CROSS_REGION_ENCRYPTION_RULE
+#
+# Description:
+#   DLM LifecyclePolicy PolicyDetails Actions CrossRegionCopy EncryptionConfiguration should enable Encryption.
+#
+# Reports on:
+#    AWS::DLM::LifecyclePolicy
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# CFN_NAG Rule Id:
+#   W81
+#
+# Scenarios:
+# a) SKIP: when there are no DLM LifeCycle Policy resources present.
+# b) PASS: When all DLM LifeCycle Policy resources have encryption enabled.
+# c) FAIL: When any DLM LifeCycle Policy resources do not have encryption enabled.
+# d) SKIP: when metadata has rule suppression for DLM_LIFECYCLE_POLICY_CROSS_REGION_ENCRYPTION_RULE or W81.
+
+#
+# Select all DLM LifeCycle Policy resources from incoming template (payload)
+#
+let dlm_lifecycle_policy_cross_region_encryption_rule = Resources.*[ Type == 'AWS::DLM::LifecyclePolicy'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W81"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "DLM_LIFECYCLE_POLICY_CROSS_REGION_ENCRYPTION_RULE"
+]
+
+rule DLM_LIFECYCLE_POLICY_CROSS_REGION_ENCRYPTION_RULE when %dlm_lifecycle_policy_cross_region_encryption_rule !empty {
+   let violations = %dlm_lifecycle_policy_cross_region_encryption_rule[
+    Type == 'AWS::DLM::LifecyclePolicy'
+    Properties.PolicyDetails exists
+    Properties.PolicyDetails.Actions exists
+    Properties.PolicyDetails.Actions[*].CrossRegionCopy exists
+    some Properties.PolicyDetails.Actions[*].CrossRegionCopy[*] {
+        EncryptionConfiguration.Encrypted !exists
+        OR
+        EncryptionConfiguration.Encrypted == false
+        OR
+        EncryptionConfiguration.Encrypted == 'false'
+    }
+  ]
+
+  %violations empty
+  <<
+    Violation: DLM LifeCycle Policy resources do not have CrossRegion Encryption enabled.
+    Fix: Enable CrossRegion Encryption for DLM LifeCycle Policy resources.
+  >>
+}

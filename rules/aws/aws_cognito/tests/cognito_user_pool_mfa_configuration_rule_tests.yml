@@ -1,0 +1,165 @@
+###
+# COGNITO_USER_POOL_MFA_CONFIGURATION_RULE tests
+###
+---
+- name: Empty
+  input: {}
+  expectations:
+    rules:
+      COGNITO_USER_POOL_MFA_CONFIGURATION_RULE: SKIP
+
+- name: No resources
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      COGNITO_USER_POOL_MFA_CONFIGURATION_RULE: SKIP
+
+- name: MFA Conf is ON
+  input:
+    Resources:
+      SampleCognito:
+        Type: AWS::Cognito::UserPool
+        Properties:
+          AliasAttributes:
+            - test@amazon.com
+            - 1234567890
+            - test-alias
+          AutoVerifiedAttributes:
+            - test1@amazon.com
+          DeletionProtection: ACTIVE
+          UserPoolName: 'TEST'
+          MfaConfiguration: 'ON'
+  expectations:
+    rules:
+      COGNITO_USER_POOL_MFA_CONFIGURATION_RULE: PASS
+
+- name: MFA Conf is OPTIONAL
+  input:
+    Resources:
+      SampleCognito:
+        Type: AWS::Cognito::UserPool
+        Properties:
+          AliasAttributes:
+            - test@amazon.com
+            - 1234567890
+            - test-alias
+          AutoVerifiedAttributes:
+            - test1@amazon.com
+          DeletionProtection: ACTIVE
+          UserPoolName: 'TEST'
+          MfaConfiguration: 'OPTIONAL'
+  expectations:
+    rules:
+      COGNITO_USER_POOL_MFA_CONFIGURATION_RULE: PASS
+
+- name: MFA Conf does not exist
+  input:
+    Resources:
+      SampleCognito:
+        Type: AWS::Cognito::UserPool
+        Properties:
+          AliasAttributes:
+            - test@amazon.com
+            - 1234567890
+            - test-alias
+          AutoVerifiedAttributes:
+            - test1@amazon.com
+          DeletionProtection: ACTIVE
+          UserPoolName: 'TEST'
+  expectations:
+    rules:
+      COGNITO_USER_POOL_MFA_CONFIGURATION_RULE: PASS
+
+- name: MFA Conf is OFF.
+  input:
+    Resources:
+      SampleCognito:
+        Type: AWS::Cognito::UserPool
+        Properties:
+          AliasAttributes:
+            - test@amazon.com
+            - 1234567890
+            - test-alias
+          AutoVerifiedAttributes:
+            - test1@amazon.com
+          DeletionProtection: ACTIVE
+          UserPoolName: 'TEST'
+          MfaConfiguration: 'OFF'
+  expectations:
+    rules:
+      COGNITO_USER_POOL_MFA_CONFIGURATION_RULE: FAIL
+
+- name: CFN_NAG suppression for F78
+  input:
+    Resources:
+      SampleCognito:
+        Type: AWS::Cognito::UserPool
+        Properties:
+          AliasAttributes:
+            - test@amazon.com
+            - 1234567890
+            - test-alias
+          AutoVerifiedAttributes:
+            - test1@amazon.com
+          DeletionProtection: ACTIVE
+          UserPoolName: 'TEST'
+          MfaConfiguration: 'OFF'
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+              - id: F78
+                reason: Suppressed to test suppression works and skips this test
+  expectations:
+    rules:
+      COGNITO_USER_POOL_MFA_CONFIGURATION_RULE: SKIP
+
+- name: Guard suppression for COGNITO_USER_POOL_MFA_CONFIGURATION_RULE
+  input:
+    Resources:
+      SampleCognito:
+        Type: AWS::Cognito::UserPool
+        Properties:
+          AliasAttributes:
+            - test@amazon.com
+            - 1234567890
+            - test-alias
+          AutoVerifiedAttributes:
+            - test1@amazon.com
+          DeletionProtection: ACTIVE
+          UserPoolName: 'TEST'
+          MfaConfiguration: 'OFF'
+        Metadata:
+          guard:
+            SuppressedRules:
+              - COGNITO_USER_POOL_MFA_CONFIGURATION_RULE
+  expectations:
+    rules:
+      COGNITO_USER_POOL_MFA_CONFIGURATION_RULE: SKIP
+
+- name: Guard and CFN_NAG suppression for F78 & COGNITO_USER_POOL_MFA_CONFIGURATION_RULE
+  input:
+    Resources:
+      SampleCognito:
+        Type: AWS::Cognito::UserPool
+        Properties:
+          AliasAttributes:
+            - test@amazon.com
+            - 1234567890
+            - test-alias
+          AutoVerifiedAttributes:
+            - test1@amazon.com
+          DeletionProtection: ACTIVE
+          UserPoolName: 'TEST'
+          MfaConfiguration: 'OFF'
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+              - id: F78
+                reason: Suppressed to test suppression works and skips this test
+          guard:
+            SuppressedRules:
+              - COGNITO_USER_POOL_MFA_CONFIGURATION_RULE
+  expectations:
+    rules:
+      COGNITO_USER_POOL_MFA_CONFIGURATION_RULE: SKIP

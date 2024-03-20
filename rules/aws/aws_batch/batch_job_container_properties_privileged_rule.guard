@@ -1,0 +1,50 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#    BATCH_JOB_CONTAINER_PROPERTIES_PRIVILEGED_RULE
+#
+# Description:
+#   Batch Job Definition Container Properties should not have Privileged set to true
+#
+# Reports on:
+#    AWS::Batch::JobDefinition
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# CFN_NAG Rule Id:
+#   W34
+#
+# Scenarios:
+# a) SKIP: when there is no Batch Job resource present.
+# b) PASS: when Batch Job resources does not have container properties or privileged is set to false.
+# c) FAIL: when Batch Job resources does have container properties and privileged is set to true.
+# d) SKIP: when metadata has rule suppression for BATCH_JOB_CONTAINER_PROPERTIES_PRIVILEGED_RULE
+
+#
+# Select all Batch Job Definition resources from incoming template (payload)
+#
+let batch_job_container_properties_privileged_rule = Resources.*[ Type == 'AWS::Batch::JobDefinition'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W34"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "BATCH_JOB_CONTAINER_PROPERTIES_PRIVILEGED_RULE"
+]
+
+rule BATCH_JOB_CONTAINER_PROPERTIES_PRIVILEGED_RULE when %batch_job_container_properties_privileged_rule !empty {
+  let violations = %batch_job_container_properties_privileged_rule[
+    Type == 'AWS::Batch::JobDefinition'
+    Properties.ContainerProperties exists
+    Properties.ContainerProperties.Privileged == true
+  ]
+  %violations empty
+  <<
+    Violation: Batch job definition resource has container properties set to true
+    Fix: set privileged to false or remove privileged field to make it false by default.
+  >>
+}

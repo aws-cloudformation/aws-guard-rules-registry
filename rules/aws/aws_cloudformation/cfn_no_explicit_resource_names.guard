@@ -1,0 +1,131 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#   CFN_NO_EXPLICIT_RESOURCE_NAMES
+#
+# Description:
+#   Checks that the template does not explicitely name resources.
+#
+# Reports on:
+#   Various
+#
+# Evaluates:
+#   AWS CloudFormation
+#
+# Rule Parameters:
+#   NA
+#
+# CFN_NAG Rule Id:
+#   W28
+#
+# Scenarios:
+# a) SKIP: when none of the covered resources types are present
+# b) PASS: when none of the applicable types have static resource names
+# c) FAIL: when any applicable types has a static resource name
+# d) SKIP: when metada has rule suppression for CFN_NO_EXPLICIT_RESOURCE_NAMES or CFN_NAG W28
+
+let applicable_types = [
+  "AWS::ApiGateway::ApiKey",
+  "AWS::CloudWatch::Alarm",
+  "AWS::CodeDeploy::DeploymentConfig",
+  "AWS::CodeDeploy::DeploymentGroup",
+  "AWS::DynamoDB::Table",
+  "AWS::EC2::SecurityGroup",
+  "AWS::ECR::Repository",
+  "AWS::ElasticLoadBalancingV2::LoadBalancer",
+  "AWS::Elasticsearch::Domain",
+  "AWS::IAM::Group",
+  "AWS::IAM::ManagedPolicy",
+  "AWS::IAM::Role",
+  "AWS::Kinesis::Stream",
+  "AWS::RDS::DBInstance"
+]
+
+# Select applicable resources less suppressed resources
+let cloudformation_no_static_name_resources = Resources.*[Type in %applicable_types
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W28"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "CFN_NO_EXPLICIT_RESOURCE_NAMES"
+]
+
+rule CFN_NO_EXPLICIT_RESOURCE_NAMES
+  when %cloudformation_no_static_name_resources !empty {
+    AWS::ApiGateway::ApiKey {
+      Properties{
+        Name empty
+      }
+    }
+    AWS::CloudWatch::Alarm {
+      Properties{
+        AlarmName empty
+      }
+    }
+    AWS::CodeDeploy::DeploymentConfig {
+      Properties{
+        DeploymentConfigName empty
+      }
+    }
+    AWS::CodeDeploy::DeploymentGroup {
+      Properties{
+        DeploymentGroupName empty
+      }
+    }
+    AWS::DynamoDB::Table {
+      Properties{
+        TableName empty
+      }
+    }
+    AWS::EC2::SecurityGroup {
+      Properties{
+        GroupName empty
+      }
+    }
+    AWS::ECR::Repository {
+      Properties{
+        RepositoryName empty
+      }
+    }
+    AWS::ElasticLoadBalancingV2::LoadBalancer {
+      Properties{
+        Name empty
+      }
+    }
+    AWS::Elasticsearch::Domain {
+      Properties{
+        DomainName empty
+      }
+    }
+    AWS::IAM::Group {
+      Properties{
+        GroupName empty
+      }
+    }
+    AWS::IAM::ManagedPolicy {
+      Properties{
+        ManagedPolicyName empty
+      }
+    }
+    AWS::IAM::Role {
+      Properties{
+        RoleName empty
+      }
+    }
+    AWS::Kinesis::Stream {
+      Properties{
+        Name empty
+      }
+    }
+    AWS::RDS::DBInstance {
+      Properties{
+        DBInstanceIdentifier empty
+      }
+    }
+    %cloudformation_no_static_name_resources not empty
+    <<
+      Violation: Resource found with an explicit name, this disallows updates that require replacement of this resource.
+      Fix: Remove static name from the resource
+    >>
+}
