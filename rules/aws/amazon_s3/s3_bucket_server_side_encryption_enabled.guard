@@ -29,6 +29,8 @@
 #
 
 let s3_buckets_server_side_encryption = Resources.*[ Type == 'AWS::S3::Bucket'
+  Metadata.cfn_nag.rules_to_suppress not exists or 
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W41"
   Metadata.guard.SuppressedRules not exists or
   Metadata.guard.SuppressedRules.* != "S3_BUCKET_SERVER_SIDE_ENCRYPTION_ENABLED"
 ]

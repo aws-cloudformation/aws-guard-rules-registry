@@ -1,0 +1,48 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#    S3_BUCKET_PUBLIC_READ_ACL
+#
+# Description:
+#   Checks if Amazon Simple Storage Service (Amazon S3) buckets are publicly readable via the public ACL
+#
+# Reports on:
+#    AWS::S3::Bucket
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# CFN_NAG Rule Id:
+#   W31
+#
+# Scenarios:
+# a) SKIP: when there are no S3 resource present
+# b) PASS: when no S3 resources have PublicRead ACL applied at the bucket level
+# c) FAIL: when any S3 resources has PublicRead ACL
+# d) SKIP: when metadata has rule suppression for S3_BUCKET_PUBLIC_READ_ACL
+
+#
+# Select all S3 resources from incoming template (payload)
+#
+let s3_bucket_public_read_acl = Resources.*[ Type == 'AWS::S3::Bucket'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W31"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "S3_BUCKET_PUBLIC_READ_ACL"
+]
+
+rule S3_BUCKET_PUBLIC_READ_ACL when %s3_bucket_public_read_acl !empty {
+  let violations = %s3_bucket_public_read_acl[
+    Properties.AccessControl == 'PublicRead'
+  ]
+  %violations empty
+  <<
+    Violation: S3 Bucket should not have the PublicRead ALC.
+    Fix: Allow Read access only to authorized, authenticated users.
+  >>
+}

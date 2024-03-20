@@ -1,0 +1,52 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#   S3_BUCKET_POLICY_NO_ALLOW_PLUS_NOT_ACTION
+#
+# Description:
+#   Checks that SIMPLE STORAGE SERVICE (S3) TOPIC Policy do not use Allow+NotAction
+#
+# Reports on:
+#   AWS::S3::BucketPolicy
+#
+# Evaluates:
+#   AWS CloudFormation
+#
+# Rule Parameters:
+#   NA
+#
+# CFN_NAG Rule Id:
+#   W20
+#
+# Documentation:
+# https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-access-control.html
+#
+# Scenarios:
+# a) SKIP: when there are no S3 Bucket Policies present
+# b) PASS: when all S3 Bucket Policies do not use Allow+NotAction
+# c) FAIL: when any S3 Bucket Policies allow both Effect: Allow and NotAction
+# d) SKIP: when metadata has rule suppression for S3_BUCKET_POLICY_NO_ALLOW_PLUS_NOT_ACTION or CFN_NAG W20
+
+let s3_bucket_policy_no_allow_plus_not_action = Resources.*[ Type == 'AWS::S3::BucketPolicy'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W20"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "S3_BUCKET_POLICY_NO_ALLOW_PLUS_NOT_ACTION"
+]
+
+rule S3_BUCKET_POLICY_NO_ALLOW_PLUS_NOT_ACTION when %s3_bucket_policy_no_allow_plus_not_action !empty {
+  let violations = %s3_bucket_policy_no_allow_plus_not_action[
+    Type == 'AWS::S3::BucketPolicy'
+    some Properties.PolicyDocument.Statement[*] {
+      Effect == "Allow"
+      NotAction exists
+    }
+  ]
+  %violations empty
+  <<
+    Violation: S3 BucketPolicy should not allow Allow+NotAction
+    Fix: Remove S3 Bucket Policies that match {"Effect": "Allow", "NotAction": ... }
+  >>
+}

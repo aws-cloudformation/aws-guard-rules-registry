@@ -1,0 +1,123 @@
+###
+# S3_BUCKET_NO_PUBLIC_RW_ACL tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      S3_BUCKET_NO_PUBLIC_RW_ACL: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      S3_BUCKET_NO_PUBLIC_RW_ACL: SKIP
+
+- name: S3 bucket without AccessControl, PASS
+  input:
+    Resources:
+      MyBucket:
+        Type: 'AWS::S3::Bucket'
+        Properties:
+          BucketName: my-bucket
+          OwnershipControls:
+            Rules:
+            - ObjectOwnership: BucketOwnerPreferred
+          AccessControl: AwsExecRead
+  expectations:
+    rules:
+      S3_BUCKET_NO_PUBLIC_RW_ACL: PASS
+
+- name: S3 bucket PublicRead AccessControl, PASS
+  input:
+    Resources:
+      MyBucket:
+        Type: 'AWS::S3::Bucket'
+        Properties:
+          BucketName: my-bucket
+          OwnershipControls:
+            Rules:
+            - ObjectOwnership: BucketOwnerPreferred
+          AccessControl: PublicRead
+  expectations:
+    rules:
+      S3_BUCKET_NO_PUBLIC_RW_ACL: PASS
+
+- name: S3 bucket PublicReadWrite AccessControl, FAIL
+  input:
+    Resources:
+      MyBucket:
+        Type: 'AWS::S3::Bucket'
+        Properties:
+          BucketName: my-bucket
+          OwnershipControls:
+            Rules:
+            - ObjectOwnership: BucketOwnerPreferred
+          AccessControl: PublicReadWrite
+  expectations:
+    rules:
+      S3_BUCKET_NO_PUBLIC_RW_ACL: FAIL
+
+- name: F14 CFN_NAG Suppression, SKIP
+  input:
+    Resources:
+      MyBucket:
+        Type: 'AWS::S3::Bucket'
+        Properties:
+          BucketName: my-bucket
+          OwnershipControls:
+            Rules:
+            - ObjectOwnership: BucketOwnerPreferred
+          AccessControl: PublicReadWrite
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: F14
+              reason: Suppressed for a very good reason
+  expectations:
+    rules:
+      S3_BUCKET_NO_PUBLIC_RW_ACL: SKIP
+
+- name: S3_BUCKET_NO_PUBLIC_RW_ACL Guard suppression, SKIP
+  input:
+    Resources:
+      MyBucket:
+        Type: 'AWS::S3::Bucket'
+        Properties:
+          BucketName: my-bucket
+          OwnershipControls:
+            Rules:
+            - ObjectOwnership: BucketOwnerPreferred
+          AccessControl: PublicReadWrite
+        Metadata:
+          guard:
+            SuppressedRules:
+            - S3_BUCKET_NO_PUBLIC_RW_ACL
+  expectations:
+    rules:
+      S3_BUCKET_NO_PUBLIC_RW_ACL: SKIP
+
+- name: CFN_NAG F14 & S3_BUCKET_NO_PUBLIC_RW_ACL Guard suppression, SKIP
+  input:
+    Resources:
+      MyBucket:
+        Type: 'AWS::S3::Bucket'
+        Properties:
+          BucketName: my-bucket
+          OwnershipControls:
+            Rules:
+            - ObjectOwnership: BucketOwnerPreferred
+          AccessControl: PublicReadWrite
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: F14
+              reason: Suppressed for a very good reason
+          guard:
+            SuppressedRules:
+            - S3_BUCKET_NO_PUBLIC_RW_ACL
+  expectations:
+    rules:
+      S3_BUCKET_NO_PUBLIC_RW_ACL: SKIP
