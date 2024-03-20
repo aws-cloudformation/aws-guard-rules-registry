@@ -1,0 +1,51 @@
+#
+#####################################
+##         AWS Solutions           ##
+#####################################
+#
+# Rule Identifier:
+#    KMS_NO_WILDCARD_PRINCIPAL
+#
+# Description:
+#   KMS key should not allow * principal
+#
+# Reports on:
+#    AWS::KMS::Key
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# CFN-NAG Rule
+#    F76
+#
+# Documentation:
+#    https://docs.aws.amazon.com/kms/latest/developerguide/key-policies.html
+#
+# Scenarios:
+# a) SKIP: when there are no KMS CMKs
+# b) SKIP: when metada has rule suppression for KMS_NO_WILDCARD_PRINCIPAL
+# c) FAIL: when Principal: '*' appears in any KeyPolicy
+# d) PASS: when no keypolicy has Principle: '*'
+
+let kms_no_wildcard_principal = Resources.*[ Type == "AWS::KMS::Key"
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "F76"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "KMS_NO_WILDCARD_PRINCIPAL"
+]
+
+rule KMS_NO_WILDCARD_PRINCIPAL when %kms_no_wildcard_principal !empty {
+  let violations = %kms_no_wildcard_principal[
+    some Properties.KeyPolicy.Statement[*] {
+      Principal == '*'
+    }
+  ]
+  %violations empty
+  <<
+    Violation: KMS key should not allow * principal.
+    Fix: Set the EnableKeyRotation property to true.
+  >>
+}

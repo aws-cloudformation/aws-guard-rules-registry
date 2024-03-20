@@ -28,6 +28,20 @@
     rules:
       CLOUDFRONT_ACCESSLOGS_ENABLED: SKIP
 
+- name: Scenario b) Rule suppressed, SKIP
+  input:
+    Resources:
+      CloudFrontDistribution:
+        Type: AWS::CloudFront::Distribution
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W10
+              reason: Suppressed for a very good reason
+  expectations:
+    rules:
+      CLOUDFRONT_ACCESSLOGS_ENABLED: SKIP
+
 - name: Scenario c) Missing Distribution Config, FAIL
   input:
     Resources:

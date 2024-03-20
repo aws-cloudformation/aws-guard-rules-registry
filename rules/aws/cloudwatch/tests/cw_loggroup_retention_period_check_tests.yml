@@ -62,3 +62,19 @@
   expectations:
     rules:
       CW_LOGGROUP_RETENTION_PERIOD_CHECK: SKIP
+
+- name: CloudWatch Log LogGroup missing RetentionInDays but rule suppressed, SKIP
+  input:
+    Resources:
+      ExampleLogGroup:
+        Type: AWS::Logs::LogGroup
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W86
+              reason: Suppressed for a very good reason
+        Properties:
+          LogGroupName: myLogGroup
+  expectations:
+    rules:
+      CW_LOGGROUP_RETENTION_PERIOD_CHECK: SKIP

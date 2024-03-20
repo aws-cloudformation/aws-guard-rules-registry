@@ -1,0 +1,252 @@
+###
+# CLOUDFRONT_MINIMUM_PROTOCOL_VERSION_RULE tests
+###
+---
+- name: Empty
+  input: {}
+  expectations:
+    rules:
+      CLOUDFRONT_MINIMUM_PROTOCOL_VERSION_RULE: SKIP
+
+- name: No resources
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      CLOUDFRONT_MINIMUM_PROTOCOL_VERSION_RULE: SKIP
+
+- name: CloudFront with viewerCertificate and TLS 1.2
+  input:
+    Resources:
+      CloudFrontDistribution:
+        Type: AWS::CloudFront::Distribution
+        Properties:
+          DistributionConfig:
+            CacheBehaviors:
+              - LambdaFunctionAssociations:
+                  - EventType: 'testString'
+                    LambdaFunctionARN: 'testString'
+            DefaultCacheBehavior:
+              LambdaFunctionAssociations:
+                - EventType: 'testString'
+                  LambdaFunctionARN: 'testString'
+            IPV6Enabled: true
+            Origins:
+              - CustomOriginConfig:
+                  OriginKeepaliveTimeout: 5
+                  OriginReadTimeout: 5
+            ViewerCertificate:
+              AcmCertificateArn: 'testArn'
+              CloudFrontDefaultCertificate: false
+              MinimumProtocolVersion: 'TLSv1.2-03-2008'
+              SslSupportMethod: 'POST'
+          Tags:
+            - Key: 'testString'
+              Value: 'testString'
+  expectations:
+    rules:
+      CLOUDFRONT_MINIMUM_PROTOCOL_VERSION_RULE: PASS
+
+- name: CloudFront with no viewerCertificate
+  input:
+    Resources:
+      CloudFrontDistribution:
+        Type: AWS::CloudFront::Distribution
+        Properties:
+          DistributionConfig:
+            CacheBehaviors:
+              - LambdaFunctionAssociations:
+                  - EventType: 'testString'
+                    LambdaFunctionARN: 'testString'
+            DefaultCacheBehavior:
+              LambdaFunctionAssociations:
+                - EventType: 'testString'
+                  LambdaFunctionARN: 'testString'
+            IPV6Enabled: true
+            Origins:
+              - CustomOriginConfig:
+                  OriginKeepaliveTimeout: 5
+                  OriginReadTimeout: 5
+          Tags:
+            - Key: 'testString'
+              Value: 'testString'
+  expectations:
+    rules:
+      CLOUDFRONT_MINIMUM_PROTOCOL_VERSION_RULE: FAIL
+
+- name: CloudFront with viewerCertificate and TLS 1.1
+  input:
+    Resources:
+      CloudFrontDistribution:
+        Type: AWS::CloudFront::Distribution
+        Properties:
+          DistributionConfig:
+            CacheBehaviors:
+              - LambdaFunctionAssociations:
+                  - EventType: 'testString'
+                    LambdaFunctionARN: 'testString'
+            DefaultCacheBehavior:
+              LambdaFunctionAssociations:
+                - EventType: 'testString'
+                  LambdaFunctionARN: 'testString'
+            IPV6Enabled: true
+            Origins:
+              - CustomOriginConfig:
+                  OriginKeepaliveTimeout: 5
+                  OriginReadTimeout: 5
+            ViewerCertificate:
+              AcmCertificateArn: 'testArn'
+              CloudFrontDefaultCertificate: true
+              MinimumProtocolVersion: 'TLSv1.1-03-2008'
+              SslSupportMethod: 'POST'
+          Tags:
+            - Key: 'testString'
+              Value: 'testString'
+  expectations:
+    rules:
+      CLOUDFRONT_MINIMUM_PROTOCOL_VERSION_RULE: FAIL
+
+- name: CloudFront with viewerCertificate and CloudFrontDefaultCertificate true
+  input:
+    Resources:
+      CloudFrontDistribution:
+        Type: AWS::CloudFront::Distribution
+        Properties:
+          DistributionConfig:
+            CacheBehaviors:
+              - LambdaFunctionAssociations:
+                  - EventType: 'testString'
+                    LambdaFunctionARN: 'testString'
+            DefaultCacheBehavior:
+              LambdaFunctionAssociations:
+                - EventType: 'testString'
+                  LambdaFunctionARN: 'testString'
+            IPV6Enabled: true
+            Origins:
+              - CustomOriginConfig:
+                  OriginKeepaliveTimeout: 5
+                  OriginReadTimeout: 5
+            ViewerCertificate:
+              AcmCertificateArn: 'testArn'
+              CloudFrontDefaultCertificate: true
+              MinimumProtocolVersion: 'TLSv1.2-03-2008'
+              SslSupportMethod: 'POST'
+          Tags:
+            - Key: 'testString'
+              Value: 'testString'
+  expectations:
+    rules:
+      CLOUDFRONT_MINIMUM_PROTOCOL_VERSION_RULE: FAIL
+
+- name: CFN_NAG suppression for W70
+  input:
+    Resources:
+      CloudFrontDistribution:
+        Type: AWS::CloudFront::Distribution
+        Properties:
+          DistributionConfig:
+            CacheBehaviors:
+              - LambdaFunctionAssociations:
+                  - EventType: 'testString'
+                    LambdaFunctionARN: 'testString'
+            DefaultCacheBehavior:
+              LambdaFunctionAssociations:
+                - EventType: 'testString'
+                  LambdaFunctionARN: 'testString'
+            IPV6Enabled: true
+            Origins:
+              - CustomOriginConfig:
+                  OriginKeepaliveTimeout: 5
+                  OriginReadTimeout: 5
+            ViewerCertificate:
+              AcmCertificateArn: 'testArn'
+              CloudFrontDefaultCertificate: false
+              MinimumProtocolVersion: 'TLSv1.2-03-2008'
+              SslSupportMethod: 'POST'
+          Tags:
+            - Key: 'testString'
+              Value: 'testString'
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W70
+              reason: Suppressed to test suppression works and skips this test
+  expectations:
+    rules:
+      CLOUDFRONT_MINIMUM_PROTOCOL_VERSION_RULE: SKIP
+
+- name: Guard suppression for CLOUDFRONT_MINIMUM_PROTOCOL_VERSION_RULE
+  input:
+    Resources:
+      CloudFrontDistribution:
+        Type: AWS::CloudFront::Distribution
+        Properties:
+          DistributionConfig:
+            CacheBehaviors:
+              - LambdaFunctionAssociations:
+                  - EventType: 'testString'
+                    LambdaFunctionARN: 'testString'
+            DefaultCacheBehavior:
+              LambdaFunctionAssociations:
+                - EventType: 'testString'
+                  LambdaFunctionARN: 'testString'
+            IPV6Enabled: true
+            Origins:
+              - CustomOriginConfig:
+                  OriginKeepaliveTimeout: 5
+                  OriginReadTimeout: 5
+            ViewerCertificate:
+              AcmCertificateArn: 'testArn'
+              CloudFrontDefaultCertificate: false
+              MinimumProtocolVersion: 'TLSv1.2-03-2008'
+              SslSupportMethod: 'POST'
+          Tags:
+            - Key: 'testString'
+              Value: 'testString'
+        Metadata:
+          guard:
+            SuppressedRules:
+            - CLOUDFRONT_MINIMUM_PROTOCOL_VERSION_RULE
+  expectations:
+    rules:
+      CLOUDFRONT_MINIMUM_PROTOCOL_VERSION_RULE: SKIP
+
+- name: Guard and CFN_NAG suppression for W70 & CLOUDFRONT_MINIMUM_PROTOCOL_VERSION_RULE
+  input:
+    Resources:
+      CloudFrontDistribution:
+        Type: AWS::CloudFront::Distribution
+        Properties:
+          DistributionConfig:
+            CacheBehaviors:
+              - LambdaFunctionAssociations:
+                  - EventType: 'testString'
+                    LambdaFunctionARN: 'testString'
+            DefaultCacheBehavior:
+              LambdaFunctionAssociations:
+                - EventType: 'testString'
+                  LambdaFunctionARN: 'testString'
+            IPV6Enabled: true
+            Origins:
+              - CustomOriginConfig:
+                  OriginKeepaliveTimeout: 5
+                  OriginReadTimeout: 5
+            ViewerCertificate:
+              AcmCertificateArn: 'testArn'
+              CloudFrontDefaultCertificate: false
+              MinimumProtocolVersion: 'TLSv1.2-03-2008'
+              SslSupportMethod: 'POST'
+          Tags:
+            - Key: 'testString'
+              Value: 'testString'
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W70
+              reason: Suppressed to test suppression works and skips this test
+          guard:
+            SuppressedRules:
+            - CLOUDFRONT_MINIMUM_PROTOCOL_VERSION_RULE
+  expectations:
+    rules:
+      CLOUDFRONT_MINIMUM_PROTOCOL_VERSION_RULE: SKIP

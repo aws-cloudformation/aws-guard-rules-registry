@@ -1,0 +1,63 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#    CLOUDFRONT_MINIMUM_PROTOCOL_VERSION_RULE
+#
+# Description:
+#   Cloudfront should use minimum protocol version TLS 1.2.
+#
+# Reports on:
+#    AWS::CloudFront::Distribution
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# CFN_NAG Rule Id:
+#   W70
+#
+# Scenarios:
+# a) SKIP: when there are CloudFront Distribution resource present
+# b) PASS: When all CloudFront Distribution resources uses TLS 1.2
+# c) FAIL: When ANY CloudFront Distribution resources do not use TLS 1.2
+# d) SKIP: when metadata has rule suppression for CLOUDFRONT_MINIMUM_PROTOCOL_VERSION_RULE
+
+#
+# Select all CloudFront Distribution resources from incoming template (payload)
+#
+let cloudfront_minimum_protocol_version_rule = Resources.*[ Type == 'AWS::CloudFront::Distribution'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W70"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "CLOUDFRONT_MINIMUM_PROTOCOL_VERSION_RULE"
+]
+
+rule CLOUDFRONT_MINIMUM_PROTOCOL_VERSION_RULE when %cloudfront_minimum_protocol_version_rule !empty {
+  let violations = %cloudfront_minimum_protocol_version_rule[
+    Properties.DistributionConfig.ViewerCertificate !exists
+    OR
+    Properties.DistributionConfig {
+       ViewerCertificate.MinimumProtocolVersion !exists
+       OR
+       ViewerCertificate {
+        MinimumProtocolVersion is_string
+        MinimumProtocolVersion != /(?i)TLSv1.2/
+       }
+    }
+    OR
+    Properties.DistributionConfig.ViewerCertificate {
+       CloudFrontDefaultCertificate exists
+       CloudFrontDefaultCertificate == true
+    }
+  ]
+
+  %violations empty
+  <<
+    Violation: CloudFront Distribution resource do not use TLS 1.2 or viewerCertificate do no exist
+    Fix: Specify viewerCertificate and use TLS 1.2
+  >>
+}

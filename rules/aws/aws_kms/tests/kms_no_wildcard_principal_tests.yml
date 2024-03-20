@@ -1,31 +1,26 @@
 ###
-# CMK_BACKING_KEY_ROTATION_ENABLED tests
+# KMS_NO_WILDCARD_PRINCIPAL tests
 ###
 ---
 - name: Empty, SKIP
   input: {}
   expectations:
     rules:
-      CMK_BACKING_KEY_ROTATION_ENABLED: SKIP
+      KMS_NO_WILDCARD_PRINCIPAL: SKIP
 
 - name: Scenario a) No resources, SKIP
   input:
     Resources: {}
   expectations:
     rules:
-      CMK_BACKING_KEY_ROTATION_ENABLED: SKIP
+      KMS_NO_WILDCARD_PRINCIPAL: SKIP
 
-- name: Scenario b) EnableKeyRotation has been set to false but rule suppressed, SKIP
+- name: KMS key with principal "*", FAIL
   input:
     Resources:
-      myKMSKey:
+      KMS_NO_WILDCARD_PRINCIPAL:
         Type: AWS::KMS::Key
-        Metadata:
-          guard:
-            SuppressedRules:
-              - "CMK_BACKING_KEY_ROTATION_ENABLED"
         Properties:
-          EnableKeyRotation: false
           KeyPolicy:
             Statement:
               - Action: kms:*
@@ -37,13 +32,29 @@
                       - - 'arn:'
                         - Ref: AWS::Partition
                         - :iam::123456789012:root
-                Resource: '*'
+                Resource: 'arn:aws:iam::111122223333:foobar'
               - Action:
                   - kms:Decrypt
                   - kms:DescribeKey
                   - kms:Encrypt
                   - kms:ReEncrypt*
                   - kms:GenerateDataKey*
+                Effect: Allow
+                Principal: '*'
+                Resource: 'arn:aws:ec2:us-east-1:111122223333:foobar'
+  expectations:
+    rules:
+      KMS_NO_WILDCARD_PRINCIPAL: FAIL
+
+- name: KMS key with principal NOT "*", PASS
+  input:
+    Resources:
+      KMS_NO_WILDCARD_PRINCIPAL:
+        Type: AWS::KMS::Key
+        Properties:
+          KeyPolicy:
+            Statement:
+              - Action: kms:*
                 Effect: Allow
                 Principal:
                   AWS:
@@ -52,60 +63,69 @@
                       - - 'arn:'
                         - Ref: AWS::Partition
                         - :iam::123456789012:root
-                Resource: '*'
-            Version: "2012-10-17"
+                Resource: 'arn:aws:iam::111122223333:foobar'
+              - Action:
+                  - kms:Decrypt
+                  - kms:DescribeKey
+                  - kms:Encrypt
+                  - kms:ReEncrypt*
+                  - kms:GenerateDataKey*
+                Effect: Allow
+                Principal: 
+                  AWS:
+                    Fn::Join:
+                      - ""
+                      - - 'arn:'
+                        - Ref: AWS::Partition
+                        - :iam::123456789012:root
+                Resource: 'arn:aws:ec2:us-east-1:111122223333:foobar'
   expectations:
     rules:
-      CMK_BACKING_KEY_ROTATION_ENABLED: SKIP
+      KMS_NO_WILDCARD_PRINCIPAL: PASS
 
-- name: Scenario b) EnableKeyRotation has been set to false but rule suppressed - CFN_NAG, SKIP
+##
+## Suppressions
+##
+- name: F76 CFN-NAG suppression, SKIP
   input:
     Resources:
-      myKMSKey:
+      KMS_NO_WILDCARD_PRINCIPAL:
         Type: AWS::KMS::Key
+        Properties:
+          KeyPolicy:
+            Statement:
+              - Action: kms:*
+                Effect: Allow
+                Principal:
+                  AWS:
+                    Fn::Join:
+                      - ""
+                      - - 'arn:'
+                        - Ref: AWS::Partition
+                        - :iam::123456789012:root
+                Resource: 'arn:aws:iam::111122223333:foobar'
+              - Action:
+                  - kms:Decrypt
+                  - kms:DescribeKey
+                  - kms:Encrypt
+                  - kms:ReEncrypt*
+                  - kms:GenerateDataKey*
+                Effect: Allow
+                Principal: '*'
+                Resource: 'arn:aws:ec2:us-east-1:111122223333:foobar'
         Metadata:
           cfn_nag:
             rules_to_suppress:
-            - id: F19
+            - id: F76
               reason: Suppressed for a very good reason
-        Properties:
-          EnableKeyRotation: false
-          KeyPolicy:
-            Statement:
-              - Action: kms:*
-                Effect: Allow
-                Principal:
-                  AWS:
-                    Fn::Join:
-                      - ""
-                      - - 'arn:'
-                        - Ref: AWS::Partition
-                        - :iam::123456789012:root
-                Resource: '*'
-              - Action:
-                  - kms:Decrypt
-                  - kms:DescribeKey
-                  - kms:Encrypt
-                  - kms:ReEncrypt*
-                  - kms:GenerateDataKey*
-                Effect: Allow
-                Principal:
-                  AWS:
-                    Fn::Join:
-                      - ""
-                      - - 'arn:'
-                        - Ref: AWS::Partition
-                        - :iam::123456789012:root
-                Resource: '*'
-            Version: "2012-10-17"
   expectations:
     rules:
-      CMK_BACKING_KEY_ROTATION_ENABLED: SKIP
+      KMS_NO_WILDCARD_PRINCIPAL: SKIP
 
-- name: Scenario c) EnableKeyRotation has not been set, FAIL
+- name: cfn-guard suppression, SKIP
   input:
     Resources:
-      myKMSKey:
+      KMS_NO_WILDCARD_PRINCIPAL:
         Type: AWS::KMS::Key
         Properties:
           KeyPolicy:
@@ -119,7 +139,7 @@
                       - - 'arn:'
                         - Ref: AWS::Partition
                         - :iam::123456789012:root
-                Resource: '*'
+                Resource: 'arn:aws:iam::111122223333:foobar'
               - Action:
                   - kms:Decrypt
                   - kms:DescribeKey
@@ -127,26 +147,22 @@
                   - kms:ReEncrypt*
                   - kms:GenerateDataKey*
                 Effect: Allow
-                Principal:
-                  AWS:
-                    Fn::Join:
-                      - ""
-                      - - 'arn:'
-                        - Ref: AWS::Partition
-                        - :iam::123456789012:root
-                Resource: '*'
-            Version: "2012-10-17"
+                Principal: '*'
+                Resource: 'arn:aws:ec2:us-east-1:111122223333:foobar'
+        Metadata:
+          guard:
+            SuppressedRules:
+            - KMS_NO_WILDCARD_PRINCIPAL: Suppressed for a very good reason
   expectations:
     rules:
-      CMK_BACKING_KEY_ROTATION_ENABLED: FAIL
+      KMS_NO_WILDCARD_PRINCIPAL: SKIP
 
-- name: Scenario d) EnableKeyRotation is set to false, FAIL
+- name: cfn-guard and cfn-nag suppression, SKIP
   input:
     Resources:
-      myKMSKey:
+      KMS_NO_WILDCARD_PRINCIPAL:
         Type: AWS::KMS::Key
         Properties:
-          EnableKeyRotation: false
           KeyPolicy:
             Statement:
               - Action: kms:*
@@ -158,7 +174,7 @@
                       - - 'arn:'
                         - Ref: AWS::Partition
                         - :iam::123456789012:root
-                Resource: '*'
+                Resource: 'arn:aws:iam::111122223333:foobar'
               - Action:
                   - kms:Decrypt
                   - kms:DescribeKey
@@ -166,69 +182,16 @@
                   - kms:ReEncrypt*
                   - kms:GenerateDataKey*
                 Effect: Allow
-                Principal:
-                  AWS:
-                    Fn::Join:
-                      - ""
-                      - - 'arn:'
-                        - Ref: AWS::Partition
-                        - :iam::123456789012:root
-                Resource: '*'
-            Version: "2012-10-17"
+                Principal: '*'
+                Resource: 'arn:aws:ec2:us-east-1:111122223333:foobar'
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: F76
+              reason: Suppressed for a very good reason
+          guard:
+            SuppressedRules:
+            - KMS_NO_WILDCARD_PRINCIPAL: Suppressed for a very good reason
   expectations:
     rules:
-      CMK_BACKING_KEY_ROTATION_ENABLED: FAIL
-
-- name: Scenario e) EnableKeyRotation is set to true, PASS
-  input:
-    Resources:
-      myKMSKey:
-        Type: AWS::KMS::Key
-        Properties:
-          EnableKeyRotation: true
-          KeyPolicy:
-            Statement:
-              - Action: kms:*
-                Effect: Allow
-                Principal:
-                  AWS:
-                    Fn::Join:
-                      - ""
-                      - - 'arn:'
-                        - Ref: AWS::Partition
-                        - :iam::123456789012:root
-                Resource: '*'
-              - Action:
-                  - kms:Decrypt
-                  - kms:DescribeKey
-                  - kms:Encrypt
-                  - kms:ReEncrypt*
-                  - kms:GenerateDataKey*
-                Effect: Allow
-                Principal:
-                  AWS:
-                    Fn::Join:
-                      - ""
-                      - - 'arn:'
-                        - Ref: AWS::Partition
-                        - :iam::123456789012:root
-                Resource: '*'
-              - Action:
-                  - kms:Decrypt
-                  - kms:DescribeKey
-                  - kms:Encrypt
-                  - kms:ReEncrypt*
-                  - kms:GenerateDataKey*
-                Effect: Allow
-                Principal:
-                  AWS:
-                    Fn::Join:
-                      - ""
-                      - - 'arn:'
-                        - Ref: AWS::Partition
-                        - :iam::123456789012:root
-                Resource: '*'
-            Version: "2012-10-17"
-  expectations:
-    rules:
-      CMK_BACKING_KEY_ROTATION_ENABLED: PASS
+      KMS_NO_WILDCARD_PRINCIPAL: SKIP
