@@ -1,0 +1,87 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#    EMR_SECURITY_CONFIG_ENABLED_AND_CONFIGURED_RULE
+#
+# Description:
+#   EMR SecurityConfiguration should enable and properly configure encryption at rest and in transit.
+#
+# Reports on:
+#    AWS::EMR::SecurityConfiguration
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# CFN_NAG Rule Id:
+#   W61
+#
+# Scenarios:
+# a) SKIP: when there are no EMR SecurityConfiguration resource present
+# b) PASS: When all EMR SecurityConfiguration have encryption enabled and configured.
+# c) FAIL: When any EMR SecurityConfiguration do not have encryption enabled or configured.
+# d) SKIP: when metadata has rule suppression for EMR_SECURITY_CONFIG_ENABLED_AND_CONFIGURED_RULE
+
+#
+# Select all EMR SecurityConfiguration resources from incoming template (payload)
+#
+let emr_security_config_enabled_and_configured_rule = Resources.*[ Type == 'AWS::EMR::SecurityConfiguration'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W61"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "EMR_SECURITY_CONFIG_ENABLED_AND_CONFIGURED_RULE"
+]
+
+rule EMR_SECURITY_CONFIG_ENABLED_AND_CONFIGURED_RULE when %emr_security_config_enabled_and_configured_rule !empty {
+  let violations = %emr_security_config_enabled_and_configured_rule[
+    Type == 'AWS::EMR::SecurityConfiguration'
+    Properties.SecurityConfiguration.EncryptionConfiguration !exists
+    OR
+    Properties.SecurityConfiguration.EncryptionConfiguration {
+        EnableAtRestEncryption !exists
+        OR
+        EnableAtRestEncryption == false
+        OR
+        EnableAtRestEncryption == 'false'
+        OR
+        EnableInTransitEncryption !exists
+        OR
+        EnableInTransitEncryption == false
+        OR
+        EnableInTransitEncryption == 'false'
+    }
+    OR
+    Properties.SecurityConfiguration.EncryptionConfiguration {
+        AtRestEncryptionConfiguration !exists
+        OR
+        AtRestEncryptionConfiguration {
+            LocalDiskEncryptionConfiguration !exists
+            OR
+            LocalDiskEncryptionConfiguration.EncryptionKeyProviderType !exists
+            S3EncryptionConfiguration !exists
+            OR
+            S3EncryptionConfiguration.EncryptionMode !exists
+        }
+    }
+    OR
+    Properties.SecurityConfiguration.EncryptionConfiguration {
+        InTransitEncryptionConfiguration !exists
+        OR
+        InTransitEncryptionConfiguration {
+            TLSCertificateConfiguration !exists
+            OR
+            TLSCertificateConfiguration.CertificateProviderType !exists
+        }
+    }
+  ]
+
+  %violations empty
+  <<
+    Violation: EMR SecurityConfiguration resource do not have EncryptionConfiguration properly defined or configured.
+    Fix: Define and configure EncryptionConfiguration in all EMR SecurityConfiguration resources.
+  >>
+}

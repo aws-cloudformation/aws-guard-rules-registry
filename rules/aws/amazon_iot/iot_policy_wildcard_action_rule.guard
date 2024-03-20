@@ -1,0 +1,51 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#    IOT_POLICY_WILDCARD_ACTION_RULE
+#
+# Description:
+#   IOT policy should not allow * action
+#
+# Reports on:
+#    AWS::IoT::Policy
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# CFN_NAG Rule Id:
+#   W38
+#
+# Scenarios:
+# a) SKIP: when there is no Iot Policy resource present
+# b) PASS: when no Iot Policy resources have open Action
+# c) FAIL: when any Iot Policy has Action "*"
+# d) SKIP: when metadata has rule suppression for IOT_POLICY_WILDCARD_ACTION_RULE
+
+#
+# Select all IoT Policy resources from incoming template (payload)
+#
+let iot_policy_wildcard_action_rule = Resources.*[ Type == 'AWS::IoT::Policy'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W38"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "IOT_POLICY_WILDCARD_ACTION_RULE"
+]
+
+rule IOT_POLICY_WILDCARD_ACTION_RULE when %iot_policy_wildcard_action_rule !empty {
+  let violations = %iot_policy_wildcard_action_rule[
+    some Properties.PolicyDocument.Statement[*] {
+      some Action[*] in ["*", /^[a-zA-Z0-9]*:\*$/]
+      Effect == "Allow"
+    }
+  ]
+  %violations empty
+  <<
+    Violation: IoT policy should not allow * action.
+    Fix: Specify explicit actions in the IoT Policy.
+  >>
+}

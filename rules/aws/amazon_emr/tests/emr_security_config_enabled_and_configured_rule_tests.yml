@@ -1,0 +1,350 @@
+###
+# EMR_SECURITY_CONFIG_ENABLED_AND_CONFIGURED_RULE tests
+###
+---
+- name: Empty
+  input: {}
+  expectations:
+    rules:
+      EMR_SECURITY_CONFIG_ENABLED_AND_CONFIGURED_RULE: SKIP
+
+- name: No resources
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      EMR_SECURITY_CONFIG_ENABLED_AND_CONFIGURED_RULE: SKIP
+
+- name: EMR cluster with properly configured encryption
+  input:
+    Resources:
+      EMRClusterWithProperlyConfiguredEncryption:
+        Type: AWS::EMR::Cluster
+        Properties:
+          Instances:
+            MasterInstanceGroup:
+              InstanceCount: 1
+              InstanceType: m1.medium
+              Market: ON_DEMAND
+              Name: MasterInstanceGroup
+            CoreInstanceGroup:
+              InstanceCount: 1
+              InstanceType: m1.medium
+              Market: ON_DEMAND
+              Name: CoreInstanceGroup
+            Ec2SubnetId: !Ref SubnetId
+          JobFlowRole: !Ref JobFlowRoleName
+          Name: EMRClusterWithDisabledAtRestEncryption
+          ReleaseLabel: emr-5.29.0
+          SecurityConfiguration: !Ref EMRGoodSecurityConfig
+          ServiceRole: !Ref ServiceRoleName
+      EMRGoodSecurityConfig:
+        Type: AWS::EMR::SecurityConfiguration
+        Properties:
+          SecurityConfiguration:
+            EncryptionConfiguration:
+              EnableAtRestEncryption: true
+              EnableInTransitEncryption: true
+              AtRestEncryptionConfiguration:
+                S3EncryptionConfiguration:
+                  EncryptionMode: SSE-S3
+                LocalDiskEncryptionConfiguration:
+                  EncryptionKeyProviderType: AwsKms
+                  AwsKmsKey: !Ref KMSKeyArn
+              InTransitEncryptionConfiguration:
+                TLSCertificateConfiguration:
+                  CertificateProviderType: PEM
+                  S3Object: !Ref CertZipLocation
+  expectations:
+    rules:
+      EMR_SECURITY_CONFIG_ENABLED_AND_CONFIGURED_RULE: PASS
+
+- name: EMR cluster without properly configured encryption
+  input:
+    Resources:
+      EMRClusterWithProperlyConfiguredEncryption:
+        Type: AWS::EMR::Cluster
+        Properties:
+          Instances:
+            MasterInstanceGroup:
+              InstanceCount: 1
+              InstanceType: m1.medium
+              Market: ON_DEMAND
+              Name: MasterInstanceGroup
+            CoreInstanceGroup:
+              InstanceCount: 1
+              InstanceType: m1.medium
+              Market: ON_DEMAND
+              Name: CoreInstanceGroup
+            Ec2SubnetId: !Ref SubnetId
+          JobFlowRole: !Ref JobFlowRoleName
+          Name: EMRClusterWithDisabledAtRestEncryption
+          ReleaseLabel: emr-5.29.0
+          SecurityConfiguration: !Ref EMRGoodSecurityConfig
+          ServiceRole: !Ref ServiceRoleName
+      EMRGoodSecurityConfig:
+        Type: AWS::EMR::SecurityConfiguration
+        Properties:
+          SecurityConfiguration:
+  expectations:
+    rules:
+      EMR_SECURITY_CONFIG_ENABLED_AND_CONFIGURED_RULE: FAIL
+
+- name: EMR cluster without properly configured encryption, REST Disabled
+  input:
+    Resources:
+      EMRClusterWithProperlyConfiguredEncryption:
+        Type: AWS::EMR::Cluster
+        Properties:
+          Instances:
+            MasterInstanceGroup:
+              InstanceCount: 1
+              InstanceType: m1.medium
+              Market: ON_DEMAND
+              Name: MasterInstanceGroup
+            CoreInstanceGroup:
+              InstanceCount: 1
+              InstanceType: m1.medium
+              Market: ON_DEMAND
+              Name: CoreInstanceGroup
+            Ec2SubnetId: !Ref SubnetId
+          JobFlowRole: !Ref JobFlowRoleName
+          Name: EMRClusterWithDisabledAtRestEncryption
+          ReleaseLabel: emr-5.29.0
+          SecurityConfiguration: !Ref EMRGoodSecurityConfig
+          ServiceRole: !Ref ServiceRoleName
+      EMRGoodSecurityConfig:
+        Type: AWS::EMR::SecurityConfiguration
+        Properties:
+          SecurityConfiguration:
+            EncryptionConfiguration:
+              EnableAtRestEncryption: false
+              EnableInTransitEncryption: true
+              AtRestEncryptionConfiguration:
+                S3EncryptionConfiguration:
+                  EncryptionMode: SSE-S3
+                LocalDiskEncryptionConfiguration:
+                  EncryptionKeyProviderType: AwsKms
+                  AwsKmsKey: !Ref KMSKeyArn
+              InTransitEncryptionConfiguration:
+                TLSCertificateConfiguration:
+                  CertificateProviderType: PEM
+                  S3Object: !Ref CertZipLocation
+  expectations:
+    rules:
+      EMR_SECURITY_CONFIG_ENABLED_AND_CONFIGURED_RULE: FAIL
+
+- name: EMR cluster without properly configured encryption, Transit Disabled
+  input:
+    Resources:
+      EMRClusterWithProperlyConfiguredEncryption:
+        Type: AWS::EMR::Cluster
+        Properties:
+          Instances:
+            MasterInstanceGroup:
+              InstanceCount: 1
+              InstanceType: m1.medium
+              Market: ON_DEMAND
+              Name: MasterInstanceGroup
+            CoreInstanceGroup:
+              InstanceCount: 1
+              InstanceType: m1.medium
+              Market: ON_DEMAND
+              Name: CoreInstanceGroup
+            Ec2SubnetId: !Ref SubnetId
+          JobFlowRole: !Ref JobFlowRoleName
+          Name: EMRClusterWithDisabledAtRestEncryption
+          ReleaseLabel: emr-5.29.0
+          SecurityConfiguration: !Ref EMRGoodSecurityConfig
+          ServiceRole: !Ref ServiceRoleName
+      EMRGoodSecurityConfig:
+        Type: AWS::EMR::SecurityConfiguration
+        Properties:
+          SecurityConfiguration:
+            EncryptionConfiguration:
+              EnableAtRestEncryption: true
+              EnableInTransitEncryption: false
+              AtRestEncryptionConfiguration:
+                S3EncryptionConfiguration:
+                  EncryptionMode: SSE-S3
+                LocalDiskEncryptionConfiguration:
+                  EncryptionKeyProviderType: AwsKms
+                  AwsKmsKey: !Ref KMSKeyArn
+              InTransitEncryptionConfiguration:
+                TLSCertificateConfiguration:
+                  CertificateProviderType: PEM
+                  S3Object: !Ref CertZipLocation
+  expectations:
+    rules:
+      EMR_SECURITY_CONFIG_ENABLED_AND_CONFIGURED_RULE: FAIL
+
+- name: EMR cluster without properly configured encryption, REST not properly configured
+  input:
+    Resources:
+      EMRClusterWithProperlyConfiguredEncryption:
+        Type: AWS::EMR::Cluster
+        Properties:
+          Instances:
+            MasterInstanceGroup:
+              InstanceCount: 1
+              InstanceType: m1.medium
+              Market: ON_DEMAND
+              Name: MasterInstanceGroup
+            CoreInstanceGroup:
+              InstanceCount: 1
+              InstanceType: m1.medium
+              Market: ON_DEMAND
+              Name: CoreInstanceGroup
+            Ec2SubnetId: !Ref SubnetId
+          JobFlowRole: !Ref JobFlowRoleName
+          Name: EMRClusterWithDisabledAtRestEncryption
+          ReleaseLabel: emr-5.29.0
+          SecurityConfiguration: !Ref EMRGoodSecurityConfig
+          ServiceRole: !Ref ServiceRoleName
+      EMRGoodSecurityConfig:
+        Type: AWS::EMR::SecurityConfiguration
+        Properties:
+          SecurityConfiguration:
+            EncryptionConfiguration:
+              EnableAtRestEncryption: true
+              EnableInTransitEncryption: true
+              AtRestEncryptionConfiguration:
+                S3EncryptionConfiguration:
+                LocalDiskEncryptionConfiguration:
+                  AwsKmsKey: !Ref KMSKeyArn
+              InTransitEncryptionConfiguration:
+                TLSCertificateConfiguration:
+                  CertificateProviderType: PEM
+                  S3Object: !Ref CertZipLocation
+  expectations:
+    rules:
+      EMR_SECURITY_CONFIG_ENABLED_AND_CONFIGURED_RULE: FAIL
+
+- name: EMR cluster without properly configured encryption, Transit not properly configured
+  input:
+    Resources:
+      EMRClusterWithProperlyConfiguredEncryption:
+        Type: AWS::EMR::Cluster
+        Properties:
+          Instances:
+            MasterInstanceGroup:
+              InstanceCount: 1
+              InstanceType: m1.medium
+              Market: ON_DEMAND
+              Name: MasterInstanceGroup
+            CoreInstanceGroup:
+              InstanceCount: 1
+              InstanceType: m1.medium
+              Market: ON_DEMAND
+              Name: CoreInstanceGroup
+            Ec2SubnetId: !Ref SubnetId
+          JobFlowRole: !Ref JobFlowRoleName
+          Name: EMRClusterWithDisabledAtRestEncryption
+          ReleaseLabel: emr-5.29.0
+          SecurityConfiguration: !Ref EMRGoodSecurityConfig
+          ServiceRole: !Ref ServiceRoleName
+      EMRGoodSecurityConfig:
+        Type: AWS::EMR::SecurityConfiguration
+        Properties:
+          SecurityConfiguration:
+            EncryptionConfiguration:
+              EnableAtRestEncryption: true
+              EnableInTransitEncryption: true
+              AtRestEncryptionConfiguration:
+                S3EncryptionConfiguration:
+                  EncryptionMode: SSE-S3
+                LocalDiskEncryptionConfiguration:
+                  EncryptionKeyProviderType: AwsKms
+                  AwsKmsKey: !Ref KMSKeyArn
+              InTransitEncryptionConfiguration:
+                TLSCertificateConfiguration:
+                  S3Object: !Ref CertZipLocation
+  expectations:
+    rules:
+      EMR_SECURITY_CONFIG_ENABLED_AND_CONFIGURED_RULE: FAIL
+
+- name: CFN_NAG suppression for W61
+  input:
+    Resources:
+      EMRGoodSecurityConfig:
+        Type: AWS::EMR::SecurityConfiguration
+        Properties:
+          SecurityConfiguration:
+            EncryptionConfiguration:
+              EnableAtRestEncryption: true
+              EnableInTransitEncryption: true
+              AtRestEncryptionConfiguration:
+                S3EncryptionConfiguration:
+                  EncryptionMode: SSE-S3
+                LocalDiskEncryptionConfiguration:
+                  AwsKmsKey: !Ref KMSKeyArn
+              InTransitEncryptionConfiguration:
+                TLSCertificateConfiguration:
+                  CertificateProviderType: PEM
+                  S3Object: !Ref CertZipLocation
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W61
+              reason: Suppressed to test suppression works and skips this test
+  expectations:
+    rules:
+      EMR_SECURITY_CONFIG_ENABLED_AND_CONFIGURED_RULE: SKIP
+
+- name: Guard suppression for EMR_SECURITY_CONFIG_ENABLED_AND_CONFIGURED_RULE
+  input:
+    Resources:
+      EMRGoodSecurityConfig:
+        Type: AWS::EMR::SecurityConfiguration
+        Properties:
+          SecurityConfiguration:
+            EncryptionConfiguration:
+              EnableAtRestEncryption: true
+              EnableInTransitEncryption: true
+              AtRestEncryptionConfiguration:
+                S3EncryptionConfiguration:
+                  EncryptionMode: SSE-S3
+                LocalDiskEncryptionConfiguration:
+                  AwsKmsKey: !Ref KMSKeyArn
+              InTransitEncryptionConfiguration:
+                TLSCertificateConfiguration:
+                  CertificateProviderType: PEM
+                  S3Object: !Ref CertZipLocation
+        Metadata:
+          guard:
+            SuppressedRules:
+            - EMR_SECURITY_CONFIG_ENABLED_AND_CONFIGURED_RULE
+  expectations:
+    rules:
+      EMR_SECURITY_CONFIG_ENABLED_AND_CONFIGURED_RULE: SKIP
+
+- name: Guard and CFN_NAG suppression for W61 & EMR_SECURITY_CONFIG_ENABLED_AND_CONFIGURED_RULE
+  input:
+    Resources:
+      EMRGoodSecurityConfig:
+        Type: AWS::EMR::SecurityConfiguration
+        Properties:
+          SecurityConfiguration:
+            EncryptionConfiguration:
+              EnableAtRestEncryption: true
+              EnableInTransitEncryption: true
+              AtRestEncryptionConfiguration:
+                S3EncryptionConfiguration:
+                  EncryptionMode: SSE-S3
+                LocalDiskEncryptionConfiguration:
+                  AwsKmsKey: !Ref KMSKeyArn
+              InTransitEncryptionConfiguration:
+                TLSCertificateConfiguration:
+                  CertificateProviderType: PEM
+                  S3Object: !Ref CertZipLocation
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W61
+              reason: Suppressed to test suppression works and skips this test
+          guard:
+            SuppressedRules:
+            - EMR_SECURITY_CONFIG_ENABLED_AND_CONFIGURED_RULE
+  expectations:
+    rules:
+      EMR_SECURITY_CONFIG_ENABLED_AND_CONFIGURED_RULE: SKIP
