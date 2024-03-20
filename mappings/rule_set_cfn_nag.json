@@ -1,0 +1,707 @@
+{
+    "owner": "AWS",
+    "ruleSetName": "cfn-nag-equivalent",
+    "version": "1.0.0",
+    "description": "AWS Guard rule set for CFN_NAG checks",
+    "contact": "aws-solutions-builder+awsguardrules@amazon.com",
+    "mappings": [
+        {
+            "guardFilePath": "rules/aws/amazon_ec2/encrypted_volumes.guard",
+            "controls": [
+                "F1"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/iam/iam_role_no_full_access_on_trust_policy.guard",
+            "controls": [
+                "F2"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/iam/iam_role_no_wildcard_actions_on_permissions.guard",
+            "controls": [
+                "F3"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/iam/iam_policy_no_statements_with_full_access.guard",
+            "controls": [
+                "F4"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/iam/iam_managedpolicy_no_statements_with_full_access.guard",
+            "controls": [
+                "F5"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/iam/iam_role_no_allow_plus_not_principal.guard",
+            "controls": [
+                "F6"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/amazon_sqs/sqs_queuepolicy_no_allow_plus_notprincipal.guard",
+            "controls": [
+                "F7"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/amazon_sns/sns_topicpolicy_no_allow_plus_notprincipal.guard",
+            "controls": [
+                "F8"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/amazon_s3/s3_bucketpolicy_no_allow_plus_notprincipal.guard",
+            "controls": [
+                "F9"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/iam/iam_no_inline_policy_check.guard",
+            "controls": [
+                "F10"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/iam/iam_no_policy_on_user.guard",
+            "controls": [
+                "F11",
+                "F12"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/lambda/lambda_no_wildcard_principal.guard",
+            "controls": [
+                "F13"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/amazon_s3/s3_bucket_public_rw_acl.guard",
+            "controls": [
+                "F14"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/amazon_s3/s3_bucket_policy_no_wildcard_action.guard",
+            "controls": [
+                "F15"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/amazon_s3/s3_bucket_policy_no_wildcard_principal.guard",
+            "controls": [
+                "F16"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/amazon_sns/sns_topicpolicy_no_wildcard_principal.guard",
+            "controls": [
+                "F18"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/aws_kms/cmk_backing_key_rotation_enabled.guard",
+            "controls": [
+                "F19"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/amazon_sqs/sqs_queuepolicy_no_wildcard_action.guard",
+            "controls": [
+                "F20"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/amazon_sqs/sqs_queuepolicy_no_wildcard_principal.guard",
+            "controls": [
+                "F21"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/amazon_rds/rds_instance_public_access_check.guard",
+            "controls": [
+                "F22"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/amazon_rds/rds_master_user_password_no_plaintext_password.guard",
+            "controls": [
+                "F23"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/amazon_rds/rds_master_user_name_no_plaintext_password.guard",
+            "controls": [
+                "F24"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/elasticache/elasticache_replication_group_encryption_at_rest.guard",
+            "controls": [
+                "F25"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/amazon_rds/rds_storage_encrypted.guard",
+            "controls": [
+                "F26",
+                "F27"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/amazon_redshift/redshift_cluster_configuration_check.guard",
+            "controls": [
+                "F28"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/amazon_workspaces/workspace_encryption_enabled.guard",
+            "controls": [
+                "F29"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/amazon_efs/efs_encrypted_check.guard",
+            "controls": [
+                "F32"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/elasticache/elasticache_replication_group_transit_encryption.guard",
+            "controls": [
+                "F33"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/amazon_rds/rds_cluster_master_user_password_no_plaintext_password.guard",
+            "controls": [
+                "F34"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/amazon_redshift/redshift_cluster_master_user_password_no_plaintext_password.guard",
+            "controls": [
+                "F35"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/aws_microsoft_ad/microsoft_ad_no_plaintext_password.guard",
+            "controls": [
+                "F36"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/aws_dms/dms_no_plaintext_password.guard",
+            "controls": [
+                "F37"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/iam/iam_role_no_wildcard_resource_on_passrole.guard",
+            "controls": [
+                "F38"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/iam/iam_policy_no_wildcard_resource_on_passrole.guard",
+            "controls": [
+                "F39"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/iam/iam_user_login_profile_no_plaintext_password.guard",
+            "controls": [
+                "F51"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/amazon_mq/amazon_mq_broker_users_no_plaintext_password.guard",
+            "controls": [
+                "F52"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/aws_kinesis/kinesis_firehose_redshift_destination_configuration_no_plaintext_password.guard",
+            "controls": [
+                "F66"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/aws_kinesis/kinesis_firehose_splunk_destination_configuration_no_plaintext_password.guard",
+            "controls": [
+                "F68"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/aws_cognito/cognito_user_pool_mfa_configuration_rule.guard",
+            "controls": [
+                "F78"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/amazon_rds/rds_instance_deletion_protection_enabled.guard",
+            "controls": [
+                "F80"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/aws_waf/waf_web_acl_default_action_rule.guard",
+            "controls": [
+                "F665"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/amazon_ec2/security_group_missing_egress_rule.guard",
+            "controls": [
+                "F1000"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/iam/iam_user_missing_group_rule.guard",
+            "controls": [
+                "F2000"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/all_resources/cfn_authentication_rule.guard",
+            "controls": [
+                "W1"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/amazon_ec2/ec2_security_group_ingress_open_to_world_rule.guard",
+            "controls": [
+                "W2"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/amazon_ec2/ec2_security_group_egress_open_to_world_rule.guard",
+            "controls": [
+                "W5"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/amazon_ec2/security_group_ingress_cidr_non_32_rule.guard",
+            "controls": [
+                "W9"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/cloudfront/cloudfront_accesslogs_enabled.guard",
+            "controls": [
+                "W10"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/iam/iam_policydocument_no_wildcard_resource.guard",
+            "controls": [
+                "W11",
+                "W12",
+                "W13"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/iam/iam_role_no_allow_plus_not_action_on_trust_policy.guard",
+            "controls": [
+                "W14"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/iam/iam_role_or_policy_no_allow_plus_not_action.guard",
+            "controls": [
+                "W15",
+                "W16",
+                "W17"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/amazon_sqs/sqs_queuepolicy_no_allow_plus_not_action.guard",
+            "controls": [
+                "W18"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/amazon_sns/sns_topicpolicy_no_allow_plus_not_action.guard",
+            "controls": [
+                "W19"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/amazon_s3/s3_bucket_policy_no_allow_plus_not_action.guard",
+            "controls": [
+                "W20"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/iam/iam_role_or_policy_no_allow_plus_not_resource.guard",
+            "controls": [
+                "W21",
+                "W22",
+                "W23"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/lambda/lambda_permission_invoke_function_action.guard",
+            "controls": [
+                "W24"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/elastic_load_balancing/elb_logging_enabled.guard",
+            "controls": [
+                "W26"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/amazon_ec2/security_group_ingress_port_range_rule.guard",
+            "controls": [
+                "W27"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/aws_cloudformation/cfn_no_explicit_resource_names.guard",
+            "controls": [
+                "W28"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/amazon_ec2/security_group_egress_port_range_rule.guard",
+            "controls": [
+                "W29"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/amazon_s3/s3_bucket_public_read_acl.guard",
+            "controls": [
+                "W31"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/codebuild/codebuild_encryption_key_rule.guard",
+            "controls": [
+                "W32"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/amazon_ec2/subnet_auto_assign_public_ip_disabled.guard",
+            "controls": [
+                "W33"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/aws_batch/batch_job_container_properties_privileged_rule.guard",
+            "controls": [
+                "W34"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/amazon_s3/s3_bucket_logging_enabled.guard",
+            "controls": [
+                "W35"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/amazon_ec2/security_group_description_rule.guard",
+            "controls": [
+                "W36"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/amazon_ec2/ebs_volume_encryption_key_rule.guard",
+            "controls": [
+                "W37"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/amazon_iot/iot_policy_wildcard_action_rule.guard",
+            "controls": [
+                "W38"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/amazon_iot/iot_policy_wildcard_resource_rule.guard",
+            "controls": [
+                "W39"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/amazon_ec2/security_group_egress_all_protocols_rule.guard",
+            "controls": [
+                "W40"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/amazon_s3/s3_bucket_server_side_encryption_enabled.guard",
+            "controls": [
+                "W41"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/amazon_ec2/security_group_ingress_all_protocols_rule.guard",
+            "controls": [
+                "W42"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/iam/iam_role_administrator_access_policy_rule.guard",
+            "controls": [
+                "W43"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/iam/iam_role_elevated_managed_policy_rule.guard",
+            "controls": [
+                "W44"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/api_gateway_v2/api_gwv2_access_logs_enabled.guard",
+            "controls": [
+                "W46"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/amazon_sns/sns_encrypted_kms.guard",
+            "controls": [
+                "W47"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/amazon_sqs/sqs_queue_kms_master_key_id_rule.guard",
+            "controls": [
+                "W48"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/aws_kinesis/kinesis_stream_encryption_rule.guard",
+            "controls": [
+                "W49"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/iam/iam_user_login_profile_password_reset_rule.guard",
+            "controls": [
+                "W50"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/elastic_load_balancing_v2/elbv2_access_logging_rule.guard",
+            "controls": [
+                "W52"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/amazon_mq/amazon_mq_broker_encryption_options_rule.guard",
+            "controls": [
+                "W53"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/opensearch_service/elasticsearch_encrypted_at_rest.guard",
+            "controls": [
+                "W54"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/elastic_load_balancing_v2/elbv2_listener_ssl_policy_rule.guard",
+            "controls": [
+                "W55"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/elastic_load_balancing_v2/elbv2_listener_protocol_rule.guard",
+            "controls": [
+                "W56"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/aws_cognito/cognito_allow_unauthenticated_identities_rule.guard",
+            "controls": [
+                "W57"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/api_gateway/api_gw_method_authorization_type_rule.guard",
+            "controls": [
+                "W59"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/amazon_emr/emr_security_config_enabled_and_configured_rule.guard",
+            "controls": [
+                "W61"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/api_gateway/api_gw_domain_deny_non_tls_traffic.guard",
+            "controls": [
+                "W62"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/amazon_emr/emr_kerberos_enabled.guard",
+            "controls": [
+                "F63"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/aws_gamelift/gamelift_fleet_inbound_port_range_rule.guard",
+            "controls": [
+                "W65"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/amazon_ec2/ec2_network_acl_protocol_rule.guard",
+            "controls": [
+                "W66"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/amazon_ec2/ec2_network_acl_port_range_rule.guard",
+            "controls": [
+                "W67"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/api_gateway/api_gw_stage_access_logging_rule.guard",
+            "controls": [
+                "W69"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/cloudfront/cloudfront_minimum_protocol_version_rule.guard",
+            "controls": [
+                "W70"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/amazon_ec2/ec2_network_acl_entry_ineffective_deny_rule.guard",
+            "controls": [
+                "W71"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/dynamodb/dynamodb_billing_mode_rule.guard",
+            "controls": [
+                "W73"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/dynamodb/dynamodb_table_encrypted_kms.guard",
+            "controls": [
+                "W74"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/amazon_rds/db_instance_backup_enabled.guard",
+            "controls": [
+                "W75"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/secrets_manager/secretsmanager_using_cmk.guard",
+            "controls": [
+                "W77"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/dynamodb/dynamodb_pitr_enabled.guard",
+            "controls": [
+                "W78"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/aws_ecr/ecr_repo_scan_on_push_rule.guard",
+            "controls": [
+                "W79"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/aws_kendra/kendra_index_encryption_kms_key_id_rule.guard",
+            "controls": [
+                "W80"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/aws_dlm/dlm_lifecycle_policy_cross_region_encryption_rule.guard",
+            "controls": [
+                "W81"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/amazon_eks/eks_cluster_encryption_rule.guard",
+            "controls": [
+                "W82"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/dax/dax_encryption_enabled.guard",
+            "controls": [
+                "W83"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/cloudwatch/cloudwatch_log_group_encrypted.guard",
+            "controls": [
+                "W84"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/opensearch_service/elasticsearch_node_to_node_encryption_check.guard",
+            "controls": [
+                "W85"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/cloudwatch/cw_loggroup_retention_period_check.guard",
+            "controls": [
+                "W86"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/api_gateway/api_gw_cache_enabled_and_encrypted.guard",
+            "controls": [
+                "W87"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/aws_kinesis/kinesis_firehose_delivery_stream_encryption_rule.guard",
+            "controls": [
+                "W88"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/lambda/lambda_inside_vpc.guard",
+            "controls": [
+                "W89"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/opensearch_service/elasticsearch_in_vpc_only.guard",
+            "controls": [
+                "W90"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/lambda/lambda_concurrency_check.guard",
+            "controls": [
+                "W92"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/amazon_sagemaker/sagemaker_endpoint_configuration_kms_key_configured.guard",
+            "controls": [
+                "W1200"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/amazon_sagemaker/sagemaker_notebook_instance_kms_key_configured.guard",
+            "controls": [
+                "W1201"
+            ]
+        }
+    ]
+}
