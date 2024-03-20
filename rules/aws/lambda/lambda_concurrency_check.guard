@@ -27,6 +27,8 @@
 # Select all AWS Lambda Function resources from incoming template (payload)
 #
 let aws_lambda_functions_concurrency = Resources.*[ Type == 'AWS::Lambda::Function' 
+  Metadata.cfn_nag.rules_to_suppress not exists or 
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W92"
   Metadata.guard.SuppressedRules not exists or
   Metadata.guard.SuppressedRules.* != "LAMBDA_CONCURRENCY_CHECK"
 ]

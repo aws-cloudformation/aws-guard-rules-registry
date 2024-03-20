@@ -66,3 +66,22 @@
   expectations:
     rules:
       LAMBDA_INSIDE_VPC: SKIP
+
+- name: AWS Lambda function VPC Configuration NOT set but rule suppressed, SKIP
+  input:
+    Resources:
+      ExampleLambda:
+        Type: "AWS::Lambda::Function"
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W89
+              reason: Suppressed for a very good reason
+        Properties: 
+          Role: arn:aws:iam::123456789012:role/lambda-role
+          Code:
+            S3Bucket: my-bucket
+            S3Key: function.zip
+  expectations:
+    rules:
+      LAMBDA_INSIDE_VPC: SKIP
