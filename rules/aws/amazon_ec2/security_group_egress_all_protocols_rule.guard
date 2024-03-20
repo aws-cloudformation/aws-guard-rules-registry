@@ -1,0 +1,89 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#    SECURITY_GROUP_EGRESS_ALL_PROTOCOLS_RULE
+#
+# Description:
+#   Check if Security Groups found egress with IpProtocol of -1.
+#
+# Reports on:
+#    [AWS::EC2::SecurityGroup, AWS::EC2::SecurityGroupEgress]
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# CFN_NAG Rule Id:
+#   W40
+#
+# Scenarios:
+# a) SKIP: when there are no Security Egress Groups resource present
+# b) PASS: When no Security Egress Groups uses IpProtocol value as -1
+# c) FAIL: when any Security Egress Groups uses IpProtocol value as -1
+# d) SKIP: when metadata has rule suppression for SECURITY_GROUP_EGRESS_ALL_PROTOCOLS_RULE
+
+#
+# Select all Security Group Egress resources from incoming template (payload)
+#
+
+let security_group_egress_all_protocols_rule_sg_egress_resources = Resources.*[ Type == 'AWS::EC2::SecurityGroup'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W40"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "SECURITY_GROUP_EGRESS_ALL_PROTOCOLS_RULE"
+]
+
+let security_group_egress_all_protocols_rule_sge_resources = Resources.*[ Type == 'AWS::EC2::SecurityGroupEgress'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W40"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "SECURITY_GROUP_EGRESS_ALL_PROTOCOLS_RULE"
+]
+
+rule SECURITY_GROUP_EGRESS_ALL_PROTOCOLS_RULE when %security_group_egress_all_protocols_rule_sge_resources !empty OR %security_group_egress_all_protocols_rule_sg_egress_resources !empty {
+   let violations_sg = %security_group_egress_all_protocols_rule_sg_egress_resources[
+     Type == 'AWS::EC2::SecurityGroup'
+     Properties.SecurityGroupEgress exists
+     some Properties.SecurityGroupEgress[*] {
+        IpProtocol == '-1'
+        OR
+        IpProtocol == -1
+        CidrIp !exists
+        OR
+        CidrIp != '127.0.0.1/32'
+        CidrIpv6 !exists
+        OR
+        CidrIpv6 != '::1/128'
+        CidrIpv6 !exists
+        OR
+        CidrIpv6 != ':1/128'
+     }
+   ]
+
+   let violations_sge = %security_group_egress_all_protocols_rule_sge_resources[
+     Type == 'AWS::EC2::SecurityGroupEgress'
+     Properties.IpProtocol == '-1'
+     OR
+     Properties.IpProtocol == -1
+     Properties.CidrIp !exists
+     OR
+     Properties.CidrIp != '127.0.0.1/32'
+     Properties.CidrIpv6 !exists
+     OR
+     Properties.CidrIpv6 != '::1/128'
+     Properties.CidrIpv6 !exists
+     OR
+     Properties.CidrIpv6 != ':1/128'
+  ]
+
+  %violations_sg empty
+  %violations_sge empty
+  <<
+    Violation: Security Group Egress has a IpProtocol value of -1.
+    Fix: Update IpProtocol value of -1 as tcp, udp, icmp, or icmpv6 or something else.
+  >>
+}

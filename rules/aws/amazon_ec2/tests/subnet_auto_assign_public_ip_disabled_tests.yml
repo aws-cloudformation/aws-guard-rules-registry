@@ -77,3 +77,23 @@
   expectations:
     rules:
       SUBNET_AUTO_ASSIGN_PUBLIC_IP_DISABLED: SKIP
+
+- name: EC2 Subnet with MapPublicIpOnLaunch property set to true but rule suppressed - CFN_NAG, SKIP
+  input:
+    Resources:
+      ExampleSubnet:
+        Type: AWS::EC2::Subnet
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W33
+              reason: Suppressed for a very good reason
+        Properties:
+          VpcId:
+            Ref: myVPC
+          CidrBlock: 10.0.0.0/24
+          AvailabilityZone: "us-east-1a"
+          MapPublicIpOnLaunch: true
+  expectations:
+    rules:
+      SUBNET_AUTO_ASSIGN_PUBLIC_IP_DISABLED: SKIP

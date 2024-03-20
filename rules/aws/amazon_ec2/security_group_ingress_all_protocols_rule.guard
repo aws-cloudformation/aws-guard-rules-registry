@@ -1,0 +1,69 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#    SECURITY_GROUP_INGRESS_ALL_PROTOCOLS_RULE
+#
+# Description:
+#   Check if Security Groups found ingress has IpProtocol as -1
+#
+# Reports on:
+#    AWS::EC2::SecurityGroupIngress
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# CFN_NAG Rule Id:
+#   W42
+#
+# Scenarios:
+# a) SKIP: when there are no Security Ingress Groups resource present
+# b) PASS: When no Security Ingress Groups uses IpProtocol value as -1
+# c) FAIL: when any Security Ingress Groups uses IpProtocol value as -1
+# d) SKIP: when metadata has rule suppression for SECURITY_GROUP_INGRESS_ALL_PROTOCOLS_RULE
+
+#
+# Select all Security Group Ingress resources from incoming template (payload)
+#
+
+let security_group_ingress_all_protocols_rule_sg_ingress_resources = Resources.*[ Type == 'AWS::EC2::SecurityGroup'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W42"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "SECURITY_GROUP_INGRESS_ALL_PROTOCOLS_RULE"
+]
+
+let security_group_ingress_all_protocols_rule_sgi_resources = Resources.*[ Type == 'AWS::EC2::SecurityGroupIngress'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W42"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "SECURITY_GROUP_INGRESS_ALL_PROTOCOLS_RULE"
+]
+
+rule SECURITY_GROUP_INGRESS_ALL_PROTOCOLS_RULE when %security_group_ingress_all_protocols_rule_sgi_resources !empty OR %security_group_ingress_all_protocols_rule_sg_ingress_resources !empty {
+   let violations_sg = %security_group_ingress_all_protocols_rule_sg_ingress_resources[
+     Type == 'AWS::EC2::SecurityGroup'
+     Properties.SecurityGroupIngress exists
+     some Properties.SecurityGroupIngress[*].IpProtocol == '-1'
+     OR
+     some Properties.SecurityGroupIngress[*].IpProtocol == -1
+   ]
+
+   let violations_sgi = %security_group_ingress_all_protocols_rule_sgi_resources[
+     Type == 'AWS::EC2::SecurityGroupIngress'
+     Properties.IpProtocol == '-1'
+     OR
+     Properties.IpProtocol == -1
+  ]
+
+  %violations_sg empty
+  %violations_sgi empty
+  <<
+    Violation: Security Group Ingress has a IpProtocol value of -1 and
+    Fix: Update IpProtocol value of -1 as tcp, udp, icmp, or icmpv6 or something else.
+  >>
+}

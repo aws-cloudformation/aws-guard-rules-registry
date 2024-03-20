@@ -1,0 +1,64 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#    EC2_NETWORK_ACL_PORT_RANGE_RULE
+#
+# Description:
+#   TCP/UDP protocol NetworkACL entries possibly should not allow all ports.
+#
+# Reports on:
+#    AWS::EC2::NetworkAclEntry
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# CFN_NAG Rule Id:
+#   W67
+#
+# Scenarios:
+# a) SKIP: when there are no EC2 NetworkACLEntry resource present
+# b) PASS: When all EC2 NetworkACLEntry resources does not use all ports for TCP/UDP
+# c) FAIL: When any EC2 NetworkACLEntry resources does not specify range of ports for TCP/UDP
+# d) SKIP: when metadata has rule suppression for EC2_NETWORK_ACL_PORT_RANGE_RULE
+
+#
+# Select all EC2 NetworkACLEntry resources from incoming template (payload)
+#
+let ec2_network_acl_port_range_rule = Resources.*[ Type == 'AWS::EC2::NetworkAclEntry'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W67"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "EC2_NETWORK_ACL_PORT_RANGE_RULE"
+]
+
+rule EC2_NETWORK_ACL_PORT_RANGE_RULE when %ec2_network_acl_port_range_rule !empty {
+  let violations = %ec2_network_acl_port_range_rule[
+    Type == 'AWS::EC2::NetworkAclEntry'
+    Properties {
+        Protocol == 6
+        OR
+        Protocol == 17
+    }
+    Properties.PortRange !exists
+    OR
+    Properties.PortRange.From !exists
+    OR
+    Properties.PortRange.To !exists
+    OR
+    Properties {
+        PortRange.From == 0
+        PortRange.To == 65535
+    }
+  ]
+
+  %violations empty
+  <<
+    Violation: EC2 NetworkACLEntry resources does not specify a range of ports for TCP/UDP or specifies complete range from 0 to 65535.
+    Fix: Specify a range of ports for TCP/UDP for EC2 NetworkACLEntry resources.
+  >>
+}

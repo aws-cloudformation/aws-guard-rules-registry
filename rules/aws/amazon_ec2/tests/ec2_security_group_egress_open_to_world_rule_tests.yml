@@ -1,0 +1,444 @@
+###
+# EC2_SECURITY_GROUP_EGRESS_OPEN_TO_WORLD_RULE tests
+###
+---
+- name: Empty
+  input: {}
+  expectations:
+    rules:
+      EC2_SECURITY_GROUP_EGRESS_OPEN_TO_WORLD_RULE: SKIP
+
+- name: No resources
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      EC2_SECURITY_GROUP_EGRESS_OPEN_TO_WORLD_RULE: SKIP
+
+- name: Egress closed ipv4 and ipv6 port
+  input:
+    Resources:
+      SourceSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample source security group
+      TargetSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample target security group
+      OutboundRule:
+        Type: AWS::EC2::SecurityGroupEgress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 45
+          ToPort: 45
+          CidrIp: 172.0.0.1/28
+          CidrIpv6: 2001:db8:1234::f350:2256:f3dd/64
+          DestinationSecurityGroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+      InboundRule:
+        Type: AWS::EC2::SecurityGroupIngress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 35
+          ToPort: 44
+          SourceSecurityGroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+  expectations:
+    rules:
+      EC2_SECURITY_GROUP_EGRESS_OPEN_TO_WORLD_RULE: PASS
+
+- name: Egress Open ipv4 cidr with SG Resource
+  input:
+    Resources:
+      InstanceSecurityGroup:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          GroupDescription: Allow http to client host
+          VpcId: !Ref myVPC
+          SecurityGroupIngress:
+            - IpProtocol: tcp
+              FromPort: 80
+              ToPort: 80
+              CidrIp: 172.0.0.1/32
+          SecurityGroupEgress:
+            - IpProtocol: tcp
+              FromPort: 80
+              ToPort: 80
+              CidrIp: 172.0.0.1/32
+            - IpProtocol: tcp
+              FromPort: 35
+              ToPort: 35
+              CidrIp: 0.0.0.0/0
+  expectations:
+    rules:
+      EC2_SECURITY_GROUP_EGRESS_OPEN_TO_WORLD_RULE: FAIL
+
+- name: Egress Open ipv6 cidr with SG Resource
+  input:
+    Resources:
+      InstanceSecurityGroup:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          GroupDescription: Allow http to client host
+          VpcId: !Ref myVPC
+          SecurityGroupIngress:
+            - IpProtocol: tcp
+              FromPort: 80
+              ToPort: 80
+              CidrIp: 172.0.0.1/32
+              CidrIpv6: 2001:db8:1234::f350:2256:f3dd/64
+          SecurityGroupEgress:
+            - IpProtocol: tcp
+              FromPort: 80
+              ToPort: 80
+              CidrIp: 172.0.0.1/32
+            - IpProtocol: tcp
+              FromPort: 35
+              ToPort: 35
+              CidrIp: 172.0.0.1/32
+              CidrIpv6: ::/0
+  expectations:
+    rules:
+      EC2_SECURITY_GROUP_EGRESS_OPEN_TO_WORLD_RULE: FAIL
+
+- name: Egress Open ipv4 cidr and private ipv6 cidr
+  input:
+    Resources:
+      SourceSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample source security group
+      TargetSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample target security group
+      OutboundRule:
+        Type: AWS::EC2::SecurityGroupEgress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 46
+          ToPort: 56
+          CidrIp: 0.0.0.0/0
+          CidrIpv6: 2001:db8:1234::f350:2256:f3dd/64
+          DestinationSecurityGroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+      InboundRule:
+        Type: AWS::EC2::SecurityGroupIngress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 55
+          ToPort: 55
+          SourceSecurityGroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+  expectations:
+    rules:
+      EC2_SECURITY_GROUP_EGRESS_OPEN_TO_WORLD_RULE: FAIL
+
+- name: Egress private ipv4 cidr and open ipv6 cidr
+  input:
+    Resources:
+      SourceSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample source security group
+      TargetSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample target security group
+      OutboundRule:
+        Type: AWS::EC2::SecurityGroupEgress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 46
+          ToPort: 56
+          CidrIp: 172.0.0.1/28
+          CidrIpv6: ::/0
+          DestinationSecurityGroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+      InboundRule:
+        Type: AWS::EC2::SecurityGroupIngress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 55
+          ToPort: 55
+          SourceSecurityGroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+  expectations:
+    rules:
+      EC2_SECURITY_GROUP_EGRESS_OPEN_TO_WORLD_RULE: FAIL
+
+- name: Egress open ipv4 cidr and open ipv6 cidr
+  input:
+    Resources:
+      SourceSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample source security group
+      TargetSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample target security group
+      OutboundRule:
+        Type: AWS::EC2::SecurityGroupEgress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 46
+          ToPort: 56
+          CidrIp: 0.0.0.0/0
+          CidrIpv6: ::/0
+          DestinationSecurityGroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+      InboundRule:
+        Type: AWS::EC2::SecurityGroupIngress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 55
+          ToPort: 55
+          SourceSecurityGroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+  expectations:
+    rules:
+      EC2_SECURITY_GROUP_EGRESS_OPEN_TO_WORLD_RULE: FAIL
+
+- name: CFN_NAG suppression for W5
+  input:
+    Resources:
+      SourceSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample source security group
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+              - id: W5
+                reason: Suppressed to test suppression works and skips this test
+      TargetSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample target security group
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+              - id: W5
+                reason: Suppressed to test suppression works and skips this test
+      OutboundRule:
+        Type: AWS::EC2::SecurityGroupEgress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 46
+          ToPort: 56
+          DestinationSecurityGroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+              - id: W5
+                reason: Suppressed to test suppression works and skips this test
+      InboundRule:
+        Type: AWS::EC2::SecurityGroupIngress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 35
+          ToPort: 45
+          SourceSecurityGroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+  expectations:
+    rules:
+      EC2_SECURITY_GROUP_EGRESS_OPEN_TO_WORLD_RULE: SKIP
+
+- name: Guard suppression for EC2_SECURITY_GROUP_EGRESS_OPEN_TO_WORLD_RULE
+  input:
+    Resources:
+      SourceSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample source security group
+        Metadata:
+          guard:
+            SuppressedRules:
+              - EC2_SECURITY_GROUP_EGRESS_OPEN_TO_WORLD_RULE
+      TargetSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample target security group
+        Metadata:
+          guard:
+            SuppressedRules:
+              - EC2_SECURITY_GROUP_EGRESS_OPEN_TO_WORLD_RULE
+      OutboundRule:
+        Type: AWS::EC2::SecurityGroupEgress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 46
+          ToPort: 56
+          DestinationSecurityGroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+        Metadata:
+          guard:
+            SuppressedRules:
+              - EC2_SECURITY_GROUP_EGRESS_OPEN_TO_WORLD_RULE
+      InboundRule:
+        Type: AWS::EC2::SecurityGroupIngress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 35
+          ToPort: 45
+          SourceSecurityGroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+  expectations:
+    rules:
+      EC2_SECURITY_GROUP_EGRESS_OPEN_TO_WORLD_RULE: SKIP
+
+- name: Guard and CFN_NAG suppression for W5 & EC2_SECURITY_GROUP_EGRESS_OPEN_TO_WORLD_RULE
+  input:
+    Resources:
+      SourceSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample source security group
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+              - id: W5
+                reason: Suppressed to test suppression works and skips this test
+          guard:
+            SuppressedRules:
+              - EC2_SECURITY_GROUP_EGRESS_OPEN_TO_WORLD_RULE
+      TargetSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          VpcId: vpc-1a2b3c4d
+          GroupDescription: Sample target security group
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+              - id: W5
+                reason: Suppressed to test suppression works and skips this test
+          guard:
+            SuppressedRules:
+              - EC2_SECURITY_GROUP_EGRESS_OPEN_TO_WORLD_RULE
+      OutboundRule:
+        Type: AWS::EC2::SecurityGroupEgress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 46
+          ToPort: 56
+          DestinationSecurityGroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+              - id: W5
+                reason: Suppressed to test suppression works and skips this test
+          guard:
+            SuppressedRules:
+              - EC2_SECURITY_GROUP_EGRESS_OPEN_TO_WORLD_RULE
+      InboundRule:
+        Type: AWS::EC2::SecurityGroupIngress
+        Properties:
+          IpProtocol: tcp
+          FromPort: 35
+          ToPort: 45
+          SourceSecurityGroupId:
+            Fn::GetAtt:
+              - SourceSG
+              - GroupId
+          GroupId:
+            Fn::GetAtt:
+              - TargetSG
+              - GroupId
+  expectations:
+    rules:
+      EC2_SECURITY_GROUP_EGRESS_OPEN_TO_WORLD_RULE: SKIP

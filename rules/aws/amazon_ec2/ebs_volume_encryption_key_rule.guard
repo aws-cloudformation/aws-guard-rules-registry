@@ -1,0 +1,46 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#    EBS_VOLUME_ENCRYPTION_KEY_RULE
+#
+# Description:
+#   EBS Volume should specify a KmsKeyId value
+#
+# Reports on:
+#    AWS::EC2::Volume
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# CFN_NAG Rule Id:
+#   W37
+#
+# Scenarios:
+# a) SKIP: when there is no EC2 Volume resource present.
+# b) PASS: when EC2 Volume resources have KmsKeyId Key.
+# c) FAIL: when EC2 Volume resources does not have KmsKeyId Key.
+# d) SKIP: when metadata has rule suppression for EBS_VOLUME_ENCRYPTION_KEY_RULE
+
+#
+# Select all EC2 Volume resources from incoming template (payload)
+#
+let ebs_volume_encryption_key_rule = Resources.*[ Type == 'AWS::EC2::Volume'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W37"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "EBS_VOLUME_ENCRYPTION_KEY_RULE"
+]
+
+rule EBS_VOLUME_ENCRYPTION_KEY_RULE when %ebs_volume_encryption_key_rule !empty {
+  %ebs_volume_encryption_key_rule.Type == 'AWS::EC2::Volume'
+  %ebs_volume_encryption_key_rule.Properties.KmsKeyId exists
+  <<
+    Violation: EC2 Volume KmsKeyId does not exist
+    Fix: Specify KmsKeyId value
+  >>
+}
