@@ -1,0 +1,171 @@
+###
+# KINESIS_STREAM_ENCRYPTION_RULE tests
+###
+---
+- name: Empty
+  input: {}
+  expectations:
+    rules:
+      KINESIS_STREAM_ENCRYPTION_RULE: SKIP
+
+- name: No resources
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      KINESIS_STREAM_ENCRYPTION_RULE: SKIP
+
+- name: Kinesis stream with StreamEncryption with EncryptionType set to 'KMS" and KeyId is specified
+  input:
+    Resources:
+      MyStream:
+        Type: AWS::Kinesis::Stream
+        Properties:
+          Name: MyKinesisStream
+          RetentionPeriodHours: 168
+          ShardCount: 3
+          StreamEncryption:
+            EncryptionType: KMS
+            KeyId: !Ref myKey
+          Tags:
+            - Key: Environment
+              Value: Production
+  expectations:
+    rules:
+      KINESIS_STREAM_ENCRYPTION_RULE: PASS
+
+- name: Kinesis stream with StreamEncryption with EncryptionType set to 'NONE" and KeyId is specified
+  input:
+    Resources:
+      MyStream:
+        Type: AWS::Kinesis::Stream
+        Properties:
+          Name: MyKinesisStream
+          RetentionPeriodHours: 168
+          ShardCount: 3
+          StreamEncryption:
+            EncryptionType: NONE
+            KeyId: !Ref myKey
+          Tags:
+            - Key: Environment
+              Value: Production
+  expectations:
+    rules:
+      KINESIS_STREAM_ENCRYPTION_RULE: FAIL
+
+- name: Kinesis stream with StreamEncryption with EncryptionType set to 'KMS" and KeyId is not specified
+  input:
+    Resources:
+      MyStream:
+        Type: AWS::Kinesis::Stream
+        Properties:
+          Name: MyKinesisStream
+          RetentionPeriodHours: 168
+          ShardCount: 3
+          StreamEncryption:
+            EncryptionType: KMS
+          Tags:
+            - Key: Environment
+              Value: Production
+  expectations:
+    rules:
+      KINESIS_STREAM_ENCRYPTION_RULE: FAIL
+
+- name: Kinesis stream with StreamEncryption with EncryptionType is not specified and KeyId is specified
+  input:
+    Resources:
+      MyStream:
+        Type: AWS::Kinesis::Stream
+        Properties:
+          Name: MyKinesisStream
+          RetentionPeriodHours: 168
+          ShardCount: 3
+          StreamEncryption:
+            KeyId: !Ref myKey
+          Tags:
+            - Key: Environment
+              Value: Production
+  expectations:
+    rules:
+      KINESIS_STREAM_ENCRYPTION_RULE: FAIL
+
+- name: Kinesis stream with StreamEncryption not specified
+  input:
+    Resources:
+      MyStream:
+        Type: AWS::Kinesis::Stream
+        Properties:
+          Name: MyKinesisStream
+          RetentionPeriodHours: 168
+          ShardCount: 3
+          Tags:
+            - Key: Environment
+              Value: Production
+  expectations:
+    rules:
+      KINESIS_STREAM_ENCRYPTION_RULE: FAIL
+
+- name: CFN_NAG suppression for W49
+  input:
+    Resources:
+      MySourceQueue:
+        Type: AWS::SQS::Queue
+        Properties:
+          RedrivePolicy:
+            deadLetterTargetArn:
+              Fn::GetAtt:
+                - "MyDeadLetterQueue"
+                - "Arn"
+            maxReceiveCount: 5
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W49
+              reason: Suppressed to test suppression works and skips this test
+  expectations:
+    rules:
+      KINESIS_STREAM_ENCRYPTION_RULE: SKIP
+
+- name: Guard suppression for KINESIS_STREAM_ENCRYPTION_RULE
+  input:
+    Resources:
+      MySourceQueue:
+        Type: AWS::SQS::Queue
+        Properties:
+          RedrivePolicy:
+            deadLetterTargetArn:
+              Fn::GetAtt:
+                - "MyDeadLetterQueue"
+                - "Arn"
+            maxReceiveCount: 5
+        Metadata:
+          guard:
+            SuppressedRules:
+            - KINESIS_STREAM_ENCRYPTION_RULE
+  expectations:
+    rules:
+      KINESIS_STREAM_ENCRYPTION_RULE: SKIP
+
+- name: Guard and CFN_NAG suppression for W49 & KINESIS_STREAM_ENCRYPTION_RULE
+  input:
+    Resources:
+      MySourceQueue:
+        Type: AWS::SQS::Queue
+        Properties:
+          RedrivePolicy:
+            deadLetterTargetArn:
+              Fn::GetAtt:
+                - "MyDeadLetterQueue"
+                - "Arn"
+            maxReceiveCount: 5
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W49
+              reason: Suppressed to test suppression works and skips this test
+          guard:
+            SuppressedRules:
+            - KINESIS_STREAM_ENCRYPTION_RULE
+  expectations:
+    rules:
+      KINESIS_STREAM_ENCRYPTION_RULE: SKIP

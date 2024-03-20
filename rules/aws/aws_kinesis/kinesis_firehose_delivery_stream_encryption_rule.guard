@@ -1,0 +1,53 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#    KINESIS_FIREHOSE_DELIVERY_STREAM_ENCRYPTION_RULE
+#
+# Description:
+#   Kinesis Firehose DeliveryStream of type DirectPut should specify SSE.
+#
+# Reports on:
+#    AWS::KinesisFirehose::DeliveryStream
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# CFN_NAG Rule Id:
+#   W88
+#
+# Scenarios:
+# a) SKIP: when there is no Kinesis Firehose DeliveryStream resource present.
+# b) PASS: when all Kinesis Firehose DeliveryStream has SSE specified.
+# c) FAIL: when any Kinesis Firehose DeliveryStream resource do not have SSE specified.
+# d) SKIP: when metadata has rule suppression for KINESIS_FIREHOSE_DELIVERY_STREAM_ENCRYPTION_RULE
+
+#
+# Select all Kinesis Firehose DeliveryStream resources from incoming template (payload)
+#
+let kinesis_Firehose_delivery_stream_encryption_rule = Resources.*[ Type == 'AWS::KinesisFirehose::DeliveryStream'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W88"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "KINESIS_FIREHOSE_DELIVERY_STREAM_ENCRYPTION_RULE"
+]
+
+rule KINESIS_FIREHOSE_DELIVERY_STREAM_ENCRYPTION_RULE when %kinesis_Firehose_delivery_stream_encryption_rule !empty {
+  let violations = %kinesis_Firehose_delivery_stream_encryption_rule[
+    Properties.DeliveryStreamType !exists
+    OR
+    Properties.DeliveryStreamType != 'KinesisStreamAsSource'
+    Properties.DeliveryStreamEncryptionConfigurationInput !exists
+    OR
+    Properties.DeliveryStreamEncryptionConfigurationInput.KeyType !exists
+  ]
+  %violations empty
+  <<
+    Violation: Kinesis Firehose DeliveryStream resource do not have SSE specified.
+    Fix: Specify SSE for all Kinesis Firehose DeliveryStream resources.
+  >>
+}

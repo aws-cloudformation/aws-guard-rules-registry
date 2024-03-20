@@ -1,0 +1,123 @@
+###
+# KENDRA_INDEX_ENCRYPTION_KMS_KEY_ID_RULE tests
+###
+---
+- name: Empty
+  input: {}
+  expectations:
+    rules:
+      KENDRA_INDEX_ENCRYPTION_KMS_KEY_ID_RULE: SKIP
+
+- name: No resources
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      KENDRA_INDEX_ENCRYPTION_KMS_KEY_ID_RULE: SKIP
+
+- name: Kendra Index with ServerSideEncryptionConfiguration and KmsKeyId enabled
+  input:
+    Resources:
+      SampleKendraResource:
+        Type: AWS::Kendra::Index
+        Properties:
+          Description: 'Test Kendra Resource'
+          Edition: 'testEditor'
+          Name: 'testName'
+          RoleArn: 'testArn'
+          ServerSideEncryptionConfiguration:
+            KmsKeyId: 'testKmsKeyId'
+  expectations:
+    rules:
+      KENDRA_INDEX_ENCRYPTION_KMS_KEY_ID_RULE: PASS
+
+- name: Kendra Index with ServerSideEncryptionConfiguration not existing
+  input:
+    Resources:
+      SampleKendraResource:
+        Type: AWS::Kendra::Index
+        Properties:
+          Description: 'Test Kendra Resource'
+          Edition: 'testEditor'
+          Name: 'testName'
+          RoleArn: 'testArn'
+  expectations:
+    rules:
+      KENDRA_INDEX_ENCRYPTION_KMS_KEY_ID_RULE: FAIL
+
+- name: Kendra Index with ServerSideEncryptionConfiguration and KmsKeyId not specified
+  input:
+    Resources:
+      SampleKendraResource:
+        Type: AWS::Kendra::Index
+        Properties:
+          Description: 'Test Kendra Resource'
+          Edition: 'testEditor'
+          Name: 'testName'
+          RoleArn: 'testArn'
+          ServerSideEncryptionConfiguration:
+  expectations:
+    rules:
+      KENDRA_INDEX_ENCRYPTION_KMS_KEY_ID_RULE: FAIL
+
+- name: CFN_NAG suppression for W80
+  input:
+    Resources:
+      SampleKendraResource:
+        Type: AWS::Kendra::Index
+        Properties:
+          Description: 'Test Kendra Resource'
+          Edition: 'testEditor'
+          Name: 'testName'
+          RoleArn: 'testArn'
+          ServerSideEncryptionConfiguration:
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W80
+              reason: Suppressed to test suppression works and skips this test
+  expectations:
+    rules:
+      KENDRA_INDEX_ENCRYPTION_KMS_KEY_ID_RULE: SKIP
+
+- name: Guard suppression for KENDRA_INDEX_ENCRYPTION_KMS_KEY_ID_RULE
+  input:
+    Resources:
+      SampleKendraResource:
+        Type: AWS::Kendra::Index
+        Properties:
+          Description: 'Test Kendra Resource'
+          Edition: 'testEditor'
+          Name: 'testName'
+          RoleArn: 'testArn'
+          ServerSideEncryptionConfiguration:
+        Metadata:
+          guard:
+            SuppressedRules:
+            - KENDRA_INDEX_ENCRYPTION_KMS_KEY_ID_RULE
+  expectations:
+    rules:
+      KENDRA_INDEX_ENCRYPTION_KMS_KEY_ID_RULE: SKIP
+
+- name: Guard and CFN_NAG suppression for W80 & KENDRA_INDEX_ENCRYPTION_KMS_KEY_ID_RULE
+  input:
+    Resources:
+      SampleKendraResource:
+        Type: AWS::Kendra::Index
+        Properties:
+          Description: 'Test Kendra Resource'
+          Edition: 'testEditor'
+          Name: 'testName'
+          RoleArn: 'testArn'
+          ServerSideEncryptionConfiguration:
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W80
+              reason: Suppressed to test suppression works and skips this test
+          guard:
+            SuppressedRules:
+            - KENDRA_INDEX_ENCRYPTION_KMS_KEY_ID_RULE
+  expectations:
+    rules:
+      KENDRA_INDEX_ENCRYPTION_KMS_KEY_ID_RULE: SKIP
