@@ -1,0 +1,55 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#   SQS_QUEUEPOLICY_NO_ALLOW_PLUS_NOTPRINCIPAL
+#
+# Description:
+#   Checks that Amazon SQS Queue Policies do not use Effect:Allow with NotPrincipal
+#
+# Reports on:
+#   AWS::SQS::QueuePolicy
+#
+# Evaluates:
+#   AWS CloudFormation
+#
+# Rule Parameters:
+#   NA
+# 
+# CFN_NAG Rule Id:
+#   F7
+#
+# Documentation:
+# https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_notprincipal.html
+#
+# Scenarios:
+# a) SKIP: when there are no SQS QueuePolicies present
+# b) PASS: when all SQS QueuePolicies do not Allow with NotPrincipal
+# c) FAIL: when any SQS QueuePolicy PolicyDocument statement has both Effect: Allow and NotPrincipal
+# d) SKIP: when metada has rule suppression for SQS_NO_QUEUE_POLICY_NOT_PRINCIPAL or CFN_NAG F7
+
+#
+# Select all SQS QueuePolicy resources from incoming template (payload)
+# 
+let aws_sqs_queuepolicy_resources = Resources.*[ Type == 'AWS::SQS::QueuePolicy'
+  Metadata.cfn_nag.rules_to_suppress not exists or 
+  Metadata.cfn_nag.rules_to_suppress.*.id != "F7"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "SQS_QUEUEPOLICY_NO_ALLOW_PLUS_NOTPRINCIPAL" 
+]
+
+rule SQS_QUEUEPOLICY_NO_ALLOW_PLUS_NOTPRINCIPAL when %aws_sqs_queuepolicy_resources !empty {
+  let violations = %aws_sqs_queuepolicy_resources[
+    Type == 'AWS::SQS::QueuePolicy' 
+    some Properties.PolicyDocument.Statement[*] {
+      Effect == "Allow"
+      NotPrincipal exists
+    }
+  ]
+  %violations empty
+  <<
+    Violation: SQS QueuePolicy should not allow Allow+NotPrincipal
+    Fix: Remove policy statements that match {"Effect": "Allow", "NotPrincipal": ... }
+  >>
+} 

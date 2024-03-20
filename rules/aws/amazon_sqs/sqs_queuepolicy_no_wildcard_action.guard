@@ -1,0 +1,54 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#    SQS_QUEUEPOLICY_NO_WILDCARD_ACTION
+#
+# Description:
+#   SQS Queue policy should not allow * action
+#
+# Reports on:
+#    AWS::SQS::QueuePolicy
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# CFN_NAG Rule Id:
+#   F20
+#
+# Reference:
+#   https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-overview-of-managing-access.html
+#
+# Scenarios:
+# a) SKIP: when there is no SQS QueuePolicy resource present
+# b) PASS: when no SQS QueuePolicy resources have open Actions
+# c) FAIL: when any SQS QueuePolicy has Action "*" or contains <service:*>
+# d) SKIP: when metada has rule suppression for SQS_QUEUEPOLICY_NO_WILDCARD_ACTION
+
+#
+# Select all SQS QueuePolicy resources from incoming template (payload)
+#
+let sqs_queuepolicy_no_wildcard_action = Resources.*[ Type == 'AWS::SQS::QueuePolicy'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "F20"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "SQS_QUEUEPOLICY_NO_WILDCARD_ACTION"
+]
+
+rule SQS_QUEUEPOLICY_NO_WILDCARD_ACTION when %sqs_queuepolicy_no_wildcard_action !empty {
+  let violations = %sqs_queuepolicy_no_wildcard_action[
+    some Properties.PolicyDocument.Statement[*] {
+      some Action[*] in ["*", /^[a-zA-Z0-9]*:\*$/]
+      Effect == "Allow"
+    }
+  ]
+  %violations empty
+  <<
+    Violation: SQS Queue policy should not allow * Action
+    Fix: Specify explicit Action(s) in the SQS QueuePolicy
+  >>
+}

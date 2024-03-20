@@ -32,6 +32,24 @@
     rules:
       SAGEMAKER_NOTEBOOK_INSTANCE_KMS_KEY_CONFIGURED: SKIP
 
+- name: Scenario b) KmsKeyId not present but rule suppressed - CFN_NAG, SKIP
+  input:
+    Resources:
+      BasicNotebookInstance:
+        Type: "AWS::SageMaker::NotebookInstance"
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W1201
+              reason: Suppressed for a very good reason
+        Properties:
+          InstanceType: "ml.t2.large"
+          RoleArn: !GetAtt ExecutionRole.Arn
+          RootAccess: Enabled
+  expectations:
+    rules:
+      SAGEMAKER_NOTEBOOK_INSTANCE_KMS_KEY_CONFIGURED: SKIP
+
 - name: Scenario c) KmsKeyId not present, FAIL
   input:
     Resources:

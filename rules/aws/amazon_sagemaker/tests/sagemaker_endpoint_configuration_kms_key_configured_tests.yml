@@ -40,6 +40,32 @@
     rules:
       SAGEMAKER_ENDPOINT_CONFIGURATION_KMS_KEY_CONFIGURED: SKIP
 
+- name: Scenario b) Missing KmsKeyId but rule suppressed - CFN_NAG, SKIP
+  input:
+    Resources:
+      Endpoint:
+        Type: "AWS::SageMaker::Endpoint"
+        Properties:
+          EndpointConfigName:
+            !GetAtt EndpointConfig.EndpointConfigName
+      EndpointConfig:
+        Type: "AWS::SageMaker::EndpointConfig"
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W1200
+              reason: Suppressed for a very good reason
+        Properties:
+          ProductionVariants:
+          - InitialInstanceCount: 1
+            InitialVariantWeight: 1.0
+            InstanceType: ml.t2.large
+            ModelName: !GetAtt Model.ModelName
+            VariantName: !GetAtt Model.ModelName
+  expectations:
+    rules:
+      SAGEMAKER_ENDPOINT_CONFIGURATION_KMS_KEY_CONFIGURED: SKIP
+
 - name: Scenario c) Missing KmsKeyId, FAIL
   input: 
     Resources:
