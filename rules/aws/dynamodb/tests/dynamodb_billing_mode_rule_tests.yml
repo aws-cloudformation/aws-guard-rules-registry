@@ -1,0 +1,275 @@
+###
+# DYNAMODB_BILLING_MODE_RULE tests
+###
+---
+- name: Empty
+  input: {}
+  expectations:
+    rules:
+      DYNAMODB_BILLING_MODE_RULE: SKIP
+
+- name: No resources
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      DYNAMODB_BILLING_MODE_RULE: SKIP
+
+- name: DynamoDb BillingMode as PROVISIONED
+  input:
+    Resources:
+      mySecondDDBTable:
+        Type: AWS::DynamoDB::Table
+        DependsOn: "myFirstDDBTable"
+        Properties:
+          AttributeDefinitions:
+            - AttributeName: "ArtistId"
+              AttributeType: "S"
+            - AttributeName: "Concert"
+              AttributeType: "S"
+            - AttributeName: "TicketSales"
+              AttributeType: "S"
+          KeySchema:
+            - AttributeName: "ArtistId"
+              KeyType: "HASH"
+            - AttributeName: "Concert"
+              KeyType: "RANGE"
+          ProvisionedThroughput:
+            ReadCapacityUnits:
+              Ref: "ReadCapacityUnits"
+            WriteCapacityUnits:
+              Ref: "WriteCapacityUnits"
+          GlobalSecondaryIndexes:
+            - IndexName: "myGSI"
+              KeySchema:
+                - AttributeName: "TicketSales"
+                  KeyType: "HASH"
+              Projection:
+                ProjectionType: "KEYS_ONLY"
+              ProvisionedThroughput:
+                ReadCapacityUnits:
+                  Ref: "ReadCapacityUnits"
+                WriteCapacityUnits:
+                  Ref: "WriteCapacityUnits"
+          BillingMode: 'PROVISIONED'
+  expectations:
+    rules:
+      DYNAMODB_BILLING_MODE_RULE: PASS
+
+- name: DynamoDb BillingMode does not exist
+  input:
+    Resources:
+      mySecondDDBTable:
+        Type: AWS::DynamoDB::Table
+        DependsOn: "myFirstDDBTable"
+        Properties:
+          AttributeDefinitions:
+            - AttributeName: "ArtistId"
+              AttributeType: "S"
+            - AttributeName: "Concert"
+              AttributeType: "S"
+            - AttributeName: "TicketSales"
+              AttributeType: "S"
+          KeySchema:
+            - AttributeName: "ArtistId"
+              KeyType: "HASH"
+            - AttributeName: "Concert"
+              KeyType: "RANGE"
+          ProvisionedThroughput:
+            ReadCapacityUnits:
+              Ref: "ReadCapacityUnits"
+            WriteCapacityUnits:
+              Ref: "WriteCapacityUnits"
+          GlobalSecondaryIndexes:
+            - IndexName: "myGSI"
+              KeySchema:
+                - AttributeName: "TicketSales"
+                  KeyType: "HASH"
+              Projection:
+                ProjectionType: "KEYS_ONLY"
+              ProvisionedThroughput:
+                ReadCapacityUnits:
+                  Ref: "ReadCapacityUnits"
+                WriteCapacityUnits:
+                  Ref: "WriteCapacityUnits"
+  expectations:
+    rules:
+      DYNAMODB_BILLING_MODE_RULE: FAIL
+
+- name: DynamoDb BillingMode as 'TEST'
+  input:
+    Resources:
+      mySecondDDBTable:
+        Type: AWS::DynamoDB::Table
+        DependsOn: "myFirstDDBTable"
+        Properties:
+          AttributeDefinitions:
+            - AttributeName: "ArtistId"
+              AttributeType: "S"
+            - AttributeName: "Concert"
+              AttributeType: "S"
+            - AttributeName: "TicketSales"
+              AttributeType: "S"
+          KeySchema:
+            - AttributeName: "ArtistId"
+              KeyType: "HASH"
+            - AttributeName: "Concert"
+              KeyType: "RANGE"
+          ProvisionedThroughput:
+            ReadCapacityUnits:
+              Ref: "ReadCapacityUnits"
+            WriteCapacityUnits:
+              Ref: "WriteCapacityUnits"
+          GlobalSecondaryIndexes:
+            - IndexName: "myGSI"
+              KeySchema:
+                - AttributeName: "TicketSales"
+                  KeyType: "HASH"
+              Projection:
+                ProjectionType: "KEYS_ONLY"
+              ProvisionedThroughput:
+                ReadCapacityUnits:
+                  Ref: "ReadCapacityUnits"
+                WriteCapacityUnits:
+                  Ref: "WriteCapacityUnits"
+          BillingMode: 'TEST'
+  expectations:
+    rules:
+      DYNAMODB_BILLING_MODE_RULE: FAIL
+
+- name: CFN_NAG suppression for W73
+  input:
+    Resources:
+      mySecondDDBTable:
+        Type: AWS::DynamoDB::Table
+        DependsOn: "myFirstDDBTable"
+        Properties:
+          AttributeDefinitions:
+            - AttributeName: "ArtistId"
+              AttributeType: "S"
+            - AttributeName: "Concert"
+              AttributeType: "S"
+            - AttributeName: "TicketSales"
+              AttributeType: "S"
+          KeySchema:
+            - AttributeName: "ArtistId"
+              KeyType: "HASH"
+            - AttributeName: "Concert"
+              KeyType: "RANGE"
+          ProvisionedThroughput:
+            ReadCapacityUnits:
+              Ref: "ReadCapacityUnits"
+            WriteCapacityUnits:
+              Ref: "WriteCapacityUnits"
+          GlobalSecondaryIndexes:
+            - IndexName: "myGSI"
+              KeySchema:
+                - AttributeName: "TicketSales"
+                  KeyType: "HASH"
+              Projection:
+                ProjectionType: "KEYS_ONLY"
+              ProvisionedThroughput:
+                ReadCapacityUnits:
+                  Ref: "ReadCapacityUnits"
+                WriteCapacityUnits:
+                  Ref: "WriteCapacityUnits"
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W73
+              reason: Suppressed to test suppression works and skips this test
+  expectations:
+    rules:
+      DYNAMODB_BILLING_MODE_RULE: SKIP
+
+- name: Guard suppression for DYNAMODB_BILLING_MODE_RULE
+  input:
+    Resources:
+      mySecondDDBTable:
+        Type: AWS::DynamoDB::Table
+        DependsOn: "myFirstDDBTable"
+        Properties:
+          AttributeDefinitions:
+            - AttributeName: "ArtistId"
+              AttributeType: "S"
+            - AttributeName: "Concert"
+              AttributeType: "S"
+            - AttributeName: "TicketSales"
+              AttributeType: "S"
+          KeySchema:
+            - AttributeName: "ArtistId"
+              KeyType: "HASH"
+            - AttributeName: "Concert"
+              KeyType: "RANGE"
+          ProvisionedThroughput:
+            ReadCapacityUnits:
+              Ref: "ReadCapacityUnits"
+            WriteCapacityUnits:
+              Ref: "WriteCapacityUnits"
+          GlobalSecondaryIndexes:
+            - IndexName: "myGSI"
+              KeySchema:
+                - AttributeName: "TicketSales"
+                  KeyType: "HASH"
+              Projection:
+                ProjectionType: "KEYS_ONLY"
+              ProvisionedThroughput:
+                ReadCapacityUnits:
+                  Ref: "ReadCapacityUnits"
+                WriteCapacityUnits:
+                  Ref: "WriteCapacityUnits"
+        Metadata:
+          guard:
+            SuppressedRules:
+            - DYNAMODB_BILLING_MODE_RULE
+  expectations:
+    rules:
+      DYNAMODB_BILLING_MODE_RULE: SKIP
+
+- name: Guard and CFN_NAG suppression for W73 & DYNAMODB_BILLING_MODE_RULE
+  input:
+    Resources:
+      mySecondDDBTable:
+        Type: AWS::DynamoDB::Table
+        DependsOn: "myFirstDDBTable"
+        Properties:
+          AttributeDefinitions:
+            - AttributeName: "ArtistId"
+              AttributeType: "S"
+            - AttributeName: "Concert"
+              AttributeType: "S"
+            - AttributeName: "TicketSales"
+              AttributeType: "S"
+          KeySchema:
+            - AttributeName: "ArtistId"
+              KeyType: "HASH"
+            - AttributeName: "Concert"
+              KeyType: "RANGE"
+          ProvisionedThroughput:
+            ReadCapacityUnits:
+              Ref: "ReadCapacityUnits"
+            WriteCapacityUnits:
+              Ref: "WriteCapacityUnits"
+          GlobalSecondaryIndexes:
+            - IndexName: "myGSI"
+              KeySchema:
+                - AttributeName: "TicketSales"
+                  KeyType: "HASH"
+              Projection:
+                ProjectionType: "KEYS_ONLY"
+              ProvisionedThroughput:
+                ReadCapacityUnits:
+                  Ref: "ReadCapacityUnits"
+                WriteCapacityUnits:
+                  Ref: "WriteCapacityUnits"
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W73
+              reason: Suppressed to test suppression works and skips this test
+          guard:
+            SuppressedRules:
+            - DYNAMODB_BILLING_MODE_RULE
+  expectations:
+    rules:
+      DYNAMODB_BILLING_MODE_RULE: SKIP

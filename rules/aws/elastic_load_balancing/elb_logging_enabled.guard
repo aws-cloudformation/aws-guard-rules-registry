@@ -29,6 +29,8 @@
 # Select all Elastic Load Balancing Resources from incoming template (payload)
 #
 let elb_logging_enabled_resources = Resources.*[ Type == 'AWS::ElasticLoadBalancing::LoadBalancer'
+  Metadata.cfn_nag.rules_to_suppress not exists or 
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W26"
   Metadata.guard.SuppressedRules not exists or
   Metadata.guard.SuppressedRules.* != "ELB_LOGGING_ENABLED"
 ]

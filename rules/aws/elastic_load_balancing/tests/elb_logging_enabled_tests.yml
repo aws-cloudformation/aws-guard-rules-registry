@@ -28,6 +28,20 @@
     rules:
       ELB_LOGGING_ENABLED: SKIP
 
+- name: Scenario b) Rule suppressed - CFN_NAG, SKIP
+  input:
+    Resources:
+      Elb:
+        Type: AWS::ElasticLoadBalancing::LoadBalancer
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W26
+              reason: Suppressed for a very good reason
+  expectations:
+    rules:
+      ELB_LOGGING_ENABLED: SKIP
+
 - name: Scenario c) 'AccessLoggingPolicy' has not been specified, FAIL
   input:
     Resources:

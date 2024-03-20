@@ -43,6 +43,35 @@
     rules:
       DYNAMODB_TABLE_ENCRYPTED_KMS : SKIP
 
+- name: Scenario b) DynamoDB Table with missing SSESpecification property but rule suppressed, SKIP
+  input:
+    Resources:
+      Exampletable:
+        Type: AWS::DynamoDB::Table
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W74
+              reason: Suppressed for a very good reason
+        Properties:
+          KeySchema:
+            - AttributeName: Id
+              KeyType: HASH
+          AttributeDefinitions:
+            - AttributeName: Id
+              AttributeType: S
+            - AttributeName: dummy
+              AttributeType: S
+            - AttributeName: name
+              AttributeType: S
+            - AttributeName: owner
+              AttributeType: S
+            - AttributeName: createdAt
+              AttributeType: S
+  expectations:
+    rules:
+      DYNAMODB_TABLE_ENCRYPTED_KMS : SKIP
+
 - name: Scenario c) DynamoDB Table with missing SSESpecification property, FAIL
   input:
     Resources:

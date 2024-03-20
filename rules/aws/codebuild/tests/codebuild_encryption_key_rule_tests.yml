@@ -1,0 +1,194 @@
+###
+# CODEBUILD_ENCRYPTION_KEY_RULE tests
+###
+---
+- name: Empty
+  input: {}
+  expectations:
+    rules:
+      CODEBUILD_ENCRYPTION_KEY_RULE: SKIP
+
+- name: No resources
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      CODEBUILD_ENCRYPTION_KEY_RULE: SKIP
+
+- name: CodeBuild project with Encryption Key
+  input:
+    Resources:
+      Project:
+        Type: AWS::CodeBuild::Project
+        Properties:
+          Name: myProjectName
+          Description: A description about my project
+          ServiceRole: !GetAtt ServiceRole.Arn
+          EncryptionKey: 'TestEncryptionKey'
+          Artifacts:
+            Type: no_artifacts
+          Environment:
+            Type: LINUX_CONTAINER
+            ComputeType: BUILD_GENERAL1_SMALL
+            Image: aws/codebuild/java:openjdk-8
+            EnvironmentVariables:
+              - Name: varName
+                Type: varType
+                Value: varValue
+          Source:
+            Location: codebuild-demo-test/0123ab9a371ebf0187b0fe5614fbb72c
+            Type: S3
+          TimeoutInMinutes: 10
+          Tags:
+            - Key: Key1
+              Value: Value1
+            - Key: Key2
+              Value: Value2
+  expectations:
+    rules:
+      CODEBUILD_ENCRYPTION_KEY_RULE: PASS
+
+- name: CodeBuild project where Encryption Key does not exist
+  input:
+    Resources:
+      Project:
+        Type: AWS::CodeBuild::Project
+        Properties:
+          Name: myProjectName
+          Description: A description about my project
+          ServiceRole: !GetAtt ServiceRole.Arn
+          Artifacts:
+            Type: no_artifacts
+          Environment:
+            Type: LINUX_CONTAINER
+            ComputeType: BUILD_GENERAL1_SMALL
+            Image: aws/codebuild/java:openjdk-8
+            EnvironmentVariables:
+              - Name: varName
+                Type: varType
+                Value: varValue
+          Source:
+            Location: codebuild-demo-test/0123ab9a371ebf0187b0fe5614fbb72c
+            Type: S3
+          TimeoutInMinutes: 10
+          Tags:
+            - Key: Key1
+              Value: Value1
+            - Key: Key2
+              Value: Value2
+  expectations:
+    rules:
+      CODEBUILD_ENCRYPTION_KEY_RULE: FAIL
+
+- name: CFN_NAG suppression for W32
+  input:
+    Resources:
+      Project:
+        Type: AWS::CodeBuild::Project
+        Properties:
+          Name: myProjectName
+          Description: A description about my project
+          ServiceRole: !GetAtt ServiceRole.Arn
+          Artifacts:
+            Type: no_artifacts
+          Environment:
+            Type: LINUX_CONTAINER
+            ComputeType: BUILD_GENERAL1_SMALL
+            Image: aws/codebuild/java:openjdk-8
+            EnvironmentVariables:
+              - Name: varName
+                Type: varType
+                Value: varValue
+          Source:
+            Location: codebuild-demo-test/0123ab9a371ebf0187b0fe5614fbb72c
+            Type: S3
+          TimeoutInMinutes: 10
+          Tags:
+            - Key: Key1
+              Value: Value1
+            - Key: Key2
+              Value: Value2
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W32
+              reason: Suppressed to test suppression works and skips this test
+  expectations:
+    rules:
+      CODEBUILD_ENCRYPTION_KEY_RULE: SKIP
+
+- name: Guard suppression for CODEBUILD_ENCRYPTION_KEY_RULE
+  input:
+    Resources:
+      Project:
+        Type: AWS::CodeBuild::Project
+        Properties:
+          Name: myProjectName
+          Description: A description about my project
+          ServiceRole: !GetAtt ServiceRole.Arn
+          Artifacts:
+            Type: no_artifacts
+          Environment:
+            Type: LINUX_CONTAINER
+            ComputeType: BUILD_GENERAL1_SMALL
+            Image: aws/codebuild/java:openjdk-8
+            EnvironmentVariables:
+              - Name: varName
+                Type: varType
+                Value: varValue
+          Source:
+            Location: codebuild-demo-test/0123ab9a371ebf0187b0fe5614fbb72c
+            Type: S3
+          TimeoutInMinutes: 10
+          Tags:
+            - Key: Key1
+              Value: Value1
+            - Key: Key2
+              Value: Value2
+        Metadata:
+          guard:
+            SuppressedRules:
+            - CODEBUILD_ENCRYPTION_KEY_RULE
+  expectations:
+    rules:
+      CODEBUILD_ENCRYPTION_KEY_RULE: SKIP
+
+- name: Guard and CFN_NAG suppression for W32 & CODEBUILD_ENCRYPTION_KEY_RULE
+  input:
+    Resources:
+      Project:
+        Type: AWS::CodeBuild::Project
+        Properties:
+          Name: myProjectName
+          Description: A description about my project
+          ServiceRole: !GetAtt ServiceRole.Arn
+          Artifacts:
+            Type: no_artifacts
+          Environment:
+            Type: LINUX_CONTAINER
+            ComputeType: BUILD_GENERAL1_SMALL
+            Image: aws/codebuild/java:openjdk-8
+            EnvironmentVariables:
+              - Name: varName
+                Type: varType
+                Value: varValue
+          Source:
+            Location: codebuild-demo-test/0123ab9a371ebf0187b0fe5614fbb72c
+            Type: S3
+          TimeoutInMinutes: 10
+          Tags:
+            - Key: Key1
+              Value: Value1
+            - Key: Key2
+              Value: Value2
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W32
+              reason: Suppressed to test suppression works and skips this test
+          guard:
+            SuppressedRules:
+            - CODEBUILD_ENCRYPTION_KEY_RULE
+  expectations:
+    rules:
+      CODEBUILD_ENCRYPTION_KEY_RULE: SKIP

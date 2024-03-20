@@ -29,6 +29,8 @@
 # Select all DynamoDB Table resources from incoming template (payload)
 #
 let dynamodb_pitr_enabled = Resources.*[ Type == "AWS::DynamoDB::Table" 
+  Metadata.cfn_nag.rules_to_suppress not exists or 
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W78"
   Metadata.guard.SuppressedRules not exists or
   Metadata.guard.SuppressedRules.* != "DYNAMODB_PITR_ENABLED"
 ]

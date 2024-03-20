@@ -45,6 +45,37 @@
     rules:
       DYNAMODB_PITR_ENABLED: SKIP
 
+- name: Scenario b) DynamoDB Table with PITR disabled but rule is suppressed, SKIP
+  input:
+    Resources:
+      Exampletable:
+        Type: AWS::DynamoDB::Table
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W78
+              reason: Suppressed for a very good reason
+        Properties:
+          KeySchema:
+            - AttributeName: Id
+              KeyType: HASH
+          AttributeDefinitions:
+            - AttributeName: Id
+              AttributeType: S
+            - AttributeName: dummy
+              AttributeType: S
+            - AttributeName: name
+              AttributeType: S
+            - AttributeName: owner
+              AttributeType: S
+            - AttributeName: createdAt
+              AttributeType: S
+          PointInTimeRecoverySpecification:
+            PointInTimeRecoveryEnabled: true
+  expectations:
+    rules:
+      DYNAMODB_PITR_ENABLED: SKIP
+
 - name: Scenario c) DynamoDB Table with a missing PITR configuration, FAIL
   input:
     Resources:

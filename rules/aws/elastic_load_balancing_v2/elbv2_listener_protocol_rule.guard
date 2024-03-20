@@ -1,0 +1,52 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+#
+# Rule Identifier:
+#   ELBV2_LISTENER_PROTOCOL_RULE
+#
+# Description:
+#   Elastic Load Balancer V2 Listener Protocol should use HTTPS for ALBs
+#
+# Reports on:
+#   AWS::ElasticLoadBalancingV2::Listener
+#
+# Evaluates:
+#   AWS CloudFormation
+#
+# Rule Parameters:
+#   None
+#
+# CFN_NAG Rule Id:
+#   W56
+#
+# Scenarios:
+# a) SKIP: when there are no Elastic Load Balancing V2 Listener Resources
+# b) SKIP: when metadata has rule suppression for ELBV2_LISTENER_PROTOCOL_RULE
+# c) FAIL: when Protocol in Elastic Load Balancing V2 Listener uses HTTP.
+# d) PASS:  when Protocol in Elastic Load Balancing V2 Listener uses HTTPS.
+
+#
+# Select all Elastic Load Balancing Resources from incoming template (payload)
+#
+let elbv2_listener_protocol_rule = Resources.*[ Type == 'AWS::ElasticLoadBalancingV2::Listener'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W56"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "ELBV2_LISTENER_PROTOCOL_RULE"
+]
+
+rule ELBV2_LISTENER_PROTOCOL_RULE when %elbv2_listener_protocol_rule !empty {
+  let violations = %elbv2_listener_protocol_rule[
+    Type == 'AWS::ElasticLoadBalancingV2::Listener'
+    Properties.Protocol exists
+    Properties.Protocol == 'HTTP'
+  ]
+
+  %violations empty
+  <<
+   Violation: Elastic Load Balancer V2 do not use HTTPS protocol.
+   Fix: use HTTPS protocol for Elastic Load Balancer V2 Listener.
+  >>
+}

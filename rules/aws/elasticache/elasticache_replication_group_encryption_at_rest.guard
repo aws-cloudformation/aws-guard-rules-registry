@@ -1,0 +1,45 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#    ELASTICACHE_REPLICATION_GROUP_ENCRYPTION_AT_REST
+#
+# Description:
+#    ElastiCache ReplicationGroup should have encryption enabled for at rest
+#
+# Reports on:
+#    AWS::Elasticache::ReplicationGroup
+#
+# Evaluates:
+#    AWS CloudFormation
+#
+# Rule Parameters:
+#    NA
+#
+# CFN_NAG Rule Id:
+#   F25
+#
+# Scenarios:
+# a) SKIP: when no AWS::Elasticache::ReplicationGroup resources are present
+# b) PASS: when all AWS::Elasticache::ReplicationGroup resources have the AtRestEncryptionEnabled property set to true
+# c) FAIL: when any AWS::Elasticache::ReplicationGroup resources have the AtRestEncryptionEnabled set to false or absent (default false)
+# e) SKIP: when metadata includes the suppression for rule ELASTICACHE_REPLICATION_GROUP_ENCRYPTION_AT_REST
+
+#
+# Select all AWS::Elasticache::ReplicationGroup resources from incoming template (payload)
+#
+let elasticache_replication_group_encryption_at_rest = Resources.*[ Type == 'AWS::ElastiCache::ReplicationGroup'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "F25"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "ELASTICACHE_REPLICATION_GROUP_ENCRYPTION_AT_REST"
+]
+
+rule ELASTICACHE_REPLICATION_GROUP_ENCRYPTION_AT_REST when %elasticache_replication_group_encryption_at_rest !empty {
+    %elasticache_replication_group_encryption_at_rest.Properties.AtRestEncryptionEnabled == true
+		<<
+			Violation: ElastiCache ReplicationGroup should have encryption enabled for at rest
+			Fix: Set AtRestEncryptionEnabled property to true
+		>>
+}
