@@ -64,3 +64,19 @@
   expectations:
     rules:
       API_GW_DOMAIN_DENY_NON_TLS_TRAFFIC: SKIP
+
+- name: APIGW domain with missing SecurityPolicy property but rule suppressed, SKIP
+  input:
+    Resources:
+      myDomainName:
+        Type: 'AWS::ApiGateway::DomainName'
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W62
+              reason: Suppressed for a very good reason
+        Properties:
+          DomainName: api.mydomain.com
+  expectations:
+    rules:
+      API_GW_DOMAIN_DENY_NON_TLS_TRAFFIC: SKIP

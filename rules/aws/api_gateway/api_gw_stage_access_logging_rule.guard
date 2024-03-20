@@ -1,0 +1,47 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+#
+# Rule Identifier:
+#   API_GW_STAGE_ACCESS_LOGGING_RULE
+#
+# Description:
+#   AWS::ApiGateway::Stage should have the AccessLogSetting property defined.
+#
+# Reports on:
+#   AWS::ApiGateway::Stage
+#
+# Evaluates:
+#   AWS CloudFormation
+#
+# Rule Parameters:
+#   None
+#
+# CFN_NAG Rule Id:
+#   W69
+#
+# Scenarios:
+# a) SKIP: when there are no API Gateway Stage Resources.
+# b) SKIP: when metadata has rule suppression for API_GW_STAGE_ACCESS_LOGGING_RULE.
+# c) FAIL: when accessLogSetting do no exist for APIGateway Stage resources.
+# d) PASS: when accessLogSetting exists for APIGateway Stage resources.
+
+#
+# Select all API Gateway Stage Resources from incoming template (payload)
+#
+let api_gw_stage_access_logging_rule = Resources.*[ Type == 'AWS::ApiGateway::Stage'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W69"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "API_GW_STAGE_ACCESS_LOGGING_RULE"
+]
+
+rule API_GW_STAGE_ACCESS_LOGGING_RULE when %api_gw_stage_access_logging_rule !empty {
+
+  %api_gw_stage_access_logging_rule.Properties.AccessLogSetting exists
+  <<
+    Violation: AuthorizationType set to 'NONE' for API Gateway Method Resources.
+    Fix: change value of AuthorizationType for API Gateway Method Resources.
+  >>
+}

@@ -24,6 +24,8 @@
 # d) SKIP: when metadata includes the suppression for rule API_GW_CACHE_ENABLED_AND_ENCRYPTED
 
 let api_gw_cache_enabled_encrypted = Resources.*[ Type == 'AWS::ApiGateway::Stage'
+  Metadata.cfn_nag.rules_to_suppress not exists or 
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W87"
   Metadata.guard.SuppressedRules not exists or
   Metadata.guard.SuppressedRules.* != "API_GW_CACHE_ENABLED_AND_ENCRYPTED"
 ]

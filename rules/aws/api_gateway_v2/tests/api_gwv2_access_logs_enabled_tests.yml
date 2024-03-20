@@ -28,6 +28,20 @@
     rules:
       API_GWV2_ACCESS_LOGS_ENABLED: SKIP
 
+- name: Scenario b) Rule suppressed, SKIP
+  input:
+    Resources:
+      ApiStage:
+        Type: AWS::ApiGatewayV2::Stage
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W46
+              reason: Suppressed for a very good reason
+  expectations:
+    rules:
+      API_GWV2_ACCESS_LOGS_ENABLED: SKIP
+
 - name: Scenario c) API Gateway V2 Stage Method is missing AccessLogSettings.DestinationArn or AccessLogSettings.Format, FAIL
   input:
     Resources:
