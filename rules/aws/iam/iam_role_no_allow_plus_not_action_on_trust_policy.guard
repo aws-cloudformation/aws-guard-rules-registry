@@ -1,0 +1,52 @@
+#
+#####################################
+##          AWS Solutions          ##
+#####################################
+# Rule Identifier:
+#   IAM_ROLE_NO_ALLOW_PLUS_NOT_ACTION_ON_TRUST_POLICY
+#
+# Description:
+#   Checks that IDENTITY ACCESS MANAGEMENT (IAM) Role do not use Allow+NotAction on Trust Policy
+#
+# Reports on:
+#   AWS::IAM::Role
+#
+# Evaluates:
+#   AWS CloudFormation
+#
+# Rule Parameters:
+#   NA
+#
+# CFN_NAG Rule Id:
+#   W14
+#
+# Documentation:
+# https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_notaction.html
+#
+# Scenarios:
+# a) SKIP: when there are no IAM Roles present
+# b) PASS: when all IAM Roles do not use Allow+NotAction on Trust Permission
+# c) FAIL: when any IAM Roles allow both Effect: Allow and NotAction on Trust Permission
+# d) SKIP: when metadata has rule suppression for IAM_ROLE_NO_ALLOW_PLUS_NOT_ACTION_ON_TRUST_POLICY or CFN_NAG W14
+
+let iam_role_no_allow_plus_not_action_on_trust_policy = Resources.*[ Type == 'AWS::IAM::Role'
+  Metadata.cfn_nag.rules_to_suppress not exists or
+  Metadata.cfn_nag.rules_to_suppress.*.id != "W14"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "IAM_ROLE_NO_ALLOW_PLUS_NOT_ACTION_ON_TRUST_POLICY"
+]
+
+rule IAM_ROLE_NO_ALLOW_PLUS_NOT_ACTION_ON_TRUST_POLICY when %iam_role_no_allow_plus_not_action_on_trust_policy !empty {
+  let violations = %iam_role_no_allow_plus_not_action_on_trust_policy[
+    Type == 'AWS::IAM::Role'
+    some Properties.AssumeRolePolicyDocument.Statement[*] {
+      Effect == "Allow"
+      NotAction exists
+    }
+  ]
+  %violations empty
+  <<
+    Violation: IAM Roles should not allow Allow+NotAction on trust permissions
+    Fix: Remove IAM Roles on trust permissions that match {"Effect": "Allow", "NotAction": ... }
+  >>
+}

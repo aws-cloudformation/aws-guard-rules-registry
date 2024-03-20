@@ -1,21 +1,21 @@
 ###
-# IAM_POLICY_NO_STATEMENTS_WITH_FULL_ACCESS tests
+# IAM_MANAGEDPOLICY_NO_STATEMENTS_WITH_FULL_ACCESS tests
 ###
 ---
 - name: Empty, SKIP
   input: {}
   expectations:
     rules:
-      IAM_POLICY_NO_STATEMENTS_WITH_FULL_ACCESS: SKIP
+      IAM_MANAGEDPOLICY_NO_STATEMENTS_WITH_FULL_ACCESS: SKIP
 
 - name: No resources, SKIP
   input:
     Resources: {}
   expectations:
     rules:
-      IAM_POLICY_NO_STATEMENTS_WITH_FULL_ACCESS: SKIP
+      IAM_MANAGEDPOLICY_NO_STATEMENTS_WITH_FULL_ACCESS: SKIP
 
-- name: IAM Managed Policy with only "Deny" S3 saccess statement, SKIP
+- name: IAM Managed Policy with only "Deny" S3 saccess statement, PASS
   input: 
     Resources: 
       ExamplePolicy: 
@@ -28,9 +28,9 @@
                 Action: "s3:*"
   expectations:
     rules: 
-      IAM_POLICY_NO_STATEMENTS_WITH_FULL_ACCESS: SKIP
+      IAM_MANAGEDPOLICY_NO_STATEMENTS_WITH_FULL_ACCESS: PASS
 
-- name: IAM Policy with only "Deny" S3 saccess statement, PASS
+- name: IAM Policy with only "Deny" S3 saccess statement, SKIP
   input: 
     Resources: 
       ExamplePolicy: 
@@ -43,9 +43,9 @@
                 Action: "s3:*"
   expectations:
     rules: 
-      IAM_POLICY_NO_STATEMENTS_WITH_FULL_ACCESS: PASS
+      IAM_MANAGEDPOLICY_NO_STATEMENTS_WITH_FULL_ACCESS: SKIP
 
-- name: IAM Managed Policy with only "Deny" S3 saccess statement and resource list, SKIP
+- name: IAM Managed Policy with only "Deny" S3 saccess statement and resource list, PASS
   input:
     Resources:
       ExamplePolicy:
@@ -58,9 +58,9 @@
                 Action: "s3:*"
   expectations:
     rules:
-      IAM_POLICY_NO_STATEMENTS_WITH_FULL_ACCESS: SKIP
+      IAM_MANAGEDPOLICY_NO_STATEMENTS_WITH_FULL_ACCESS: PASS
 
-- name: IAM Policy with only "Deny" S3 saccess statement and resource list, PASS
+- name: IAM Policy with only "Deny" S3 saccess statement and resource list, SKIP
   input:
     Resources:
       ExamplePolicy:
@@ -75,13 +75,13 @@
                   - "*"
   expectations:
     rules:
-      IAM_POLICY_NO_STATEMENTS_WITH_FULL_ACCESS: PASS
+      IAM_MANAGEDPOLICY_NO_STATEMENTS_WITH_FULL_ACCESS: SKIP
 
-- name: IAM Policy with S3 read only access statement, PASS
+- name: IAM Managed Policy with S3 read only access statement, PASS
   input: 
     Resources: 
       ExamplePolicy: 
-        Type: "AWS::IAM::Policy"
+        Type: "AWS::IAM::ManagedPolicy"
         Properties: 
           PolicyDocument: 
             Version: "2012-10-17"
@@ -96,13 +96,13 @@
                 Resource: "*"
   expectations:
     rules: 
-      IAM_POLICY_NO_STATEMENTS_WITH_FULL_ACCESS: PASS
+      IAM_MANAGEDPOLICY_NO_STATEMENTS_WITH_FULL_ACCESS: PASS
 
-- name: IAM Policy with S3 full access statement, FAIL
+- name: IAM Managed Policy with S3 full access statement, FAIL
   input: 
     Resources: 
       ExamplePolicy: 
-        Type: "AWS::IAM::Policy"
+        Type: "AWS::IAM::ManagedPolicy"
         Properties: 
           PolicyDocument: 
             Version: "2012-10-17"
@@ -120,13 +120,13 @@
                 Resource: "*"
   expectations:
     rules: 
-      IAM_POLICY_NO_STATEMENTS_WITH_FULL_ACCESS: FAIL
+      IAM_MANAGEDPOLICY_NO_STATEMENTS_WITH_FULL_ACCESS: FAIL
 
-- name: IAM Policy with S3 full access statement and resource list, FAIL
+- name: IAM Managed Policy with S3 full access statement and resource list, FAIL
   input:
     Resources:
       ExamplePolicy:
-        Type: "AWS::IAM::Policy"
+        Type: "AWS::IAM::ManagedPolicy"
         Properties:
           PolicyDocument:
             Version: "2012-10-17"
@@ -144,13 +144,13 @@
                 Resource: "*"
   expectations:
     rules:
-      IAM_POLICY_NO_STATEMENTS_WITH_FULL_ACCESS: FAIL
-    
-- name: IAM Policy with "Allow" statement granting permissions to all actions on all resources, FAIL 
+      IAM_MANAGEDPOLICY_NO_STATEMENTS_WITH_FULL_ACCESS: FAIL
+
+- name: IAM Managed Policy with "Allow" statement granting permissions to all actions on all resources, FAIL 
   input: 
     Resources: 
       ExamplePolicy: 
-        Type: "AWS::IAM::Policy"
+        Type: "AWS::IAM::ManagedPolicy"
         Properties: 
           PolicyDocument: 
             Version: "2012-10-17"
@@ -160,17 +160,17 @@
                 Resource: "*"
   expectations:
     rules: 
-      IAM_POLICY_NO_STATEMENTS_WITH_FULL_ACCESS: FAIL
+      IAM_MANAGEDPOLICY_NO_STATEMENTS_WITH_FULL_ACCESS: FAIL
 
-- name: IAM Policy with "Allow" statement granting permissions to all actions on all resources but rule suppressed - CFN-GUARD, SKIP 
+- name: IAM Managed Policy with "Allow" statement granting permissions to all actions on all resources but rule suppressed, SKIP
   input: 
     Resources: 
       ExamplePolicy: 
-        Type: "AWS::IAM::Policy"
+        Type: "AWS::IAM::ManagedPolicy"
         Metadata:
           guard:
             SuppressedRules:
-            - IAM_POLICY_NO_STATEMENTS_WITH_FULL_ACCESS: Suppressed for a very good reason
+            - IAM_MANAGEDPOLICY_NO_STATEMENTS_WITH_FULL_ACCESS
         Properties: 
           PolicyDocument: 
             Version: "2012-10-17"
@@ -180,17 +180,17 @@
                 Resource: "*"
   expectations:
     rules: 
-      IAM_POLICY_NO_STATEMENTS_WITH_FULL_ACCESS: SKIP
+      IAM_MANAGEDPOLICY_NO_STATEMENTS_WITH_FULL_ACCESS: SKIP
 
-- name: IAM Policy with "Allow" statement granting permissions to all actions on all resources but rule suppressed - CFN_NAG F4, SKIP 
+- name: IAM Policy with "Allow" statement granting permissions to all actions on all resources but rule suppressed - CFN_NAG F5, SKIP 
   input: 
     Resources: 
       ExamplePolicy: 
-        Type: "AWS::IAM::Policy"
+        Type: "AWS::IAM::ManagedPolicy"
         Metadata:
           cfn_nag:
             rules_to_suppress:
-            - id: F4
+            - id: F5
               reason: Suppressed for a very good reason
         Properties: 
           PolicyDocument: 
@@ -201,21 +201,21 @@
                 Resource: "*"
   expectations:
     rules: 
-      IAM_POLICY_NO_STATEMENTS_WITH_FULL_ACCESS: SKIP
+      IAM_MANAGEDPOLICY_NO_STATEMENTS_WITH_FULL_ACCESS: SKIP
       
-- name: IAM Policy with "Allow" statement granting permissions to all actions on all resources but rule suppressed - BOTH, SKIP 
+- name: IAM ManagedPolicy with "Allow" statement granting permissions to all actions on all resources but rule suppressed - BOTH, SKIP 
   input: 
     Resources: 
       ExamplePolicy: 
-        Type: "AWS::IAM::Policy"
+        Type: "AWS::IAM::ManagedPolicy"
         Metadata:
           cfn_nag:
             rules_to_suppress:
-            - id: F4
+            - id: F5
               reason: Suppressed for a very good reason
           guard:
             SuppressedRules:
-            - IAM_POLICY_NO_STATEMENTS_WITH_FULL_ACCESS: Suppressed for a very good reason
+            - IAM_MANAGEDPOLICY_NO_STATEMENTS_WITH_FULL_ACCESS: Suppressed for a very good reason
         Properties: 
           PolicyDocument: 
             Version: "2012-10-17"
@@ -225,4 +225,4 @@
                 Resource: "*"
   expectations:
     rules: 
-      IAM_POLICY_NO_STATEMENTS_WITH_FULL_ACCESS: SKIP
+      IAM_MANAGEDPOLICY_NO_STATEMENTS_WITH_FULL_ACCESS: SKIP

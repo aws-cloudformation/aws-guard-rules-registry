@@ -1,0 +1,382 @@
+###
+# IAM_ROLE_OR_POLICY_NO_ALLOW_PLUS_NOT_RESOURCE tests
+###
+---
+- name: Empty
+  input: {}
+  expectations:
+    rules:
+      IAM_ROLE_OR_POLICY_NO_ALLOW_PLUS_NOT_RESOURCE: SKIP
+
+- name: No resources
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      IAM_ROLE_OR_POLICY_NO_ALLOW_PLUS_NOT_RESOURCE: SKIP
+
+##
+## Type: AWS::IAM::Role
+##
+
+- name: IAM Role PolicyDocument with Effect:Deny and NotResource
+  input:
+    Resources:
+      ExampleResource:
+        Type: "AWS::IAM::Role"
+        Properties:
+          Topics:
+          - foo-bar-baz
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+            - Effect: Deny
+              NotResource:
+                AWS:
+                - "arn:aws:iam::444455556666:user/Bob"
+                - "arn:aws:iam::444455556666:root"
+  expectations:
+    rules:
+      IAM_ROLE_OR_POLICY_NO_ALLOW_PLUS_NOT_RESOURCE: PASS
+
+- name: IAM Role PolicyDocument with Effect:Allow and NotResource
+  input:
+    Resources:
+      ExampleResource:
+        Type: "AWS::IAM::Role"
+        Properties:
+          Topics:
+           - foo-bar-baz
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+            - Effect: Allow
+              NotResource:
+                AWS:
+                - "arn:aws:iam::444455556666:user/Bob"
+                - "arn:aws:iam::444455556666:root"
+  expectations:
+    rules:
+      IAM_ROLE_OR_POLICY_NO_ALLOW_PLUS_NOT_RESOURCE: FAIL
+
+
+- name: IAM Role PolicyDocument with Effect:Allow and NotResource, but rule suppressed
+  input:
+    Resources:
+      ExampleResource:
+        Type: "AWS::IAM::Role"
+        Properties:
+          Topics:
+          - foo-bar-baz
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+            - Effect: Allow
+              NotResource:
+                AWS:
+                - "arn:aws:iam::444455556666:user/Bob"
+                - "arn:aws:iam::444455556666:root"
+        Metadata:
+          guard:
+            SuppressedRules:
+            - IAM_ROLE_OR_POLICY_NO_ALLOW_PLUS_NOT_RESOURCE: Suppressed to test suppression works and skips this test
+  expectations:
+    rules:
+      IAM_ROLE_OR_POLICY_NO_ALLOW_PLUS_NOT_RESOURCE: SKIP
+
+- name: IAM Role PolicyDocument with Effect:Allow and NotResource, but rule suppressed - CFN_NAG
+  input:
+    Resources:
+      ExampleResource:
+        Type: "AWS::IAM::Role"
+        Properties:
+          Topics:
+          - foo-bar-baz
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+            - Effect: Allow
+              NotResource:
+                AWS:
+                - "arn:aws:iam::444455556666:user/Bob"
+                - "arn:aws:iam::444455556666:root"
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W21
+              reason: Suppressed to test suppression works and skips this test
+  expectations:
+    rules:
+      IAM_ROLE_OR_POLICY_NO_ALLOW_PLUS_NOT_RESOURCE: SKIP
+
+- name: IAM Role PolicyDocument with Effect:Allow and NotResource, but rule suppressed - BOTH
+  input:
+    Resources:
+      ExampleResource:
+        Type: "AWS::IAM::Role"
+        Properties:
+          Topics:
+          - foo-bar-baz
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+            - Effect: Allow
+              NotResource:
+                AWS:
+                - "arn:aws:iam::444455556666:user/Bob"
+                - "arn:aws:iam::444455556666:root"
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W21
+              reason: Suppressed to test suppression works and skips this test
+          guard:
+            SuppressedRules:
+            - IAM_ROLE_OR_POLICY_NO_ALLOW_PLUS_NOT_RESOURCE: Suppressed to test suppression works and skips this test
+  expectations:
+    rules:
+      IAM_ROLE_OR_POLICY_NO_ALLOW_PLUS_NOT_RESOURCE: SKIP
+
+##
+## Type: AWS::IAM::Policy
+##
+
+- name: IAM Policy PolicyDocument with Effect:Deny and NotResource
+  input:
+    Resources:
+      ExampleResource:
+        Type: "AWS::IAM::Policy"
+        Properties:
+          Topics:
+          - foo-bar-baz
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+            - Effect: Deny
+              NotResource:
+                AWS:
+                - "arn:aws:iam::444455556666:user/Bob"
+                - "arn:aws:iam::444455556666:root"
+  expectations:
+    rules:
+      IAM_ROLE_OR_POLICY_NO_ALLOW_PLUS_NOT_RESOURCE: PASS
+
+- name: IAM Policy PolicyDocument with Effect:Allow and NotResource
+  input:
+    Resources:
+      ExampleResource:
+        Type: "AWS::IAM::Policy"
+        Properties:
+          Topics:
+           - foo-bar-baz
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+            - Effect: Allow
+              NotResource:
+                AWS:
+                - "arn:aws:iam::444455556666:user/Bob"
+                - "arn:aws:iam::444455556666:root"
+  expectations:
+    rules:
+      IAM_ROLE_OR_POLICY_NO_ALLOW_PLUS_NOT_RESOURCE: FAIL
+
+
+- name: IAM Policy PolicyDocument with Effect:Allow and NotResource, but rule suppressed
+  input:
+    Resources:
+      ExampleResource:
+        Type: "AWS::IAM::Policy"
+        Properties:
+          Topics:
+          - foo-bar-baz
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+            - Effect: Allow
+              NotResource:
+                AWS:
+                - "arn:aws:iam::444455556666:user/Bob"
+                - "arn:aws:iam::444455556666:root"
+        Metadata:
+          guard:
+            SuppressedRules:
+            - IAM_ROLE_OR_POLICY_NO_ALLOW_PLUS_NOT_RESOURCE: Suppressed to test suppression works and skips this test
+  expectations:
+    rules:
+      IAM_ROLE_OR_POLICY_NO_ALLOW_PLUS_NOT_RESOURCE: SKIP
+
+- name: IAM Policy PolicyDocument with Effect:Allow and NotResource, but rule suppressed - CFN_NAG
+  input:
+    Resources:
+      ExampleResource:
+        Type: "AWS::IAM::Policy"
+        Properties:
+          Topics:
+          - foo-bar-baz
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+            - Effect: Allow
+              NotResource:
+                AWS:
+                - "arn:aws:iam::444455556666:user/Bob"
+                - "arn:aws:iam::444455556666:root"
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W22
+              reason: Suppressed to test suppression works and skips this test
+  expectations:
+    rules:
+      IAM_ROLE_OR_POLICY_NO_ALLOW_PLUS_NOT_RESOURCE: SKIP
+
+- name: IAM Policy PolicyDocument with Effect:Allow and NotResource, but rule suppressed - BOTH
+  input:
+    Resources:
+      ExampleResource:
+        Type: "AWS::IAM::Policy"
+        Properties:
+          Topics:
+          - foo-bar-baz
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+            - Effect: Allow
+              NotResource:
+                AWS:
+                - "arn:aws:iam::444455556666:user/Bob"
+                - "arn:aws:iam::444455556666:root"
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W22
+              reason: Suppressed to test suppression works and skips this test
+          guard:
+            SuppressedRules:
+            - IAM_ROLE_OR_POLICY_NO_ALLOW_PLUS_NOT_RESOURCE: Suppressed to test suppression works and skips this test
+  expectations:
+    rules:
+      IAM_ROLE_OR_POLICY_NO_ALLOW_PLUS_NOT_RESOURCE: SKIP
+
+##
+## Type: AWS::IAM::ManagedPolicy
+##
+
+- name: IAM ManagedPolicy PolicyDocument with Effect:Deny and NotResource
+  input:
+    Resources:
+      ExampleResource:
+        Type: "AWS::IAM::ManagedPolicy"
+        Properties:
+          Topics:
+          - foo-bar-baz
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+            - Effect: Deny
+              NotResource:
+                AWS:
+                - "arn:aws:iam::444455556666:user/Bob"
+                - "arn:aws:iam::444455556666:root"
+  expectations:
+    rules:
+      IAM_ROLE_OR_POLICY_NO_ALLOW_PLUS_NOT_RESOURCE: PASS
+
+- name: IAM ManagedPolicy PolicyDocument with Effect:Allow and NotResource
+  input:
+    Resources:
+      ExampleResource:
+        Type: "AWS::IAM::ManagedPolicy"
+        Properties:
+          Topics:
+           - foo-bar-baz
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+            - Effect: Allow
+              NotResource:
+                AWS:
+                - "arn:aws:iam::444455556666:user/Bob"
+                - "arn:aws:iam::444455556666:root"
+  expectations:
+    rules:
+      IAM_ROLE_OR_POLICY_NO_ALLOW_PLUS_NOT_RESOURCE: FAIL
+
+
+- name: IAM ManagedPolicy PolicyDocument with Effect:Allow and NotResource, but rule suppressed
+  input:
+    Resources:
+      ExampleResource:
+        Type: "AWS::IAM::ManagedPolicy"
+        Properties:
+          Topics:
+          - foo-bar-baz
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+            - Effect: Allow
+              NotResource:
+                AWS:
+                - "arn:aws:iam::444455556666:user/Bob"
+                - "arn:aws:iam::444455556666:root"
+        Metadata:
+          guard:
+            SuppressedRules:
+            - IAM_ROLE_OR_POLICY_NO_ALLOW_PLUS_NOT_RESOURCE: Suppressed to test suppression works and skips this test
+  expectations:
+    rules:
+      IAM_ROLE_OR_POLICY_NO_ALLOW_PLUS_NOT_RESOURCE: SKIP
+
+- name: IAM ManagedPolicy PolicyDocument with Effect:Allow and NotResource, but rule suppressed - CFN_NAG
+  input:
+    Resources:
+      ExampleResource:
+        Type: "AWS::IAM::ManagedPolicy"
+        Properties:
+          Topics:
+          - foo-bar-baz
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+            - Effect: Allow
+              NotResource:
+                AWS:
+                - "arn:aws:iam::444455556666:user/Bob"
+                - "arn:aws:iam::444455556666:root"
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W23
+              reason: Suppressed to test suppression works and skips this test
+  expectations:
+    rules:
+      IAM_ROLE_OR_POLICY_NO_ALLOW_PLUS_NOT_RESOURCE: SKIP
+
+- name: IAM ManagedPolicy PolicyDocument with Effect:Allow and NotResource, but rule suppressed - BOTH
+  input:
+    Resources:
+      ExampleResource:
+        Type: "AWS::IAM::ManagedPolicy"
+        Properties:
+          Topics:
+          - foo-bar-baz
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+            - Effect: Allow
+              NotResource:
+                AWS:
+                - "arn:aws:iam::444455556666:user/Bob"
+                - "arn:aws:iam::444455556666:root"
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: W23
+              reason: Suppressed to test suppression works and skips this test
+          guard:
+            SuppressedRules:
+            - IAM_ROLE_OR_POLICY_NO_ALLOW_PLUS_NOT_RESOURCE: Suppressed to test suppression works and skips this test
+  expectations:
+    rules:
+      IAM_ROLE_OR_POLICY_NO_ALLOW_PLUS_NOT_RESOURCE: SKIP

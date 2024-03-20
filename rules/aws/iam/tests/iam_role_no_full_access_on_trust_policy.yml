@@ -1,0 +1,129 @@
+###
+# IAM_ROLE_NO_FULL_ACCESS_ON_TRUST_POLICY tests
+###
+---
+- name: Empty, SKIP
+  input: {}
+  expectations:
+    rules:
+      IAM_ROLE_NO_FULL_ACCESS_ON_TRUST_POLICY: SKIP
+
+- name: No resources, SKIP
+  input:
+    Resources: {}
+  expectations:
+    rules:
+      IAM_ROLE_NO_FULL_ACCESS_ON_TRUST_POLICY: SKIP
+
+- name: IAM Role with AssumeRolePolicy and no global allow, PASS
+  input: 
+    Resources: 
+      ExamplePolicy: 
+        Type: "AWS::IAM::Role"
+        Properties:
+          AssumeRolePolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Principal: { "codebuild.amazonaws.com"}
+                Action: "sts:AssumeRole"
+  expectations:
+    rules: 
+      IAM_ROLE_NO_FULL_ACCESS_ON_TRUST_POLICY: PASS
+
+- name: IAM Role with full access to a single service, FAIL
+  input:
+    Resources:
+      ExamplePolicy:
+        Type: "AWS::IAM::Role"
+        Properties:
+          AssumeRolePolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Principal: { "codebuild.amazonaws.com"}
+                Action: "s3:*"
+  expectations:
+    rules:
+      IAM_ROLE_NO_FULL_ACCESS_ON_TRUST_POLICY: FAIL
+
+- name: IAM Role with full access to all services, FAIL
+  input:
+    Resources:
+      ExamplePolicy:
+        Type: "AWS::IAM::Role"
+        Properties:
+          AssumeRolePolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Principal: { "codebuild.amazonaws.com"}
+                Action: "*"
+  expectations:
+    rules:
+      IAM_ROLE_NO_FULL_ACCESS_ON_TRUST_POLICY: FAIL
+
+- name: IAM Role AssumeRolePolicyDocument with "Allow" statement granting permissions to all actions but rule suppressed, SKIP
+  input: 
+    Resources:
+      ExamplePolicy:
+        Type: "AWS::IAM::Role"
+        Metadata:
+          guard:
+            SuppressedRules:
+            - IAM_ROLE_NO_FULL_ACCESS_ON_TRUST_POLICY: Suppressed for a very good reason
+        Properties:
+          AssumeRolePolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Principal: { "codebuild.amazonaws.com"}
+                Action: "*"
+  expectations:
+    rules: 
+      IAM_ROLE_NO_FULL_ACCESS_ON_TRUST_POLICY: SKIP
+
+- name: IAM Role AssumeRolePolicyDocument with "Allow" statement granting permissions to all actions but rule suppressed - CFN_NAG, SKIP
+  input: 
+    Resources:
+      ExamplePolicy:
+        Type: "AWS::IAM::Role"
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: F2
+              reason: Suppressed for a very good reason
+        Properties:
+          AssumeRolePolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Principal: { "codebuild.amazonaws.com"}
+                Action: "*"
+  expectations:
+    rules: 
+      IAM_ROLE_NO_FULL_ACCESS_ON_TRUST_POLICY: SKIP
+
+- name: IAM Role AssumeRolePolicyDocument with "Allow" statement granting permissions to all actions but rule suppressed - BOTH, SKIP
+  input: 
+    Resources:
+      ExamplePolicy:
+        Type: "AWS::IAM::Role"
+        Metadata:
+          cfn_nag:
+            rules_to_suppress:
+            - id: F2
+              reason: Suppressed for a very good reason
+          guard:
+            SuppressedRules:
+            - IAM_ROLE_NO_FULL_ACCESS_ON_TRUST_POLICY: Suppressed for a very good reason
+        Properties:
+          AssumeRolePolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Principal: { "codebuild.amazonaws.com"}
+                Action: "*"
+  expectations:
+    rules: 
+      IAM_ROLE_NO_FULL_ACCESS_ON_TRUST_POLICY: SKIP
