@@ -286,7 +286,7 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/elastic_load_balancing/elb_deletion_protection_enabled.guard",
+      "guardFilePath": "rules/aws/elastic_load_balancing_v2/elb_deletion_protection_enabled.guard",
       "controls": [
         "section4b-design-and-secure-the-cloud-3-standard-workloads"
       ]
@@ -310,12 +310,6 @@
         "section4b-design-and-secure-the-cloud-4-standard-workloads",
         "section4b-design-and-secure-the-cloud-10-standard-workloads",
         "section4b-design-and-secure-the-cloud-15-standard-workloads"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/api_gateway_v2/api_gw_associated_with_waf.guard",
-      "controls": [
-        "section4b-design-and-secure-the-cloud-4-standard-workloads"
       ]
     },
     {
@@ -382,14 +376,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/amazon_ec2/ec2_ebs_encryption_by_default.guard",
-      "controls": [
-        "section4b-design-and-secure-the-cloud-6-standard-workloads",
-        "section4b-design-and-secure-the-cloud-12-standard-workloads",
-        "section4b-design-and-secure-the-cloud-15-standard-workloads"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/amazon_efs/efs_encrypted_check.guard",
       "controls": [
         "section4b-design-and-secure-the-cloud-6-standard-workloads",
@@ -431,14 +417,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/amazon_rds/rds_snapshot_encrypted.guard",
-      "controls": [
-        "section4b-design-and-secure-the-cloud-6-standard-workloads",
-        "section4b-design-and-secure-the-cloud-12-standard-workloads",
-        "section4b-design-and-secure-the-cloud-15-standard-workloads"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/amazon_rds/rds_storage_encrypted.guard",
       "controls": [
         "section4b-design-and-secure-the-cloud-6-standard-workloads",
@@ -452,12 +430,6 @@
         "section4b-design-and-secure-the-cloud-12-standard-workloads",
         "section4b-design-and-secure-the-cloud-14-standard-workloads",
         "section4c-run-the-cloud-3-standard-workloads"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_redshift/redshift_require_tls_ssl.guard",
-      "controls": [
-        "section4b-design-and-secure-the-cloud-6-standard-workloads"
       ]
     },
     {
@@ -497,22 +469,10 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/amazon_redshift/redshift_cluster_kms_enabled.guard",
-      "controls": [
-        "section4b-design-and-secure-the-cloud-6-standard-workloads"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/amazon_s3/s3_default_encryption_kms.guard",
       "controls": [
         "section4b-design-and-secure-the-cloud-6-standard-workloads",
         "section4b-design-and-secure-the-cloud-15-standard-workloads"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/api_gateway_v2/api_gw_ssl_enabled.guard",
-      "controls": [
-        "section4b-design-and-secure-the-cloud-6-standard-workloads"
       ]
     },
     {

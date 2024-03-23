@@ -6,88 +6,6 @@
   "contact" : "aws-guard-rules-registry@amazon.com",
   "mappings": [
     {
-      "guardFilePath": "rules/aws/secrets_manager/secretsmanager_scheduled_rotation_success_check.guard",
-      "controls": [
-        "AC-2(1)",
-        "AC-2(j)"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/iam/iam_user_group_membership_check.guard",
-      "controls": [
-        "AC-2(1)",
-        "AC-2(j)",
-        "AC-3",
-        "AC-6"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/iam/iam_password_policy.guard",
-      "controls": [
-        "AC-2(1)",
-        "AC-2(f)",
-        "AC-2(j)",
-        "IA-2",
-        "IA-5(1)(a)(d)(e)",
-        "IA-5(4)"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/iam/access_keys_rotated.guard",
-      "controls": [
-        "AC-2(1)",
-        "AC-2(j)"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/iam/iam_user_unused_credentials_check.guard",
-      "controls": [
-        "AC-2(1)",
-        "AC-2(3)",
-        "AC-2(f)",
-        "AC-3",
-        "AC-6"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/security_hub/securityhub_enabled.guard",
-      "controls": [
-        "AC-2(1)",
-        "AC-2(4)",
-        "AC-2(12)(a)",
-        "AC-2(g)",
-        "AC-17(1)",
-        "AU-6(1)(3)",
-        "CA-7(a)(b)",
-        "SA-10",
-        "SI-4(2)",
-        "SI-4(4)",
-        "SI-4(5)",
-        "SI-4(16)",
-        "SI-4(a)(b)(c)"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/guardduty/guardduty_enabled_centralized.guard",
-      "controls": [
-        "AC-2(1)",
-        "AC-2(4)",
-        "AC-2(12)(a)",
-        "AC-2(g)",
-        "AC-17(1)",
-        "AU-6(1)(3)",
-        "CA-7(a)(b)",
-        "RA-5",
-        "SA-10",
-        "SI-4(1)",
-        "SI-4(2)",
-        "SI-4(4)",
-        "SI-4(5)",
-        "SI-4(16)",
-        "SI-4(a)(b)(c)"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/cloudtrail/cloud_trail_cloud_watch_logs_enabled.guard",
       "controls": [
         "AC-2(4)",
@@ -105,7 +23,7 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/cloudtrail/cloudtrail_enabled.guard",
+      "guardFilePath": "rules/aws/cloudtrail/cloud_trail_enabled.guard",
       "controls": [
         "AC-2(4)",
         "AC-2(g)",
@@ -115,7 +33,7 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/cloudtrail/multi_region_cloudtrail_enabled.guard",
+      "guardFilePath": "rules/aws/cloudtrail/multi_region_cloud_trail_enabled.guard",
       "controls": [
         "AC-2(4)",
         "AU-2(a)(d)",
@@ -160,16 +78,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/iam/iam_root_access_key_check.guard",
-      "controls": [
-        "AC-2(f)",
-        "AC-2(j)",
-        "AC-3",
-        "AC-6",
-        "AC-6(10)"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/amazon_s3/s3_bucket_logging_enabled.guard",
       "controls": [
         "AC-2(g)",
@@ -188,29 +96,12 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/iam/root_account_mfa_enabled.guard",
-      "controls": [
-        "AC-2(j)",
-        "IA-2(1)(11)"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/amazon_emr/emr_kerberos_enabled.guard",
       "controls": [
         "AC-2(j)",
         "AC-3",
         "AC-5c",
         "AC-6"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/iam/iam_group_has_users_check.guard",
-      "controls": [
-        "AC-2(j)",
-        "AC-3",
-        "AC-5c",
-        "AC-6",
-        "SC-2"
       ]
     },
     {
@@ -255,17 +146,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/amazon_rds/rds_snapshots_public_prohibited.guard",
-      "controls": [
-        "AC-3",
-        "AC-4",
-        "AC-6",
-        "AC-21(b)",
-        "SC-7",
-        "SC-7(3)"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/amazon_redshift/redshift_cluster_public_access_check.guard",
       "controls": [
         "AC-3",
@@ -297,29 +177,7 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/amazon_s3/s3_account_level_public_access_blocks.guard",
-      "controls": [
-        "AC-3",
-        "AC-4",
-        "AC-6",
-        "AC-21(b)",
-        "SC-7",
-        "SC-7(3)"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/aws_dms/dms_replication_not_public.guard",
-      "controls": [
-        "AC-3",
-        "AC-4",
-        "AC-6",
-        "AC-21(b)",
-        "SC-7",
-        "SC-7(3)"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_ec2/ebs_snapshot_public_restorable_check.guard",
       "controls": [
         "AC-3",
         "AC-4",
@@ -384,22 +242,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/amazon_ec2/vpc_default_security_group_closed.guard",
-      "controls": [
-        "AC-4",
-        "SC-7",
-        "SC-7(3)"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_ec2/vpc_sg_open_only_to_authorized_ports.guard",
-      "controls": [
-        "AC-4",
-        "SC-7",
-        "SC-7(3)"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/aws_certificate_manager/acm_certificate_expiration_check.guard",
       "controls": [
         "AC-4",
@@ -435,26 +277,11 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/amazon_ec2/internet_gateway_authorized_vpc_only.guard",
-      "controls": [
-        "AC-4",
-        "AC-17(3)",
-        "SC-7",
-        "SC-7(3)"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/codebuild/codebuild_project_envvar_awscred_check.guard",
       "controls": [
         "AC-6",
         "IA-5(7)",
         "SA-3(a)"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_ec2/ec2_imdsv2_check.guard",
-      "controls": [
-        "AC-6"
       ]
     },
     {
@@ -472,16 +299,6 @@
         "SC-8(1)",
         "SC-13",
         "SC-23"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_redshift/redshift_require_tls_ssl.guard",
-      "controls": [
-        "AC-17(2)",
-        "SC-7",
-        "SC-8",
-        "SC-8(1)",
-        "SC-13"
       ]
     },
     {
@@ -534,14 +351,6 @@
     },
     {
       "guardFilePath": "rules/aws/elastic_load_balancing/elb_logging_enabled.guard",
-      "controls": [
-        "AU-2(a)(d)",
-        "AU-3",
-        "AU-12(a)(c)"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_ec2/vpc_flow_logs_enabled.guard",
       "controls": [
         "AU-2(a)(d)",
         "AU-3",
@@ -606,59 +415,10 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/amazon_ec2/ec2_instance_managed_by_systems_manager.guard",
-      "controls": [
-        "CM-2",
-        "CM-7(a)",
-        "CM-8(1)",
-        "CM-8(3)(a)",
-        "SA-3(a)",
-        "SA-10",
-        "SI-2(2)",
-        "SI-7(1)"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_ec2/ec2_managedinstance_association_compliance_status_check.guard",
-      "controls": [
-        "CM-2",
-        "CM-7(a)",
-        "CM-8(3)(a)",
-        "SI-2(2)"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_ec2/ec2_stopped_instance.guard",
-      "controls": [
-        "CM-2"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_ec2/ec2_volume_inuse_check.guard",
-      "controls": [
-        "CM-2",
-        "SC-4"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/elastic_load_balancing/elb_deletion_protection_enabled.guard",
+      "guardFilePath": "rules/aws/elastic_load_balancing_v2/elb_deletion_protection_enabled.guard",
       "controls": [
         "CM-2",
         "CP-10"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/cloudtrail/cloudtrail_security_trail_enabled.guard",
-      "controls": [
-        "CM-2"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_ec2/ec2_managedinstance_patch_compliance_status_check.guard",
-      "controls": [
-        "CM-8(3)(a)",
-        "SI-2(2)",
-        "SI-7(1)"
       ]
     },
     {
@@ -678,39 +438,7 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/elasticache/elasticache_redis_cluster_automatic_backup_check.guard",
-      "controls": [
-        "CP-9(b)",
-        "CP-10",
-        "SI-12"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/dynamodb/dynamodb_in_backup_plan.guard",
-      "controls": [
-        "CP-9(b)",
-        "CP-10",
-        "SI-12"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_ec2/ebs_in_backup_plan.guard",
-      "controls": [
-        "CP-9(b)",
-        "CP-10",
-        "SI-12"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_efs/efs_in_backup_plan.guard",
-      "controls": [
-        "CP-9(b)",
-        "CP-10",
-        "SI-12"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_rds/rds_in_backup_plan.guard",
       "controls": [
         "CP-9(b)",
         "CP-10",
@@ -740,45 +468,10 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/amazon_ec2/vpc_vpn_2_tunnels_up.guard",
-      "controls": [
-        "CP-10"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/elastic_load_balancing/elb_cross_zone_load_balancing_enabled.guard",
       "controls": [
         "CP-10",
         "SC-5"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/iam/root_account_hardware_mfa_enabled.guard",
-      "controls": [
-        "IA-2(1)(11)"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/iam/mfa_enabled_for_iam_console_access.guard",
-      "controls": [
-        "IA-2(1)(2)(11)"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/iam/iam_user_mfa_enabled.guard",
-      "controls": [
-        "IA-2(1)(2)(11)"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/guardduty/guardduty_non_archived_findings.guard",
-      "controls": [
-        "IR-4(1)",
-        "IR-6(1)",
-        "IR-7(1)",
-        "RA-5",
-        "SA-10",
-        "SI-4(a)(b)(c)"
       ]
     },
     {
@@ -828,7 +521,7 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/api_gateway_v2/api_gw_cache_enabled_and_encrypted.guard",
+      "guardFilePath": "rules/aws/api_gateway/api_gw_cache_enabled_and_encrypted.guard",
       "controls": [
         "SC-13",
         "SC-28"
@@ -898,18 +591,6 @@
     },
     {
       "guardFilePath": "rules/aws/amazon_s3/s3_bucket_default_lock_enabled.guard",
-      "controls": [
-        "SC-28"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_ec2/ec2_ebs_encryption_by_default.guard",
-      "controls": [
-        "SC-28"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_rds/rds_snapshot_encrypted.guard",
       "controls": [
         "SC-28"
       ]

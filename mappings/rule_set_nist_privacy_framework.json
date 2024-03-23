@@ -13,13 +13,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/api_gateway_v2/api_gw_ssl_enabled.guard",
-      "controls": [
-        "CT.DM-P7",
-        "PR.DS-P2"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/opensearch_service/elasticsearch_node_to_node_encryption_check.guard",
       "controls": [
         "CT.DM-P7"
@@ -37,12 +30,6 @@
       "controls": [
         "CT.DM-P7",
         "PR.DS-P2"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_redshift/redshift_require_tls_ssl.guard",
-      "controls": [
-        "CT.DM-P7"
       ]
     },
     {
@@ -431,12 +418,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/amazon_ec2/ec2_ebs_encryption_by_default.guard",
-      "controls": [
-        "PR.DS-P1"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/amazon_efs/efs_encrypted_check.guard",
       "controls": [
         "PR.DS-P1"
@@ -449,19 +430,7 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/amazon_redshift/redshift_cluster_kms_enabled.guard",
-      "controls": [
-        "PR.DS-P1"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/amazon_rds/rds_storage_encrypted.guard",
-      "controls": [
-        "PR.DS-P1"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_rds/rds_snapshot_encrypted.guard",
       "controls": [
         "PR.DS-P1"
       ]
@@ -529,7 +498,7 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/elastic_load_balancing/elb_deletion_protection_enabled.guard",
+      "guardFilePath": "rules/aws/elastic_load_balancing_v2/elb_deletion_protection_enabled.guard",
       "controls": [
         "PR.DS-P4",
         "PR.PO-P1",
@@ -584,15 +553,6 @@
       "controls": [
         "PR.DS-P4",
         "PR.PO-P3"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/elasticache/elasticache_redis_cluster_automatic_backup_check.guard",
-      "controls": [
-        "PR.DS-P4",
-        "PR.PO-P3",
-        "PR.PO-P7",
-        "PR.PT-P4"
       ]
     },
     {

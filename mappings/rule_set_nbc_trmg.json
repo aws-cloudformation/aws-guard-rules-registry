@@ -185,21 +185,7 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/amazon_rds/rds_snapshot_encrypted.guard",
-      "controls": [
-        "3.1.1(h)",
-        "3.1.10(b)"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/amazon_rds/rds_storage_encrypted.guard",
-      "controls": [
-        "3.1.1(h)",
-        "3.1.10(b)"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_ec2/ec2_ebs_encryption_by_default.guard",
       "controls": [
         "3.1.1(h)",
         "3.1.10(b)"
@@ -214,15 +200,6 @@
     },
     {
       "guardFilePath": "rules/aws/elastic_load_balancing_v2/alb_waf_enabled.guard",
-      "controls": [
-        "3.1.2(a)",
-        "3.1.6(a)",
-        "3.6.1(a)(h)",
-        "3.6.1(d)"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/api_gateway_v2/api_gw_associated_with_waf.guard",
       "controls": [
         "3.1.2(a)",
         "3.1.6(a)",
@@ -256,15 +233,6 @@
         "3.1.2(e)",
         "3.1.3(e)",
         "3.1.5(f)",
-        "3.6.1(b)"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_redshift/redshift_require_tls_ssl.guard",
-      "controls": [
-        "3.1.2(c)",
-        "3.1.2(e)",
-        "3.1.3(e)",
         "3.6.1(b)"
       ]
     },
@@ -437,15 +405,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/api_gateway_v2/api_gw_ssl_enabled.guard",
-      "controls": [
-        "3.1.2(c)",
-        "3.1.2(e)",
-        "3.1.3(e)",
-        "3.6.1(b)"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/elastic_load_balancing_v2/elbv2_acm_certificate_required.guard",
       "controls": [
         "3.1.2(c)",
@@ -554,12 +513,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/amazon_redshift/redshift_cluster_kms_enabled.guard",
-      "controls": [
-        "3.1.10(b)"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/secrets_manager/secretsmanager_using_cmk.guard",
       "controls": [
         "3.1.10(b)"
@@ -583,12 +536,6 @@
       "controls": [
         "3.2.1(h)",
         "3.3.1(a)"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/elasticache/elasticache_redis_cluster_automatic_backup_check.guard",
-      "controls": [
-        "3.2.1(h)"
       ]
     },
     {
@@ -624,7 +571,7 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/elastic_load_balancing/elb_deletion_protection_enabled.guard",
+      "guardFilePath": "rules/aws/elastic_load_balancing_v2/elb_deletion_protection_enabled.guard",
       "controls": [
         "3.3.1(a)"
       ]

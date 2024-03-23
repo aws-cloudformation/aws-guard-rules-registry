@@ -125,12 +125,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/api_gateway_v2/api_gw_associated_with_waf.guard",
-      "controls": [
-        "Application_control"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/elastic_beanstalk/elastic_beanstalk_managed_updates_enabled.guard",
       "controls": [
         "Patch_applications"
@@ -157,13 +151,6 @@
     },
     {
       "guardFilePath": "rules/aws/dynamodb/dynamodb_in_backup_plan.guard",
-      "controls": [
-        "Regular_backups",
-        "Mitigation_strategies_to_recover_data_and_system_availability"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/elasticache/elasticache_redis_cluster_automatic_backup_check.guard",
       "controls": [
         "Regular_backups",
         "Mitigation_strategies_to_recover_data_and_system_availability"
@@ -270,12 +257,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/amazon_ec2/ec2_ebs_encryption_by_default.guard",
-      "controls": [
-        "Mitigation_strategies_to_limit_the_extent_of_cyber_security_incidents"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/amazon_efs/efs_encrypted_check.guard",
       "controls": [
         "Mitigation_strategies_to_limit_the_extent_of_cyber_security_incidents"
@@ -332,12 +313,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/amazon_rds/rds_snapshot_encrypted.guard",
-      "controls": [
-        "Mitigation_strategies_to_limit_the_extent_of_cyber_security_incidents"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/amazon_rds/rds_storage_encrypted.guard",
       "controls": [
         "Mitigation_strategies_to_limit_the_extent_of_cyber_security_incidents"
@@ -348,12 +323,6 @@
       "controls": [
         "Mitigation_strategies_to_limit_the_extent_of_cyber_security_incidents",
         "Mitigation_strategies_to_recover_data_and_system_availability"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_redshift/redshift_require_tls_ssl.guard",
-      "controls": [
-        "Mitigation_strategies_to_limit_the_extent_of_cyber_security_incidents"
       ]
     },
     {
@@ -411,12 +380,6 @@
       "controls": [
         "Mitigation_strategies_to_limit_the_extent_of_cyber_security_incidents",
         "Mitigation_strategies_to_recover_data_and_system_availability"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/api_gateway_v2/api_gw_ssl_enabled.guard",
-      "controls": [
-        "Mitigation_strategies_to_limit_the_extent_of_cyber_security_incidents"
       ]
     },
     {
@@ -486,7 +449,7 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/elastic_load_balancing/elb_deletion_protection_enabled.guard",
+      "guardFilePath": "rules/aws/elastic_load_balancing_v2/elb_deletion_protection_enabled.guard",
       "controls": [
         "Mitigation_strategies_to_recover_data_and_system_availability"
       ]

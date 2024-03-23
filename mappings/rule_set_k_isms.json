@@ -128,12 +128,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/api_gateway_v2/api_gw_associated_with_waf.guard",
-      "controls": [
-        "2.6.6"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/elastic_load_balancing_v2/elbv2_acm_certificate_required.guard",
       "controls": [
         "2.6.6"
@@ -190,12 +184,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/amazon_ec2/ec2_ebs_encryption_by_default.guard",
-      "controls": [
-        "2.7"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/amazon_efs/efs_encrypted_check.guard",
       "controls": [
         "2.7"
@@ -235,12 +223,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/amazon_rds/rds_snapshot_encrypted.guard",
-      "controls": [
-        "2.7"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/amazon_rds/rds_storage_encrypted.guard",
       "controls": [
         "2.7"
@@ -250,13 +232,6 @@
       "guardFilePath": "rules/aws/amazon_redshift/redshift_cluster_configuration_check.guard",
       "controls": [
         "2.7"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_redshift/redshift_require_tls_ssl.guard",
-      "controls": [
-        "2.7",
-        "2.10.5"
       ]
     },
     {
@@ -288,12 +263,6 @@
       "guardFilePath": "rules/aws/amazon_sns/sns_encrypted_kms.guard",
       "controls": [
         "2.7"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/api_gateway_v2/api_gw_ssl_enabled.guard",
-      "controls": [
-        "2.7.1"
       ]
     },
     {
@@ -402,13 +371,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/elasticache/elasticache_redis_cluster_automatic_backup_check.guard",
-      "controls": [
-        "2.9.3",
-        "2.12"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/elastic_load_balancing/elb_cross_zone_load_balancing_enabled.guard",
       "controls": [
         "2.9.3",
@@ -416,7 +378,7 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/elastic_load_balancing/elb_deletion_protection_enabled.guard",
+      "guardFilePath": "rules/aws/elastic_load_balancing_v2/elb_deletion_protection_enabled.guard",
       "controls": [
         "2.9.3",
         "2.12"

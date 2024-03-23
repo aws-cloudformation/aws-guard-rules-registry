@@ -63,17 +63,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/elasticache/elasticache_redis_cluster_automatic_backup_check.guard",
-      "controls": [
-        "T0008",
-        "T0017",
-        "T0051",
-        "T0065",
-        "T0070",
-        "T0162"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/elastic_load_balancing/elb_cross_zone_load_balancing_enabled.guard",
       "controls": [
         "T0008",
@@ -118,22 +107,7 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/api_gateway_v2/api_gw_ssl_enabled.guard",
-      "controls": [
-        "T0017",
-        "T0416",
-        "T0553"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/cloudtrail/cloud_trail_encryption_enabled.guard",
-      "controls": [
-        "T0017",
-        "T0553"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_ec2/ec2_ebs_encryption_by_default.guard",
       "controls": [
         "T0017",
         "T0553"
@@ -188,23 +162,6 @@
       "guardFilePath": "rules/aws/amazon_ec2/encrypted_volumes.guard",
       "controls": [
         "T0017",
-        "T0553"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_redshift/redshift_cluster_kms_enabled.guard",
-      "controls": [
-        "T0017",
-        "T0152",
-        "T0553"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_redshift/redshift_require_tls_ssl.guard",
-      "controls": [
-        "T0017",
-        "T0152",
-        "T0416",
         "T0553"
       ]
     },
@@ -435,14 +392,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/amazon_rds/rds_snapshot_encrypted.guard",
-      "controls": [
-        "T0017",
-        "T0152",
-        "T0553"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/amazon_rds/rds_storage_encrypted.guard",
       "controls": [
         "T0017",
@@ -474,7 +423,7 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/elastic_load_balancing/elb_deletion_protection_enabled.guard",
+      "guardFilePath": "rules/aws/elastic_load_balancing_v2/elb_deletion_protection_enabled.guard",
       "controls": [
         "T0017",
         "T0051",
@@ -597,16 +546,6 @@
       "controls": [
         "T0144",
         "T0152",
-        "T0195",
-        "T0262",
-        "T0284",
-        "T0609"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/api_gateway_v2/api_gw_associated_with_waf.guard",
-      "controls": [
-        "T0144",
         "T0195",
         "T0262",
         "T0284",

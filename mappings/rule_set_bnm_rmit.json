@@ -100,16 +100,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/amazon_redshift/redshift_require_tls_ssl.guard",
-      "controls": [
-        "10.18",
-        "10.53",
-        "10.66(a)",
-        "Appendix 5.5(b)",
-        "Appendix 5.6"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/amazon_s3/s3_bucket_server_side_encryption_enabled.guard",
       "controls": [
         "10.18",
@@ -144,22 +134,6 @@
     },
     {
       "guardFilePath": "rules/aws/amazon_sns/sns_encrypted_kms.guard",
-      "controls": [
-        "10.18",
-        "10.53",
-        "10.66(a)"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_ec2/ec2_ebs_encryption_by_default.guard",
-      "controls": [
-        "10.18",
-        "10.53",
-        "10.66(a)"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_rds/rds_snapshot_encrypted.guard",
       "controls": [
         "10.18",
         "10.53",
@@ -220,29 +194,10 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/amazon_redshift/redshift_cluster_kms_enabled.guard",
-      "controls": [
-        "10.18",
-        "10.53",
-        "10.66(a)"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/secrets_manager/secretsmanager_using_cmk.guard",
       "controls": [
         "10.18",
         "10.66(a)"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/api_gateway_v2/api_gw_ssl_enabled.guard",
-      "controls": [
-        "10.18",
-        "10.36",
-        "10.53",
-        "10.66(a)",
-        "Appendix 5.5(b)",
-        "Appendix 5.6"
       ]
     },
     {
@@ -327,7 +282,7 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/elastic_load_balancing/elb_deletion_protection_enabled.guard",
+      "guardFilePath": "rules/aws/elastic_load_balancing_v2/elb_deletion_protection_enabled.guard",
       "controls": [
         "10.34",
         "10.36",
@@ -594,12 +549,6 @@
     },
     {
       "guardFilePath": "rules/aws/amazon_ec2/ebs_optimized_instance.guard",
-      "controls": [
-        "10.66(e)"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/elasticache/elasticache_redis_cluster_automatic_backup_check.guard",
       "controls": [
         "10.66(e)"
       ]

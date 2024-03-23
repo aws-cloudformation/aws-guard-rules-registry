@@ -120,12 +120,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/amazon_ec2/ec2_ebs_encryption_by_default.guard",
-      "controls": [
-        "CIP-011-3-R1-Part 1.2"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/amazon_efs/efs_encrypted_check.guard",
       "controls": [
         "CIP-011-3-R1-Part 1.2"
@@ -168,12 +162,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/amazon_rds/rds_snapshot_encrypted.guard",
-      "controls": [
-        "CIP-011-3-R1-Part 1.2"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/amazon_rds/rds_storage_encrypted.guard",
       "controls": [
         "CIP-011-3-R1-Part 1.2"
@@ -181,12 +169,6 @@
     },
     {
       "guardFilePath": "rules/aws/amazon_redshift/redshift_cluster_configuration_check.guard",
-      "controls": [
-        "CIP-011-3-R1-Part 1.2"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_redshift/redshift_require_tls_ssl.guard",
       "controls": [
         "CIP-011-3-R1-Part 1.2"
       ]
