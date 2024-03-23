@@ -61,18 +61,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/amazon_ec2/ec2_ebs_encryption_by_default.guard",
-      "controls": [
-        "2.2.1"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_rds/rds_snapshot_encrypted.guard",
-      "controls": [
-        "2.3.1"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/amazon_rds/rds_storage_encrypted.guard",
       "controls": [
         "2.3.1"

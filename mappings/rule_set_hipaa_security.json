@@ -342,25 +342,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/secrets_manager/secretsmanager_scheduled_rotation_success_check.guard",
-      "controls": [
-        "164.308(a)(4)(ii)(B)"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/secrets_manager/secretsmanager_secret_periodic_rotation.guard",
-      "controls": [
-        "164.308(a)(4)(ii)(B)"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/secrets_manager/secretsmanager_secret_unused.guard",
-      "controls": [
-        "164.308(a)(4)(ii)(B)",
-        "164.308(a)(4)(ii)(C)"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/elastic_beanstalk/elastic_beanstalk_managed_updates_enabled.guard",
       "controls": [
         "164.308(a)(5)(ii)(A)"
@@ -394,7 +375,7 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/elastic_load_balancing/elb_deletion_protection_enabled.guard",
+      "guardFilePath": "rules/aws/elastic_load_balancing_v2/elb_deletion_protection_enabled.guard",
       "controls": [
         "164.308(a)(7)(i)",
         "164.308(a)(7)(ii)(C)"
@@ -442,14 +423,6 @@
       "guardFilePath": "rules/aws/amazon_ec2/ebs_optimized_instance.guard",
       "controls": [
         "164.308(a)(7)(i)"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/elasticache/elasticache_redis_cluster_automatic_backup_check.guard",
-      "controls": [
-        "164.308(a)(7)(i)",
-        "164.308(a)(7)(ii)(A)",
-        "164.308(a)(7)(ii)(B)"
       ]
     },
     {
@@ -504,15 +477,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/api_gateway_v2/api_gw_ssl_enabled.guard",
-      "controls": [
-        "164.312(a)(2)(iv)",
-        "164.312(e)(1)",
-        "164.312(e)(2)(i)",
-        "164.312(e)(2)(ii)"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/cloudtrail/cloud_trail_encryption_enabled.guard",
       "controls": [
         "164.312(a)(2)(iv)",
@@ -528,13 +492,6 @@
     },
     {
       "guardFilePath": "rules/aws/dynamodb/dynamodb_table_encrypted_kms.guard",
-      "controls": [
-        "164.312(a)(2)(iv)",
-        "164.312(e)(2)(ii)"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_ec2/ec2_ebs_encryption_by_default.guard",
       "controls": [
         "164.312(a)(2)(iv)",
         "164.312(e)(2)(ii)"
@@ -589,13 +546,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/amazon_rds/rds_snapshot_encrypted.guard",
-      "controls": [
-        "164.312(a)(2)(iv)",
-        "164.312(e)(2)(ii)"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/amazon_rds/rds_storage_encrypted.guard",
       "controls": [
         "164.312(a)(2)(iv)",
@@ -607,22 +557,6 @@
       "controls": [
         "164.312(a)(2)(iv)",
         "164.312(b)",
-        "164.312(e)(2)(ii)"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_redshift/redshift_cluster_kms_enabled.guard",
-      "controls": [
-        "164.312(a)(2)(iv)",
-        "164.312(e)(2)(ii)"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_redshift/redshift_require_tls_ssl.guard",
-      "controls": [
-        "164.312(a)(2)(iv)",
-        "164.312(e)(1)",
-        "164.312(e)(2)(i)",
         "164.312(e)(2)(ii)"
       ]
     },

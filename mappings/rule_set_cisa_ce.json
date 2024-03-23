@@ -42,12 +42,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/api_gateway_v2/api_gw_associated_with_waf.guard",
-      "controls": [
-        "Your Systems-3"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/cloudtrail/cloud_trail_log_file_validation_enabled.guard",
       "controls": [
         "Your Systems-3"
@@ -102,13 +96,6 @@
     },
     {
       "guardFilePath": "rules/aws/api_gateway/api_gw_execution_logging_enabled.guard",
-      "controls": [
-        "Your Systems-3",
-        "Your Data-2"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/api_gateway_v2/api_gw_ssl_enabled.guard",
       "controls": [
         "Your Systems-3",
         "Your Data-2"
@@ -197,14 +184,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/amazon_ec2/ec2_ebs_encryption_by_default.guard",
-      "controls": [
-        "Your Systems-3",
-        "Your Data-1",
-        "Your Data-2"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/amazon_ec2/ec2_instance_no_public_ip.guard",
       "controls": [
         "Your Systems-3",
@@ -255,7 +234,7 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/elastic_load_balancing/elb_deletion_protection_enabled.guard",
+      "guardFilePath": "rules/aws/elastic_load_balancing_v2/elb_deletion_protection_enabled.guard",
       "controls": [
         "Your Systems-3",
         "Your Data-4"
@@ -371,14 +350,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/amazon_rds/rds_snapshot_encrypted.guard",
-      "controls": [
-        "Your Systems-3",
-        "Your Data-1",
-        "Your Data-2"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/amazon_rds/rds_storage_encrypted.guard",
       "controls": [
         "Your Systems-3",
@@ -403,22 +374,7 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/amazon_redshift/redshift_cluster_kms_enabled.guard",
-      "controls": [
-        "Your Systems-3",
-        "Your Data-1",
-        "Your Data-2"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/amazon_redshift/redshift_cluster_public_access_check.guard",
-      "controls": [
-        "Your Systems-3",
-        "Your Data-2"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_redshift/redshift_require_tls_ssl.guard",
       "controls": [
         "Your Systems-3",
         "Your Data-2"
@@ -535,18 +491,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/secrets_manager/secretsmanager_secret_periodic_rotation.guard",
-      "controls": [
-        "Your Systems-3"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/secrets_manager/secretsmanager_secret_unused.guard",
-      "controls": [
-        "Your Systems-3"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/amazon_sns/sns_encrypted_kms.guard",
       "controls": [
         "Your Systems-3",
@@ -612,13 +556,6 @@
       "guardFilePath": "rules/aws/cloudtrail/cloud_trail_cloud_watch_logs_enabled.guard",
       "controls": [
         "Your Data-2"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/elasticache/elasticache_redis_cluster_automatic_backup_check.guard",
-      "controls": [
-        "Your Data-4",
-        "Booting Up: Things to Do First-1"
       ]
     },
     {

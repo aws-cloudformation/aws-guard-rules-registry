@@ -205,13 +205,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/amazon_ec2/ec2_ebs_encryption_by_default.guard",
-      "controls": [
-        "4.6",
-        "11.3"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/amazon_ec2/encrypted_volumes.guard",
       "controls": [
         "4.6",
@@ -303,13 +296,6 @@
     },
     {
       "guardFilePath": "rules/aws/dynamodb/dynamodb_pitr_enabled.guard",
-      "controls": [
-        "11.2",
-        "11.4"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/elasticache/elasticache_redis_cluster_automatic_backup_check.guard",
       "controls": [
         "11.2",
         "11.4"

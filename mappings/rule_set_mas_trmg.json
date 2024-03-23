@@ -50,17 +50,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/api_gateway_v2/api_gw_ssl_enabled.guard",
-      "controls": [
-        "6.4.5",
-        "9.3.1",
-        "10.1.1",
-        "11.1.1 (a)",
-        "14.1.2",
-        "14.2.2"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/aws_kms/cmk_backing_key_rotation_enabled.guard",
       "controls": [
         "6.4.5",
@@ -100,16 +89,6 @@
       "guardFilePath": "rules/aws/elastic_load_balancing_v2/elbv2_acm_certificate_required.guard",
       "controls": [
         "6.4.5",
-        "10.1.1",
-        "11.1.1 (a)",
-        "14.1.2"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_redshift/redshift_require_tls_ssl.guard",
-      "controls": [
-        "6.4.5",
-        "9.3.1",
         "10.1.1",
         "11.1.1 (a)",
         "14.1.2"
@@ -253,7 +232,7 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/elastic_load_balancing/elb_deletion_protection_enabled.guard",
+      "guardFilePath": "rules/aws/elastic_load_balancing_v2/elb_deletion_protection_enabled.guard",
       "controls": [
         "6.4.8",
         "8.1.1"
@@ -311,13 +290,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/elasticache/elasticache_redis_cluster_automatic_backup_check.guard",
-      "controls": [
-        "7.5.5",
-        "8.4.2"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/amazon_redshift/redshift_backup_enabled.guard",
       "controls": [
         "7.5.5",
@@ -365,15 +337,6 @@
       "controls": [
         "8.4.1",
         "8.4.2"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_rds/rds_snapshot_encrypted.guard",
-      "controls": [
-        "8.4.4",
-        "10.1.1",
-        "11.1.1 (b)",
-        "11.1.3"
       ]
     },
     {
@@ -437,25 +400,7 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/secrets_manager/secretsmanager_scheduled_rotation_success_check.guard",
-      "controls": [
-        "9.1.1"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/amazon_s3/s3_bucket_policy_grantee_check.guard",
-      "controls": [
-        "9.1.1"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/secrets_manager/secretsmanager_secret_periodic_rotation.guard",
-      "controls": [
-        "9.1.1"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/secrets_manager/secretsmanager_secret_unused.guard",
       "controls": [
         "9.1.1"
       ]
@@ -501,16 +446,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/amazon_ec2/ec2_ebs_encryption_by_default.guard",
-      "controls": [
-        "10.1.1",
-        "11.1.1 (b)",
-        "11.1.3",
-        "14.2.2",
-        "14.2.6"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/amazon_efs/efs_encrypted_check.guard",
       "controls": [
         "10.1.1",
@@ -541,14 +476,6 @@
     },
     {
       "guardFilePath": "rules/aws/amazon_rds/rds_storage_encrypted.guard",
-      "controls": [
-        "10.1.1",
-        "11.1.1 (b)",
-        "11.1.3"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_redshift/redshift_cluster_kms_enabled.guard",
       "controls": [
         "10.1.1",
         "11.1.1 (b)",

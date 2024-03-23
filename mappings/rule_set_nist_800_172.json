@@ -18,12 +18,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/api_gateway_v2/api_gw_ssl_enabled.guard",
-      "controls": [
-        "3.1.3e"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/opensearch_service/elasticsearch_node_to_node_encryption_check.guard",
       "controls": [
         "3.1.3e"
@@ -40,12 +34,6 @@
       "guardFilePath": "rules/aws/elastic_load_balancing/elb_tls_https_listeners_only.guard",
       "controls": [
         "3.1.3e",
-        "3.1.3e"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_redshift/redshift_require_tls_ssl.guard",
-      "controls": [
         "3.1.3e"
       ]
     },
@@ -215,13 +203,6 @@
     {
       "guardFilePath": "rules/aws/secrets_manager/secretsmanager_rotation_enabled_check.guard",
       "controls": [
-        "3.5.2e"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/secrets_manager/secretsmanager_scheduled_rotation_success_check.guard",
-      "controls": [
-        "3.5.2e",
         "3.5.2e"
       ]
     },

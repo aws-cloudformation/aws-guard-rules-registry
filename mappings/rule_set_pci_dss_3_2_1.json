@@ -19,19 +19,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/amazon_ec2/ebs_snapshot_public_restorable_check.guard",
-      "controls": [
-        "1.2",
-        "1.2.1",
-        "1.3",
-        "1.3.1",
-        "1.3.2",
-        "1.3.4",
-        "1.3.6",
-        "2.2.2"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/amazon_ec2/ec2_instance_no_public_ip.guard",
       "controls": [
         "1.2",
@@ -133,19 +120,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/amazon_rds/rds_snapshots_public_prohibited.guard",
-      "controls": [
-        "1.2",
-        "1.2.1",
-        "1.3",
-        "1.3.1",
-        "1.3.2",
-        "1.3.4",
-        "1.3.6",
-        "2.2.2"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/amazon_redshift/redshift_cluster_public_access_check.guard",
       "controls": [
         "1.2",
@@ -166,20 +140,6 @@
         "1.3",
         "1.3.1",
         "1.3.2",
-        "2.2",
-        "2.2.2"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_s3/s3_account_level_public_access_blocks_periodic.guard",
-      "controls": [
-        "1.2",
-        "1.2.1",
-        "1.3",
-        "1.3.1",
-        "1.3.2",
-        "1.3.4",
-        "1.3.6",
         "2.2",
         "2.2.2"
       ]
@@ -239,30 +199,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/amazon_ec2/vpc_default_security_group_closed.guard",
-      "controls": [
-        "1.2",
-        "1.2.1",
-        "1.3",
-        "1.3.1",
-        "1.3.2",
-        "2.1",
-        "2.2",
-        "2.2.2"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_ec2/vpc_sg_open_only_to_authorized_ports.guard",
-      "controls": [
-        "1.2",
-        "1.2.1",
-        "1.3",
-        "1.3.1",
-        "1.3.2",
-        "2.2.2"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/amazon_s3/s3_bucket_level_public_access_prohibited.guard",
       "controls": [
         "1.2",
@@ -287,19 +223,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/systems_manager/ssm_document_not_public.guard",
-      "controls": [
-        "1.2",
-        "1.2.1",
-        "1.3",
-        "1.3.1",
-        "1.3.2",
-        "1.3.4",
-        "1.3.6",
-        "2.2.2"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/amazon_ec2_auto_scaling/autoscaling_launch_config_public_ip_disabled.guard",
       "controls": [
         "1.2",
@@ -319,18 +242,6 @@
         "1.3",
         "1.3.1",
         "1.3.2"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/iam/access_keys_rotated.guard",
-      "controls": [
-        "2.2"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/aws_organizations/account_part_of_organizations.guard",
-      "controls": [
-        "2.2"
       ]
     },
     {
@@ -403,14 +314,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/amazon_ec2/ec2_ebs_encryption_by_default.guard",
-      "controls": [
-        "2.2",
-        "3.4",
-        "8.2.1"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/amazon_ec2/encrypted_volumes.guard",
       "controls": [
         "2.2",
@@ -439,25 +342,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/iam/iam_root_access_key_check.guard",
-      "controls": [
-        "2.2",
-        "7.1.2",
-        "7.2.1",
-        "8.1.1"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/iam/iam_user_group_membership_check.guard",
-      "controls": [
-        "2.2",
-        "7.1.2",
-        "7.1.3",
-        "7.2.1",
-        "7.2.2"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/iam/iam_user_no_policies_check.guard",
       "controls": [
         "2.2",
@@ -468,22 +352,7 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/iam/iam_user_unused_credentials_check.guard",
-      "controls": [
-        "2.2",
-        "7.2.1",
-        "8.1.4"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/iam/mfa_enabled_for_iam_console_access.guard",
-      "controls": [
-        "2.2",
-        "8.3"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/cloudtrail/multi_region_cloudtrail_enabled.guard",
+      "guardFilePath": "rules/aws/cloudtrail/multi_region_cloud_trail_enabled.guard",
       "controls": [
         "2.2",
         "10.1",
@@ -500,20 +369,6 @@
         "10.3.4",
         "10.3.5",
         "10.3.6"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/iam/root_account_hardware_mfa_enabled.guard",
-      "controls": [
-        "2.2",
-        "8.3"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/iam/root_account_mfa_enabled.guard",
-      "controls": [
-        "2.2",
-        "8.3"
       ]
     },
     {
@@ -560,18 +415,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/amazon_ec2/vpc_flow_logs_enabled.guard",
-      "controls": [
-        "2.2",
-        "10.1",
-        "10.3.2",
-        "10.3.3",
-        "10.3.4",
-        "10.3.5",
-        "10.3.6"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/amazon_ec2/ec2_instance_profile_attached.guard",
       "controls": [
         "2.2",
@@ -581,14 +424,6 @@
     },
     {
       "guardFilePath": "rules/aws/elastic_load_balancing_v2/alb_http_to_https_redirection_check.guard",
-      "controls": [
-        "2.3",
-        "4.1",
-        "8.2.1"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/api_gateway_v2/api_gw_ssl_enabled.guard",
       "controls": [
         "2.3",
         "4.1",
@@ -612,19 +447,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/amazon_redshift/redshift_require_tls_ssl.guard",
-      "controls": [
-        "2.3",
-        "4.1"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_ec2/ec2_instance_managed_by_systems_manager.guard",
-      "controls": [
-        "2.4"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/cloudwatch/cw_loggroup_retention_period_check.guard",
       "controls": [
         "3.1",
@@ -632,7 +454,7 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/api_gateway_v2/api_gw_cache_enabled_and_encrypted.guard",
+      "guardFilePath": "rules/aws/api_gateway/api_gw_cache_enabled_and_encrypted.guard",
       "controls": [
         "3.4"
       ]
@@ -665,13 +487,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/amazon_rds/rds_snapshot_encrypted.guard",
-      "controls": [
-        "3.4",
-        "8.2.1"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/amazon_rds/rds_storage_encrypted.guard",
       "controls": [
         "3.4",
@@ -695,13 +510,6 @@
         "10.3.4",
         "10.3.5",
         "10.3.6"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_redshift/redshift_cluster_kms_enabled.guard",
-      "controls": [
-        "3.4",
-        "8.2.1"
       ]
     },
     {
@@ -741,26 +549,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/iam/iam_customer_policy_blocked_kms_actions.guard",
-      "controls": [
-        "3.5.2",
-        "7.1.2",
-        "7.1.3",
-        "7.2.1",
-        "7.2.2"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/iam/iam_inline_policy_blocked_kms_actions.guard",
-      "controls": [
-        "3.5.2",
-        "7.1.2",
-        "7.1.3",
-        "7.2.1",
-        "7.2.2"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/aws_certificate_manager/acm_certificate_expiration_check.guard",
       "controls": [
         "4.1"
@@ -793,26 +581,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/guardduty/guardduty_enabled_centralized.guard",
-      "controls": [
-        "5.1.2",
-        "6.1",
-        "11.4"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_ec2/ec2_managedinstance_association_compliance_status_check.guard",
-      "controls": [
-        "6.2"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_ec2/ec2_managedinstance_patch_compliance_status_check.guard",
-      "controls": [
-        "6.2"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/amazon_rds/rds_automatic_minor_version_upgrade_enabled.guard",
       "controls": [
         "6.2"
@@ -828,21 +596,6 @@
       "guardFilePath": "rules/aws/elastic_load_balancing_v2/alb_waf_enabled.guard",
       "controls": [
         "6.6"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/api_gateway_v2/api_gw_associated_with_waf.guard",
-      "controls": [
-        "6.6"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/iam/iam_group_has_users_check.guard",
-      "controls": [
-        "7.1.2",
-        "7.1.3",
-        "7.2.1",
-        "7.2.2"
       ]
     },
     {
@@ -891,20 +644,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/iam/iam_password_policy.guard",
-      "controls": [
-        "8.2.3",
-        "8.2.4",
-        "8.2.5"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/iam/iam_user_mfa_enabled.guard",
-      "controls": [
-        "8.3"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/api_gateway_v2/api_gw_execution_logging_enabled.guard",
       "controls": [
         "10.1",
@@ -918,7 +657,7 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/cloudtrail/cloudtrail_enabled.guard",
+      "guardFilePath": "rules/aws/cloudtrail/cloud_trail_enabled.guard",
       "controls": [
         "10.1",
         "10.2.1",

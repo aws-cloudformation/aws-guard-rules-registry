@@ -24,16 +24,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/api_gateway_v2/api_gw_ssl_enabled.guard",
-      "controls": [
-        "Anexo II 4.1.2.a); b); c)",
-        "Anexo II 5.4.2",
-        "Anexo II 5.4.3",
-        "Anexo II 5.7.3",
-        "Art. 21.1"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/cloudtrail/cloud_trail_encryption_enabled.guard",
       "controls": [
         "Anexo II 4.1.2.a); b); c)",
@@ -52,14 +42,6 @@
     },
     {
       "guardFilePath": "rules/aws/dynamodb/dynamodb_table_encrypted_kms.guard",
-      "controls": [
-        "Anexo II 4.1.2.a); b); c)",
-        "Anexo II 5.7.3",
-        "Art. 21.1"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_ec2/ec2_ebs_encryption_by_default.guard",
       "controls": [
         "Anexo II 4.1.2.a); b); c)",
         "Anexo II 5.7.3",
@@ -121,14 +103,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/amazon_rds/rds_snapshot_encrypted.guard",
-      "controls": [
-        "Anexo II 4.1.2.a); b); c)",
-        "Anexo II 5.7.3",
-        "Art. 21.1"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/amazon_rds/rds_storage_encrypted.guard",
       "controls": [
         "Anexo II 4.1.2.a); b); c)",
@@ -140,24 +114,6 @@
       "guardFilePath": "rules/aws/amazon_redshift/redshift_cluster_configuration_check.guard",
       "controls": [
         "Anexo II 4.1.2.a); b); c)",
-        "Anexo II 5.7.3",
-        "Art. 21.1"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_redshift/redshift_cluster_kms_enabled.guard",
-      "controls": [
-        "Anexo II 4.1.2.a); b); c)",
-        "Anexo II 5.7.3",
-        "Art. 21.1"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_redshift/redshift_require_tls_ssl.guard",
-      "controls": [
-        "Anexo II 4.1.2.a); b); c)",
-        "Anexo II 5.4.2",
-        "Anexo II 5.4.3",
         "Anexo II 5.7.3",
         "Art. 21.1"
       ]
@@ -237,7 +193,7 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/elastic_load_balancing/elb_deletion_protection_enabled.guard",
+      "guardFilePath": "rules/aws/elastic_load_balancing_v2/elb_deletion_protection_enabled.guard",
       "controls": [
         "Anexo II 4.1.2.a); b); c)",
         "Anexo II 5.8.3.b)",
@@ -376,14 +332,6 @@
     },
     {
       "guardFilePath": "rules/aws/elastic_load_balancing_v2/alb_waf_enabled.guard",
-      "controls": [
-        "Anexo II 4.3.2.b)",
-        "Anexo II 5.8.2",
-        "Anexo II 5.8.3.b)"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/api_gateway_v2/api_gw_associated_with_waf.guard",
       "controls": [
         "Anexo II 4.3.2.b)",
         "Anexo II 5.8.2",
@@ -570,12 +518,6 @@
     },
     {
       "guardFilePath": "rules/aws/amazon_ec2/ebs_optimized_instance.guard",
-      "controls": [
-        "Art. 25"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/elasticache/elasticache_redis_cluster_automatic_backup_check.guard",
       "controls": [
         "Art. 25"
       ]

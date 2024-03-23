@@ -105,12 +105,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/amazon_ec2/ec2_ebs_encryption_by_default.guard",
-      "controls": [
-        "2082"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/amazon_efs/efs_encrypted_check.guard",
       "controls": [
         "2082",
@@ -145,25 +139,10 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/amazon_rds/rds_snapshot_encrypted.guard",
-      "controls": [
-        "2082",
-        "4441",
-        "4839"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/opensearch_service/elasticsearch_encrypted_at_rest.guard",
       "controls": [
         "2082",
         "4441",
-        "4839"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_redshift/redshift_require_tls_ssl.guard",
-      "controls": [
-        "2091",
         "4839"
       ]
     },
@@ -353,12 +332,6 @@
     },
     {
       "guardFilePath": "rules/aws/dynamodb/dynamodb_pitr_enabled.guard",
-      "controls": [
-        "4849"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/elasticache/elasticache_redis_cluster_automatic_backup_check.guard",
       "controls": [
         "4849"
       ]

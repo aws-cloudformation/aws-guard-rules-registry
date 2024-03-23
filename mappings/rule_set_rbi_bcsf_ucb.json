@@ -36,12 +36,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/api_gateway_v2/api_gw_ssl_enabled.guard",
-      "controls": [
-        "Annex_I(1.3)"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/elastic_load_balancing_v2/elbv2_acm_certificate_required.guard",
       "controls": [
         "Annex_I(1.3)"
@@ -67,12 +61,6 @@
     },
     {
       "guardFilePath": "rules/aws/dynamodb/dynamodb_table_encrypted_kms.guard",
-      "controls": [
-        "Annex_I(1.3)"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_ec2/ec2_ebs_encryption_by_default.guard",
       "controls": [
         "Annex_I(1.3)"
       ]
@@ -120,12 +108,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/amazon_rds/rds_snapshot_encrypted.guard",
-      "controls": [
-        "Annex_I(1.3)"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/amazon_rds/rds_storage_encrypted.guard",
       "controls": [
         "Annex_I(1.3)"
@@ -136,12 +118,6 @@
       "controls": [
         "Annex_I(1.3)",
         "Annex_I(7.4)"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_redshift/redshift_require_tls_ssl.guard",
-      "controls": [
-        "Annex_I(1.3)"
       ]
     },
     {
@@ -218,12 +194,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/amazon_redshift/redshift_cluster_kms_enabled.guard",
-      "controls": [
-        "Annex_I(1.3)"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/amazon_ec2/subnet_auto_assign_public_ip_disabled.guard",
       "controls": [
         "Annex_I(1.3)"
@@ -280,12 +250,6 @@
     },
     {
       "guardFilePath": "rules/aws/elastic_load_balancing_v2/alb_waf_enabled.guard",
-      "controls": [
-        "Annex_I(5.1)"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/api_gateway_v2/api_gw_associated_with_waf.guard",
       "controls": [
         "Annex_I(5.1)"
       ]
@@ -407,12 +371,6 @@
     },
     {
       "guardFilePath": "rules/aws/dynamodb/dynamodb_pitr_enabled.guard",
-      "controls": [
-        "Annex_I(12)"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/elasticache/elasticache_redis_cluster_automatic_backup_check.guard",
       "controls": [
         "Annex_I(12)"
       ]

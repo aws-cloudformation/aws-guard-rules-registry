@@ -236,6 +236,12 @@
             ]
         },
         {
+            "guardFilePath": "rules/aws/aws_kms/kms_no_wildcard_principal.guard",
+            "controls": [
+                "F76"
+            ]
+        },
+        {
             "guardFilePath": "rules/aws/aws_cognito/cognito_user_pool_mfa_configuration_rule.guard",
             "controls": [
                 "F78"
@@ -683,6 +689,12 @@
             "guardFilePath": "rules/aws/opensearch_service/elasticsearch_in_vpc_only.guard",
             "controls": [
                 "W90"
+            ]
+        },
+        {
+            "guardFilePath": "rules/aws/aws_dms/dms_replication_not_public.guard",
+            "controls": [
+                "W91"
             ]
         },
         {

@@ -36,12 +36,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/secrets_manager/secretsmanager_scheduled_rotation_success_check.guard",
-      "controls": [
-        "4.1"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/iam/iam_policy_no_statements_with_full_access.guard",
       "controls": [
         "4.1"
@@ -182,12 +176,6 @@
     },
     {
       "guardFilePath": "rules/aws/amazon_redshift/redshift_enhanced_vpc_routing_enabled.guard",
-      "controls": [
-        "4.4"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/api_gateway_v2/api_gw_associated_with_waf.guard",
       "controls": [
         "4.4"
       ]

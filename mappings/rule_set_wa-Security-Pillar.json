@@ -50,24 +50,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/secrets_manager/secretsmanager_scheduled_rotation_success_check.guard",
-      "controls": [
-        "SEC-2.4"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/secrets_manager/secretsmanager_secret_periodic_rotation.guard",
-      "controls": [
-        "SEC-2.4"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/secrets_manager/secretsmanager_secret_unused.guard",
-      "controls": [
-        "SEC-2.4"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/secrets_manager/secretsmanager_using_cmk.guard",
       "controls": [
         "SEC-2.4",
@@ -283,13 +265,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/api_gateway_v2/api_gw_associated_with_waf.guard",
-      "controls": [
-        "SEC-5.3",
-        "SEC-5.5"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/amazon_ec2/no_unrestricted_route_to_igw.guard",
       "controls": [
         "SEC-5.3"
@@ -356,12 +331,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/amazon_ec2/ec2_ebs_encryption_by_default.guard",
-      "controls": [
-        "SEC-8.3"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/amazon_efs/efs_encrypted_check.guard",
       "controls": [
         "SEC-8.3"
@@ -380,19 +349,7 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/amazon_rds/rds_snapshot_encrypted.guard",
-      "controls": [
-        "SEC-8.3"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/amazon_rds/rds_storage_encrypted.guard",
-      "controls": [
-        "SEC-8.3"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_redshift/redshift_cluster_kms_enabled.guard",
       "controls": [
         "SEC-8.3"
       ]
@@ -465,13 +422,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/api_gateway_v2/api_gw_ssl_enabled.guard",
-      "controls": [
-        "SEC-9.3",
-        "SEC-9.4"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/opensearch_service/elasticsearch_node_to_node_encryption_check.guard",
       "controls": [
         "SEC-9.3"
@@ -479,13 +429,6 @@
     },
     {
       "guardFilePath": "rules/aws/elastic_load_balancing/elb_tls_https_listeners_only.guard",
-      "controls": [
-        "SEC-9.3",
-        "SEC-9.4"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_redshift/redshift_require_tls_ssl.guard",
       "controls": [
         "SEC-9.3",
         "SEC-9.4"

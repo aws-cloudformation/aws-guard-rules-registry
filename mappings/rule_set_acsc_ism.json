@@ -57,12 +57,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/amazon_ec2/ec2_ebs_encryption_by_default.guard",
-      "controls": [
-        "459"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/amazon_efs/efs_encrypted_check.guard",
       "controls": [
         "459"
@@ -82,12 +76,6 @@
     },
     {
       "guardFilePath": "rules/aws/amazon_s3/s3_default_encryption_kms.guard",
-      "controls": [
-        "459"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_redshift/redshift_cluster_kms_enabled.guard",
       "controls": [
         "459"
       ]
@@ -141,12 +129,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/api_gateway_v2/api_gw_associated_with_waf.guard",
-      "controls": [
-        "1240"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/amazon_rds/rds_instance_public_access_check.guard",
       "controls": [
         "1271"
@@ -156,12 +138,6 @@
       "guardFilePath": "rules/aws/amazon_redshift/redshift_enhanced_vpc_routing_enabled.guard",
       "controls": [
         "1271"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/amazon_redshift/redshift_require_tls_ssl.guard",
-      "controls": [
-        "1277"
       ]
     },
     {
@@ -218,12 +194,6 @@
       ]
     },
     {
-      "guardFilePath": "rules/aws/amazon_rds/rds_snapshot_encrypted.guard",
-      "controls": [
-        "1425"
-      ]
-    },
-    {
       "guardFilePath": "rules/aws/amazon_rds/rds_storage_encrypted.guard",
       "controls": [
         "1425"
@@ -259,13 +229,6 @@
       "guardFilePath": "rules/aws/dynamodb/dynamodb_pitr_enabled.guard",
       "controls": [
         "1511"
-      ]
-    },
-    {
-      "guardFilePath": "rules/aws/elasticache/elasticache_redis_cluster_automatic_backup_check.guard",
-      "controls": [
-        "1511",
-        "P9"
       ]
     },
     {
