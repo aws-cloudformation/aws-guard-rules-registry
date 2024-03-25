@@ -14,7 +14,7 @@
   expectations:
     rules:
       ELASTICACHE_REPLICATION_GROUP_ENCRYPTION_IN_TRANSIT: SKIP
-    
+
 - name: Elasticache old (ignored) version 2.x, SKIP
   input:
     Resources:
@@ -24,7 +24,7 @@
           ReplicationGroupDescription: my description
           NumCacheClusters: '2'
           Engine: redis
-          CacheNodeType: cache.m3.medium    
+          CacheNodeType: cache.m3.medium
           AutomaticFailoverEnabled: 'true'
           CacheSubnetGroupName: subnetgroup
           EngineVersion: 2.8.6
@@ -44,7 +44,7 @@
           ReplicationGroupDescription: my description
           NumCacheClusters: '2'
           Engine: redis
-          CacheNodeType: cache.m3.medium    
+          CacheNodeType: cache.m3.medium
           AutomaticFailoverEnabled: 'true'
           CacheSubnetGroupName: subnetgroup
           EngineVersion: 3.2.5
@@ -64,7 +64,7 @@
           ReplicationGroupDescription: my description
           NumCacheClusters: '2'
           Engine: redis
-          CacheNodeType: cache.m3.medium    
+          CacheNodeType: cache.m3.medium
           AutomaticFailoverEnabled: 'true'
           CacheSubnetGroupName: subnetgroup
           EngineVersion: 4.0.10
@@ -85,7 +85,7 @@
           ReplicationGroupDescription: my description
           NumCacheClusters: '2'
           Engine: redis
-          CacheNodeType: cache.m3.medium    
+          CacheNodeType: cache.m3.medium
           AutomaticFailoverEnabled: 'true'
           CacheSubnetGroupName: subnetgroup
           EngineVersion: 4.0.10
@@ -107,7 +107,7 @@
           ReplicationGroupDescription: my description
           NumCacheClusters: '2'
           Engine: redis
-          CacheNodeType: cache.m3.medium    
+          CacheNodeType: cache.m3.medium
           AutomaticFailoverEnabled: 'true'
           CacheSubnetGroupName: subnetgroup
           EngineVersion: 4.0.10
@@ -132,7 +132,7 @@
           ReplicationGroupDescription: my description
           NumCacheClusters: '2'
           Engine: redis
-          CacheNodeType: cache.m3.medium    
+          CacheNodeType: cache.m3.medium
           AutomaticFailoverEnabled: 'true'
           CacheSubnetGroupName: subnetgroup
           EngineVersion: 4.0.10
@@ -161,7 +161,7 @@
           ReplicationGroupDescription: my description
           NumCacheClusters: '2'
           Engine: redis
-          CacheNodeType: cache.m3.medium    
+          CacheNodeType: cache.m3.medium
           AutomaticFailoverEnabled: 'true'
           CacheSubnetGroupName: subnetgroup
           EngineVersion: 4.0.10
@@ -176,6 +176,31 @@
     rules:
       ELASTICACHE_REPLICATION_GROUP_ENCRYPTION_IN_TRANSIT: SKIP
 
+- name: ELASTICACHE_REDIS_CLUSTER_AUTOMATIC_BACKUP_CHECK Guard Suppression, SKIP
+  input:
+    Resources:
+      myReplicationGroup:
+        Type: 'AWS::ElastiCache::ReplicationGroup'
+        Properties:
+          AtRestEncryptionEnabled: false
+          ReplicationGroupDescription: my description
+          NumCacheClusters: '2'
+          Engine: redis
+          CacheNodeType: cache.m3.medium
+          AutomaticFailoverEnabled: 'true'
+          CacheSubnetGroupName: subnetgroup
+          EngineVersion: 4.0.10
+          PreferredMaintenanceWindow: 'wed:09:25-wed:22:30'
+          SnapshotRetentionLimit: '4'
+          SnapshotWindow: '03:30-05:30'
+        Metadata:
+          guard:
+            SuppressedRules:
+            - ELASTICACHE_REDIS_CLUSTER_AUTOMATIC_BACKUP_CHECK: Suppressed for a very good reason
+  expectations:
+    rules:
+      ELASTICACHE_REPLICATION_GROUP_ENCRYPTION_IN_TRANSIT: SKIP
+
 - name: CFN_NAG & Guard Suppression, SKIP
   input:
     Resources:
@@ -185,7 +210,7 @@
           ReplicationGroupDescription: my description
           NumCacheClusters: '2'
           Engine: redis
-          CacheNodeType: cache.m3.medium    
+          CacheNodeType: cache.m3.medium
           AutomaticFailoverEnabled: 'true'
           CacheSubnetGroupName: subnetgroup
           EngineVersion: 4.0.10

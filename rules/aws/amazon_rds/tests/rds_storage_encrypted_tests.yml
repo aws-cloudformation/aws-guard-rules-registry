@@ -179,3 +179,21 @@
   expectations:
     rules:
       RDS_STORAGE_ENCRYPTED: SKIP
+
+- name: RDS_SNAPSHOT_ENCRYPTED Guard suppressed, SKIP
+  input:
+    Resources:
+      ExampleRDS:
+        Type: AWS::RDS::DBInstance
+        Metadata:
+          guard:
+            SuppressedRules:
+            - RDS_SNAPSHOT_ENCRYPTED
+        Properties:
+          DBInstanceClass: !Ref DBInstanceType
+          SourceDBInstanceIdentifier: !Ref SourceDBInstanceIdentifier
+          SourceRegion: !Ref SourceRegion
+          KmsKeyId: !Ref MyKey
+  expectations:
+    rules:
+      RDS_STORAGE_ENCRYPTED: SKIP

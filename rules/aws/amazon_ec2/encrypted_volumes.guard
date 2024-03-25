@@ -6,7 +6,7 @@
 #    ENCRYPTED_VOLUMES
 #
 # Description:
-#    Checks if the EBS volumes that are in an attached state are encrypted. 
+#    Checks if the EBS volumes that are in an attached state are encrypted.
 #
 # Reports on:
 #    AWS::EC2::Volume
@@ -22,18 +22,20 @@
 #
 # Scenarios:
 # a) SKIP: when there are no EBS volume resources present
-# b) PASS: when all EBS volumes have the KmsKeyId property set or the Encrypted property set to true 
+# b) PASS: when all EBS volumes have the KmsKeyId property set or the Encrypted property set to true
 # c) FAIL: when any EC2 volumes do not have the KmsKeyId or Encrypted property set
 # e) SKIP: hen metadata includes the suppression for rule ENCRYPTED_VOLUMES
 
 #
 # Select all EC2 Instance resources from incoming template (payload)
 #
-let ebs_volumes_encrypted = Resources.*[ Type == 'AWS::EC2::Volume' 
-  Metadata.cfn_nag.rules_to_suppress not exists or 
+let ebs_volumes_encrypted = Resources.*[ Type == 'AWS::EC2::Volume'
+  Metadata.cfn_nag.rules_to_suppress not exists or
   Metadata.cfn_nag.rules_to_suppress.*.id != "F1"
   Metadata.guard.SuppressedRules not exists or
   Metadata.guard.SuppressedRules.* != "ENCRYPTED_VOLUMES"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "EC2_EBS_ENCRYPTION_BY_DEFAULT"
 ]
 
 rule ENCRYPTED_VOLUMES when %ebs_volumes_encrypted !empty {
@@ -45,7 +47,7 @@ rule ENCRYPTED_VOLUMES when %ebs_volumes_encrypted !empty {
   %violations empty
   <<
     Violation: EBS volumes in an attached state must be encrypted.
-    Fix: Set the KmsKeyId property to a key ID, key alias, key ARN, or alias ARN 
-		or set the Encrypted property to true to encrypt the volume with the account default key or AWS managed key. 
+    Fix: Set the KmsKeyId property to a key ID, key alias, key ARN, or alias ARN
+		or set the Encrypted property to true to encrypt the volume with the account default key or AWS managed key.
   >>
 }

@@ -98,3 +98,19 @@
   expectations:
     rules:
       ENCRYPTED_VOLUMES: SKIP
+
+- name: EC2 Volume without KmsKeyId or Encrypted properties set but rule EC2_EBS_ENCRYPTION_BY_DEFAULT suppressed, SKIP
+  input:
+    Resources:
+      ExampleVolume:
+        Type: AWS::EC2::Volume
+        Metadata:
+          guard:
+            SuppressedRules:
+              - EC2_EBS_ENCRYPTION_BY_DEFAULT
+        Properties:
+          AvailabilityZone: !Ref pAz
+          Size: !Ref pSize
+  expectations:
+    rules:
+      ENCRYPTED_VOLUMES: SKIP

@@ -33,10 +33,12 @@
 # Select all RDS instance resources from incoming template (payload)
 #
 let aws_rds_instances_storage_encrypted = Resources.*[ Type in [ /AWS::RDS::DBInstance/, /AWS::RDS::DBCluster/ ]
-  Metadata.cfn_nag.rules_to_suppress not exists or 
+  Metadata.cfn_nag.rules_to_suppress not exists or
   Metadata.cfn_nag.rules_to_suppress.*.id !in [ "F26", "F27" ]
   Metadata.guard.SuppressedRules not exists or
   Metadata.guard.SuppressedRules.* != "RDS_STORAGE_ENCRYPTED"
+  Metadata.guard.SuppressedRules not exists or
+  Metadata.guard.SuppressedRules.* != "RDS_SNAPSHOT_ENCRYPTED"
 ]
 
 
